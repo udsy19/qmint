@@ -372,13 +372,28 @@ tasks:
   PAGES:
     lane: K
     description: Static GitHub Pages export with API snapshot
-    status: CLAIMED
+    status: MERGED
     branch: feat/PAGES
-    evidence: []
+    evidence:
+    - live https://udsy19.github.io/qmint/ (gh-pages branch, snapshot of main 7e2e11f)
+    - '11 routes HTTP 200; Playwright desktop 1440 + mobile 390: no overflow, 0 HTTP errors, 0 page errors'
     blockers: []
+    commit: ce63dc8
 qollab:
   project_url: https://qollab.xyz/u/udsy/qmint-proof-carrying-quantum-m
   version: v1.2 public default (video link)
   runs: qollab/evidence/qollab_runs_2026-10-11.json
   video: https://drive.google.com/file/d/1Q91bDAflNIMsbsbJLyPn0Bf0A6DAJHqJ/view?usp=sharing
   submitted: 2026-10-11 ~18:37 ET, team The Quantubians, theme Quantum Impact, 5 of 5
+  website: https://udsy19.github.io/qmint/
+  submission_updated: '~18:57 ET: website URL + corrected negative-results text'
+integrity_pass:
+  commit: 268e462
+  fixed:
+  - photon overdispersion not drift (fig04 caption, ledger N11, docs limitations, benchmarks page, NEGATIVE_RESULTS draft)
+  - 2023 bound = unresolved reproducibility finding
+  - compiler savings do not survive calibration uncertainty
+  - (5/8)^n attack-specific vs (3/4)^n theorem
+  - no S-money latency advantage over late-commit escrow
+  pending_human_review:
+  - Qollab write-up v1.3 (qollab/PROJECT_DESCRIPTION.md) not yet published to Qollab
