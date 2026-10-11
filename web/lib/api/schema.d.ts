@@ -718,6 +718,13 @@ export interface components {
              */
             method: string;
         };
+        /** CurvePoint */
+        CurvePoint: {
+            /** Log10 Bound */
+            log10_bound: number;
+            /** N */
+            n: number;
+        };
         /** Declaration */
         Declaration: {
             /** Declared */
@@ -1441,6 +1448,11 @@ export interface components {
         };
         /** Sizing */
         Sizing: {
+            /**
+             * Curve
+             * @description ideal games: log10 bound vs n (THEOREM)
+             */
+            curve?: components["schemas"]["CurvePoint"][];
             /** Label */
             label: string;
             /** Quantities */
@@ -1498,6 +1510,8 @@ export interface components {
             assumptions: string[];
             /** Axes */
             axes: components["schemas"]["AxisAnchor"][];
+            /** Calibration Families */
+            calibration_families: string[];
             /** Caveats */
             caveats: string[];
             /** Citation */

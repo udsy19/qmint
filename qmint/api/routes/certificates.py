@@ -44,7 +44,7 @@ from qmint.core.serialization import canonical_json, file_sha256, sha256_hex
 from qmint.proofs.assumption_check import endpoints, merge_calibration
 from qmint.proofs.checker import IndependentProofChecker
 from qmint.proofs.engine import ProofEngine
-from qmint.proofs.ideal_bounds import IDEAL_BASES, min_length_for_target
+from qmint.proofs.ideal_bounds import IDEAL_BASES, log10_bound, min_length_for_target
 from qmint.proofs.registry import OBLIGATIONS_PATH, Claim, default_registry
 
 from ..common import git_sha, provenance
@@ -156,6 +156,7 @@ class TheoremInfo(_M):
     assumptions: list[str]
     caveats: list[str]
     parameters: dict[str, str]
+    calibration_families: list[str]
     axes: list[AxisAnchor]
 
 
@@ -189,11 +190,17 @@ class CalibrationInfo(_M):
     note: str
 
 
+class CurvePoint(_M):
+    n: int
+    log10_bound: float
+
+
 class Sizing(_M):
     status: Literal["OK", "NOT_AVAILABLE"]
     label: str
     reason: str
     quantities: list[Quantity]
+    curve: list[CurvePoint] = Field(default_factory=list, description="ideal games: log10 bound vs n (THEOREM)")
 
 
 class CheckerInfo(_M):
@@ -309,6 +316,7 @@ def _theorem(claim: Claim | None) -> TheoremInfo | None:
         statement=claim.source_and_theorem, citation=src.citation if src else None, url=src.url if src else None,
         quantifier=claim.quantifier_over_adversaries, finite_or_asymptotic=claim.finite_n_or_asymptotic,
         assumptions=list(claim.assumptions), caveats=list(claim.caveats), parameters=dict(claim.parameters),
+        calibration_families=list(claim.calibration_families),
         axes=[AxisAnchor(axis=b.axis, bound_id=b.bound_id, anchor=b.anchor, formula=b.formula, domain=b.domain,
                          monotonicity=dict(b.monotonicity), domain_only=list(b.domain_only)) for b in claim.bounds],
     )
@@ -470,13 +478,28 @@ def _sizing(game: GameId, req: CertificateRequest, params: dict[str, Any]) -> Si
         q.append(Quantity(id="requested_size", label=f"Requested {key}", value=float(requested), unit=Unit.COUNT,
                           evidence_kind=EvidenceKind.PUBLISHED_THEOREM, method="closed_form", source="request",
                           note="meets the target" if requested >= n_min else f"below the theorem size by {n_min - requested}"))
-    return Sizing(status="OK", label="THEOREM sizing", reason=f"{claim.claim_id}: {spec.anchor}", quantities=q)
+    top = max(2 * n_min, requested if isinstance(requested, int) else 0, 8)
+    step = max(1, top // 60)
+    curve = [CurvePoint(n=n, log10_bound=log10_bound(game, n)) for n in range(1, top + 1, step)]
+    return Sizing(status="OK", label="THEOREM sizing", reason=f"{claim.claim_id}: {spec.anchor}", quantities=q, curve=curve)
+
+
+def _checker_reasons(cert: SecurityCertificate) -> list[str]:
+    """Split the checker's reason into items, collapsing repeated tokens (one per axis) inside each item."""
+    out = []
+    for r in cert.reason.removeprefix("UNCERTIFIED by independent checker: ").split(" | "):
+        head, sep, tail = r.partition(": ")
+        if sep and head == "assumptions not met":
+            r = head + sep + ", ".join(dict.fromkeys(t.strip() for t in tail.split(", ")))
+        if r:
+            out.append(r)
+    return out
 
 
 def _classify(checked: SecurityCertificate, axes: list[AxisResult], game: GameId, theorem: TheoremInfo | None) -> Classification:
     derived = ("studio classification of the evaluator and checker reasons; the independent checker itself returns "
                "only CERTIFIED or UNCERTIFIED, and its status is exported unchanged")
-    checker_reasons = [r for r in checked.reason.removeprefix("UNCERTIFIED by independent checker: ").split(" | ") if r]
+    checker_reasons = _checker_reasons(checked)
     if checked.proof_check_status == CertificateStatus.CERTIFIED:
         return Classification(verdict="CERTIFIED", headline="Independent checker re-derived every bound and every target is met",
                               reasons=[checked.reason], derived_from="IndependentProofChecker verdict")
@@ -508,7 +531,10 @@ def evaluate(req: CertificateRequest) -> CertificateData:
     engine, checker = ProofEngine(), IndependentProofChecker()
     obligations_sha = file_sha256(OBLIGATIONS_PATH)
     hashes = [obligations_sha] + ([cal.dataset_sha256] if cal and cal.dataset_sha256 else [])
-    merged = merge_calibration(game.value, params, cal)
+    # Shown parameters include calibration intervals only when the theorem accepts that family; a rejected
+    # calibration is never presented as if it had been propagated.
+    accepted = cal is not None and claim is not None and cal.experiment_family in claim.calibration_families
+    merged = merge_calibration(game.value, params, cal) if accepted else dict(params)
 
     axes = []
     try:
@@ -532,7 +558,7 @@ def evaluate(req: CertificateRequest) -> CertificateData:
         optimization=Sizing(status="NOT_AVAILABLE", label="Resource optimisation", reason=LANE_I_REASON, quantities=[]),
         draft_certificate=draft, checked_certificate=checked,
         checker=CheckerInfo(status=checked.proof_check_status, checker_id=checked.checker_id,
-                            reasons=[r for r in checked.reason.removeprefix("UNCERTIFIED by independent checker: ").split(" | ") if r]),
+                            reasons=_checker_reasons(checked)),
         classification=_classify(checked, axes, game, theorem),
         export=ExportBlock(filename=f"qmint-certificate-{game.value}-{sha256_hex(canon)[:12]}.json", canonical_json=canon,
                            sha256=sha256_hex(canon), obligations_sha256=obligations_sha),

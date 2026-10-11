@@ -1576,6 +1576,25 @@
         "title": "ConfidenceInterval",
         "type": "object"
       },
+      "CurvePoint": {
+        "additionalProperties": false,
+        "properties": {
+          "log10_bound": {
+            "title": "Log10 Bound",
+            "type": "number"
+          },
+          "n": {
+            "title": "N",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "n",
+          "log10_bound"
+        ],
+        "title": "CurvePoint",
+        "type": "object"
+      },
       "Declaration": {
         "additionalProperties": false,
         "properties": {
@@ -3783,6 +3802,14 @@
       "Sizing": {
         "additionalProperties": false,
         "properties": {
+          "curve": {
+            "description": "ideal games: log10 bound vs n (THEOREM)",
+            "items": {
+              "$ref": "#/components/schemas/CurvePoint"
+            },
+            "title": "Curve",
+            "type": "array"
+          },
           "label": {
             "title": "Label",
             "type": "string"
@@ -3990,6 +4017,13 @@
             "title": "Axes",
             "type": "array"
           },
+          "calibration_families": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Calibration Families",
+            "type": "array"
+          },
           "caveats": {
             "items": {
               "type": "string"
@@ -4068,6 +4102,7 @@
           "assumptions",
           "caveats",
           "parameters",
+          "calibration_families",
           "axes"
         ],
         "title": "TheoremInfo",
