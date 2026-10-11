@@ -117,6 +117,10 @@ def test_issuer_secret_boundary():
         canonical_json({"wallet": s})
     with pytest.raises(SecretBoundaryError):
         pickle.dumps(s)
+    import copy
+    for attempt in (lambda: copy.copy(s), lambda: copy.deepcopy(s), lambda: s.model_copy()):
+        with pytest.raises(SecretBoundaryError):
+            attempt()
     assert s.reveal_for_testing_only()["TEST_ONLY"] is True
 
 

@@ -343,6 +343,15 @@ class IssuerSecret(_Strict):
     def __getstate__(self) -> Any:
         raise SecretBoundaryError("IssuerSecret cannot be pickled")
 
+    def __copy__(self) -> Any:
+        raise SecretBoundaryError("IssuerSecret cannot be copied")
+
+    def __deepcopy__(self, memo: Any) -> Any:
+        raise SecretBoundaryError("IssuerSecret cannot be copied")
+
+    def model_copy(self, *a: Any, **k: Any) -> Any:  # type: ignore[override]
+        raise SecretBoundaryError("IssuerSecret cannot be copied")
+
     @model_serializer(mode="plain")
     def _refuse_serialization(self) -> Any:
         # Fires when pydantic serializes a parent model holding this secret in an Any field.

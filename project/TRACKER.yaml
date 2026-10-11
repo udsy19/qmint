@@ -75,20 +75,25 @@ tasks:
     description: Wiesner ideal protocol
     owner: subagent-lane-B
     branch: feat/B-protocols
-    status: CLAIMED
-    evidence: []
+    status: MERGED
+    evidence:
+    - handoffs/B-B1.json
+    - Wiesner bank/handle secret boundary; TEST_ONLY leak -> forger wins 50/50 OUT_OF_MODEL; mutation tests caught
     blockers: []
-    commit: null
+    commit: '7964518'
     start_sha: ece05ef
   B2:
     lane: B
     description: S-money two-site protocol
     owner: subagent-lane-B
     branch: feat/B-protocols
-    status: CLAIMED
-    evidence: []
+    status: MERGED
+    evidence:
+    - handoffs/B-B2.json
+    - Kent 2022 IQT1/IQT2/QT1/QT2 state machines; exact privacy enumeration; Breidbart dual-presentation MC consistent with Lemma 1 value (bound
+      attained)
     blockers: []
-    commit: null
+    commit: '7964518'
     start_sha: ece05ef
   C1:
     lane: C
@@ -268,3 +273,13 @@ tasks:
     evidence: []
     blockers: []
     commit: null
+  B3:
+    lane: B
+    description: Schiansky 2023 quantum-digital payment protocol
+    status: MERGED
+    commit: '7964518'
+    evidence:
+    - handoffs/B-B3.json
+    - SI Table 2 M=0.448 reproduced
+    blockers:
+    - 'MAC construction and estimator granularity unspecified in paper: interpreted (GF(2^l) a*M+k; per-block threshold default)'
