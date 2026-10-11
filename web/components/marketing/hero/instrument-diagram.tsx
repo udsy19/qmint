@@ -14,19 +14,18 @@ const V2 = W - 76;
 
 export function InstrumentDiagram({
   readings,
-  states,
-  tokenId,
+  note,
   runKey,
 }: {
   readings: InstrumentReadings;
-  states: string[];
-  tokenId: string;
+  note: { label: string; states: (string | null)[]; revealed: boolean };
   /** Changes whenever a new reading arrives so the strokes redraw. */
   runKey: string;
 }) {
   const scenario = getScenario(readings.scenario);
   const honest = readings.scenario === "honest";
   const out = !scenario.inModel;
+  const states = note.states;
   const n = states.length;
   const cell = n > 4 ? 26 : 30;
   const gap = n > 4 ? 6 : 10;
@@ -45,14 +44,14 @@ export function InstrumentDiagram({
       aria-label={`Schematic: a ${n}-qubit note passes through ${scenario.label}; ${honest ? "one verification" : "two verifications"} follow.`}
     >
       {/* note */}
-      <text x={CX} y={18} textAnchor="middle" className="fill-subtle font-pixel-grid text-[10px] tracking-[0.04em]">
-        {tokenId}
+      <text x={CX} y={18} textAnchor="middle" className="fill-subtle font-mono text-[10px]">
+        {note.revealed ? `${note.label} · secret revealed` : `${note.label} · states secret`}
       </text>
       {states.map((st, i) => (
         <g key={i}>
-          <StateCell cx={x0 + i * (cell + gap)} cy={52} size={cell} state={st as Bb84Label} />
+          <StateCell cx={x0 + i * (cell + gap)} cy={52} size={cell} state={st as Bb84Label | null} />
           <text x={x0 + i * (cell + gap)} y={52 + cell / 2 + 14} textAnchor="middle" className="fill-subtle font-mono text-[10px]">
-            {STATE_KET[st as Bb84Label]}
+            {st === null ? "" : STATE_KET[st as Bb84Label]}
           </text>
         </g>
       ))}

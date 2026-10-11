@@ -9,14 +9,13 @@ import { PixelLoader } from "@/components/ui/pixel-loader";
 import { ErrorState } from "@/components/ui/state";
 import { ApiError } from "@/lib/api/client";
 import { cn } from "@/lib/utils";
-import { loadInstrument, SAMPLE_SHOTS, type InstrumentSelection, type InstrumentSnapshot } from "./instrument-data";
+import { loadInstrument, SAMPLE_TRIALS, type InstrumentSelection, type InstrumentSnapshot } from "./instrument-data";
 import { InstrumentDiagram } from "./instrument-diagram";
 import {
   describe,
   fmtProb,
   getScenario,
   logPosition,
-  MAX_SAMPLED_N,
   N_OPTIONS,
   SCENARIOS,
   type ProbabilitySource,
@@ -26,6 +25,7 @@ import {
 
 const SOURCE_TEXT: Record<ProbabilitySource, string> = {
   theorem: "Published theorem: an upper bound for every counterfeiter",
+  certified_numeric: "Certified numeric bound: an upper bound on the optimal attack, checked in exact arithmetic",
   exact_model: "Exact model value for this one attack: a lower bound on the worst case",
   monte_carlo: "Monte Carlo estimate with a confidence interval: a lower bound on the worst case",
   out_of_model: "Out-of-model control: the game's assumptions are deliberately broken",
@@ -64,7 +64,7 @@ export function Instrument({ initial }: { initial: InstrumentSnapshot | null }) 
   }, [sel]);
 
   const scenario = getScenario(sel.scenario);
-  const canSample = scenario.sampleable && sel.n <= MAX_SAMPLED_N;
+  const canSample = scenario.backend.kind === "attack";
   const busy = status.kind === "loading";
   const r = snap?.readings;
 
@@ -80,7 +80,7 @@ export function Instrument({ initial }: { initial: InstrumentSnapshot | null }) 
         </h2>
         <div className="flex items-center gap-4">
           {busy ? <Busy /> : null}
-          <NSelector value={sel.n} onChange={(n) => setSel((s) => ({ ...s, n, sampled: s.sampled && n <= MAX_SAMPLED_N }))} />
+          <NSelector value={sel.n} onChange={(n) => setSel((s) => ({ ...s, n }))} />
         </div>
       </div>
 
@@ -96,7 +96,7 @@ export function Instrument({ initial }: { initial: InstrumentSnapshot | null }) 
                 label={sc.label}
                 inModel={sc.inModel}
                 checked={sel.scenario === sc.id}
-                onSelect={(id) => setSel((s) => ({ ...s, scenario: id, sampled: s.sampled && getScenario(id).sampleable }))}
+                onSelect={(id) => setSel((s) => ({ ...s, scenario: id, sampled: s.sampled && getScenario(id).backend.kind === "attack" }))}
               />
             ))}
           </div>
@@ -116,13 +116,11 @@ export function Instrument({ initial }: { initial: InstrumentSnapshot | null }) 
               aria-describedby="sample-hint"
             />
             <span>
-              Also sample with Aer
+              Also run Monte Carlo
               <span id="sample-hint" className="mt-0.5 block text-subtle">
                 {canSample
-                  ? `${SAMPLE_SHOTS.toLocaleString("en-US")} shots, 99% Clopper–Pearson interval`
-                  : scenario.sampleable
-                    ? `cloning circuit needs 3n ≤ 8 qubits: n ≤ ${MAX_SAMPLED_N} only`
-                    : "no circuit sampler for this scenario in the API"}
+                  ? `${SAMPLE_TRIALS.toLocaleString("en-US")} fresh notes, 95% Clopper–Pearson interval`
+                  : "nothing to sample: no counterfeiter"}
               </span>
             </span>
           </label>
@@ -137,7 +135,7 @@ export function Instrument({ initial }: { initial: InstrumentSnapshot | null }) 
           aria-busy={busy}
         >
           {snap && r ? (
-            <InstrumentDiagram readings={r} states={snap.note.states} tokenId={snap.note.tokenId} runKey={`${run}`} />
+            <InstrumentDiagram readings={r} note={snap.note} runKey={`${run}`} />
           ) : status.kind === "error" ? null : (
             <Busy />
           )}
@@ -174,6 +172,7 @@ export function Instrument({ initial }: { initial: InstrumentSnapshot | null }) 
                 <Row reading={r.perQubit} />
                 {r.scenario === "honest" ? null : <Row reading={r.single} />}
                 <Row reading={r.bound} muted={!r.bound.applies} suffix={r.bound.applies ? undefined : "does not apply"} />
+                {r.optimum ? <Row reading={r.optimum} /> : null}
                 {r.sampled ? <Row reading={r.sampled} /> : null}
               </dl>
             </>
@@ -190,7 +189,7 @@ export function Instrument({ initial }: { initial: InstrumentSnapshot | null }) 
           {r?.apiReason ? <span className="min-w-0">{r.apiReason}</span> : null}
           {snap ? (
             <span className="tnum font-mono">
-              seed {snap.note.seed} · git {snap.provenance.gitSha.slice(0, 7)}
+              seed {snap.provenance.seed} · git {snap.provenance.gitSha.slice(0, 7)}
             </span>
           ) : null}
         </div>
@@ -305,6 +304,7 @@ function Headline({ reading }: { reading: Reading }) {
       )}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
         <Label reading={reading} />
+        {out ? <EvidenceLabel kind="OUT_OF_MODEL" group="certificate_status" size="xs" /> : null}
         <span className="font-mono text-[0.6875rem] text-subtle">{reading.method}</span>
       </div>
       <p className="text-xs leading-relaxed text-muted">
@@ -325,7 +325,14 @@ function Row({ reading, muted = false, suffix }: { reading: Reading; muted?: boo
     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-3 gap-y-1 border-t border-hairline py-2.5" data-source={reading.source}>
       <dt className="text-xs text-muted">{reading.label}</dt>
       <dd className={cn("tnum text-right font-mono text-sm", muted ? "text-subtle line-through decoration-subtle/60" : "text-foreground")}>
-        {reading.value === null ? <span className="text-xs text-subtle italic no-underline">n/a</span> : fmtProb(reading.value)}
+        {reading.value === null ? (
+          <span className="text-xs text-subtle italic no-underline">n/a</span>
+        ) : reading.source === "certified_numeric" ? (
+          // a certified bound is shown to full precision: rounding would understate it
+          String(reading.value)
+        ) : (
+          fmtProb(reading.value)
+        )}
       </dd>
       <dd className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1">
         <Label reading={reading} />

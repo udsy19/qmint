@@ -5,7 +5,7 @@ import Link from "next/link";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { REPO_URL } from "./research-values";
+import { REPO_URL } from "./site";
 import { Wordmark } from "./wordmark";
 
 export const NAV_LINKS = [
