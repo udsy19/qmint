@@ -162,7 +162,22 @@ def main(n_qubits: int = 3, shots: int = 2000, seed: int = 7) -> None:
         be = BasicSimulator()
     print(f"backend: {getattr(be, 'name', be)}")
     tqc = transpile(qc, be, seed_transpiler=int(seed))
-    counts = be.run(tqc, shots=int(shots)).result().get_counts()
+    job = be.run(tqc, shots=int(shots))
+    try:  # remote backends (IonQ noisy simulators): poll like Qollab's template
+        import time
+
+        from qiskit.providers.jobstatus import JobStatus
+        while True:
+            status = job.status()
+            if status == JobStatus.DONE:
+                break
+            if status in (JobStatus.ERROR, JobStatus.CANCELLED):
+                raise RuntimeError(f"job ended with status {status}")
+            print(f"job status: {status}")
+            time.sleep(5)
+    except ImportError:
+        pass
+    counts = job.result().get_counts()
 
     honest = bruss = mvw = 0
     total = 0
