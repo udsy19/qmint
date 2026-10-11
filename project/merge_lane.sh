@@ -17,6 +17,7 @@ case "$LANE" in
   J) PAT='^(qmint/quantum/ionq\.py|qmint/quantum/qollab\.py|qollab/|tests/unit/ionq/|handoffs/J-)' ;;
   K) PAT='^(qmint/ui/|qmint/api/|app/|web/|docs/design/|tests/unit/ui/|tests/unit/api/|handoffs/K-)' ;;
   L) PAT='^(qmint/core/(?!contracts\.py|serialization\.py|interfaces\.py)|qmint/cli\.py|scripts/|\.github/|tests/integration/|tests/contracts/(?!test_contracts\.py)|docs/REPRODUCIBILITY\.md|pyproject\.toml|handoffs/L-)' ;;
+  X) PAT='^(qmint/networks/|qmint/classical/|tests/unit/networks/|tests/unit/classical/|tests/integration/test_gh_|reports/classical_baseline_notes/|handoffs/GH-)' ;;
   M) PAT='^(audits/|tests/adversarial/|handoffs/M-)' ;;
   N) PAT='^(qmint/evaluation/|reports/|figures/|docs/|tests/unit/evaluation/|handoffs/N-)' ;;
   *) echo "unknown lane"; exit 1 ;;
