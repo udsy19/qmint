@@ -1,0 +1,25 @@
+{
+  "attack_capability": [
+    "reads_issuer_secret"
+  ],
+  "attack_id": "FIXTURE_A99_secret_exposed_control",
+  "attack_method": "FIXTURE_negative_control_secret_exposure",
+  "backend_kind": "SYNTHETIC_FIXTURE",
+  "ci_method": "clopper_pearson_95",
+  "evidence_kind": "MONTE_CARLO",
+  "game_id": "W1",
+  "proof_applicability": "OUT_OF_MODEL",
+  "quantum_channel_description": "FIXTURE (synthetic, UI test only; not a research result)",
+  "seed": 7,
+  "source_code_sha": "fixture",
+  "success_rate_ci": {
+    "hi": 1.0,
+    "lo": 0.982,
+    "point": 1.0,
+    "unit": "probability"
+  },
+  "successes": 200,
+  "token_n": 4,
+  "trials": 200,
+  "verifier_rule": "exact_projective"
+}
