@@ -2,13 +2,84 @@
 
 from __future__ import annotations
 
+import secrets
+import weakref
 from collections.abc import Mapping, Sequence
 from typing import Any
 
 from qmint.core.contracts import SecretBoundaryError, TraceEvent
 
 
-class SecretHolder:
+class CapabilityBoundaryError(RuntimeError):
+    """A holder tried to duplicate, serialize or re-bind a simulator capability (M-B1/M-B2)."""
+
+
+class PrivateVault:
+    """Simulator-side store that keeps private state out of party-facing objects (M-B2).
+
+    A party-facing object (a wallet's token handle, Alice's session) holds only an opaque
+    random key. The value (simulated register, Bob's secrets) lives here, bound to that one
+    owner object: a lookup succeeds only for the object that bound it, so a copy built by any
+    route (``copy``, ``pickle``, ``copyreg``, ``__new__`` + ``__dict__``) resolves to nothing.
+    The entry is dropped when its owner is garbage collected.
+
+    This is an API-boundary measure inside a single-process simulator, not physics: code that
+    imports this module (or walks the gc) can still reach the values. Such code is
+    OUT_OF_MODEL for every game; the guarantee is that the owner's object graph (``vars()``,
+    attributes, containers) holds no amplitudes and no secrets, and that no public method
+    returns them.
+    """
+
+    def __init__(self, label: str) -> None:
+        self._label = label
+        self._items: dict[str, tuple[weakref.ref[Any], Any]] = {}
+
+    def bind(self, owner: Any, value: Any) -> str:
+        key = secrets.token_hex(16)
+        self._items[key] = (weakref.ref(owner), value)
+        weakref.finalize(owner, self._items.pop, key, None)
+        return key
+
+    def get(self, owner: Any, key: str | None) -> Any:
+        item = self._items.get(key) if key is not None else None
+        if item is None or item[0]() is not owner:
+            raise CapabilityBoundaryError(
+                f"{type(owner).__name__} is not bound to a {self._label} (copied or forged object?)"
+            )
+        return item[1]
+
+
+class NonCopyable:
+    """Mixin: refuse every Python duplication path (``copy``, ``deepcopy``, ``pickle``).
+
+    ``copy``/``deepcopy`` consult ``__copy__``/``__deepcopy__`` before ``copyreg``; ``pickle``
+    consults a ``copyreg``/``dispatch_table`` reducer first, but whatever such a reducer
+    rebuilds is not bound in its ``PrivateVault`` and therefore holds no capability.
+    """
+
+    _copy_error: type[Exception] = CapabilityBoundaryError
+    _copy_what = "a simulator capability"
+
+    def _refuse(self, action: str) -> Exception:
+        return self._copy_error(f"{type(self).__name__} holds {self._copy_what} and cannot be {action}")
+
+    def __copy__(self) -> Any:
+        raise self._refuse("copied")
+
+    def __deepcopy__(self, memo: Any) -> Any:
+        raise self._refuse("copied")
+
+    def __reduce_ex__(self, protocol: Any) -> Any:
+        raise self._refuse("pickled")
+
+    def __reduce__(self) -> Any:
+        raise self._refuse("pickled")
+
+    def __getstate__(self) -> Any:
+        raise self._refuse("pickled")
+
+
+class SecretHolder(NonCopyable):
     """Mixin for challengers / bank agents that hold ``IssuerSecret`` objects.
 
     The frozen C1 ``IssuerSecret`` refuses pickling and ``model_dump`` but pydantic's own
@@ -17,14 +88,8 @@ class SecretHolder:
     migration proposal for ``IssuerSecret.__deepcopy__``).
     """
 
-    def __deepcopy__(self, memo: Any) -> Any:
-        raise SecretBoundaryError(f"{type(self).__name__} holds issuer secrets and cannot be copied")
-
-    def __copy__(self) -> Any:
-        raise SecretBoundaryError(f"{type(self).__name__} holds issuer secrets and cannot be copied")
-
-    def __reduce_ex__(self, protocol: Any) -> Any:
-        raise SecretBoundaryError(f"{type(self).__name__} holds issuer secrets and cannot be pickled")
+    _copy_error = SecretBoundaryError
+    _copy_what = "issuer secrets"
 
 
 class CausalityError(RuntimeError):

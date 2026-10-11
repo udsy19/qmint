@@ -43,7 +43,6 @@ def test_measure_resend_against_lane_b_challenger_gives_5_8_pow_n(n):
 
 
 # --------------------------------------------------------------- M-B1: copy/pickle = cloning
-@pytest.mark.xfail(strict=True, reason="M-B1: RegisterHandle can be deep-copied; the copy is a perfect counterfeit")
 def test_handle_refuses_deepcopy():
     ch, note = _note(8)
     try:
@@ -53,7 +52,6 @@ def test_handle_refuses_deepcopy():
     pytest.fail(f"deepcopy succeeded; W1 pair acceptance = {ch.pair_acceptance_probability(note, twin):.6f}")
 
 
-@pytest.mark.xfail(strict=True, reason="M-B1: RegisterHandle pickles with its density matrices; unpickled copy passes")
 def test_handle_refuses_pickle():
     ch, note = _note(8)
     try:
@@ -64,13 +62,11 @@ def test_handle_refuses_pickle():
 
 
 # --------------------------------------------------------------- M-B2: introspection
-@pytest.mark.xfail(strict=True, reason="M-B2: the wallet handle reaches the simulator register (exact BB84 states)")
 def test_wallet_handle_graph_holds_no_state_matrices():
     _, note = _note(4)
     assert "FactorizedRegister" not in reachable_types(note)
 
 
-@pytest.mark.xfail(strict=True, reason="M-B2: the Alice-facing Kent session object holds Bob's IssuerSecret and t,u")
 def test_kent_alice_facing_object_holds_no_bob_secret():
     s = KentSMoneySession(KentParams(KentScheme.IQT2, N=16), seed=5)
     s.bank_send_quantum(0.0)
@@ -102,7 +98,6 @@ def test_handle_introspection_recovers_secret_exactly():
 
 
 # --------------------------------------------------------------- M-B3: serial binding
-@pytest.mark.xfail(strict=True, reason="M-B3: redeem() verifies by record.token_id but spends record.public_metadata['serial']")
 def test_redeem_binds_serial_to_token():
     ch = WiesnerChallenger(mode=WiesnerMode.EXACT, seed=2)
     mine, victim = ch.mint(4, 1), ch.mint(4, 2)
