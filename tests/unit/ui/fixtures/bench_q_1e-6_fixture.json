@@ -1,0 +1,22 @@
+{
+  "classical_or_quantum": "quantum",
+  "configuration": {
+    "certificate_ref": "certificate:cert_infeasible_fixture"
+  },
+  "environment_lock": "fixture",
+  "evidence_kind": "SYNTHETIC",
+  "git_sha": "fixture",
+  "method": "FIXTURE",
+  "network_id": "net-synthetic-2site-10km",
+  "photons_prepared": 2000,
+  "pre_distribution": "FIXTURE",
+  "privacy_game": "none",
+  "protocol_id": "s_money_kent_2022_ideal_2site",
+  "record_id": "FIXTURE_bench_q_eps1e-6",
+  "security_target": {
+    "epsilon_unf": 1e-06
+  },
+  "site_count": 2,
+  "spending_flexibility": "late_choice_any_site",
+  "trust_model": "honest_bank"
+}
