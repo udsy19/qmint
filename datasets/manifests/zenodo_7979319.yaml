@@ -1,0 +1,76 @@
+# Dataset manifest: Schiansky et al. 2023 "Data for Demonstration of quantum-digital payments"
+# Retrieved 2026-10-11 via the public Zenodo REST API (no auth). Raw files live in the shared
+# cache (/Users/udsy/PycharmProjects/qmint-data-cache, override QMINT_DATA_CACHE); NOT committed.
+# upstream_checksum = exactly as published by Zenodo (MD5); sha256 = computed locally by QMint.
+concept_recid: 7979318
+concept_doi_note: "all versions share parent recid 7979318"
+paper:
+  title: "Demonstration of quantum-digital payments"
+  journal: "Nature Communications 14, 3849 (2023)"
+  url: https://www.nature.com/articles/s41467-023-39519-w
+  data_availability_cites: "10.5281/zenodo.7979319 (v1, not the latest version)"
+  correction:
+    url: https://www.nature.com/articles/s41467-023-40866-x
+    published: 2023-08-21
+    scope: "Discussion para 4, sentence 6 (protocol amendment wording). No numerical changes; read in full."
+  arxiv: 10.48550/arXiv.2305.14504
+creators: [Schiansky Peter, Kalb Julia, Sztatecsny Esther, Roehsner Marie-Christine, Guggemos Tobias,
+           Trenti Alessandro, Bozzio Mathieu, Walther Philip]
+versions:
+  - record_id: 7979319
+    doi: 10.5281/zenodo.7979319
+    version_index: 0
+    is_latest: false
+    api: https://zenodo.org/api/records/7979319
+    publication_date: 2023-05-28
+    access_right: open
+    license_metadata: cc-by-4.0
+    license_file_in_archive: "LICENSE_CC_BY = Creative Commons Attribution 3.0 Unported (differs from metadata)"
+    files:
+      - key: Archive.zip
+        size_bytes: 153143236
+        upstream_checksum: "md5:fd708578a613b63f57c31f986a56bf94"
+        sha256: ef73667fa87786c52340c6f3eec7cf0ccc3eb64e8fb785bdf54349e6dc800130
+        url: https://zenodo.org/api/records/7979319/files/Archive.zip/content
+        uncompressed_bytes: 367335709
+        used_by_qmint: "primary input for all derived numbers (qmint.photonics.schiansky2023)"
+  - record_id: 7997998
+    doi: 10.5281/zenodo.7997998
+    version_index: 1
+    is_latest: true
+    api: https://zenodo.org/api/records/7997998
+    publication_date: 2023-05-28
+    license_metadata: cc-by-4.0
+    files:
+      - key: Archive.zip
+        size_bytes: 290067249
+        upstream_checksum: "md5:544ed5cff8db0598b04dfecb6a5072be"
+        sha256: f4eb1c342a609b44247a4a43929c7e1b612dd79dc5ef524003d6b3249536d707
+        url: https://zenodo.org/api/records/7997998/files/Archive.zip/content
+        uncompressed_bytes: 926657208
+        used_by_qmint: "raw-tag cross-check only (tagfile_example/SG.txt, BG.txt), streamed from the ZIP"
+    relation_to_v1: >-
+      The 44 linear/diagonal TSV members are byte-identical to v1 (CRC32 + size equal for all 44,
+      checked from both central directories). v2 adds tagfile_example/SG.txt (517,432,935 B, TTP raw
+      TTM8000 export) and BG.txt (41,888,421 B, Client), and a README line pointing to code DOI 7997961.
+format_by_inspection:
+  layout: "{linear,diagonal}/{ttp,client}_chunk00..10.tsv (11 runs per basis); README; LICENSE_CC_BY; __MACOSX junk"
+  tsv: >-
+    ASCII text, LF, header line 'channel<TAB>tag', then '<int channel><TAB><decimal float ns>'.
+    The record text '<uint8 c>\t<double t>' names column TYPES; data are NOT binary (no endianness /
+    fixed record size). Times are relative per run (~1.6 s .. ~30 s), offset/drift-corrected by the authors.
+  pairing: >-
+    ttp_chunkNN and client_chunkNN have equal row counts and are row-paired: row i of each is one
+    coincidence. All 8,964,878 pairs satisfy rint(t_ttp/3) == rint(t_client/3) (authors' 3-ns
+    rounded-bin rule); max |dt| = 2.97 ns. 0 malformed, 0 duplicate, 0 out-of-range records.
+  raw_ttm8000: "CRLF, '1 <channel> 1 <tick>'; tick = 82.3045 ps per authors' 01_a_prepdata2.py (not independently verified)"
+  raw_identity: >-
+    tagfile_example is the raw source of linear/chunk00: archived TTP times == SG - SG[0] to 4e-6 ns,
+    channels agree 100%.
+channel_mapping: # qmint.photonics.channels.SCHIANSKY_2023_V1
+  version: schiansky2023-zenodo7979319-v1
+  ttp: {2: "H (Z,0)", 3: "V (Z,1)", 4: "+ (X,0)", 5: "- (X,1)"}
+  client: {2: "H or + (bit 0)", 4: "V or - (bit 1)"}
+  client_basis_by_folder: {linear: "Z (commitment to M0)", diagonal: "X (commitment to M1)"}
+  source_state: "|Psi^-> (anticorrelated); paper 'Experimental demonstration'; verified on data"
+derived_outputs: reports/data_working/schiansky2023/manifest.json

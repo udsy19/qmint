@@ -1,0 +1,73 @@
+{
+ "command": "python -m qmint.photonics.schiansky2023",
+ "created_utc": "2026-10-11T21:27:44Z",
+ "entries": [
+  {
+   "original_or_derived": "original",
+   "path_or_uri": "https://zenodo.org/api/records/7979319/files/Archive.zip/content",
+   "role": "input",
+   "sha256": "ef73667fa87786c52340c6f3eec7cf0ccc3eb64e8fb785bdf54349e6dc800130",
+   "upstream_checksum": "md5:fd708578a613b63f57c31f986a56bf94"
+  },
+  {
+   "original_or_derived": "original",
+   "path_or_uri": "https://zenodo.org/api/records/7997998/files/Archive.zip/content",
+   "role": "input",
+   "sha256": "f4eb1c342a609b44247a4a43929c7e1b612dd79dc5ef524003d6b3249536d707",
+   "upstream_checksum": "md5:544ed5cff8db0598b04dfecb6a5072be"
+  },
+  {
+   "original_or_derived": "derived",
+   "path_or_uri": "reports/data_working/schiansky2023/summary.json",
+   "role": "output",
+   "sha256": "4ad824c5854651ffc776aad06b3aad8aeca0ce8b9df9e5683dc6061818e390fb",
+   "upstream_checksum": null
+  },
+  {
+   "original_or_derived": "derived",
+   "path_or_uri": "reports/data_working/schiansky2023/calibration_records.json",
+   "role": "output",
+   "sha256": "36fde5085eec6014deef4732e5a60ea3ef683a6a0ed9ade00b39129e5ee89246",
+   "upstream_checksum": null
+  },
+  {
+   "original_or_derived": "derived",
+   "path_or_uri": "reports/data_working/schiansky2023/per_run.csv",
+   "role": "output",
+   "sha256": "eb8ee2c343ecfbdb3fbfd28b53fb0cf3153853aa96d00c20dd26fe8cfae0144e",
+   "upstream_checksum": null
+  },
+  {
+   "original_or_derived": "derived",
+   "path_or_uri": "reports/data_working/schiansky2023/qber_per_run.png",
+   "role": "output",
+   "sha256": "b65a339e22b444c40f0d0228e5415f5673ca20f7dbb47f4636d6c518b72ae307",
+   "upstream_checksum": null
+  },
+  {
+   "original_or_derived": "derived",
+   "path_or_uri": "qmint/photonics/schiansky2023.py",
+   "role": "script",
+   "sha256": "cede938e1b8d767dea3855b61b48aca1d700b6ae21a7a170cd2ef5592a8ba3d0",
+   "upstream_checksum": null
+  }
+ ],
+ "environment": {
+  "numpy": "2.5.4",
+  "python": "3.12.11"
+ },
+ "evidence_kind": "PHOTON_EXPERIMENT",
+ "git_sha": "3a3e742d46da214fd5477303cc7f9092d9f984d0",
+ "manifest_id": "schiansky2023-x07-reproduction",
+ "retrieved_utc": "2026-10-11T21:27:44Z",
+ "schema_version": "1.0.0",
+ "seeds": [
+  0
+ ],
+ "source_urls": [
+  "https://zenodo.org/api/records/7979319",
+  "https://zenodo.org/api/records/8020667",
+  "https://www.nature.com/articles/s41467-023-39519-w",
+  "https://www.nature.com/articles/s41467-023-40866-x"
+ ]
+}

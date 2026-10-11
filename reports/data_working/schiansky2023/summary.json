@@ -1,0 +1,298 @@
+{
+ "basis_summaries": {
+  "X": {
+   "basis": "X",
+   "error_given_state": {
+    "+": 0.028265561093474334,
+    "-": 0.037308759518655234
+   },
+   "het_blocks": {
+    "chi2": 434.72328155318115,
+    "dispersion": 1.367054344506859,
+    "dof": 318,
+    "p_value": 1.4271529287125138e-05
+   },
+   "het_runs": {
+    "chi2": 98.7700871435893,
+    "dispersion": 9.87700871435893,
+    "dof": 10,
+    "p_value": 9.602765618815957e-17
+   },
+   "n_errors": 75417,
+   "n_pairs": 4570301,
+   "n_runs": 11,
+   "n_sifted": 2294692,
+   "n_ttp_z": 2275609,
+   "per_run_qber": [
+    0.03268972037380459,
+    0.03332038872188742,
+    0.032079303182951484,
+    0.03226744186046512,
+    0.033189274594544356,
+    0.03638277595410575,
+    0.032266271915621966,
+    0.031833744871077006,
+    0.03237528453500809,
+    0.03198471379911938,
+    0.034190227404529615
+   ],
+   "qber": 0.03286584866291424,
+   "qber_boot_blocks": [
+    0.03260918484078556,
+    0.03313269821648984
+   ],
+   "qber_boot_runs": [
+    0.03232420568433928,
+    0.033586534973645735
+   ],
+   "qber_cp": [
+    0.03263554477042507,
+    0.03309733242830057
+   ],
+   "qber_mean_of_runs": 0.032961740655737704,
+   "qber_state_avg": 0.03278716030606478,
+   "qber_state_avg_se": 0.00011740107407574303,
+   "split": {
+    "calibration_runs": "0-5",
+    "holdout_inside_calibration_cp": 0.0,
+    "holdout_runs": "6-10",
+    "p_value": 0.003385574016297258,
+    "qber_calibration": 0.033186626515327,
+    "qber_calibration_cp_hi": 0.03350464380148565,
+    "qber_calibration_cp_lo": 0.03287080926245333,
+    "qber_holdout": 0.03249504156069402,
+    "z": 2.9303711176965
+   },
+   "ttp_z_frac": 0.4979122819262889,
+   "ttp_z_frac_boot_runs": [
+    0.49501547326386386,
+    0.501198490282842
+   ],
+   "ttp_z_frac_cp": [
+    0.49745377681949965,
+    0.49837078967814874
+   ]
+  },
+  "Z": {
+   "basis": "Z",
+   "error_given_state": {
+    "H": 0.009250306251778735,
+    "V": 0.019731090839984797
+   },
+   "het_blocks": {
+    "chi2": 436.073025068918,
+    "dispersion": 1.3712988209714403,
+    "dof": 318,
+    "p_value": 1.1772868737110857e-05
+   },
+   "het_runs": {
+    "chi2": 104.83029818552062,
+    "dispersion": 10.483029818552062,
+    "dof": 10,
+    "p_value": 5.858306281660223e-18
+   },
+   "n_errors": 31231,
+   "n_pairs": 4394577,
+   "n_runs": 11,
+   "n_sifted": 2183822,
+   "n_ttp_z": 2183822,
+   "per_run_qber": [
+    0.01463070231493888,
+    0.01456183980498855,
+    0.01407905703059888,
+    0.014242226036323578,
+    0.013814803715912496,
+    0.013757638329718968,
+    0.016981824857719846,
+    0.013661751509118459,
+    0.014322346305474484,
+    0.013942429994325186,
+    0.01385291136389233
+   ],
+   "qber": 0.014301073988630942,
+   "qber_boot_blocks": [
+    0.014122106614662027,
+    0.014473127170589333
+   ],
+   "qber_boot_runs": [
+    0.013945719697003305,
+    0.014847270745404184
+   ],
+   "qber_cp": [
+    0.014144019977468558,
+    0.0144594179135206
+   ],
+   "qber_mean_of_runs": 0.014349775569364696,
+   "qber_state_avg": 0.014490698545881767,
+   "qber_state_avg_se": 8.136172904821337e-05,
+   "split": {
+    "calibration_runs": "0-5",
+    "holdout_inside_calibration_cp": 0.0,
+    "holdout_runs": "6-10",
+    "p_value": 0.0916690712700009,
+    "qber_calibration": 0.01417890438681904,
+    "qber_calibration_cp_hi": 0.014391613242306263,
+    "qber_calibration_cp_lo": 0.013968536039436853,
+    "qber_holdout": 0.014451383605084028,
+    "z": -1.6866583180006298
+   },
+   "ttp_z_frac": 0.4969356550129853,
+   "ttp_z_frac_boot_runs": [
+    0.49583112229724713,
+    0.4980342408472289
+   ],
+   "ttp_z_frac_cp": [
+    0.4964680759086082,
+    0.4974032381550735
+   ]
+  }
+ },
+ "coincidence_rule": "all archived pairs satisfy rint(t_ttp/3ns) == rint(t_client/3ns)",
+ "dataset": {
+  "file": "Archive.zip",
+  "license": "CC-BY-4.0",
+  "sha256": "ef73667fa87786c52340c6f3eec7cf0ccc3eb64e8fb785bdf54349e6dc800130",
+  "upstream_checksum": "md5:fd708578a613b63f57c31f986a56bf94",
+  "zenodo_record": 7979319
+ },
+ "format_by_inspection": "ASCII TSV, header 'channel\\ttag', LF; float ns; ttp/client files row-paired",
+ "not_observable_from_archive": [
+  "detection efficiency",
+  "channel loss",
+  "multiphoton probability",
+  "singles rates / accidental-coincidence rate",
+  "absolute run times"
+ ],
+ "pairing_violations_total": 0,
+ "published_aggregates": {
+  "error_bar_method": "Poisson errors on coincidence counts (Fig. 4a caption)",
+  "fiber_m": {
+   "anchor": "Abstract / Fig. 3",
+   "pm": null,
+   "value": 641
+  },
+  "g2_heralded_0": {
+   "anchor": "Methods, heralded g2, 2.96 ns window",
+   "pm": 0.00014,
+   "value": 0.0301
+  },
+  "loss_percent": {
+   "anchor": "Results text 22.40 +/- 1.50%; Fig. 4a caption l_m = 0.2239 +/- 0.0150 (text/caption differ in last digit)",
+   "pm": 1.5,
+   "value": 22.4
+  },
+  "multiphoton_percent": {
+   "anchor": "Results text, correlation measurement",
+   "pm": 0.12,
+   "value": 6.76
+  },
+  "qber_X_percent": {
+   "anchor": "same sentence: '3.28 +/- 0.01% for D/A'; Fig. 4a caption e_m = 0.0328 +/- 0.0001",
+   "pm": 0.01,
+   "value": 3.28
+  },
+  "qber_Z_percent": {
+   "anchor": "Results, Experimental demonstration: 'average measured error rate is 1.45 +/- 0.01% for H/V'",
+   "pm": 0.01,
+   "value": 1.45
+  }
+ },
+ "raw_crosscheck": {
+  "accidental_fraction_estimate": 0.01810176499865998,
+  "accidentals_bin3ns_shift200ns": 7092,
+  "archived_chunk00_channel_agreement": 1.0,
+  "archived_chunk00_ttp_to_raw_max_abs_diff_ns": 3.814697265625e-06,
+  "archived_pairs": 392222,
+  "coarse_offset_ns": -1084000000.0,
+  "drift_blocks_used": 28,
+  "drift_fit_residual_std_ns": 0.31610795291428234,
+  "drift_ns_per_s": -2.9788556115534224,
+  "identified_as": "archived linear/chunk00 (raw source): archived TTP times = SG - SG[0]",
+  "if_client_basis_X": {
+   "errors": 101867,
+   "qber": 0.5136341175640108,
+   "sifted": 198326
+  },
+  "if_client_basis_Z": {
+   "errors": 2820,
+   "qber": 0.014576732020738245,
+   "sifted": 193459
+  },
+  "independent_pairs_overlapping_archived": 371336,
+  "median_dt_ns_by_client_channel": {
+   "2": 0.05842113494873047,
+   "4": -0.2882862091064453
+  },
+  "multi_occupancy_excluded": {
+   "client": 312,
+   "ttp": 59563
+  },
+  "note": "authors additionally shift the client V channel by a fitted inter-detector delay and keep a random event in multi-occupied client bins; we do neither (deterministic), so pair sets differ.",
+  "offset_ns_at_ref": -1083831126.7539783,
+  "overlap_fraction_of_archived": 0.946749544900592,
+  "pairs_bin3ns": 391785,
+  "pairs_window_pm1p5ns": 451855,
+  "raw_files": {
+   "BG.txt(Client)": 2117629,
+   "SG.txt(TTP)": 26117661
+  },
+  "tick_ns_from_authors_script": 0.0823045
+ },
+ "rematch_identical_all_runs": true,
+ "reproduction": [
+  {
+   "agrees_within_paper_rounding": true,
+   "deviation_pooled_pp": -0.0199,
+   "deviation_state_avg_pp": -0.0009,
+   "evidence_kind": "PHOTON_EXPERIMENT",
+   "paper_anchor": "Results, Experimental demonstration: 'average measured error rate is 1.45 +/- 0.01% for H/V'",
+   "paper_percent": 1.45,
+   "paper_pm_percent": 0.01,
+   "quantity": "average error rate H/V",
+   "reproduced_pooled_percent": 1.4301,
+   "reproduced_state_avg_percent": 1.4491,
+   "reproduced_state_avg_se_percent": 0.0081
+  },
+  {
+   "agrees_within_paper_rounding": true,
+   "deviation_pooled_pp": 0.0066,
+   "deviation_state_avg_pp": -0.0013,
+   "evidence_kind": "PHOTON_EXPERIMENT",
+   "paper_anchor": "same sentence: '3.28 +/- 0.01% for D/A'; Fig. 4a caption e_m = 0.0328 +/- 0.0001",
+   "paper_percent": 3.28,
+   "paper_pm_percent": 0.01,
+   "quantity": "average error rate D/A",
+   "reproduced_pooled_percent": 3.2866,
+   "reproduced_state_avg_percent": 3.2787,
+   "reproduced_state_avg_se_percent": 0.0117
+  }
+ ],
+ "residual_drift_ns_per_s": {
+  "X": [
+   -0.0003117564863759295,
+   -0.004919459314769136,
+   0.0073104786755416205,
+   -0.004736843367515525,
+   -0.001343913853462101,
+   0.012918196992921058,
+   0.0011640414815818154,
+   -0.002689845221383235,
+   -0.0012992050847396444,
+   -0.009329149288496942,
+   -0.01465859189996582
+  ],
+  "Z": [
+   0.019421196923467325,
+   -0.0023113719348249752,
+   -0.0060031364704000514,
+   0.014405316554854075,
+   -0.00570667576907304,
+   0.00036061608732627134,
+   -0.013024781372746808,
+   0.0006918392745144843,
+   -0.001256716075201928,
+   -0.005010733111151334,
+   0.00452384373237347
+  ]
+ }
+}
