@@ -3,7 +3,7 @@ schema_version: 1.0.0
 updated_at_utc: '2026-10-11T00:00:00Z'
 bootstrap_contract_commit_sha: ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1
 owner: lead-orchestrator
-project_phase: phase_3_wave_3_dispatched
+project_phase: release_0.1.0
 status_values:
 - OPEN
 - CLAIMED
@@ -397,3 +397,10 @@ integrity_pass:
   - no S-money latency advantage over late-commit escrow
   pending_human_review:
   - Qollab write-up v1.3 (qollab/PROJECT_DESCRIPTION.md) not yet published to Qollab
+release:
+  version: 0.1.0
+  website: https://udsy19.github.io/qmint/
+  repo: https://github.com/udsy19/qmint
+  ci: green (python + web jobs)
+  qollab: v1.3 public default, cover thumbnail set, submitted (Quantum Impact)
+  github_about: description, homepage, 13 topics, social preview set
