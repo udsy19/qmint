@@ -10,7 +10,7 @@
 Never a numerical estimate presented as a proof: a missing theorem is ``null`` with a reason, never 0.
 The studio additionally classifies an UNCERTIFIED verdict as OUT_OF_MODEL / INFEASIBLE / UNCERTIFIED
 from the checker's and evaluator's reasons; that classification is labelled as such and never alters
-the checker's status. Resource optimisation belongs to lane I (compiler, in flight) -> NOT_AVAILABLE;
+the checker's status. Resource optimisation belongs to lane I (compiler; offline, not wired into this endpoint) -> NOT_AVAILABLE;
 only the ideal-game THEOREM sizing (minimal n for a target under W1 / W1_CV / S1) is offered.
 """
 
@@ -63,7 +63,7 @@ NoiseSource = Literal["published_kent_2022", "published_schiansky_2023", "hypoth
 Verdict = Literal["CERTIFIED", "UNCERTIFIED", "INFEASIBLE", "OUT_OF_MODEL"]
 LANE_I_REASON = (
     "Resource optimisation (choosing N, thresholds and analysis variables to minimise photons under all targets) "
-    "is the certificate compiler, lane I, which is in flight and not merged. Nothing here searches parameters."
+    "is the certificate compiler, lane I. It runs offline (reports/optimizer_working) and is not wired into the studio; its apparent photon savings do not survive calibration uncertainty. Nothing here searches parameters."
 )
 _PARAM_KEY = re.compile(r"^[A-Za-z][A-Za-z0-9_]{0,31}$")
 
@@ -456,7 +456,7 @@ def _sizing(game: GameId, req: CertificateRequest, params: dict[str, Any]) -> Si
     if game not in IDEAL_BASES:
         return Sizing(status="NOT_AVAILABLE", label="THEOREM sizing", reason=(
             f"No closed-form sizing for {game.value}: finite-size and noisy games need the certificate compiler "
-            "(lane I, in flight). The declared N is evaluated as given."), quantities=[])
+            "(lane I, offline; not wired into the studio). The declared N is evaluated as given."), quantities=[])
     target = req.targets.epsilon_unf
     if target is None:
         return Sizing(status="NOT_AVAILABLE", label="THEOREM sizing", quantities=[],

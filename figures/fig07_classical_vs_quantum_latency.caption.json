@@ -13,7 +13,7 @@
  "legend": [],
  "manifest_id": "figure-fig07_classical_vs_quantum_latency",
  "manifest_path": "figures/fig07_classical_vs_quantum_latency.manifest.json",
- "manifest_sha256": "4ddfec519306a7899553bd88e17c26c2b553aeb346d3241e99fe0b752b8ef057",
+ "manifest_sha256": "f3143558d448fed645b927208146ea6dc9a08253ae9cbad7286b194d7bad5fa6",
  "inputs": [],
  "data_csv": "figures/fig07_classical_vs_quantum_latency.csv",
  "outputs": [
@@ -25,5 +25,5 @@
  "notes": [
   "Awaiting lane G/H integration: needs C6 BenchmarkRecords for BOTH the quantum S-token and H0-H6 in experiments/, plus the X11 comparability matrix."
  ],
- "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper --force"
+ "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper"
 }

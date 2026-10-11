@@ -268,7 +268,7 @@ export function PhotonQber({ photon }: { photon: BenchData["photon"] }) {
               </ChartFrame>
               <p className="text-xs text-subtle">
                 Runs are overdispersed (χ²/dof = {b.run_dispersion_chi2_per_dof.toFixed(1)}): per-run Clopper–Pearson intervals assume i.i.d. trials, so the pooled hull
-                is the conservative interval. First-half vs second-half split differs, p = {b.holdout_p_value.toPrecision(2)}. Calibration record{" "}
+                is the conservative interval. This is run-to-run heterogeneity, not temporal drift: a run-level Welch test of first vs second half gives p = {b.holdout_p_value.toPrecision(2)} (no evidence of drift). Calibration record{" "}
                 <span className="font-mono">{b.calibration_id}</span>.
               </p>
             </section>

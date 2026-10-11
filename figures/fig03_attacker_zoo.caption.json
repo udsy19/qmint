@@ -21,7 +21,7 @@
  ],
  "manifest_id": "figure-fig03_attacker_zoo",
  "manifest_path": "figures/fig03_attacker_zoo.manifest.json",
- "manifest_sha256": "43e77f916f0754d9e3c7ba18a316fe3e1da21c2d6aad619f713f962e9f86079e",
+ "manifest_sha256": "efeaef5bfe96f26508d7d1be9834241f857cac83c13439f27e3de1a1a69ca457",
  "inputs": [
   {
    "path": "handoffs/C-C1-evidence.json",
@@ -38,5 +38,5 @@
   "https://arxiv.org/abs/1202.4010"
  ],
  "notes": [],
- "generated_by": "python -m qmint.evaluation.make_figures "
+ "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper"
 }

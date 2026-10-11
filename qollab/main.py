@@ -19,7 +19,8 @@ quantum strategy wins with probability above (3/4)^n. The run prints, side by si
 Results from the full QMint platform (github.com/udsy19/qmint) quoted for context (NOT recomputed here):
   * optimal 1->2 attack SDP, n=1: 0.75; exact rational certificate 3/4 <= OPT <= 0.750000000003638,
     independently re-verified (n=2: 9/16).  Evidence: CERTIFIED_NUMERIC (QMint lanes C + D).
-  * basis-guess measure-and-resend counterfeiter wins (5/8)^n, not (3/4)^n.
+  * the tested basis-guess measure-and-resend attack wins (5/8)^n -- an attack-specific value, not a bound;
+    the bound over all strategies is (3/4)^n (MVW 2012, Thm 1).
 
 Honesty notes: a simulator copying a statevector is not "cloning"; this is a circuit-level demonstration of
 the counterfeiting GAME, not a deployable quantum banknote. Shots re-prepare the same secret note; per-qubit

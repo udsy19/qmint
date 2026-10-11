@@ -13,7 +13,7 @@
  "legend": [],
  "manifest_id": "figure-fig08_certificate_pareto",
  "manifest_path": "figures/fig08_certificate_pareto.manifest.json",
- "manifest_sha256": "82a4313bfa5da90a572cd7eca50a3a9ec6068837083063a1fe03d62dab1dafaf",
+ "manifest_sha256": "e08fca499a2f0adfc6fc426b172a9941241abc18bfa7c4bd10c230daf6c06a54",
  "inputs": [],
  "data_csv": "figures/fig08_certificate_pareto.csv",
  "outputs": [
@@ -25,5 +25,5 @@
  "notes": [
   "Awaiting lane I (compiler): needs CERTIFIED C5 certificates paired with C6 records (pairing convention to be agreed; renderer plots.fig8_pareto)."
  ],
- "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper --force"
+ "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper"
 }

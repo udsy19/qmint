@@ -23,7 +23,7 @@
  ],
  "manifest_id": "figure-fig05_kent2022_secure_region",
  "manifest_path": "figures/fig05_kent2022_secure_region.manifest.json",
- "manifest_sha256": "e049701a719a62074e27b97785a500b0ca0f3c39dc98226a360147f5b0a3663f",
+ "manifest_sha256": "218a2aca3ebb9a47d2b5b809dae72d2552aa4dfbccd387e7d5a346ae1a650ea8",
  "inputs": [
   {
    "path": "proofs/certificates/reproduction_v1.json",
@@ -44,5 +44,5 @@
   "https://www.nature.com/articles/s41534-022-00524-4"
  ],
  "notes": [],
- "generated_by": "python -m qmint.evaluation.make_figures "
+ "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper"
 }

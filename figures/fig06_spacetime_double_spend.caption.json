@@ -13,7 +13,7 @@
  "legend": [],
  "manifest_id": "figure-fig06_spacetime_double_spend",
  "manifest_path": "figures/fig06_spacetime_double_spend.manifest.json",
- "manifest_sha256": "8e58163fc61fd5da482146f7a5e0755c646e5782232cc843bc993a787f0c2594",
+ "manifest_sha256": "ee15b2383116d54db5082ba6ec2c86a67c7e7be9bfa10766dc8eef21dd7f9dee",
  "inputs": [],
  "data_csv": "figures/fig06_spacetime_double_spend.csv",
  "outputs": [
@@ -25,5 +25,5 @@
  "notes": [
   "Awaiting lane G/H integration: needs C4 TransactionTrace records in experiments/ (paper-faithful S-money and lane-H classical race on one SpacetimeNetwork)."
  ],
- "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper --force"
+ "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper"
 }

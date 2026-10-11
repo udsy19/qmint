@@ -46,11 +46,12 @@ A classical file can always be copied. Whether a copied token can be **spent twi
 
 ### Honest findings (including negative ones)
 
-1. A basis-guess measure-and-resend counterfeiter wins **(5/8)^n**, not (3/4)^n as our own plan assumed.
-2. Ideal S-money is **not coordination-free**: a bank relay precedes presentation (Kent 2022, Table I). A classical private late-commit escrow matches its local latency under computational assumptions. What remains for quantum is information-theoretic security, not raw speed.
-3. The 2023 paper's 5.9×10⁻⁴⁵ bound reproduces only with N = 4.2×10⁶ (the SI table lists 4,482,440). It applies a Chernoff step to a weighted error+loss sum, which we flag for review (a conservatively rescaled bound gives 3.3×10⁻⁷).
+1. The specific basis-guess measure-and-resend attack we tested wins **(5/8)^n** (our own plan wrongly assumed (3/4)^n for it). This is an attack-specific probability, not a security bound: the bound over *all* counterfeiting strategies in game W1 is the published (3/4)^n (MVW 2012, Thm 1), which the optimal cloner attains.
+2. Ideal S-money is **not coordination-free**: a bank relay precedes presentation (Kent 2022, Table I). A classical private late-commit escrow matches its local latency under computational assumptions. On matched topologies S-money has **no latency advantage** over that escrow; its only edge is one round trip over designs that consult an online ledger at the other site. What remains for quantum is information-theoretic (vs computational) security, not speed.
+3. **Unresolved reproducibility finding (not an invalidation of the original work):** the 2023 paper's 5.9×10⁻⁴⁵ bound reproduces only with N = 4.2×10⁶ (the SI table lists 4,482,440), and we could not confirm that its Chernoff step, applied to a weighted error+loss sum, meets that bound's stated hypothesis (a conservatively rescaled version gives 3.3×10⁻⁷). We therefore do not certify it; the question is open for review by the authors and independent experts.
 4. The published experimental tuple of Kent 2022 lies outside its own Theorem 1, as the paper says.
 5. Real photon error rates are heterogeneous across runs (overdispersed, χ²/dof ≈ 10, driven by a few outlier runs; no evidence of monotone drift), so calibration intervals must be widened.
+6. Our proposed contribution, a security-certificate compiler, matches an exhaustive oracle and passes an independent checker, but its apparent photon savings **do not survive calibration uncertainty**; it clears our pre-registered bar only on hypothetical devices.
 
 ## How to run it
 

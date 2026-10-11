@@ -42,9 +42,11 @@ paraphrases them and adds no new numbers.
 - **The exact (zero-tolerance) verifier collapses under small noise** (N10, Fig. 10). Honest
   acceptance falls quickly with note length, even at percent-level readout error. A noise-tolerant
   verifier is game W2, which has no bound (N16).
-- **The 2023 photon calibration is non-stationary** (N11, Fig. 4). Runs are overdispersed and the
-  D/A holdout differs from the calibration half. Per-run Clopper-Pearson intervals understate the
-  spread.
+- **The 2023 photon runs are overdispersed** (N11, Fig. 4): run-to-run heterogeneity (χ²/dof ≈ 10,
+  driven by a few outlier runs), not temporal drift. A run-level Welch test of contiguous halves finds no
+  difference (p = 0.334 D/A, 0.587 H/V). An earlier pooled-iid test (p = 0.003) wrongly suggested
+  non-stationarity and was corrected after red-team review. Per-run Clopper-Pearson intervals understate
+  the spread, so calibration intervals are widened.
 - Loss, detector efficiency and multiphoton probability can't be observed from the archive (N12).
 - **The authors' code can't be reused** (N13). The licence is inconsistent (AGPL file vs CC-BY
   metadata) and the code is non-runnable as published. Nothing was copied.

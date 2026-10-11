@@ -26,7 +26,7 @@
  ],
  "manifest_id": "figure-fig02_w1_counterfeiting_oracle",
  "manifest_path": "figures/fig02_w1_counterfeiting_oracle.manifest.json",
- "manifest_sha256": "9a07183f0bba5587bcca2c6ff4196bdbd789ea5a16cc4bafd6018426727b7d30",
+ "manifest_sha256": "7ca2f77783473e652a17a19c4d4f25f6f318a352cafc88dcb40fc612f00761f1",
  "inputs": [
   {
    "path": "handoffs/C-C1-evidence.json",
@@ -43,5 +43,5 @@
   "https://arxiv.org/abs/1202.4010"
  ],
  "notes": [],
- "generated_by": "python -m qmint.evaluation.make_figures "
+ "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper"
 }

@@ -13,7 +13,7 @@
  "legend": [],
  "manifest_id": "figure-fig09_ablations_robustness",
  "manifest_path": "figures/fig09_ablations_robustness.manifest.json",
- "manifest_sha256": "658a7d5f8bb379d369d66dc9bea6df52a70b57d0ef9c09a0f3baa9f744d75f77",
+ "manifest_sha256": "b55f5ebbba058a6421a65d7e02d466462b3168eba46305cf994b55557c9059d3",
  "inputs": [],
  "data_csv": "figures/fig09_ablations_robustness.csv",
  "outputs": [
@@ -25,5 +25,5 @@
  "notes": [
   "Awaiting lane I: needs paired point-vs-interval calibration C6 records (renderer plots.fig9_ablation)."
  ],
- "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper --force"
+ "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper"
 }

@@ -36,12 +36,27 @@ export const content = {
         thresholds.
       </li>
       <li>
-        D1 (Schiansky 2023) is never certified: its Chernoff step is applied to a weighted variable outside the bound&apos;s
-        hypothesis, and coherent attacks are reduced only by a qualitative de Finetti argument. The published p_d recomputes
-        only with N = 4.2×10⁶.
+        D1 (Schiansky 2023) is not certified by QMint. This is an unresolved reproducibility finding, not an invalidation of the
+        original work: the published p_d = 5.9×10⁻⁴⁵ recomputes only with N = 4.2×10⁶ (the SI table lists 4,482,440), and we
+        could not confirm that the Chernoff step applied to the weighted error-plus-loss sum meets that bound&apos;s stated
+        hypothesis (a conservatively rescaled version gives 3.3×10⁻⁷). Coherent attacks are reduced by a de Finetti argument we
+        did not formalise. These questions are open for review by the authors and independent experts.
       </li>
       <li>Kent et al.&apos;s experimental tuple lies outside their Theorem 1 domain, as the paper itself says.</li>
-      <li>The certificate compiler (lane I) and the independent red-team audit (lane M) are in flight.</li>
+      <li>
+        Certificate compiler (lane I): it matches the exhaustive oracle on all small grids and every released certificate passes
+        the independent checker, but its apparent photon savings (1.8–10.6× vs naive sizing on Kent Fig. 5 point devices) do not
+        survive calibration uncertainty: under the uncertainty boxes every selector is infeasible. Only hypothetical devices
+        clear the pre-registered bar, and the method is standard parameter optimisation, not a new technique.
+      </li>
+      <li>
+        An independent red-team audit (lane M) found five high-severity defects in our own code; all are fixed with regression
+        tests. Lower-severity items remain open and are tracked as strict expected-failure tests.
+      </li>
+      <li>
+        Not done: no physical quantum hardware run (free IonQ noise-model simulators only), no S-money double-spend simulation
+        in the network model, no more-than-two-site scenarios, no third-party reproduction, no manuscript yet.
+      </li>
     </UL>
   ),
   data: (
@@ -51,7 +66,7 @@ export const content = {
         cannot be observed from it; they stay null, and the paper&apos;s values are kept separately as{" "}
         <C>PUBLISHED_AGGREGATE</C>.
       </li>
-      <li>Runs are overdispersed and the D/A holdout differs between halves of the run sequence (p = 0.003): calibration is not stationary.</li>
+      <li>Photon runs are overdispersed (χ²/dof ≈ 10): run-to-run heterogeneity driven by a few outlier runs, not temporal drift. A run-level Welch test of first vs second half finds no difference (p = 0.334 D/A, 0.587 H/V; an earlier pooled-iid p = 0.003 was invalid and was corrected after red-team review). Calibration intervals are widened accordingly.</li>
       <li>RIPE Atlas one-way delays are RTT/2, an assumption that is flagged wherever they appear.</li>
       <li>Several research entries were checked at abstract or metadata level only; their status says so.</li>
     </UL>

@@ -10,11 +10,11 @@ const LANES: [string, string, string, string][] = [
   ["F", "qmint.quantum", "BB84 circuits, noise channels, cloners, Qiskit/QuTiP cross-checks", "—"],
   ["G", "qmint.networks", "Discrete-event causal simulator, Jiang 2024 topologies, RIPE Atlas latency", "—"],
   ["H", "qmint.classical", "Classical double-spend baselines H0–H6 and the comparability matrix", "baselines"],
-  ["I", "qmint.compiler", "Resource-optimised certificate compiler (in flight)", "compiler"],
+  ["I", "qmint.compiler", "Resource-optimised certificate compiler (savings do not survive calibration uncertainty)", "compiler"],
   ["J", "qmint.quantum.ionq", "IonQ / Qollab hardware path (dry-run only)", "qollab"],
   ["K", "qmint.api · web/", "Research API and this website", "—"],
   ["L", "qmint.core", "Frozen contracts, records, configuration, pipeline", "doctor"],
-  ["N", "qmint.evaluation", "Figures, benchmark plan, paper (in flight)", "figures · paper"],
+  ["N", "qmint.evaluation", "Figures and tables (manuscript not yet written)", "figures · paper"],
 ];
 
 const CONTRACTS: [string, string, string][] = [

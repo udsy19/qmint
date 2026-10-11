@@ -260,9 +260,11 @@ def build_fig4(root: Path) -> FigureResult:
         "error rate (errors/sifted coincidences) with Clopper-Pearson 95% intervals, which understate the spread "
         f"because runs are overdispersed (X runs chi2/dof = {summ['X']['het_runs']['dispersion']:.1f}). Dashed "
         "line and band: published value +/- quoted uncertainty (PUBLISHED_AGGREGATE). Thin orange line: this "
-        "work's state-averaged estimator. Right: residual timing drift after alignment. Non-stationarity: the "
-        f"X-basis holdout runs {split['holdout_runs']} differ from calibration runs {split['calibration_runs']} "
-        f"(two-proportion p = {split['p_value']:.3f}). Run order is the archive chunk index (assumed acquisition "
+        "work's state-averaged estimator. Right: residual timing drift within each run after alignment. "
+        f"Run-to-run overdispersion, not temporal drift: holdout runs {split['holdout_runs']} vs calibration runs "
+        f"{split['calibration_runs']} do not differ (run-level Welch test, p = {split['p_value']:.2f}); a pooled iid "
+        f"two-proportion test (p = {split['pooled_iid_p_value']:.4f}) is invalid under this dispersion. Run order is the "
+        "archive chunk index (assumed acquisition "
         f"order). Lane E manifest: {man['manifest_id']}."
     )
     return FigureResult(FigureStatus.READY, fig, caption,
