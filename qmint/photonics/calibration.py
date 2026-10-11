@@ -6,12 +6,22 @@ Denominators (explicit, per basis B in {Z (folder linear), X (folder diagonal)})
   * n_errors     -- sifted pairs with client_bit == ttp_bit (|Psi^-> is anticorrelated);
   * QBER_B       = n_errors / n_sifted   (NOT / n_pairs);
   * ttp_Z_frac_B = (#pairs with TTP in Z) / n_pairs  -- passive-beamsplitter basis split,
-    conditioned on a coincidence (includes TTP detector-efficiency differences).
+    conditioned on a coincidence (includes TTP detector-efficiency differences);
+  * basis bias   = |ttp_Z_frac - 1/2|  -- what ``CalibrationRecord.basis_bias_interval`` holds
+    (a bias in [0, 1/2), the quantity Kent et al.'s beta_PB denotes; NOT the Z fraction itself).
 
 Not observable from this archive (coincidence-filtered timetags only, no singles, no pump
 or generation counts): detection efficiency, channel loss, multiphoton probability. Those
 fields stay ``None`` -- never imputed. The paper's own estimates are kept separately as
 PUBLISHED_AGGREGATE (see :data:`PUBLISHED_2023`).
+
+Provenance: an archive whose README carries :data:`qmint.photonics.synthetic.SYNTHETIC_TAG`
+yields records labelled ``SYNTHETIC``; only real archives yield ``PHOTON_EXPERIMENT``.
+
+Run-to-run variation: per-run error rates are overdispersed / heterogeneous across runs
+(chi2/dof ~ 10, driven by single outlier runs) with no evidence of monotone drift (run-level Welch
+test of the contiguous halves, p ~ 0.3-0.6). Pooled iid tests (Clopper-Pearson, two-proportion z)
+are therefore anti-conservative; intervals are widened with run/block bootstraps (see ``_hull``).
 
 Scope guard: records are tagged ``experiment_family="schiansky_2023"``. They describe the
 2023 entangled-source 641 m link and must not be consumed by S-money (Kent et al. 2022)
@@ -34,12 +44,18 @@ from qmint.photonics.confidence import (
     contiguous_split,
     heterogeneity,
     two_proportion_z,
+    welch_t,
 )
 from qmint.photonics.parser import MemberKey, TagBlock, archive_members, open_archive, read_tsv_member
+from qmint.photonics.synthetic import SYNTHETIC_TAG
 
 EXPERIMENT_FAMILY = "schiansky_2023"
 COMPATIBLE_PROTOCOLS = frozenset({"schiansky_payment_2023"})
 _Z95 = 1.959963984540054
+RUN_VARIATION_INTERPRETATION = (
+    "overdispersed / heterogeneous across runs (chi2/dof ~ 10, single outlier runs); no evidence of "
+    "monotone drift (run-level Welch test of contiguous halves); intervals widened by run/block bootstrap"
+)
 ARCHIVE_BIN_NS = 3.0  # Zenodo record: "coincidence count events in a 3ns window"
 
 # Paper numbers, transcribed from https://www.nature.com/articles/s41467-023-39519-w
@@ -92,6 +108,7 @@ class RunResult:
     dt_quantiles: dict[str, float] = field(default_factory=dict)
     t_first_ns: float = 0.0
     t_last_ns: float = 0.0
+    synthetic: bool = False  # archive README carries SYNTHETIC_TAG
 
 
 def analyze_run(
@@ -159,6 +176,9 @@ def analyze_archive(path: str | Path, mapping: ChannelMapping = SCHIANSKY_2023_V
     """Stream every (folder, chunk) pair of the archive; returns runs in (folder, chunk) order."""
     zf = open_archive(path)
     members = archive_members(zf)
+    synthetic = any(
+        n.rsplit("/", 1)[-1] == "README" and zf.read(n).startswith(SYNTHETIC_TAG.encode()) for n in zf.namelist()
+    )
     runs = []
     for key in sorted({(k.basis_folder, k.chunk) for k in members}):
         folder, chunk = key
@@ -168,7 +188,9 @@ def analyze_archive(path: str | Path, mapping: ChannelMapping = SCHIANSKY_2023_V
             raise ValueError(f"unpaired chunk {folder}/{chunk}")
         ttp = read_tsv_member(zf, tm, allowed_channels=mapping.ttp_channels)
         cli = read_tsv_member(zf, cm, allowed_channels=mapping.client_channels)
-        runs.append(analyze_run(ttp, cli, folder, chunk, mapping))
+        run = analyze_run(ttp, cli, folder, chunk, mapping)
+        run.synthetic = synthetic
+        runs.append(run)
     return runs
 
 
@@ -225,6 +247,8 @@ def summarize(runs: list[RunResult], basis: Basis, *, confidence: float = 0.95, 
     k1, n1 = int(k_runs[cal].sum()), int(n_runs[cal].sum())
     k2, n2 = int(k_runs[hold].sum()), int(n_runs[hold].sum())
     z, pz = two_proportion_z(k1, n1, k2, n2)
+    run_rates = k_runs / n_runs
+    t_w, p_w = welch_t(run_rates[cal], run_rates[hold])
     c_lo, c_hi = clopper_pearson(k1, n1, confidence)
     return BasisSummary(
         basis=basis,
@@ -254,8 +278,15 @@ def summarize(runs: list[RunResult], basis: Basis, *, confidence: float = 0.95, 
             "qber_calibration_cp_hi": c_hi,
             "qber_holdout": k2 / n2,
             "holdout_inside_calibration_cp": float(c_lo <= k2 / n2 <= c_hi),
-            "z": z,
-            "p_value": pz,
+            # run-level test (runs are the exchangeable unit under overdispersion): the holdout check
+            "test": "welch_t_per_run_rates",
+            "welch_t": t_w,
+            "p_value": p_w,
+            # pooled two-proportion z treats every sifted pair as iid; INVALID at chi2/dof ~ 10, kept
+            # only to document why the earlier "non-stationarity" reading (p ~ 0.003) is not supported
+            "pooled_iid_z": z,
+            "pooled_iid_p_value": pz,
+            "interpretation": RUN_VARIATION_INTERPRETATION,
         },
         per_run_qber=[float(x) for x in k_runs / n_runs],
     )
@@ -267,6 +298,14 @@ def _hull(point: float, *ivs: tuple[float, float]) -> Interval:
     return Interval(lo=lo, hi=hi, unit=Unit.FRACTION, point=point)
 
 
+def bias_interval(frac: Interval) -> Interval:
+    """Map an interval on a basis fraction p to the interval of the bias |p - 1/2| (in [0, 1/2])."""
+    lo_d, hi_d = frac.lo - 0.5, frac.hi - 0.5
+    lo = 0.0 if lo_d <= 0.0 <= hi_d else min(abs(lo_d), abs(hi_d))
+    point = None if frac.point is None else abs(frac.point - 0.5)
+    return Interval(lo=lo, hi=max(abs(lo_d), abs(hi_d)), unit=Unit.FRACTION, point=point)
+
+
 def calibration_record(
     s: BasisSummary,
     *,
@@ -276,11 +315,12 @@ def calibration_record(
     confidence: float = 0.95,
 ) -> CalibrationRecord:
     rs = [r for r in runs if r.basis == s.basis]
+    synthetic = any(r.synthetic for r in rs)
     return CalibrationRecord(
         calibration_id=f"schiansky2023-{dataset_tag}-{s.basis.value}-v1",
         device_id="schiansky2023_ttp_client_641m_fiber",
         experiment_family=EXPERIMENT_FAMILY,
-        data_origin=EvidenceKind.PHOTON_EXPERIMENT,
+        data_origin=EvidenceKind.SYNTHETIC if synthetic else EvidenceKind.PHOTON_EXPERIMENT,
         dataset_sha256=dataset_sha256,
         time_start_ns=min(r.t_first_ns for r in rs),
         time_end_ns=max(r.t_last_ns for r in rs),
@@ -292,7 +332,7 @@ def calibration_record(
             s.qber_boot_runs,
             (s.qber_state_avg - _Z95 * s.qber_state_avg_se, s.qber_state_avg + _Z95 * s.qber_state_avg_se),
         ),
-        basis_bias_interval=_hull(s.ttp_z_frac, s.ttp_z_frac_cp, s.ttp_z_frac_boot_runs),
+        basis_bias_interval=bias_interval(_hull(s.ttp_z_frac, s.ttp_z_frac_cp, s.ttp_z_frac_boot_runs)),
         detection_efficiency_interval=None,
         loss_interval=None,
         multiphoton_interval=None,
@@ -302,7 +342,8 @@ def calibration_record(
             "hull(clopper_pearson pooled, time_block_bootstrap 1s blocks, run_bootstrap 11 runs "
             "[B=4000 seed=0 percentile], paper state-averaged estimator +/-1.96 SE); point = pooled "
             "errors/sifted; qber denominator = basis-matched (sifted) coincidences; "
-            "basis_bias = fraction of coincidences with TTP passive basis Z"
+            "basis_bias = |p_Z - 1/2| with p_Z = fraction of coincidences with TTP passive basis Z "
+            "(interval = image of the p_Z hull); runs are overdispersed (chi2/dof ~ 10), hence the bootstrap hull"
         ),
         independence_assumptions=[
             f"client basis fixed per folder ({rs[0].folder}); TTP basis passive 50/50 beamsplitter",

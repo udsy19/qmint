@@ -2,7 +2,7 @@
  "figure_id": "fig04",
  "title": "Reproduction of the 2023 optical experiment (Zenodo 7979319)",
  "status": "READY",
- "caption": "Reproduction from real photon data: Schiansky et al., Nat. Commun. 14, 3849 (2023), doi:10.1038/s41467-023-39519-w; dataset Zenodo record 7979319 (doi:10.5281/zenodo.7979319), Archive.zip sha256 ef73667fa87786c52340c6f3eec7cf0ccc3eb64e8fb785bdf54349e6dc800130 (upstream md5:fd708578a613b63f57c31f986a56bf94). Orange squares: per-run error rate (errors/sifted coincidences) with Clopper-Pearson 95% intervals, which understate the spread because runs are overdispersed (X runs chi2/dof = 9.9). Dashed line and band: published value +/- quoted uncertainty (PUBLISHED_AGGREGATE). Thin orange line: this work's state-averaged estimator. Right: residual timing drift after alignment. Non-stationarity: the X-basis holdout runs 6-10 differ from calibration runs 0-5 (two-proportion p = 0.003). Run order is the archive chunk index (assumed acquisition order). Lane E manifest: schiansky2023-x07-reproduction.",
+ "caption": "Reproduction from real photon data: Schiansky et al., Nat. Commun. 14, 3849 (2023), doi:10.1038/s41467-023-39519-w; dataset Zenodo record 7979319 (doi:10.5281/zenodo.7979319), Archive.zip sha256 ef73667fa87786c52340c6f3eec7cf0ccc3eb64e8fb785bdf54349e6dc800130 (upstream md5:fd708578a613b63f57c31f986a56bf94). Orange squares: per-run error rate (errors/sifted coincidences) with Clopper-Pearson 95% intervals, which understate the spread because runs are overdispersed (X runs chi2/dof = 9.9). Dashed line and band: published value +/- quoted uncertainty (PUBLISHED_AGGREGATE). Thin orange line: this work's state-averaged estimator. Right: residual timing drift after alignment. Non-stationarity: the X-basis holdout runs 6-10 differ from calibration runs 0-5 (two-proportion p = 0.334). Run order is the archive chunk index (assumed acquisition order). Lane E manifest: schiansky2023-x07-reproduction.",
  "evidence_kinds": [
   "PHOTON_EXPERIMENT",
   "PUBLISHED_AGGREGATE"
@@ -24,7 +24,7 @@
  ],
  "manifest_id": "figure-fig04_photon_qber_reproduction",
  "manifest_path": "figures/fig04_photon_qber_reproduction.manifest.json",
- "manifest_sha256": "a3863f9338765a3b0267d4cc6b45877a747d70a5617bc9f15d7c4dd8fcead67b",
+ "manifest_sha256": "2bd683f671795a9614aa68f4962caa3efaccc6b453644c261352c9c81dfce7c2",
  "inputs": [
   {
    "path": "reports/data_working/schiansky2023/per_run.csv",
@@ -32,11 +32,11 @@
   },
   {
    "path": "reports/data_working/schiansky2023/summary.json",
-   "sha256": "4ad824c5854651ffc776aad06b3aad8aeca0ce8b9df9e5683dc6061818e390fb"
+   "sha256": "4f342f1a6897d0590628c339e04aaade2e2beca8e6055512c411161b34110995"
   },
   {
    "path": "reports/data_working/schiansky2023/manifest.json",
-   "sha256": "c14fbbf82333ec967ec33675c512f3756a0b6947a8365464699a201746916f36"
+   "sha256": "8d3c855d85725b73a7b682249c29e65b9668e6702c7c9dfedbc5dc18fac510f9"
   }
  ],
  "data_csv": "figures/fig04_photon_qber_reproduction.csv",
@@ -52,5 +52,5 @@
   "https://www.nature.com/articles/s41467-023-40866-x"
  ],
  "notes": [],
- "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper --force"
+ "generated_by": "python -m qmint.evaluation.make_figures "
 }

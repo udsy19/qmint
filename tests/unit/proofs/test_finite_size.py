@@ -18,7 +18,7 @@ from qmint.proofs import assumption_check as ac
 from qmint.proofs import finite_size as fs
 from qmint.proofs.finite_size import FiniteSizeBoundEvaluator
 from qmint.proofs.registry import default_registry
-from qmint.proofs.reproduce import kent_fig5_beta_max, kent_p_noqub, reproduce
+from qmint.proofs.reproduce import digitized_agrees, kent_fig5_beta_max, kent_p_noqub, reproduce
 
 S2 = "s_money_kent_2022_realistic"
 D1 = "schiansky_payment_2023"
@@ -38,6 +38,13 @@ def test_every_published_example_reproduces():
     rep = reproduce()
     bad = [r for r in rep["rows"] if not r["agrees"]]
     assert not bad, bad
+
+
+@pytest.mark.parametrize(("ours", "ok"), [(6.92e-6, True), (6e-6 * 0.81, True), (6e-6 * 1.21, False),
+                                          (6e-5, False), (6e-6 * 0.79, False), (None, False)])
+def test_digitized_figure_band_is_two_sided(ours, ok):
+    """M-D5: beta_max is the permissive direction; an overestimate must fail like an underestimate."""
+    assert digitized_agrees(ours, 6e-6, 0.2) is ok
 
 
 def test_kent_robustness_e_minus_1052():
@@ -147,11 +154,18 @@ def test_missing_multiphoton_bound_blocked(kent_fig5_params):
     assert r.value is None and "PARAMETER_MISSING:P_noqub" in r.failed_assumptions
 
 
-def _cal(family="kent_2022", origin=EvidenceKind.PUBLISHED_AGGREGATE, **ivs):
+# sha256 of Zenodo 7979319 Archive.zip, registered as schiansky_2023 in datasets/manifests/zenodo_7979319.yaml
+SCHIANSKY_SHA = "ef73667fa87786c52340c6f3eec7cf0ccc3eb64e8fb785bdf54349e6dc800130"
+
+
+def _cal(family="kent_2022", origin=EvidenceKind.PUBLISHED_AGGREGATE, *, sha=None, n_events=1000,
+         confidence=0.95, **ivs):
+    if sha is None and origin == EvidenceKind.PHOTON_EXPERIMENT:
+        sha = SCHIANSKY_SHA
     return CalibrationRecord(
         calibration_id="cal-test", device_id="dev", experiment_family=family, data_origin=origin,
-        dataset_sha256="0" * 64 if origin == EvidenceKind.PHOTON_EXPERIMENT else None, n_events=1000,
-        confidence_level=0.95, interval_method="clopper_pearson", independence_assumptions=["iid_rounds"],
+        dataset_sha256=sha, n_events=n_events,
+        confidence_level=confidence, interval_method="clopper_pearson", independence_assumptions=["iid_rounds"],
         **{k: Interval(lo=lo, hi=hi, unit=Unit.FRACTION) for k, (lo, hi) in ivs.items()},
     )
 
@@ -295,6 +309,51 @@ def test_d1_calibration_family(d1_params):
     assert r.value == pytest.approx(math.exp(-(0.01**2 / 2) * 0.5 * (1 - 0.0630 / 2) * 4.2e6), rel=1e-9)
     wrong = _ev(D1, "D1", "epsilon_unf", p, calibration=_cal("kent_2022", qber_interval=(0.0326, 0.0330)))
     assert wrong.value is None
+
+
+def test_registered_dataset_table():
+    from qmint.photonics.zenodo import registered_datasets
+
+    reg = registered_datasets()
+    assert reg[SCHIANSKY_SHA] == "schiansky_2023"
+    assert "kent_2022" not in reg.values()  # no Kent raw data is registered
+
+
+@pytest.mark.parametrize(
+    ("kw", "code"),
+    [({"sha": "0" * 64}, "CALIBRATION_DATASET_UNREGISTERED"),
+     ({"n_events": 999}, "CALIBRATION_TOO_FEW_EVENTS"),
+     ({"confidence": 0.9499}, "CALIBRATION_CONFIDENCE_BELOW_FLOOR")])
+def test_calibration_admission_floors(d1_params, kw, code):
+    """M-D4: dataset hash must be registered, enough events, confidence >= 0.95."""
+    p = {k: v for k, v in d1_params.items() if k not in ("noise_source", "e_h", "l_h", "p_m")}
+    cal = _cal("schiansky_2023", EvidenceKind.PHOTON_EXPERIMENT, qber_interval=(0.0326, 0.0330),
+               loss_interval=(0.209, 0.239), multiphoton_interval=(0.0574, 0.0630), **kw)
+    r = _ev(D1, "D1", "epsilon_unf", p, calibration=cal)
+    assert r.value is None and any(f.startswith(code) for f in r.failed_assumptions), r.failed_assumptions
+
+
+def test_registered_dataset_cannot_be_relabelled():
+    """The Schiansky archive hash relabelled as kent_2022 fails on the registered family, not just the claim."""
+    cal = _cal("kent_2022", EvidenceKind.PHOTON_EXPERIMENT, qber_interval=(0.05, 0.058))
+    rep = ac.check_calibration(default_registry().claim("P-S2"), cal, {})
+    assert any(f.startswith("CALIBRATION_DATASET_FAMILY_MISMATCH") for f in rep.failed), rep.failed
+
+
+def test_basis_bias_maps_to_beta_pb_and_must_be_a_bias():
+    """KE finding: basis_bias_interval is consumed as Kent's beta_PB (a bias in [0, 1/2))."""
+    claim = default_registry().claim("P-S2")
+    ok = _cal(basis_bias_interval=(0.001, 0.0024))
+    assert ac.params_from_calibration("S2", ok)["beta_PB"] == {"lo": 0.001, "hi": 0.0024}
+    assert ac.check_calibration(claim, ok, {}).ok
+    fraction = _cal(basis_bias_interval=(0.49, 0.51))  # a basis FRACTION mislabelled as a bias
+    assert any(f.startswith("CALIBRATION_BASIS_BIAS_NOT_A_BIAS") for f in ac.check_calibration(claim, fraction, {}).failed)
+
+
+def test_published_aggregate_needs_no_events_but_needs_confidence():
+    claim = default_registry().claim("P-D1")
+    assert ac.check_calibration(claim, _cal("schiansky_2023", n_events=0), {}).ok
+    assert not ac.check_calibration(claim, _cal("schiansky_2023", n_events=0, confidence=0.6827), {}).ok
 
 
 @pytest.mark.parametrize("game", ["W1", "W1_CV", "S1", "W2", "A1", "C1"])

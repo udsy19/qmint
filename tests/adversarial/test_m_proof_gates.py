@@ -93,7 +93,6 @@ NOISY_IDEAL = [
 ]
 
 
-@pytest.mark.xfail(strict=True, reason="M-D1: ideal theorems certify requests carrying realistic noise/loss/threshold keys outside a 6-key denylist")
 @pytest.mark.parametrize(("protocol", "game", "claim", "extra"), NOISY_IDEAL)
 def test_ideal_bound_refuses_unknown_noise_parameters(protocol, game, claim, extra):
     c = _certify(protocol, game, {**extra, "declared_assumptions": _decl(claim)})
@@ -101,24 +100,20 @@ def test_ideal_bound_refuses_unknown_noise_parameters(protocol, game, claim, ext
 
 
 # --------------------------------------------------------------- M-D2: SDP path skips gates
-@pytest.mark.xfail(strict=True, reason="M-D2: CERTIFIED_NUMERIC path skips the ideal-noise check")
 def test_sdp_certificate_refuses_noise_threshold():
     assert CHECKER.check(_sdp_cert({"error_threshold": 1}, "P-W2/sdp")).proof_check_status != CertificateStatus.CERTIFIED
 
 
-@pytest.mark.xfail(strict=True, reason="M-D2: CERTIFIED_NUMERIC path never checks the P-W1 required declarations")
 def test_sdp_certificate_requires_declarations():
     assert CHECKER.check(_sdp_cert({}, "P-W2/sdp")).proof_check_status != CertificateStatus.CERTIFIED
 
 
-@pytest.mark.xfail(strict=True, reason="M-D2: CERTIFIED_NUMERIC path accepts any non-empty proof_reference")
 def test_sdp_certificate_requires_matching_proof_reference():
     cert = _sdp_cert({"declared_assumptions": _decl("P-W1")}, "P-S1")
     assert CHECKER.check(cert).proof_check_status != CertificateStatus.CERTIFIED
 
 
 # --------------------------------------------------------------- M-D3: prefix match
-@pytest.mark.xfail(strict=True, reason="M-D3: proof_reference check is startswith('P-W1'), so 'P-W1CV' passes for W1")
 def test_w1_certificate_citing_w1cv_is_refused():
     d = ENGINE.draft_certificate("wiesner_ideal", "W1", {"n": 73, "declared_assumptions": _decl("P-W1")},
                                  Targets(epsilon_unf=1e-9), security_model_id="m", evidence_hashes=H)
@@ -148,13 +143,11 @@ def test_poisoned_calibration_family_mismatch_is_refused():
     assert c.proof_check_status != CertificateStatus.CERTIFIED
 
 
-@pytest.mark.xfail(strict=True, reason="M-D4: calibration with an unregistered dataset_sha256 (n_events=1) is accepted as PHOTON_EXPERIMENT")
 def test_calibration_dataset_hash_must_be_registered():
     assert _certify("s_money_kent_2022_realistic", "S2", _s2_params(),
                     calibration=_calib()).proof_check_status != CertificateStatus.CERTIFIED
 
 
-@pytest.mark.xfail(strict=True, reason="M-D4: calibration confidence_level is never checked (0.05 accepted)")
 def test_calibration_confidence_floor():
     assert _certify("s_money_kent_2022_realistic", "S2", _s2_params(),
                     calibration=_calib(confidence_level=0.05)).proof_check_status != CertificateStatus.CERTIFIED

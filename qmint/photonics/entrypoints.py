@@ -6,9 +6,9 @@
 Raw data live in the shared cache outside the repository (``qmint.photonics.zenodo.data_cache_dir``,
 default /Users/udsy/PycharmProjects/qmint-data-cache, override QMINT_DATA_CACHE).
 
-* ``run_core_stage``: SYNTHETIC timetag fixtures with known ground truth (lane E's generator in
-  tests/unit/photonics/photonics_synth.py); checks the analysis pipeline recovers the planted error
-  counts. Every number is labelled SYNTHETIC -- never experimental evidence, never a CalibrationRecord.
+* ``run_core_stage``: SYNTHETIC timetag fixtures with known ground truth (``qmint.photonics.synthetic``);
+  checks the analysis pipeline recovers the planted error counts. Every number is labelled SYNTHETIC --
+  never experimental evidence, never a CalibrationRecord.
 * ``run_realdata_stage``: the Schiansky 2023 reproduction on the verified Zenodo 7979319 archive
   (PHOTON_EXPERIMENT). A missing archive is a reasoned skip; fixtures are never substituted.
 """
@@ -16,7 +16,6 @@ default /Users/udsy/PycharmProjects/qmint-data-cache, override QMINT_DATA_CACHE)
 from __future__ import annotations
 
 import argparse
-import importlib.util
 import json
 import sys
 import tempfile
@@ -26,9 +25,7 @@ from typing import Any
 from qmint.core.contracts import Basis, EvidenceKind
 from qmint.core.lanes import StageSkipped, write_stage_json
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-SYNTH_FIXTURE = REPO_ROOT / "tests" / "unit" / "photonics" / "photonics_synth.py"
-#: Planted ground truth of ``photonics_synth.standard_archive`` (errors, sifted) per basis.
+#: Planted ground truth of ``qmint.photonics.synthetic.standard_archive`` (errors, sifted) per basis.
 SYNTH_TRUTH = {Basis.Z: (8, 400), Basis.X: (6, 400)}
 
 
@@ -51,13 +48,9 @@ def _summary_dict(s: Any) -> dict[str, Any]:
 
 def run_core_stage(*, seed: int, out_dir: Path) -> dict[str, Any]:
     del seed  # the fixture generator uses its own fixed seeds (ground truth is planted, not sampled)
-    if not SYNTH_FIXTURE.is_file():
-        raise StageSkipped(f"synthetic fixture generator not present: {SYNTH_FIXTURE}")
+    from qmint.photonics import synthetic as synth
     from qmint.photonics.calibration import analyze_archive, summarize
 
-    spec = importlib.util.spec_from_file_location("qmint_photonics_synth_fixture", SYNTH_FIXTURE)
-    synth = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
-    spec.loader.exec_module(synth)  # type: ignore[union-attr]
     with tempfile.TemporaryDirectory() as td:
         runs = analyze_archive(synth.standard_archive(Path(td) / "synthetic.zip"))
     summaries = {b: summarize(runs, b) for b in (Basis.Z, Basis.X)}

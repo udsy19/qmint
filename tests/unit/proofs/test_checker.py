@@ -19,8 +19,10 @@ from qmint.proofs import checker as checker_mod
 from qmint.proofs import finite_size, ideal_bounds
 from qmint.proofs.checker import IndependentProofChecker
 from qmint.proofs.engine import ProofEngine
+from qmint.proofs.registry import default_registry
 
 H = ["b" * 64]
+REG = default_registry()
 CHK = IndependentProofChecker()
 ENG = ProofEngine()
 
@@ -165,6 +167,31 @@ def test_noise_parameter_in_ideal_certificate_rejected(decl):
     assert CHK.check(c).proof_check_status == CertificateStatus.UNCERTIFIED
 
 
+@pytest.mark.parametrize("extra", [
+    {"threshold": 5}, {"noise": {"kind": "depolarizing", "p": 0.05}}, {"qber": 0.0}, {"max_errors": 0},
+    {"P_det": 0.019}, {"e_h": 0.01}, {"error_threshold": 0}, {"N": 73},
+])
+def test_ideal_allowlist_refuses_any_other_parameter(decl, extra):
+    """M-D1: allowlist, not a denylist -- even zero-valued or unknown keys leave the ideal game."""
+    c = _w1_cert(decl, parameters={"n": 73, "declared_assumptions": decl("P-W1"), **extra})
+    out = CHK.check(c)
+    assert out.proof_check_status == CertificateStatus.UNCERTIFIED and "allowlist" in out.reason, out.reason
+
+
+def test_ideal_allowlist_accepts_ideal_control_keys(decl):
+    c = _w1_cert(decl, parameters={"n": 73, "declared_assumptions": decl("P-W1"), "verifier": "exact",
+                                   "verification_oracle_queries": 0})
+    assert CHK.check(c).proof_check_status == CertificateStatus.CERTIFIED
+
+
+@pytest.mark.parametrize(("ref", "ok"), [("P-W1", True), ("P-W1/unf", True), ("P-W1CV", False), ("P-W1/", False),
+                                         ("P-W1CV/unf", False), ("p-w1", False)])
+def test_proof_reference_exact_match(decl, ref, ok):
+    """M-D3: no prefix match (P-W1 vs P-W1CV)."""
+    out = CHK.check(_w1_cert(decl, proof_reference=ref))
+    assert (out.proof_check_status == CertificateStatus.CERTIFIED) is ok, out.reason
+
+
 @pytest.mark.parametrize(
     "over",
     [
@@ -266,14 +293,43 @@ C_W1CV = {"solver": "SCS+Fraction LDL", "n": 1, "dual_objective": 0.926776695394
           "certified_bound": 0.9267766955417756}
 
 
-def _sdp_cert(sdp, game="W1", bound=None, target=0.76):
+_SDP_DECL = {"W1": "P-W1", "W1_CV": "P-W1CV", "W2": "P-W2"}
+
+
+def _sdp_cert(sdp, game="W1", bound=None, target=0.76, proof_reference="P-W2/sdp", **extra):
     cb = sdp.get("certified_bound", 0.75)
+    params = {"n": sdp.get("n", 1), "sdp_certificate": sdp,
+              "declared_assumptions": list(REG.claim(_SDP_DECL[game]).required_declarations), **extra}
     return SecurityCertificate(
         protocol_id="wiesner_ideal" if game in ("W1", "W1_CV") else "wiesner_noisy", game_id=game,
-        security_model_id="w1_choi_sdp", parameters={"sdp_certificate": sdp},
+        security_model_id="w1_choi_sdp", parameters=params,
         upper_bounds=UpperBounds(epsilon_unf=bound if bound is not None else cb), targets=Targets(epsilon_unf=target),
-        assumptions_met=True, proof_reference="audits/SDP_DERIVATION.md",
+        assumptions_met=True, proof_reference=proof_reference,
         evidence_kind=EvidenceKind.CERTIFIED_NUMERIC, reason="x", evidence_hashes=H)
+
+
+@pytest.mark.parametrize(("game", "ref"), [("W1", "P-W1"), ("W1", "P-W2/sdp"), ("W1_CV", "P-W1CV")])
+def test_sdp_accepts_exact_references(game, ref):
+    sdp = C_W1[1] if game == "W1" else C_W1CV
+    out = CHK.check(_sdp_cert(sdp, game=game, target=0.93, proof_reference=ref))
+    assert out.proof_check_status == CertificateStatus.CERTIFIED, out.reason
+
+
+@pytest.mark.parametrize(("kw", "why"), [
+    ({"proof_reference": "P-W1CV"}, "proof_reference"),
+    ({"proof_reference": "P-W2/sdp/extra"}, "proof_reference"),
+    ({"proof_reference": "audits/SDP_DERIVATION.md"}, "proof_reference"),
+    ({"qber": 0.01}, "allowlist"),
+    ({"loss": 0.0}, "allowlist"),
+    ({"verifier": "threshold"}, "exact verifier"),
+    ({"n": 2}, "must equal sdp_certificate.n"),
+    ({"declared_assumptions": []}, "undeclared"),
+])
+def test_sdp_path_applies_model_gates(kw, why):
+    """M-D2: the CERTIFIED_NUMERIC path runs the same gates as the published-theorem path."""
+    ref = kw.pop("proof_reference", "P-W2/sdp")
+    out = CHK.check(_sdp_cert(C_W1[1], proof_reference=ref, **kw))
+    assert out.proof_check_status == CertificateStatus.UNCERTIFIED and why in out.reason, out.reason
 
 
 @pytest.mark.parametrize("sdp", [C_W1[1], C_W1[2], C_W1_CLARABEL_N1])

@@ -3,6 +3,11 @@
 # cache (/Users/udsy/PycharmProjects/qmint-data-cache, override QMINT_DATA_CACHE); NOT committed.
 # upstream_checksum = exactly as published by Zenodo (MD5); sha256 = computed locally by QMint.
 concept_recid: 7979318
+# Binds every archive sha256 below to one calibration family (M-D4): qmint.proofs.assumption_check
+# accepts a PHOTON_EXPERIMENT CalibrationRecord only if its dataset_sha256 is registered here AND its
+# experiment_family equals this value. JSON EvidenceManifest for run_all: zenodo_7979319.json.
+experiment_family: schiansky_2023
+retrieved_utc: "2026-10-11"
 concept_doi_note: "all versions share parent recid 7979318"
 paper:
   title: "Demonstration of quantum-digital payments"

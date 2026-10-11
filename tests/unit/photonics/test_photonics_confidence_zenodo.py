@@ -15,6 +15,7 @@ from qmint.photonics.confidence import (
     contiguous_split,
     heterogeneity,
     two_proportion_z,
+    welch_t,
 )
 
 
@@ -123,3 +124,42 @@ def test_record_files_parsing():
                                      "links": {"self": "https://zenodo.org/x"}}]}
     (f,) = zenodo.record_files(rec)
     assert f.size == 153143236 and f.upstream_checksum == "md5:fd708578a613b63f57c31f986a56bf94"
+
+
+def test_welch_is_undefined_not_zero_for_single_runs():
+    assert welch_t(np.array([0.1]), np.array([0.2, 0.3])) == (None, None)
+    t, p = welch_t(np.array([0.10, 0.12, 0.11]), np.array([0.20, 0.22, 0.21]))
+    assert t < 0 and p < 0.01
+
+
+def test_json_dataset_manifests_match_yaml():
+    """Every registered dataset YAML has a JSON EvidenceManifest (run_all format) with the same primary hashes."""
+    from qmint.core.manifest import load_manifest
+
+    yamls = [d["_path"] for d in zenodo._dataset_yamls(zenodo.MANIFEST_DIR)]
+    assert yamls, "no registered dataset manifest"
+    for y in yamls:
+        js = y.with_suffix(".json")
+        got = load_manifest(js)
+        want = zenodo.dataset_evidence_manifest(y, git_sha=got.git_sha, created_utc=got.created_utc)
+        assert got == want, f"{js} out of sync with {y}; regenerate with zenodo.dataset_evidence_manifest"
+        assert got.evidence_kind == EvidenceKind.PHOTON_EXPERIMENT
+        assert all(e.path_or_uri.startswith("datasets/cache/") and e.role == "input" for e in got.entries)
+        assert {e.sha256 for e in got.entries} <= set(zenodo.registered_datasets())
+
+
+@pytest.mark.realdata
+def test_json_manifest_passes_run_all_preflight(tmp_path):
+    """Format check against qmint.core.pipeline.realdata_preflight with the shared cache mounted as datasets/cache."""
+    import shutil
+
+    from qmint.core import pipeline
+    from qmint.core.config import load_config
+
+    cache = zenodo.data_cache_dir()
+    if not (cache / "zenodo_7979319" / "Archive.zip").is_file():
+        pytest.skip(f"real dataset not in cache: {cache}")
+    (tmp_path / "datasets" / "manifests").mkdir(parents=True)
+    (tmp_path / "datasets" / "cache").symlink_to(cache, target_is_directory=True)
+    shutil.copy(zenodo.MANIFEST_DIR / "zenodo_7979319.json", tmp_path / "datasets" / "manifests")
+    assert pipeline.realdata_preflight(load_config(env={"QMINT_ROOT": str(tmp_path)})) == []

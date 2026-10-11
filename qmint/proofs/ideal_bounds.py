@@ -5,7 +5,9 @@
   S1    Kent et al. 2022 Lemma 1/Eq.1 (1/2 + 1/(2 sqrt 2))^N
 
 Each formula is guarded by its game ID: it is refused for every other game (W2, S2, D1, ...)
-and for any request that carries noise, loss, error tolerance or oracle access. These are
+and for any request carrying a parameter outside the per-game allowlist (W1/W1_CV: ``n``;
+S1: ``N`` and ``M = 1``; plus declarations and an exact, oracle-free verifier), so noise, loss,
+thresholds or error tolerance under any spelling are OUT_OF_MODEL. These are
 THEORETICAL IDEAL-MODEL bounds, not experimental security certificates.
 
 Supersedes ``bootstrap/ideal_bounds.py`` (same numbers: n_min(1e-9) = 73 / 273 / 131).
@@ -94,12 +96,12 @@ class IdealBoundEvaluator:
                 + (" (privacy is never reported as 0)" if request.axis == SecurityAxis.PRIVACY else ""),
             )
         params = request.parameters
-        report = ac.check_declarations(claim, params).merged(ac.check_noise_free(params, request.calibration))
+        report = ac.check_declarations(claim, params).merged(ac.check_noise_free(claim, params, request.calibration))
         if game == GameId.S1 and params.get("M", 1) != 1:
             report = report.merged(ac.AssumptionReport(failed=("OUT_OF_MODEL:S1_is_two_site_only(M=1)",)))
         if not report.ok:
             return unsupported(request, f"{claim.claim_id} hypotheses not met", report=report, theorem_id=None)
-        n = params.get(length_key, params.get("n" if length_key == "N" else "N"))
+        n = params.get(length_key)
         try:
             n = _length(n)
         except ValueError:

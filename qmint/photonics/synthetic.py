@@ -1,4 +1,4 @@
-"""SYNTHETIC timetag fixtures (EvidenceKind.SYNTHETIC). Never experimental evidence.
+"""SYNTHETIC timetag generator (EvidenceKind.SYNTHETIC). Never experimental evidence.
 
 Builds archives with the same layout/format as Zenodo 7979319 (established by inspection)
 but with fully known ground truth: pair counts, error counts and channel assignment.
