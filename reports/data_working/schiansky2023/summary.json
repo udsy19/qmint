@@ -197,6 +197,47 @@
    "value": 1.45
   }
  },
+ "raw_crosscheck": {
+  "accidental_fraction_estimate": 0.01810176499865998,
+  "accidentals_bin3ns_shift200ns": 7092,
+  "archived_chunk00_channel_agreement": 1.0,
+  "archived_chunk00_ttp_to_raw_max_abs_diff_ns": 3.814697265625e-06,
+  "archived_pairs": 392222,
+  "coarse_offset_ns": -1084000000.0,
+  "drift_blocks_used": 28,
+  "drift_fit_residual_std_ns": 0.31610795291428234,
+  "drift_ns_per_s": -2.9788556115534224,
+  "identified_as": "archived linear/chunk00 (raw source): archived TTP times = SG - SG[0]",
+  "if_client_basis_X": {
+   "errors": 101867,
+   "qber": 0.5136341175640108,
+   "sifted": 198326
+  },
+  "if_client_basis_Z": {
+   "errors": 2820,
+   "qber": 0.014576732020738245,
+   "sifted": 193459
+  },
+  "independent_pairs_overlapping_archived": 371336,
+  "median_dt_ns_by_client_channel": {
+   "2": 0.05842113494873047,
+   "4": -0.2882862091064453
+  },
+  "multi_occupancy_excluded": {
+   "client": 312,
+   "ttp": 59563
+  },
+  "note": "authors additionally shift the client V channel by a fitted inter-detector delay and keep a random event in multi-occupied client bins; we do neither (deterministic), so pair sets differ.",
+  "offset_ns_at_ref": -1083831126.7539783,
+  "overlap_fraction_of_archived": 0.946749544900592,
+  "pairs_bin3ns": 391785,
+  "pairs_window_pm1p5ns": 451855,
+  "raw_files": {
+   "BG.txt(Client)": 2117629,
+   "SG.txt(TTP)": 26117661
+  },
+  "tick_ns_from_authors_script": 0.0823045
+ },
  "rematch_identical_all_runs": true,
  "reproduction": [
   {
