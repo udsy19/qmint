@@ -6,7 +6,7 @@
   "starting_commit_sha": "9a4e8a9368e75d3e8e329231020e1992bc7f04ea",
   "review_sha": "9a4e8a9368e75d3e8e329231020e1992bc7f04ea",
   "also_rechecked_on_main_sha": "7130c1fa9b844ea23d1dffd842d47fe4eca03fd3",
-  "final_commit_sha": "see git log (handoff commit follows the audit commit)",
+  "final_commit_sha": "131b18c (audit + tests); this metadata-only follow-up commit records it",
   "changed_paths": [
     "audits/CRYPTOGRAPHIC_REVIEW.md",
     "audits/DATA_LEAKAGE_REVIEW.md",
