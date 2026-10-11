@@ -10,8 +10,7 @@
 | `CLAUDE_CODE_ORCHESTRATOR_PROMPT.md` | **Copy-and-paste primary prompt** to instruct Claude Code to build the project and launch agents safely |
 | `AGENT_WORK_PACKAGES.md` | Full independent work orders and acceptance tests for agents A–N |
 | `project/TRACKER_TEMPLATE.yaml` | Initial task/quality-gate truth tracker: everything starts OPEN, no false completion |
-| `bootstrap/ideal_bounds.py` | Tiny stdlib-only **published theorem bound reference**, clearly idealized; not a proof or security certificate |
-| `bootstrap/test_ideal_bounds.py` | Five zero-dependency reference tests (actually run and passed in package-generation environment) |
+| `qmint/proofs/ideal_bounds.py` | Published ideal-model theorem bounds (supersedes the original `bootstrap/` reference, removed 2026-10-11) |
 | `references/genqai-implementation-plan.md` | Your supplied GenQAI plan, preserved as organizational-format inspiration |
 
 ## Recommended way to use it with Claude Code
@@ -26,8 +25,8 @@
 ### Short terminal check (works without installing external packages)
 
 ```bash
-python3 bootstrap/ideal_bounds.py --target 1e-9
-python3 -m unittest discover -s bootstrap -p 'test_*.py' -v
+python -m qmint.proofs.reproduce
+python -m pytest tests/unit/proofs -q
 ```
 
 Example **theoretical ideal-model** minimum lengths for `epsilon <= 10^-9` (not hardware security):

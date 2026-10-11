@@ -24,6 +24,7 @@ gates:
     evidence:
     - 'C: SDP n=1 primal/dual 0.75, certified dual bound'
     - 'F: Qiskit/NumPy/QuTiP 3-way agreement; MVW channel circuit exactly 3/4'
+    - 'D: independent exact-rational re-verification of SDP bounds; ideal W1/W1_CV/S1 log-space engine'
   G2:
     description: Published S-money state machine and causal tests
     status: OPEN
@@ -112,11 +113,17 @@ tasks:
     description: Bound engine and theorem predicates
     owner: subagent-lane-D
     branch: feat/D-proofs
-    status: CLAIMED
-    evidence: []
+    status: MERGED
+    evidence:
+    - handoffs/D-D1.json
+    - proofs/OBLIGATIONS.yaml
+    - proofs/certificates/reproduction_v1.json (all_agree)
+    - 'independent exact re-check of C SDP: W1 n=1 3/4, n=2 9/16, W1_CV 0.92677669530531'
     blockers: []
-    commit: null
+    commit: 4b59474
     start_sha: ece05ef
+    notes: 'D1 never certified: fitted boundary, informal de Finetti, Chernoff on weighted {0,1,6.83} sum (rescaled valid bound 3.3e-7 vs published
+      5.9e-45, flagged not asserted). Kent experimental tuple outside Theorem 1 (as paper says).'
   E1:
     lane: E
     description: 2023 raw photon timetag dataset and calibration
