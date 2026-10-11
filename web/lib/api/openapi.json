@@ -140,10 +140,16 @@
           },
           "attack": {
             "enum": [
-              "honest",
-              "measure_resend",
-              "bruss_cloner",
-              "mvw_channel"
+              "A01_basis_guess_resend",
+              "A01b_basis_guess_bayes_resend",
+              "A02_breidbart_resend",
+              "A02b_breidbart_bayes_resend",
+              "A03_universal_buzek_hillery",
+              "A03b_phase_covariant_xz",
+              "A04_mvw_optimal_channel",
+              "A06_split_and_report_loss",
+              "A08_adaptive_oracle_probe",
+              "CTRL_secret_leak"
             ],
             "title": "Attack",
             "type": "string"
@@ -162,20 +168,33 @@
               }
             ]
           },
+          "capabilities": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Capabilities",
+            "type": "array"
+          },
+          "counterfeit_success": {
+            "items": {
+              "$ref": "#/components/schemas/LabQuantity"
+            },
+            "title": "Counterfeit Success",
+            "type": "array"
+          },
           "description": {
             "title": "Description",
             "type": "string"
           },
-          "double_verification_success": {
-            "items": {
-              "$ref": "#/components/schemas/Quantity"
-            },
-            "title": "Double Verification Success",
-            "type": "array"
+          "game_id": {
+            "$ref": "#/components/schemas/GameId"
+          },
+          "hardware": {
+            "$ref": "#/components/schemas/LabQuantity"
           },
           "honest_acceptance": {
             "items": {
-              "$ref": "#/components/schemas/Quantity"
+              "$ref": "#/components/schemas/LabQuantity"
             },
             "title": "Honest Acceptance",
             "type": "array"
@@ -187,24 +206,57 @@
             "title": "Notes",
             "type": "array"
           },
-          "single_verification_pass": {
-            "$ref": "#/components/schemas/Quantity"
+          "proof_applicability": {
+            "enum": [
+              "IN_MODEL",
+              "NO_THEOREM",
+              "OUT_OF_MODEL"
+            ],
+            "title": "Proof Applicability",
+            "type": "string"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunInfo"
+          },
+          "sdp": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SdpBracket"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "simulator_caveat": {
+            "title": "Simulator Caveat",
+            "type": "string"
+          },
+          "single_copy_pass": {
+            "$ref": "#/components/schemas/LabQuantity"
           },
           "theorem_bound": {
-            "$ref": "#/components/schemas/Quantity"
+            "$ref": "#/components/schemas/LabQuantity"
           }
         },
         "required": [
           "attack",
           "attack_label",
           "description",
+          "game_id",
+          "proof_applicability",
+          "capabilities",
           "honest_acceptance",
-          "single_verification_pass",
-          "double_verification_success",
+          "single_copy_pass",
+          "counterfeit_success",
           "theorem_bound",
+          "sdp",
+          "hardware",
           "attack_result",
           "assumptions",
-          "notes"
+          "notes",
+          "run",
+          "simulator_caveat"
         ],
         "title": "AttackData",
         "type": "object"
@@ -213,53 +265,61 @@
         "additionalProperties": false,
         "properties": {
           "attack": {
-            "default": "mvw_channel",
+            "default": "A04_mvw_optimal_channel",
             "enum": [
-              "honest",
-              "measure_resend",
-              "bruss_cloner",
-              "mvw_channel"
+              "A01_basis_guess_resend",
+              "A01b_basis_guess_bayes_resend",
+              "A02_breidbart_resend",
+              "A02b_breidbart_bayes_resend",
+              "A03_universal_buzek_hillery",
+              "A03b_phase_covariant_xz",
+              "A04_mvw_optimal_channel",
+              "A06_split_and_report_loss",
+              "A08_adaptive_oracle_probe",
+              "CTRL_secret_leak"
             ],
             "title": "Attack",
             "type": "string"
           },
-          "backend": {
-            "default": "analytic",
-            "enum": [
-              "analytic",
-              "aer"
-            ],
-            "title": "Backend",
-            "type": "string"
+          "include_sdp": {
+            "default": true,
+            "title": "Include Sdp",
+            "type": "boolean"
           },
-          "game": {
-            "const": "W1",
-            "default": "W1",
-            "title": "Game",
-            "type": "string"
+          "max_error_fraction": {
+            "default": 0.0,
+            "description": "A06 toy verifier",
+            "maximum": 0.5,
+            "minimum": 0.0,
+            "title": "Max Error Fraction",
+            "type": "number"
+          },
+          "max_loss_fraction": {
+            "default": 0.5,
+            "description": "A06 toy verifier",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Max Loss Fraction",
+            "type": "number"
           },
           "n": {
-            "default": 1,
+            "default": 2,
             "maximum": 8.0,
             "minimum": 1.0,
             "title": "N",
             "type": "integer"
           },
           "noise": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/NoiseIn"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LabNoise",
+            "description": "honest holder's channel (honest acceptance only)"
           },
-          "protocol_id": {
-            "const": "wiesner_ideal",
-            "default": "wiesner_ideal",
-            "title": "Protocol Id",
-            "type": "string"
+          "probes": {
+            "default": 10,
+            "description": "A08 Z-probes per position",
+            "maximum": 16.0,
+            "minimum": 1.0,
+            "title": "Probes",
+            "type": "integer"
           },
           "seed": {
             "default": 42,
@@ -268,11 +328,11 @@
             "title": "Seed",
             "type": "integer"
           },
-          "shots": {
-            "default": 2000,
-            "maximum": 20000.0,
-            "minimum": 1.0,
-            "title": "Shots",
+          "trials": {
+            "default": 1000,
+            "maximum": 5000.0,
+            "minimum": 0.0,
+            "title": "Trials",
             "type": "integer"
           }
         },
@@ -869,10 +929,6 @@
             "title": "Bit Order Note",
             "type": "string"
           },
-          "circuit_sha256": {
-            "title": "Circuit Sha256",
-            "type": "string"
-          },
           "noise_description": {
             "anyOf": [
               {
@@ -884,18 +940,6 @@
             ],
             "title": "Noise Description"
           },
-          "qasm2": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "noiseless verify circuit; channels are not expressible in QASM 2",
-            "title": "Qasm2"
-          },
           "qubits": {
             "items": {
               "$ref": "#/components/schemas/QubitOps"
@@ -903,22 +947,14 @@
             "title": "Qubits",
             "type": "array"
           },
-          "resources": {
-            "additionalProperties": true,
-            "title": "Resources",
-            "type": "object"
-          },
-          "resources_note": {
-            "title": "Resources Note",
-            "type": "string"
+          "redacted": {
+            "title": "Redacted",
+            "type": "boolean"
           }
         },
         "required": [
+          "redacted",
           "qubits",
-          "resources",
-          "resources_note",
-          "circuit_sha256",
-          "qasm2",
           "noise_description",
           "bit_order_note"
         ],
@@ -974,6 +1010,42 @@
           "method"
         ],
         "title": "ConfidenceInterval",
+        "type": "object"
+      },
+      "ErrorCountRow": {
+        "additionalProperties": false,
+        "properties": {
+          "accepted": {
+            "title": "Accepted",
+            "type": "boolean"
+          },
+          "errors": {
+            "title": "Errors",
+            "type": "integer"
+          },
+          "exact_probability": {
+            "title": "Exact Probability",
+            "type": "number"
+          },
+          "sampled_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sampled Count"
+          }
+        },
+        "required": [
+          "errors",
+          "exact_probability",
+          "sampled_count",
+          "accepted"
+        ],
+        "title": "ErrorCountRow",
         "type": "object"
       },
       "EvidenceData": {
@@ -1192,6 +1264,60 @@
         "title": "EvidenceResponse",
         "type": "object"
       },
+      "FlowStep": {
+        "additionalProperties": false,
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "id": {
+            "enum": [
+              "mint",
+              "transmit",
+              "verify",
+              "replay",
+              "remint"
+            ],
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "result": {
+            "enum": [
+              "done",
+              "accepted",
+              "rejected",
+              "refused",
+              "skipped"
+            ],
+            "title": "Result",
+            "type": "string"
+          },
+          "serial": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Serial"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "result",
+          "detail"
+        ],
+        "title": "FlowStep",
+        "type": "object"
+      },
       "GameId": {
         "description": "Named, versioned security experiments (master plan 3.1).",
         "enum": [
@@ -1398,78 +1524,196 @@
         "title": "Interval",
         "type": "object"
       },
-      "IssuerQubit": {
+      "LabNoise": {
         "additionalProperties": false,
+        "description": "Declared (hypothetical) iid qubit channel between minting and verification.\n\nReadout error is deliberately absent: the lane-B register verifier has no classical readout\nstage, and a readout flip in the secret basis cannot be expressed as a channel on the note\nwithout knowing the secret.",
         "properties": {
-          "basis": {
-            "$ref": "#/components/schemas/Basis"
-          },
-          "bit": {
-            "title": "Bit",
-            "type": "integer"
-          },
-          "bloch": {
-            "maxItems": 3,
-            "minItems": 3,
-            "prefixItems": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "number"
-              },
-              {
-                "type": "number"
-              }
+          "channel": {
+            "default": "none",
+            "enum": [
+              "none",
+              "depolarizing",
+              "dephasing",
+              "amplitude_damping"
             ],
-            "title": "Bloch",
-            "type": "array"
-          },
-          "index": {
-            "title": "Index",
-            "type": "integer"
-          },
-          "state_label": {
-            "title": "State Label",
+            "title": "Channel",
             "type": "string"
+          },
+          "strength": {
+            "default": 0.0,
+            "description": "p (depolarizing/dephasing) or gamma (damping)",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Strength",
+            "type": "number"
           }
         },
-        "required": [
-          "index",
-          "basis",
-          "bit",
-          "state_label",
-          "bloch"
-        ],
-        "title": "IssuerQubit",
+        "title": "LabNoise",
         "type": "object"
       },
-      "IssuerView": {
+      "LabProtocolInfo": {
         "additionalProperties": false,
         "properties": {
-          "domain": {
-            "const": "ISSUER_PRIVATE_DEMO",
-            "default": "ISSUER_PRIVATE_DEMO",
-            "title": "Domain",
-            "type": "string"
+          "game_id": {
+            "$ref": "#/components/schemas/GameId"
           },
-          "qubits": {
+          "proof_assumptions": {
             "items": {
-              "$ref": "#/components/schemas/IssuerQubit"
+              "type": "string"
             },
-            "title": "Qubits",
+            "title": "Proof Assumptions",
             "type": "array"
           },
-          "warning": {
-            "title": "Warning",
+          "protocol_id": {
+            "title": "Protocol Id",
+            "type": "string"
+          },
+          "security_model_id": {
+            "title": "Security Model Id",
+            "type": "string"
+          },
+          "threshold": {
+            "title": "Threshold",
+            "type": "integer"
+          },
+          "unsupported_extensions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Unsupported Extensions",
+            "type": "array"
+          },
+          "verifier_rule": {
+            "title": "Verifier Rule",
             "type": "string"
           }
         },
         "required": [
-          "warning",
-          "qubits"
+          "protocol_id",
+          "game_id",
+          "threshold",
+          "verifier_rule",
+          "security_model_id",
+          "proof_assumptions",
+          "unsupported_extensions"
         ],
-        "title": "IssuerView",
+        "title": "LabProtocolInfo",
+        "type": "object"
+      },
+      "LabQuantity": {
+        "additionalProperties": false,
+        "description": "``Quantity`` plus methods ``monte_carlo`` (fresh notes) and ``numerical_sdp`` (proposed for schemas.Method).",
+        "properties": {
+          "evidence_kind": {
+            "$ref": "#/components/schemas/EvidenceKind"
+          },
+          "formula": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Formula"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "interval": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ConfidenceInterval"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "log10_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "log10(value), for values below float range",
+            "title": "Log10 Value"
+          },
+          "method": {
+            "anyOf": [
+              {
+                "enum": [
+                  "closed_form",
+                  "exact_enumeration",
+                  "aer_sampling",
+                  "event_simulation",
+                  "published_value",
+                  "measured_dataset",
+                  "not_available"
+                ],
+                "type": "string"
+              },
+              {
+                "enum": [
+                  "monte_carlo",
+                  "numerical_sdp"
+                ],
+                "type": "string"
+              }
+            ],
+            "title": "Method"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "source": {
+            "description": "module path or citation (URL + anchor)",
+            "minLength": 1,
+            "title": "Source",
+            "type": "string"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/Unit"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "value",
+          "unit",
+          "evidence_kind",
+          "method",
+          "source"
+        ],
+        "title": "LabQuantity",
         "type": "object"
       },
       "LaneStatus": {
@@ -1504,73 +1748,6 @@
           "detail"
         ],
         "title": "LaneStatus",
-        "type": "object"
-      },
-      "MeasurementStats": {
-        "additionalProperties": false,
-        "properties": {
-          "acceptance": {
-            "items": {
-              "$ref": "#/components/schemas/Quantity"
-            },
-            "title": "Acceptance",
-            "type": "array"
-          },
-          "aer_counts": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/OutcomeCount"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Aer Counts"
-          },
-          "analytic_distribution": {
-            "items": {
-              "$ref": "#/components/schemas/OutcomeProbability"
-            },
-            "title": "Analytic Distribution",
-            "type": "array"
-          },
-          "analytic_method": {
-            "title": "Analytic Method",
-            "type": "string"
-          },
-          "analytic_truncated": {
-            "title": "Analytic Truncated",
-            "type": "boolean"
-          },
-          "expected_outcome": {
-            "title": "Expected Outcome",
-            "type": "string"
-          },
-          "shots": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Shots"
-          }
-        },
-        "required": [
-          "expected_outcome",
-          "analytic_distribution",
-          "analytic_truncated",
-          "analytic_method",
-          "aer_counts",
-          "shots",
-          "acceptance"
-        ],
-        "title": "MeasurementStats",
         "type": "object"
       },
       "MetaData": {
@@ -1665,15 +1842,41 @@
           "circuit": {
             "$ref": "#/components/schemas/CircuitDescription"
           },
-          "issuer_view": {
-            "$ref": "#/components/schemas/IssuerView"
+          "flow": {
+            "items": {
+              "$ref": "#/components/schemas/FlowStep"
+            },
+            "title": "Flow",
+            "type": "array"
+          },
+          "hardware": {
+            "$ref": "#/components/schemas/LabQuantity"
+          },
+          "protocol": {
+            "$ref": "#/components/schemas/LabProtocolInfo"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunInfo"
           },
           "simulator_caveat": {
             "title": "Simulator Caveat",
             "type": "string"
           },
           "statistics": {
-            "$ref": "#/components/schemas/MeasurementStats"
+            "$ref": "#/components/schemas/MintStatistics"
+          },
+          "teaching": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TeachingReveal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "theorem": {
+            "$ref": "#/components/schemas/LabQuantity"
           },
           "token": {
             "$ref": "#/components/schemas/TokenRecord"
@@ -1681,9 +1884,14 @@
         },
         "required": [
           "token",
-          "issuer_view",
+          "protocol",
+          "flow",
           "circuit",
           "statistics",
+          "theorem",
+          "hardware",
+          "teaching",
+          "run",
           "simulator_caveat"
         ],
         "title": "MintData",
@@ -1693,9 +1901,9 @@
         "additionalProperties": false,
         "properties": {
           "backend": {
-            "default": "analytic",
+            "default": "aer",
             "enum": [
-              "analytic",
+              "exact",
               "aer"
             ],
             "title": "Backend",
@@ -1709,18 +1917,14 @@
             "type": "integer"
           },
           "noise": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/NoiseIn"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LabNoise"
           },
           "protocol_id": {
-            "const": "wiesner_ideal",
             "default": "wiesner_ideal",
+            "enum": [
+              "wiesner_ideal",
+              "wiesner_noisy"
+            ],
             "title": "Protocol Id",
             "type": "string"
           },
@@ -1732,10 +1936,32 @@
             "type": "integer"
           },
           "shots": {
-            "default": 4000,
+            "default": 2000,
             "maximum": 20000.0,
             "minimum": 1.0,
             "title": "Shots",
+            "type": "integer"
+          },
+          "teaching_reveal": {
+            "default": false,
+            "description": "TEST_ONLY: also return the issuer secret of this note (OUT_OF_MODEL teaching view)",
+            "title": "Teaching Reveal",
+            "type": "boolean"
+          },
+          "threshold": {
+            "default": 0,
+            "description": "max wrong positions accepted (wiesner_noisy)",
+            "maximum": 8.0,
+            "minimum": 0.0,
+            "title": "Threshold",
+            "type": "integer"
+          },
+          "trials": {
+            "default": 1000,
+            "description": "fresh notes for the honest Monte Carlo",
+            "maximum": 5000.0,
+            "minimum": 0.0,
+            "title": "Trials",
             "type": "integer"
           }
         },
@@ -1791,6 +2017,53 @@
         "title": "MintResponse",
         "type": "object"
       },
+      "MintStatistics": {
+        "additionalProperties": false,
+        "properties": {
+          "acceptance": {
+            "items": {
+              "$ref": "#/components/schemas/LabQuantity"
+            },
+            "title": "Acceptance",
+            "type": "array"
+          },
+          "error_counts": {
+            "items": {
+              "$ref": "#/components/schemas/ErrorCountRow"
+            },
+            "title": "Error Counts",
+            "type": "array"
+          },
+          "error_counts_note": {
+            "title": "Error Counts Note",
+            "type": "string"
+          },
+          "shots": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shots"
+          },
+          "threshold": {
+            "title": "Threshold",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "threshold",
+          "shots",
+          "acceptance",
+          "error_counts",
+          "error_counts_note"
+        ],
+        "title": "MintStatistics",
+        "type": "object"
+      },
       "NoiseIn": {
         "additionalProperties": false,
         "description": "Declared (hypothetical) noise: one qubit channel on every note qubit plus readout error.",
@@ -1829,26 +2102,6 @@
           }
         },
         "title": "NoiseIn",
-        "type": "object"
-      },
-      "OutcomeCount": {
-        "additionalProperties": false,
-        "properties": {
-          "count": {
-            "title": "Count",
-            "type": "integer"
-          },
-          "outcome": {
-            "description": "C7 order: character i is qubit q_i",
-            "title": "Outcome",
-            "type": "string"
-          }
-        },
-        "required": [
-          "outcome",
-          "count"
-        ],
-        "title": "OutcomeCount",
         "type": "object"
       },
       "OutcomeProbability": {
@@ -2086,6 +2339,7 @@
             "type": "integer"
           },
           "prepare": {
+            "description": "'secret' (redacted) or gates x / h",
             "items": {
               "type": "string"
             },
@@ -2093,6 +2347,7 @@
             "type": "array"
           },
           "verify": {
+            "description": "'secret' (redacted) or gates h / measure_z",
             "items": {
               "type": "string"
             },
@@ -2294,6 +2549,142 @@
         "title": "ResearchSource",
         "type": "object"
       },
+      "RunInfo": {
+        "additionalProperties": false,
+        "properties": {
+          "backends": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Backends",
+            "type": "array"
+          },
+          "deadline_s": {
+            "default": 20.0,
+            "title": "Deadline S",
+            "type": "number"
+          },
+          "elapsed_ms": {
+            "title": "Elapsed Ms",
+            "type": "number"
+          },
+          "limits": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Limits",
+            "type": "object"
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "integer"
+          },
+          "shots": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shots"
+          },
+          "trials": {
+            "title": "Trials",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "backends",
+          "seed",
+          "shots",
+          "trials",
+          "elapsed_ms"
+        ],
+        "title": "RunInfo",
+        "type": "object"
+      },
+      "SdpBracket": {
+        "additionalProperties": false,
+        "description": "Two-sided enclosure of the OPTIMAL W1 counterfeit probability for small n.",
+        "properties": {
+          "lower": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LabQuantity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "n": {
+            "title": "N",
+            "type": "integer"
+          },
+          "numerical": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LabQuantity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "recorded_evidence": {
+            "default": "handoffs/C-C1-evidence.json",
+            "title": "Recorded Evidence",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "OK",
+              "UNSUPPORTED"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "upper_certified": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LabQuantity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "upper_independent": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LabQuantity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "n",
+          "status"
+        ],
+        "title": "SdpBracket",
+        "type": "object"
+      },
       "SecurityCertificate": {
         "additionalProperties": false,
         "properties": {
@@ -2492,6 +2883,131 @@
           }
         },
         "title": "Targets",
+        "type": "object"
+      },
+      "TeachingQubit": {
+        "additionalProperties": false,
+        "properties": {
+          "basis": {
+            "$ref": "#/components/schemas/Basis"
+          },
+          "bit": {
+            "title": "Bit",
+            "type": "integer"
+          },
+          "bloch": {
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "title": "Bloch",
+            "type": "array"
+          },
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "state_label": {
+            "title": "State Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "index",
+          "basis",
+          "bit",
+          "state_label",
+          "bloch"
+        ],
+        "title": "TeachingQubit",
+        "type": "object"
+      },
+      "TeachingReveal": {
+        "additionalProperties": false,
+        "properties": {
+          "circuit": {
+            "$ref": "#/components/schemas/CircuitDescription"
+          },
+          "circuit_sha256": {
+            "title": "Circuit Sha256",
+            "type": "string"
+          },
+          "domain": {
+            "const": "TEST_ONLY_TEACHING_REVEAL",
+            "default": "TEST_ONLY_TEACHING_REVEAL",
+            "title": "Domain",
+            "type": "string"
+          },
+          "expected_outcome": {
+            "title": "Expected Outcome",
+            "type": "string"
+          },
+          "outcome_distribution": {
+            "items": {
+              "$ref": "#/components/schemas/OutcomeProbability"
+            },
+            "title": "Outcome Distribution",
+            "type": "array"
+          },
+          "outcome_distribution_truncated": {
+            "title": "Outcome Distribution Truncated",
+            "type": "boolean"
+          },
+          "proof_applicability": {
+            "const": "OUT_OF_MODEL",
+            "default": "OUT_OF_MODEL",
+            "title": "Proof Applicability",
+            "type": "string"
+          },
+          "qasm2": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Qasm2"
+          },
+          "qubits": {
+            "items": {
+              "$ref": "#/components/schemas/TeachingQubit"
+            },
+            "title": "Qubits",
+            "type": "array"
+          },
+          "resources": {
+            "additionalProperties": true,
+            "title": "Resources",
+            "type": "object"
+          },
+          "warning": {
+            "title": "Warning",
+            "type": "string"
+          }
+        },
+        "required": [
+          "warning",
+          "qubits",
+          "expected_outcome",
+          "outcome_distribution",
+          "outcome_distribution_truncated",
+          "circuit",
+          "qasm2",
+          "resources",
+          "circuit_sha256"
+        ],
+        "title": "TeachingReveal",
         "type": "object"
       },
       "TokenRecord": {
@@ -2884,6 +3400,16 @@
               }
             },
             "description": "Internal error"
+          },
+          "504": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Compute deadline exceeded"
           }
         },
         "summary": "Attack",
@@ -2935,6 +3461,16 @@
               }
             },
             "description": "Internal error"
+          },
+          "504": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Compute deadline exceeded"
           }
         },
         "summary": "Mint",

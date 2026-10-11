@@ -248,63 +248,82 @@ export interface components {
              * Attack
              * @enum {string}
              */
-            attack: "honest" | "measure_resend" | "bruss_cloner" | "mvw_channel";
+            attack: "A01_basis_guess_resend" | "A01b_basis_guess_bayes_resend" | "A02_breidbart_resend" | "A02b_breidbart_bayes_resend" | "A03_universal_buzek_hillery" | "A03b_phase_covariant_xz" | "A04_mvw_optimal_channel" | "A06_split_and_report_loss" | "A08_adaptive_oracle_probe" | "CTRL_secret_leak";
             /** Attack Label */
             attack_label: string;
             attack_result: components["schemas"]["AttackResult"] | null;
+            /** Capabilities */
+            capabilities: string[];
+            /** Counterfeit Success */
+            counterfeit_success: components["schemas"]["LabQuantity"][];
             /** Description */
             description: string;
-            /** Double Verification Success */
-            double_verification_success: components["schemas"]["Quantity"][];
+            game_id: components["schemas"]["GameId"];
+            hardware: components["schemas"]["LabQuantity"];
             /** Honest Acceptance */
-            honest_acceptance: components["schemas"]["Quantity"][];
+            honest_acceptance: components["schemas"]["LabQuantity"][];
             /** Notes */
             notes: string[];
-            single_verification_pass: components["schemas"]["Quantity"];
-            theorem_bound: components["schemas"]["Quantity"];
+            /**
+             * Proof Applicability
+             * @enum {string}
+             */
+            proof_applicability: "IN_MODEL" | "NO_THEOREM" | "OUT_OF_MODEL";
+            run: components["schemas"]["RunInfo"];
+            sdp: components["schemas"]["SdpBracket"] | null;
+            /** Simulator Caveat */
+            simulator_caveat: string;
+            single_copy_pass: components["schemas"]["LabQuantity"];
+            theorem_bound: components["schemas"]["LabQuantity"];
         };
         /** AttackRequest */
         AttackRequest: {
             /**
              * Attack
-             * @default mvw_channel
+             * @default A04_mvw_optimal_channel
              * @enum {string}
              */
-            attack: "honest" | "measure_resend" | "bruss_cloner" | "mvw_channel";
+            attack: "A01_basis_guess_resend" | "A01b_basis_guess_bayes_resend" | "A02_breidbart_resend" | "A02b_breidbart_bayes_resend" | "A03_universal_buzek_hillery" | "A03b_phase_covariant_xz" | "A04_mvw_optimal_channel" | "A06_split_and_report_loss" | "A08_adaptive_oracle_probe" | "CTRL_secret_leak";
             /**
-             * Backend
-             * @default analytic
-             * @enum {string}
+             * Include Sdp
+             * @default true
              */
-            backend: "analytic" | "aer";
+            include_sdp: boolean;
             /**
-             * Game
-             * @default W1
-             * @constant
+             * Max Error Fraction
+             * @description A06 toy verifier
+             * @default 0
              */
-            game: "W1";
+            max_error_fraction: number;
+            /**
+             * Max Loss Fraction
+             * @description A06 toy verifier
+             * @default 0.5
+             */
+            max_loss_fraction: number;
             /**
              * N
-             * @default 1
+             * @default 2
              */
             n: number;
-            noise?: components["schemas"]["NoiseIn"] | null;
+            /** @description honest holder's channel (honest acceptance only) */
+            noise?: components["schemas"]["LabNoise"];
             /**
-             * Protocol Id
-             * @default wiesner_ideal
-             * @constant
+             * Probes
+             * @description A08 Z-probes per position
+             * @default 10
              */
-            protocol_id: "wiesner_ideal";
+            probes: number;
             /**
              * Seed
              * @default 42
              */
             seed: number;
             /**
-             * Shots
-             * @default 2000
+             * Trials
+             * @default 1000
              */
-            shots: number;
+            trials: number;
         };
         /** AttackResponse */
         AttackResponse: {
@@ -491,23 +510,12 @@ export interface components {
         CircuitDescription: {
             /** Bit Order Note */
             bit_order_note: string;
-            /** Circuit Sha256 */
-            circuit_sha256: string;
             /** Noise Description */
             noise_description: string | null;
-            /**
-             * Qasm2
-             * @description noiseless verify circuit; channels are not expressible in QASM 2
-             */
-            qasm2: string | null;
             /** Qubits */
             qubits: components["schemas"]["QubitOps"][];
-            /** Resources */
-            resources: {
-                [key: string]: unknown;
-            };
-            /** Resources Note */
-            resources_note: string;
+            /** Redacted */
+            redacted: boolean;
         };
         /**
          * ClaimLevel
@@ -534,6 +542,17 @@ export interface components {
              * @description e.g. clopper_pearson_0.99, published_plus_minus, p05_p95
              */
             method: string;
+        };
+        /** ErrorCountRow */
+        ErrorCountRow: {
+            /** Accepted */
+            accepted: boolean;
+            /** Errors */
+            errors: number;
+            /** Exact Probability */
+            exact_probability: number;
+            /** Sampled Count */
+            sampled_count: number | null;
         };
         /** EvidenceData */
         EvidenceData: {
@@ -598,6 +617,25 @@ export interface components {
              */
             status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
         };
+        /** FlowStep */
+        FlowStep: {
+            /** Detail */
+            detail: string;
+            /**
+             * Id
+             * @enum {string}
+             */
+            id: "mint" | "transmit" | "verify" | "replay" | "remint";
+            /** Label */
+            label: string;
+            /**
+             * Result
+             * @enum {string}
+             */
+            result: "done" | "accepted" | "rejected" | "refused" | "skipped";
+            /** Serial */
+            serial?: string | null;
+        };
         /**
          * GameId
          * @description Named, versioned security experiments (master plan 3.1).
@@ -659,34 +697,74 @@ export interface components {
             point?: number | null;
             unit: components["schemas"]["Unit"];
         };
-        /** IssuerQubit */
-        IssuerQubit: {
-            basis: components["schemas"]["Basis"];
-            /** Bit */
-            bit: number;
-            /** Bloch */
-            bloch: [
-                number,
-                number,
-                number
-            ];
-            /** Index */
-            index: number;
-            /** State Label */
-            state_label: string;
-        };
-        /** IssuerView */
-        IssuerView: {
+        /**
+         * LabNoise
+         * @description Declared (hypothetical) iid qubit channel between minting and verification.
+         *
+         *     Readout error is deliberately absent: the lane-B register verifier has no classical readout
+         *     stage, and a readout flip in the secret basis cannot be expressed as a channel on the note
+         *     without knowing the secret.
+         */
+        LabNoise: {
             /**
-             * Domain
-             * @default ISSUER_PRIVATE_DEMO
-             * @constant
+             * Channel
+             * @default none
+             * @enum {string}
              */
-            domain: "ISSUER_PRIVATE_DEMO";
-            /** Qubits */
-            qubits: components["schemas"]["IssuerQubit"][];
-            /** Warning */
-            warning: string;
+            channel: "none" | "depolarizing" | "dephasing" | "amplitude_damping";
+            /**
+             * Strength
+             * @description p (depolarizing/dephasing) or gamma (damping)
+             * @default 0
+             */
+            strength: number;
+        };
+        /** LabProtocolInfo */
+        LabProtocolInfo: {
+            game_id: components["schemas"]["GameId"];
+            /** Proof Assumptions */
+            proof_assumptions: string[];
+            /** Protocol Id */
+            protocol_id: string;
+            /** Security Model Id */
+            security_model_id: string;
+            /** Threshold */
+            threshold: number;
+            /** Unsupported Extensions */
+            unsupported_extensions: string[];
+            /** Verifier Rule */
+            verifier_rule: string;
+        };
+        /**
+         * LabQuantity
+         * @description ``Quantity`` plus methods ``monte_carlo`` (fresh notes) and ``numerical_sdp`` (proposed for schemas.Method).
+         */
+        LabQuantity: {
+            evidence_kind: components["schemas"]["EvidenceKind"];
+            /** Formula */
+            formula?: string | null;
+            /** Id */
+            id: string;
+            interval?: components["schemas"]["ConfidenceInterval"] | null;
+            /** Label */
+            label: string;
+            /**
+             * Log10 Value
+             * @description log10(value), for values below float range
+             */
+            log10_value?: number | null;
+            /** Method */
+            method: ("closed_form" | "exact_enumeration" | "aer_sampling" | "event_simulation" | "published_value" | "measured_dataset" | "not_available") | ("monte_carlo" | "numerical_sdp");
+            /** Note */
+            note?: string | null;
+            /**
+             * Source
+             * @description module path or citation (URL + anchor)
+             */
+            source: string;
+            unit: components["schemas"]["Unit"];
+            /** Value */
+            value: number | null;
         };
         /** LaneStatus */
         LaneStatus: {
@@ -700,23 +778,6 @@ export interface components {
             merged: boolean;
             /** Package */
             package: string;
-        };
-        /** MeasurementStats */
-        MeasurementStats: {
-            /** Acceptance */
-            acceptance: components["schemas"]["Quantity"][];
-            /** Aer Counts */
-            aer_counts: components["schemas"]["OutcomeCount"][] | null;
-            /** Analytic Distribution */
-            analytic_distribution: components["schemas"]["OutcomeProbability"][];
-            /** Analytic Method */
-            analytic_method: string;
-            /** Analytic Truncated */
-            analytic_truncated: boolean;
-            /** Expected Outcome */
-            expected_outcome: string;
-            /** Shots */
-            shots: number | null;
         };
         /** MetaData */
         MetaData: {
@@ -747,32 +808,38 @@ export interface components {
         /** MintData */
         MintData: {
             circuit: components["schemas"]["CircuitDescription"];
-            issuer_view: components["schemas"]["IssuerView"];
+            /** Flow */
+            flow: components["schemas"]["FlowStep"][];
+            hardware: components["schemas"]["LabQuantity"];
+            protocol: components["schemas"]["LabProtocolInfo"];
+            run: components["schemas"]["RunInfo"];
             /** Simulator Caveat */
             simulator_caveat: string;
-            statistics: components["schemas"]["MeasurementStats"];
+            statistics: components["schemas"]["MintStatistics"];
+            teaching: components["schemas"]["TeachingReveal"] | null;
+            theorem: components["schemas"]["LabQuantity"];
             token: components["schemas"]["TokenRecord"];
         };
         /** MintRequest */
         MintRequest: {
             /**
              * Backend
-             * @default analytic
+             * @default aer
              * @enum {string}
              */
-            backend: "analytic" | "aer";
+            backend: "exact" | "aer";
             /**
              * N Qubits
              * @default 4
              */
             n_qubits: number;
-            noise?: components["schemas"]["NoiseIn"] | null;
+            noise?: components["schemas"]["LabNoise"];
             /**
              * Protocol Id
              * @default wiesner_ideal
-             * @constant
+             * @enum {string}
              */
-            protocol_id: "wiesner_ideal";
+            protocol_id: "wiesner_ideal" | "wiesner_noisy";
             /**
              * Seed
              * @default 42
@@ -780,9 +847,27 @@ export interface components {
             seed: number;
             /**
              * Shots
-             * @default 4000
+             * @default 2000
              */
             shots: number;
+            /**
+             * Teaching Reveal
+             * @description TEST_ONLY: also return the issuer secret of this note (OUT_OF_MODEL teaching view)
+             * @default false
+             */
+            teaching_reveal: boolean;
+            /**
+             * Threshold
+             * @description max wrong positions accepted (wiesner_noisy)
+             * @default 0
+             */
+            threshold: number;
+            /**
+             * Trials
+             * @description fresh notes for the honest Monte Carlo
+             * @default 1000
+             */
+            trials: number;
         };
         /** MintResponse */
         MintResponse: {
@@ -796,6 +881,19 @@ export interface components {
              * @enum {string}
              */
             status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
+        };
+        /** MintStatistics */
+        MintStatistics: {
+            /** Acceptance */
+            acceptance: components["schemas"]["LabQuantity"][];
+            /** Error Counts */
+            error_counts: components["schemas"]["ErrorCountRow"][];
+            /** Error Counts Note */
+            error_counts_note: string;
+            /** Shots */
+            shots: number | null;
+            /** Threshold */
+            threshold: number;
         };
         /**
          * NoiseIn
@@ -823,16 +921,6 @@ export interface components {
              * @default 0
              */
             readout_p10: number;
-        };
-        /** OutcomeCount */
-        OutcomeCount: {
-            /** Count */
-            count: number;
-            /**
-             * Outcome
-             * @description C7 order: character i is qubit q_i
-             */
-            outcome: string;
         };
         /** OutcomeProbability */
         OutcomeProbability: {
@@ -913,9 +1001,15 @@ export interface components {
             channel: string[];
             /** Index */
             index: number;
-            /** Prepare */
+            /**
+             * Prepare
+             * @description 'secret' (redacted) or gates x / h
+             */
             prepare: string[];
-            /** Verify */
+            /**
+             * Verify
+             * @description 'secret' (redacted) or gates h / measure_z
+             */
             verify: string[];
         };
         /** RecordSummary */
@@ -970,6 +1064,52 @@ export interface components {
             verification: string;
             /** Year */
             year: string | null;
+        };
+        /** RunInfo */
+        RunInfo: {
+            /** Backends */
+            backends: string[];
+            /**
+             * Deadline S
+             * @default 20
+             */
+            deadline_s: number;
+            /** Elapsed Ms */
+            elapsed_ms: number;
+            /** Limits */
+            limits?: {
+                [key: string]: number;
+            };
+            /** Seed */
+            seed: number;
+            /** Shots */
+            shots: number | null;
+            /** Trials */
+            trials: number;
+        };
+        /**
+         * SdpBracket
+         * @description Two-sided enclosure of the OPTIMAL W1 counterfeit probability for small n.
+         */
+        SdpBracket: {
+            lower?: components["schemas"]["LabQuantity"] | null;
+            /** N */
+            n: number;
+            numerical?: components["schemas"]["LabQuantity"] | null;
+            /** Reason */
+            reason?: string | null;
+            /**
+             * Recorded Evidence
+             * @default handoffs/C-C1-evidence.json
+             */
+            recorded_evidence: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "OK" | "UNSUPPORTED";
+            upper_certified?: components["schemas"]["LabQuantity"] | null;
+            upper_independent?: components["schemas"]["LabQuantity"] | null;
         };
         /** SecurityCertificate */
         SecurityCertificate: {
@@ -1035,6 +1175,56 @@ export interface components {
             epsilon_rob?: number | null;
             /** Epsilon Unf */
             epsilon_unf?: number | null;
+        };
+        /** TeachingQubit */
+        TeachingQubit: {
+            basis: components["schemas"]["Basis"];
+            /** Bit */
+            bit: number;
+            /** Bloch */
+            bloch: [
+                number,
+                number,
+                number
+            ];
+            /** Index */
+            index: number;
+            /** State Label */
+            state_label: string;
+        };
+        /** TeachingReveal */
+        TeachingReveal: {
+            circuit: components["schemas"]["CircuitDescription"];
+            /** Circuit Sha256 */
+            circuit_sha256: string;
+            /**
+             * Domain
+             * @default TEST_ONLY_TEACHING_REVEAL
+             * @constant
+             */
+            domain: "TEST_ONLY_TEACHING_REVEAL";
+            /** Expected Outcome */
+            expected_outcome: string;
+            /** Outcome Distribution */
+            outcome_distribution: components["schemas"]["OutcomeProbability"][];
+            /** Outcome Distribution Truncated */
+            outcome_distribution_truncated: boolean;
+            /**
+             * Proof Applicability
+             * @default OUT_OF_MODEL
+             * @constant
+             */
+            proof_applicability: "OUT_OF_MODEL";
+            /** Qasm2 */
+            qasm2: string | null;
+            /** Qubits */
+            qubits: components["schemas"]["TeachingQubit"][];
+            /** Resources */
+            resources: {
+                [key: string]: unknown;
+            };
+            /** Warning */
+            warning: string;
         };
         /**
          * TokenRecord
@@ -1283,6 +1473,15 @@ export interface operations {
                     "application/json": components["schemas"]["ApiError"];
                 };
             };
+            /** @description Compute deadline exceeded */
+            504: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
         };
     };
     mint_api_v1_lab_mint_post: {
@@ -1318,6 +1517,15 @@ export interface operations {
             };
             /** @description Internal error */
             500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Compute deadline exceeded */
+            504: {
                 headers: {
                     [name: string]: unknown;
                 };
