@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import Link from "next/link";
 import * as React from "react";
 import { ApiFailure } from "@/components/shell/api-failure";
@@ -12,9 +13,9 @@ import { EmptyState } from "@/components/ui/state";
 import { TBody, THead, Table, Td, Th, Tr } from "@/components/ui/table";
 import type { Schemas } from "@/lib/api/client";
 import { formatNumber } from "@/lib/format";
+import { STATIC_SNAPSHOT } from "@/lib/api/static";
 
 export const metadata: Metadata = { title: "Research overview" };
-export const dynamic = "force-dynamic";
 
 function Section({ id, title, source, children, aside }: { id: string; title: string; source?: React.ReactNode; aside?: React.ReactNode; children: React.ReactNode }) {
   return (
@@ -32,6 +33,7 @@ function Section({ id, title, source, children, aside }: { id: string; title: st
 }
 
 export default async function OverviewPage() {
+  if (!STATIC_SNAPSHOT) await connection(); // request-time render; the static export prerenders from the snapshot
   const [meta, tracker, games, protocols, evidence] = await Promise.all([
     load("/api/v1/meta"),
     load("/api/v1/meta/tracker"),

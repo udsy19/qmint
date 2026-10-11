@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { EntryFields, LEAD_FIELDS } from "@/components/research/entry-fields";
@@ -8,12 +9,19 @@ import { ApiFailure } from "@/components/shell/api-failure";
 import { load } from "@/components/shell/load";
 import { StatusMark } from "@/components/shell/status-mark";
 import { apiGet, ApiError, type Schemas } from "@/lib/api/client";
+import { STATIC_SNAPSHOT } from "@/lib/api/static";
 
-export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ id: string }> };
 
 type EntryPath = "/api/v1/research/sources/{entry_id}";
+
+/** Static export: one page per entry in the snapshot. Normal mode renders any id at request time. */
+export async function generateStaticParams(): Promise<{ id: string }[]> {
+  if (!STATIC_SNAPSHOT) return [];
+  const lib = await apiGet("/api/v1/research/sources");
+  return lib.data.sources.map((s) => ({ id: s.id }));
+}
 
 /** The typed client has no path-parameter templating; the concrete path is passed under the template's type. */
 async function fetchEntry(id: string) {
@@ -37,6 +45,7 @@ function doiUrl(doi: string) {
 }
 
 export default async function ResearchEntryPage({ params }: Props) {
+  if (!STATIC_SNAPSHOT) await connection(); // request-time render; the static export prerenders from the snapshot
   const id = decodeURIComponent((await params).id);
   const [res, lib] = await Promise.all([fetchEntry(id), load("/api/v1/research/sources")]);
   const ids = lib.ok ? lib.body.data.sources.map((s) => s.id) : [];

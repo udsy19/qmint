@@ -1,0 +1,18 @@
+{
+  "lane": "PAGES",
+  "task": "static GitHub Pages export (https://udsy19.github.io/qmint/)",
+  "input_contract_sha": "ebe680bae875",
+  "branch": "feat/PAGES",
+  "starting_commit_sha": "ebe680bae875",
+  "final_commit_sha": "cf4465f6b54feec8602eacde6f91e898e8780927",
+  "changed_paths": ["web/next.config.ts", "web/lib/api/client.ts", "web/lib/api/static.ts", "web/lib/api/static.test.ts", "web/package.json (build:static script)", "web/public/.nojekyll", "web/public/snapshot/**", "web/components/static-banner.tsx", "web/app/layout.tsx (banner)", "web/app/(platform)/{app,benchmarks,certificates,research,research/[id]}/page.tsx (force-dynamic -> guarded connection(); generateStaticParams for research/[id])", "scripts/build_static_site.py", "tests/unit/api/test_static_snapshot.py", "docs/STATIC_SITE.md", ".github/workflows/pages.yml"],
+  "commands_run": ["python scripts/build_static_site.py --jobs 4", "pnpm typecheck", "pnpm lint", "pnpm test", "pnpm build", "pnpm build:static", "pytest tests/unit/api/test_static_snapshot.py", "ruff check", "playwright (chromium-headless-shell 1.62) against python http.server serving web/out under /qmint"],
+  "test_exit_codes": {"pytest test_static_snapshot": 0, "vitest (94 tests)": 0, "typecheck": 0, "lint": 0, "build": 0, "build:static": 0},
+  "evidence_files": ["web/public/snapshot/meta.json", "web/public/snapshot/index.json"],
+  "assumptions_verified": ["Python js_number matches node JSON.stringify on 24 edge values", "shared canonical-JSON digest fixture in Python and TS tests", "10 static pages load with data, banner, no console errors, no 4xx; uncached attack run shows the miss message; certificate presets and hero load from snapshot"],
+  "performance_numbers_with_sources": ["snapshot: 365 files, 2.8 MB, 40 s with 4 processes (local)", "static build 8 s; web/out 21 MB"],
+  "blockers": [],
+  "known_limitations": ["only the precomputed grid works (seed 42, no noise, form-default shots/trials); other configs show the not-precomputed error", "/research?game= query filters not applied on first load in static mode", "build needs Node >= 20.16 (process.getBuiltinModule)"],
+  "interfaces_changed": ["web/lib/api/client.ts answers from the snapshot when NEXT_PUBLIC_QMINT_STATIC=1 (frozen file; edit owned by this lane per work order)"],
+  "whether_paid_jobs_run": false
+}

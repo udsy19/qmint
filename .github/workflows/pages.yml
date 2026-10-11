@@ -1,0 +1,67 @@
+name: pages
+
+# Static snapshot of the website on GitHub Pages (https://udsy19.github.io/qmint/). See docs/STATIC_SITE.md.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      QMINT_ALLOW_NETWORK: "0"
+      QMINT_ALLOW_PAID_HARDWARE: "0"
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # snapshot/meta.json records the git sha
+      - uses: astral-sh/setup-uv@v5
+      - name: Python environment from the lock
+        run: |
+          set -euo pipefail
+          uv venv --python 3.12 .venv
+          uv pip install --python .venv/bin/python -r requirements.lock
+          uv pip install --python .venv/bin/python --no-deps -e .
+      - name: Precompute the API snapshot (real FastAPI app, no server)
+        run: .venv/bin/python scripts/build_static_site.py --out web/public/snapshot
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: web/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - name: Static export
+        working-directory: web
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile
+          pnpm build:static
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

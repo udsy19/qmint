@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { StaticBanner } from "@/components/static-banner";
 import { Toaster } from "@/components/ui/toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { fontVariables } from "@/lib/fonts";
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
+        <StaticBanner />
         <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
         <Toaster />
       </body>
