@@ -247,10 +247,13 @@ tasks:
     description: Independent red-team audit
     owner: subagent-lane-M
     branch: feat/M-redteam
-    status: CLAIMED
-    evidence: []
+    status: MERGED
+    evidence:
+    - audits/*.md
+    - tests/adversarial (26 strict xfail)
     blockers: []
-    commit: null
+    commit: 9b4903d
+    notes: '5 HIGH: M-D1, M-D2, M-B1, M-H1, M-H2 -> fix lanes FDE, FB, FGH, FLK dispatched'
   N1:
     lane: N
     description: Reproducibility, figures and paper
@@ -326,9 +329,9 @@ tasks:
     - 'web-A merged 7a5d69e: 47 Mobbin refs, design system, Next 16 scaffold, FastAPI /api/v1 (11 endpoints), 22/22 e2e'
     blockers: []
     commit: null
-    notes: 'phase 2: KB landing, KC shell/research/docs, KD lab, KE benchmarks/certificates running; KF QA after'
+    notes: KB, KC, KD, KE merged; web typecheck failing only in marketing hero (attack id rename) -> KB fixing; KF QA pending
 qollab:
   project_url: https://qollab.xyz/u/udsy/qmint-proof-carrying-quantum-m
-  version: v1.0 public default
+  version: 'v1.1 public default (v1.0 superseded: overdispersion wording fix M-E1)'
   runs: qollab/evidence/qollab_runs_2026-10-11.json
   video: /Users/udsy/PycharmProjects/qmint-video/out/qmint-demo.mp4 (2:32, local; human uploads)
