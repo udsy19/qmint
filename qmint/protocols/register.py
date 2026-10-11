@@ -7,8 +7,8 @@ tokens are products of 1-qubit blocks, so ``n = 128`` never builds a ``2^n`` vec
 blocks merge only when a channel acts jointly on qubits from several blocks.
 
 Conventions (C7):
-  * BB84 states come exclusively from ``qmint.core.contracts.BB84_STATE_OF``:
-    ``(Z,0)=|0>, (Z,1)=|1>, (X,0)=|+>, (X,1)=|->``.
+  * BB84 states come exclusively from ``qmint.quantum.bb84.state_vector`` (C7 map
+    ``qmint.core.contracts.BB84_STATE_OF``): ``(Z,0)=|0>, (Z,1)=|1>, (X,0)=|+>, (X,1)=|->``.
   * Inside a block the first listed qubit is the most significant tensor factor
     (big-endian, ``kron(q0, q1, ...)``). No Qiskit little-endian decoding anywhere.
 
@@ -26,25 +26,14 @@ from dataclasses import dataclass
 import numpy as np
 from scipy.signal import convolve
 
-from qmint.core.contracts import BB84_STATE_OF, Basis, BB84State, TokenRecord
+from qmint.core.contracts import Basis, TokenRecord
+from qmint.quantum.bb84 import state_vector
 
-_SQ2 = 1.0 / np.sqrt(2.0)
-_KETS: dict[BB84State, np.ndarray] = {
-    BB84State.ZERO: np.array([1.0, 0.0], dtype=complex),
-    BB84State.ONE: np.array([0.0, 1.0], dtype=complex),
-    BB84State.PLUS: np.array([_SQ2, _SQ2], dtype=complex),
-    BB84State.MINUS: np.array([_SQ2, -_SQ2], dtype=complex),
-}
 KRAUS_TOL = 1e-9
 
 
-def bb84_ket(basis: Basis, bit: int) -> np.ndarray:
-    """State vector for a (basis, bit) pair via the frozen C7 mapping."""
-    return _KETS[BB84_STATE_OF[(Basis(basis), int(bit))]].copy()
-
-
 def bb84_projector(basis: Basis, bit: int) -> np.ndarray:
-    v = bb84_ket(basis, bit)
+    v = state_vector(basis, bit)
     return np.outer(v, v.conj())
 
 

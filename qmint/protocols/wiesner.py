@@ -54,9 +54,9 @@ from qmint.protocols.register import (
     ConsumedTokenError,
     FactorizedRegister,
     RegisterHandle,
-    bb84_ket,
     bb84_projector,
 )
+from qmint.quantum.bb84 import state_vector
 
 WIESNER_IDEAL_SPEC = ProtocolSpec(
     protocol_id="wiesner_ideal",
@@ -215,7 +215,7 @@ class WiesnerChallenger(SecretHolder):
             return RegisterHandle(None, [], record)
         reg = FactorizedRegister()
         qs = reg.add_product_state(
-            [np.outer(v, v.conj()) for v in (bb84_ket(b, x) for b, x in zip(bases, bits, strict=True))]
+            [np.outer(v, v.conj()) for v in (state_vector(b, x) for b, x in zip(bases, bits, strict=True))]
         )
         return RegisterHandle(reg, qs, record)
 
@@ -386,7 +386,7 @@ def forge_from_leaked_secret(leaked: dict, record: TokenRecord) -> tuple[Registe
     out = []
     for j in range(2):
         reg = FactorizedRegister()
-        kets = [bb84_ket(Basis(b), x) for b, x in zip(leaked["bases"], leaked["bits"], strict=True)]
+        kets = [state_vector(Basis(b), x) for b, x in zip(leaked["bases"], leaked["bits"], strict=True)]
         qs = reg.add_product_state([np.outer(v, v.conj()) for v in kets])
         out.append(RegisterHandle(reg, qs, record.model_copy(update={"ownership_context": f"forgery_{j}"})))
     return out[0], out[1]

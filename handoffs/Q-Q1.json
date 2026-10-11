@@ -1,0 +1,162 @@
+{
+  "lane": "Q",
+  "task": "Q1",
+  "branch": "feat/Q-integration",
+  "input_contract_sha": "sha256(qmint/core/contracts.py)=0250a2b148b49e321a864a30d0eba2e446219380fc912b2ce3853f55b4d802b9",
+  "starting_commit_sha": "9a4e8a9368e75d3e8e329231020e1992bc7f04ea",
+  "final_commit_sha": "see git log (handoff commit follows code commit 054e1da75038f0937d4c803259a0e89b203dcf6d)",
+  "code_commits": [
+    "ff11b15",
+    "7552c7c",
+    "054e1da"
+  ],
+  "changed_paths": [
+    "qmint/core/interfaces.py",
+    "qmint/core/lanes.py",
+    "qmint/protocols/register.py",
+    "qmint/protocols/wiesner.py",
+    "qmint/protocols/kent_smoney_2022.py",
+    "qmint/protocols/schiansky_payment_2023.py",
+    "qmint/protocols/entrypoints.py",
+    "qmint/attacks/games.py",
+    "qmint/attacks/linalg.py",
+    "qmint/attacks/records.py",
+    "qmint/attacks/report.py",
+    "qmint/attacks/crossrun.py",
+    "qmint/attacks/entrypoints.py",
+    "qmint/quantum/bb84.py",
+    "qmint/quantum/ionq.py",
+    "qmint/quantum/qollab.py",
+    "qmint/quantum/entrypoints.py",
+    "qmint/proofs/entrypoints.py",
+    "qmint/photonics/entrypoints.py",
+    "tests/contracts/test_interfaces.py",
+    "tests/integration/test_q_g1_crossrun.py",
+    "tests/integration/test_q_entrypoints.py",
+    "tests/unit/attacks/test_attacks_games.py",
+    "tests/unit/protocols/test_protocols_wiesner.py",
+    "tests/unit/protocols/test_protocols_schiansky.py",
+    "handoffs/Q-G1_evidence.json",
+    "handoffs/Q-Q1.json",
+    "handoffs/Q-Q1.md"
+  ],
+  "commands_run": [
+    "$PY -m pytest tests -m 'not network and not slow'",
+    "$PY -m pytest tests/unit/attacks tests/unit/protocols -m slow",
+    "$PY -m ruff check .",
+    "$PY scripts/run_core.py --offline --seed 42 [--check-determinism]",
+    "$PY -m qmint.cli attacks g1-evidence --out handoffs/Q-G1_evidence.json",
+    "$PY -m qmint.cli proofs verify --game W1 --n 1 --method sdp --primal-dual",
+    "$PY -m qmint.cli simulate wiesner --n 16 --honest-runs 1000 --attack measure-resend --seed 41",
+    "$PY -m qmint.cli attacks run --suite optimal-small --game W1"
+  ],
+  "test_exit_codes": {
+    "pytest_not_network_not_slow": {
+      "exit": 0,
+      "passed": 846,
+      "deselected": 2
+    },
+    "pytest_slow_attacks_protocols": {
+      "exit": 0,
+      "passed": 1
+    },
+    "ruff_check_repo": 0,
+    "run_core_offline_seed42": 0
+  },
+  "evidence_files": [
+    "handoffs/Q-G1_evidence.json"
+  ],
+  "assumptions_verified": [
+    "lane B RegisterHandle/WiesnerChallenger satisfy ChannelTokenHandle/PairChallenger (runtime_checkable)",
+    "per-qubit W1 both-pass values are identical for all four BB84 states, so B's exact value for any secret equals the closed form^n",
+    "qasm3 of ionq.build_bb84_prepare_verify unchanged after dedupe (standalone equality test; circuit sha 2124dfb4... unchanged)",
+    "every lane-Q run_core stage is byte-deterministic for a fixed seed (--check-determinism)"
+  ],
+  "performance_numbers_with_sources": {
+    "G1_crossrun_max_abs_diff": {
+      "value": 1.39e-15,
+      "rows": 21,
+      "evidence_kind": "SIMULATOR_IDEAL"
+    },
+    "per_qubit_W1_both_pass": {
+      "A01": "5/8",
+      "A01b,A02b": "(3+sqrt5)/8",
+      "A02": "5/8",
+      "A03": "2/3",
+      "A03b": "(3+2sqrt2)/8 (= lane F bruss2000 circuit)",
+      "A04": "3/4 (= lane F mvw2012 circuit)",
+      "evidence_kind": "SIMULATOR_IDEAL (exact) + MONTE_CARLO (21/21 CP95 cover exact)"
+    },
+    "secret_leak_control": {
+      "B_exact": 1.0,
+      "B_mc": "50/50",
+      "C_mc": "50/50",
+      "proof_applicability": "OUT_OF_MODEL"
+    },
+    "W1_sdp_n1": {
+      "primal": 0.7500000000000013,
+      "dual": 0.7500000000000002,
+      "laneC_certified_upper": 0.750000000003638,
+      "laneD_exact": "3/4",
+      "source": "MVW2012 Thm 1; evidence NUMERICAL_SDP/CERTIFIED_NUMERIC"
+    },
+    "W1_CV_sdp_n1": {
+      "laneC_certified_upper": 0.9267766955417756,
+      "laneD_exact": "127375219105/137438953472",
+      "theorem": 0.9267766952966369
+    },
+    "F_three_way_max_diff": 3.3e-16,
+    "photonics_realdata_stage": {
+      "reproduced_qber_percent": {
+        "H/V": 1.45,
+        "D/A": 3.28
+      },
+      "evidence_kind": "PHOTON_EXPERIMENT",
+      "wall_s": 7.8
+    }
+  },
+  "run_core_status": {
+    "doctor": "PASS",
+    "contract_fixtures": "PASS",
+    "protocols": "PASS",
+    "quantum": "PASS",
+    "attacks": "PASS",
+    "proofs": "PASS",
+    "photonics": "PASS",
+    "networks": "SKIPPED (G entrypoints not merged)",
+    "classical": "SKIPPED (H)",
+    "compiler": "SKIPPED (I)",
+    "evaluation": "SKIPPED (N)"
+  },
+  "dedupe": {
+    "files_deleted": [],
+    "definitions_removed": [
+      "qmint/protocols/register.py: _SQ2, _KETS, bb84_ket",
+      "qmint/attacks/linalg.py: _S2, _KET_OF_LABEL, bb84_ket (ket/BB84_LABELS now derived from qmint.quantum.bb84)",
+      "qmint/attacks/games.py: W1_BASE, W1_CV_BASE, GameMismatchError (now qmint.proofs.ideal_bounds.IDEAL_BASES / UnsupportedGameError; MVW_SOURCE from registry)",
+      "qmint/quantum/ionq.py: inline BB84 prep gate map (now qmint.quantum.circuits.build_prepare_circuit + bb84.state_label)"
+    ],
+    "kept_intentionally": [
+      "qollab/bb84_standalone.py (standalone export, drift-tested)",
+      "attacks/certify.py vs proofs/sdp_exact.py Fraction helpers (independence requirement)",
+      "attacks Kraus constructions vs quantum/cloner.py (cross-checked independent implementations)",
+      "ionq.decode_bitstring / ionq.wilson_interval (different semantics/return types)"
+    ]
+  },
+  "blockers": [],
+  "known_limitations": [
+    "run_all preflight requires datasets/manifests/*.json but lane E committed YAML manifests: run_all is still REFUSED (E/L to agree format)",
+    "photonics core stage loads lane E's synthetic generator from tests/unit/photonics/photonics_synth.py by file path",
+    "handoffs/C-C1-evidence.json source_code_sha predates the dedupe (numbers unchanged; not regenerated)",
+    "attacks run --out writes plain JSON, not via lane L RecordStore",
+    "simulate smoney: --sites 2 only, no --scenario YAML"
+  ],
+  "interfaces_changed": [
+    "qmint/core/interfaces.py: + ChannelTokenHandle(TokenHandle) [split, measure], + PairChallenger(Challenger) [verify_pair]; existing Protocols unchanged (backward compatible)",
+    "qmint/core/lanes.py: + write_stage_json(out_dir, name, obj) helper for lane entrypoints",
+    "PROPOSAL (lane E): move tests/unit/photonics/photonics_synth.py into qmint/photonics/synthetic.py; make calibration_record take data_origin (currently hard-codes PHOTON_EXPERIMENT even for synthetic input)",
+    "PROPOSAL (lane L/E): realdata_preflight should accept the YAML dataset manifests in datasets/manifests or E should emit JSON C6 manifests",
+    "no cli.py change needed"
+  ],
+  "whether_paid_jobs_run": false
+}

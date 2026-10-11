@@ -6,7 +6,6 @@ import numpy as np
 import pytest
 
 from qmint.attacks.games import (
-    GameMismatchError,
     ThresholdLossChallenger,
     W1Challenger,
     theorem_upper_bound,
@@ -15,13 +14,14 @@ from qmint.attacks.records import monte_carlo_result, sdp_result
 from qmint.core.contracts import EvidenceKind, GameId, SecretBoundaryError
 from qmint.core.interfaces import Challenger, TokenHandle
 from qmint.core.serialization import canonical_json
+from qmint.proofs.ideal_bounds import UnsupportedGameError
 
 
 def test_theorem_guard_w1_and_w1cv_only():
     assert theorem_upper_bound(GameId.W1, 3) == pytest.approx(0.75**3)
     assert theorem_upper_bound("W1_CV", 1) == pytest.approx(0.75 + math.sqrt(2) / 8)
     for g in (GameId.W2, GameId.S1, GameId.S2, GameId.D1, GameId.A1, GameId.C1):
-        with pytest.raises(GameMismatchError):
+        with pytest.raises(UnsupportedGameError):
             theorem_upper_bound(g, 4)
 
 

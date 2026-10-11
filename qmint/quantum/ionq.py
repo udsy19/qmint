@@ -31,8 +31,10 @@ from typing import Any, Literal
 
 from pydantic import Field, model_validator
 
-from qmint.core.contracts import BB84_STATE_OF, Basis, BB84State, EvidenceKind, Interval, Unit, _Strict
+from qmint.core.contracts import Basis, EvidenceKind, Interval, Unit, _Strict
 from qmint.core.serialization import canonical_hash
+from qmint.quantum.bb84 import state_label
+from qmint.quantum.circuits import build_prepare_circuit
 
 # --------------------------------------------------------------------------- #
 # Configuration names (values are never read into logs or return values)
@@ -221,7 +223,7 @@ def build_bb84_prepare_verify(
 ):
     """n-qubit circuit: prepare BB84 states (C7 map) then measure each qubit in `verify_bases`.
 
-    Qubit i is prepared in BB84_STATE_OF[(bases[i], bits[i])] and measured into clbit i.
+    Qubit i is prepared in state_label(bases[i], bits[i]) (C7) and measured into clbit i.
     Measuring in X = H then Z-measure. Default verify basis = preparation basis (honest verify).
     No optimisation is applied, so the gate list is what would be submitted (and billed).
     """
@@ -234,12 +236,8 @@ def build_bb84_prepare_verify(
     if len(vb) != n:
         raise ValueError("len(verify_bases) != len(bits)")
     qc = QuantumCircuit(n, n, name="bb84_prepare_verify")
-    for i, (b, basis) in enumerate(zip(bits, bases, strict=True)):
-        state = BB84_STATE_OF[(Basis(basis), int(b))]
-        if state in (BB84State.ONE, BB84State.MINUS):
-            qc.x(i)
-        if state in (BB84State.PLUS, BB84State.MINUS):
-            qc.h(i)
+    # Preparation gates come from lane F's canonical builder (single source of the C7 map).
+    qc.compose(build_prepare_circuit([Basis(b) for b in bases], [int(b) for b in bits]), inplace=True)
     qc.barrier()
     for i, basis in enumerate(vb):
         if Basis(basis) is Basis.X:
@@ -517,7 +515,7 @@ def build_dry_run(
         "shots": shots,
         "error_mitigation": error_mitigation,
         "prepared_states": [
-            BB84_STATE_OF[(Basis(b), int(x))].value for x, b in zip(bits, bases, strict=True)
+            state_label(b, x).value for x, b in zip(bits, bases, strict=True)
         ],
         "circuit_sha256": circuit_sha256(qc),
         "gate_counts_submitted": g,

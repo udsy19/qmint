@@ -34,6 +34,7 @@ def monte_carlo_result(
     successes: int,
     applicability: str,
     theorem_bound: float | None,
+    backend_kind: str = "numpy_density_matrix_position_product",
 ) -> tuple[AttackResult, dict[str, float]]:
     """MONTE_CARLO record (a LOWER bound on worst-case attack success, never an upper bound)."""
     lo, hi = clopper_pearson_interval(successes, trials)
@@ -54,7 +55,7 @@ def monte_carlo_result(
         ci_method=CI_METHOD,
         proof_applicability=applicability,  # type: ignore[arg-type]
         theorem_upper_bound=theorem_bound,
-        backend_kind="numpy_density_matrix_position_product",
+        backend_kind=backend_kind,
         evidence_kind=EvidenceKind.MONTE_CARLO,
         source_code_sha=attacks_source_sha(),
     )

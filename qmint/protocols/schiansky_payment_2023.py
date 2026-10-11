@@ -57,7 +57,8 @@ from qmint.core.contracts import (
     TransactionTrace,
 )
 from qmint.protocols.common import EventLog, SecretHolder
-from qmint.protocols.register import FactorizedRegister, RegisterHandle, bb84_ket, bb84_projector
+from qmint.protocols.register import FactorizedRegister, RegisterHandle, bb84_projector
+from qmint.quantum.bb84 import state_vector
 
 PAPER_URL = "https://doi.org/10.1038/s41467-023-39519-w"
 CORRECTION_URL = "https://doi.org/10.1038/s41467-023-40866-x"
@@ -307,7 +308,7 @@ class SchianskyPaymentSystem(SecretHolder):
         issue = self.log.event("TTP", "issue", t_ns, token_id=token_id, lam=self.lam)
         reg = FactorizedRegister()
         qs = reg.add_product_state(
-            [np.outer(v, v.conj()) for v in (bb84_ket(BASIS_OF_BIT[x], y) for x, y in zip(B, b, strict=True))]
+            [np.outer(v, v.conj()) for v in (state_vector(BASIS_OF_BIT[x], y) for x, y in zip(B, b, strict=True))]
         )
         t_q = t_ns if t_recv_ns is None else t_recv_ns
         self.log.event("Client", "quantum_exchange", t_q, [issue], channel="CH1 untrusted")

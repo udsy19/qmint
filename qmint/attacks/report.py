@@ -27,7 +27,14 @@ from qmint.core.serialization import canonical_json
 W1_RULE = "exact projective BB84 verifier on every position; both candidates must pass"
 
 
-def _sdp_section(n: int, solver: str) -> dict[str, Any]:
+#: SDPReport fields that vary run to run (wall time / memory); dropped when ``timings=False``.
+TIMING_KEYS = ("primal_time_s", "dual_time_s", "peak_rss_mb")
+
+
+def sdp_section(n: int, solver: str, *, timings: bool = True) -> dict[str, Any]:
+    """W1 Choi SDP for n: numerical (NUMERICAL_SDP) + exact-certified dual (CERTIFIED_NUMERIC) records.
+
+    ``timings=False`` gives byte-deterministic output for a fixed solver (run_core)."""
     rep = coherent_sdp.solve_w1(n, solver)
     cert = certify.certify_w1_dual(rep.Y, n, rep.dual_value)
     lower = certify.exact_choi_value_of_mvw_channel(n)
@@ -59,7 +66,8 @@ def _sdp_section(n: int, solver: str) -> dict[str, Any]:
         theorem_bound=theorem_upper_bound(GameId.W1, n),
         evidence=EvidenceKind.CERTIFIED_NUMERIC,
     )
-    d = {k: v for k, v in asdict(rep).items() if k not in ("J", "Y")}
+    drop = ("J", "Y") if timings else ("J", "Y", *TIMING_KEYS)
+    d = {k: v for k, v in asdict(rep).items() if k not in drop}
     return {
         "numerical": d,
         "certified": {
@@ -76,34 +84,11 @@ def _sdp_section(n: int, solver: str) -> dict[str, Any]:
     }
 
 
-def build(trials: int, seed: int, clarabel_n2: bool) -> dict[str, Any]:
-    t0 = time.time()
-    out: dict[str, Any] = {
-        "lane": "C",
-        "source": MVW_SOURCE,
-        "source_code_sha": attacks_source_sha(),
-        "environment": {"python": platform.python_version(), "numpy": np.__version__, "cvxpy": cvxpy.__version__},
-        "g_constructions_max_abs_diff": {
-            str(n): float(np.abs(coherent_sdp.w1_objective_numpy(n) - coherent_sdp.w1_objective_qutip(n)).max())
-            for n in (1, 2)
-        },
-    }
-    sdp: dict[str, Any] = {}
-    for n in (1, 2):
-        for solver in coherent_sdp.SOLVERS:
-            if n == 2 and solver == "CLARABEL" and not clarabel_n2:
-                sdp[f"n{n}_{solver}"] = {"status": "NOT_RUN (pass --clarabel-n2; ~6 GB peak RSS observed)"}
-                continue
-            sdp[f"n{n}_{solver}"] = _sdp_section(n, solver)
-    try:
-        coherent_sdp.solve_w1(3)
-    except coherent_sdp.SDPSizeUnsupported as e:
-        sdp["n3"] = {"status": "UNSUPPORTED", "reason": str(e), "general_n": "MVW Sec. 3.4 (cited theorem, not computed)"}
-    out["w1_sdp"] = sdp
-
-    cv = coherent_sdp.solve_w1cv_n1("SCS")
+def w1cv_section(solver: str = "SCS") -> dict[str, Any]:
+    """W1_CV n=1 POVM SDP with exact-certified dual (CERTIFIED_NUMERIC record)."""
+    cv = coherent_sdp.solve_w1cv_n1(solver)
     cvc = certify.certify_w1cv_dual(cv.Y, cv.dual_value)
-    out["w1_cv_n1"] = {
+    return {
         "numerical": {k: v for k, v in asdict(cv).items() if k != "Y"},
         "certified_upper_bound_float_up": cvc.bound_float_up,
         "theorem_value": theorem_upper_bound(GameId.W1_CV, 1),
@@ -128,13 +113,13 @@ def build(trials: int, seed: int, clarabel_n2: bool) -> dict[str, Any]:
         ),
     }
 
-    out["negative_controls"] = [asdict(c) for c in coherent_sdp.run_negative_controls("SCS")]
 
-    # ---- Monte Carlo heuristic attacks, W1 ----
+def w1_mc_section(trials: int, seed: int, ns: tuple[int, ...] = (1, 2, 4, 8)) -> list[dict[str, Any]]:
+    """Monte Carlo of every per-qubit W1 attack on lane C's own challenger (lower bounds), with exact values."""
     mc: list[dict[str, Any]] = []
     for idx, (aid, (fk, desc)) in enumerate(heuristic.W1_PRODUCT_ATTACKS.items()):
         kr = fk()
-        for n in (1, 2, 4, 8):
+        for n in ns:
             s = seed + 1000 * idx + n
             wins = heuristic.mc_w1_product_attack(kr, n, trials, s)
             rec, ci = monte_carlo_result(
@@ -160,7 +145,39 @@ def build(trials: int, seed: int, clarabel_n2: bool) -> dict[str, Any]:
                     **ci,
                 }
             )
-    out["w1_monte_carlo"] = mc
+    return mc
+
+
+def build(trials: int, seed: int, clarabel_n2: bool) -> dict[str, Any]:
+    t0 = time.time()
+    out: dict[str, Any] = {
+        "lane": "C",
+        "source": MVW_SOURCE,
+        "source_code_sha": attacks_source_sha(),
+        "environment": {"python": platform.python_version(), "numpy": np.__version__, "cvxpy": cvxpy.__version__},
+        "g_constructions_max_abs_diff": {
+            str(n): float(np.abs(coherent_sdp.w1_objective_numpy(n) - coherent_sdp.w1_objective_qutip(n)).max())
+            for n in (1, 2)
+        },
+    }
+    sdp: dict[str, Any] = {}
+    for n in (1, 2):
+        for solver in coherent_sdp.SOLVERS:
+            if n == 2 and solver == "CLARABEL" and not clarabel_n2:
+                sdp[f"n{n}_{solver}"] = {"status": "NOT_RUN (pass --clarabel-n2; ~6 GB peak RSS observed)"}
+                continue
+            sdp[f"n{n}_{solver}"] = sdp_section(n, solver)
+    try:
+        coherent_sdp.solve_w1(3)
+    except coherent_sdp.SDPSizeUnsupported as e:
+        sdp["n3"] = {"status": "UNSUPPORTED", "reason": str(e), "general_n": "MVW Sec. 3.4 (cited theorem, not computed)"}
+    out["w1_sdp"] = sdp
+
+    out["w1_cv_n1"] = w1cv_section()
+
+    out["negative_controls"] = [asdict(c) for c in coherent_sdp.run_negative_controls("SCS")]
+
+    out["w1_monte_carlo"] = w1_mc_section(trials, seed)
 
     # ---- A06 toy W2 ----
     a06 = []
