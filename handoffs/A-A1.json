@@ -1,0 +1,71 @@
+{
+  "lane": "A",
+  "task": "A1",
+  "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+  "branch": "feat/A-research",
+  "starting_commit_sha": "ece05ef02f3f89c2f75edc2393f478e77061ca56",
+  "final_commit_sha": "SEE_GIT_LOG (handoff commit follows research commit 8d9c1381a5a8e7b2e92b2c07f00fe09afd89ca4c)",
+  "changed_paths": [
+    "research/PRIOR_ART_MATRIX.csv",
+    "research/THEOREM_REGISTRY_SEED.yaml",
+    "research/DATASOURCE_REGISTER.yaml",
+    "research/NOVELTY_HYPOTHESES.md",
+    "research/LICENSE_AND_PATENT_RISKS.md",
+    "research/CORRECTIONS.md",
+    "licenses/REFERENCE_AUDIT.md",
+    "tests/unit/research/test_registry_files.py",
+    "handoffs/A-A1.json",
+    "handoffs/A-A1.md"
+  ],
+  "commands_run": [
+    "curl arXiv abs+pdf for 1202.4010, 2408.13063, 2510.06212, 2602.10621, 2307.12120, 2205.10488, 2411.04482, 2407.06463, 2503.18890 (+ metadata for 13 more ids)",
+    "curl nature.com article HTML/PDF/tables/SI for s41534-022-00524-4, s41467-023-39519-w, s41467-023-40866-x; PMC6545040",
+    "curl https://zenodo.org/api/records/{7979319,7997998,8020667} and version queries for concepts 7979318, 7985330",
+    "HTTP range-request listing of both Zenodo Archive.zip central directories (no full download)",
+    "download+unzip of Zenodo 8020667 Archiv.zip (24,642 B) in scratch dir; README/licence/header inspection",
+    "gh api repos/<owner>/<repo> for licence of 17 repos; QMoney README at commit 017502ea",
+    "python numeric recomputations (MVW Kraus check; Kent Thm1 sanity; Schiansky eqs 16/22; Jiang eqs 27/29)",
+    "/Users/udsy/PycharmProjects/Qollab-QMint/.venv/bin/python -m pytest tests/contracts tests/unit/research -q",
+    "/Users/udsy/PycharmProjects/Qollab-QMint/.venv/bin/python -m ruff check tests/unit/research"
+  ],
+  "test_exit_codes": {"pytest tests/contracts tests/unit/research": 0, "passed": 24, "of_which_research": 6, "ruff": 0},
+  "evidence_files": [
+    "research/THEOREM_REGISTRY_SEED.yaml (sources.*.pdf_sha256 for every PDF read)",
+    "licenses/REFERENCE_AUDIT.md (full sha256 of all papers read; md5/sha256 of Zenodo archives)"
+  ],
+  "assumptions_verified": [
+    "W1 (3/4)^n = MVW 2012 Thm 1 (p.2), simple 1->2 counterfeiting, no verifier queries",
+    "W1_CV (3/4+sqrt2/8)^n = MVW Thm 2 (p.3) / Lemma 5 (p.14); counterfeiter POVM depends on both challenges (eq.8)",
+    "S1 (1/2+1/(2 sqrt2))^N = Kent et al. 2022 Lemma 1 eq.(1), IQT1/IQT2 Table 1, proof SI Note IV",
+    "S2 = Kent et al. 2022 Lemmas 2-4, Thm 1 (eqs 7-10, lambda/O(theta) from Table 5), Thm 2 (eq 11, factor C = #spacelike pairs), Table 6 assumptions A-G",
+    "D1 = Schiansky 2023 SI Note 3 eqs (14)-(23); correction of 2023-08-21 read: one Discussion sentence on key growth, no numbers changed",
+    "Zenodo 7979319 is NOT the latest version (7997998 exists; identical chunks + tagfile_example)",
+    "Zenodo 8020667 code: AGPL-3.0 licence file vs CC BY 4.0 metadata; no security-analysis code",
+    "QMoney is private-key, quorum-verified, verify-and-remint (README @017502ea)"
+  ],
+  "performance_numbers_with_sources": [
+    {"value": "MVW n=1 optimum 0.75; ||Q||=0.375", "evidence_kind": "PUBLISHED_THEOREM (recomputed by lane A as transcription check)", "source": "P01 Sec 3.2 p.8"},
+    {"value": "Schiansky e*(l=0.224)=3.795% (p_m=6.76%) / 3.822% (p_m=6.02%)", "evidence_kind": "PUBLISHED_AGGREGATE recomputed", "source": "P04 SI eq.(16); main text vs SI Table 2"},
+    {"value": "Schiansky p_d=5.91e-45 reproduced only with N=4.2e6 (N=4,482,440 gives 6.3e-48)", "evidence_kind": "PUBLISHED_AGGREGATE recomputed", "source": "P04 SI eq.(22), Table 2"},
+    {"value": "Jiang eps'_unf recomputed 5.507e-9 (reported 5.52e-9); eps'_cor 1.82e-11 (reported 2.1e-11)", "evidence_kind": "PUBLISHED_AGGREGATE recomputed", "source": "P05 eqs.(27)-(29)"},
+    {"value": "Kent Fig.5 nu_unf first-term check 3.89e-3 vs reported 3.9e-3", "evidence_kind": "PUBLISHED_AGGREGATE recomputed", "source": "P03 Methods"}
+  ],
+  "blockers": [
+    "EP 23168897.9 status/claims not verified (European Patent Register not reached)",
+    "P13-P16, P19-P22 checked at metadata level only; P17 abstract only; full reads needed before any novelty claim",
+    "No systematic patent search beyond two disclosed patents"
+  ],
+  "known_limitations": [
+    "Kent 2022 SI proofs and Schiansky SI derivations were transcribed, not audited line by line",
+    "arXiv version diffs (P03 v1-v4, P04 v1-v2, P05 v1-v2) not performed",
+    "Gavinsky 2025 Claim 13 inequality not transcribed (PDF extraction garbled)",
+    "RIPE Atlas terms read only via search snippets",
+    "The negative search for 'quantum-token parameter optimiser software' is not proof of absence"
+  ],
+  "interfaces_changed": [
+    "PROPOSAL (no contract edited): add GameId W1_THRESH_JOINT for MVW Sec 3.5 joint-threshold game, distinct from W2",
+    "PROPOSAL: add GameId S2_JIANG24 (or protocol id s_money_jiang_2024) since Jiang et al. Thm 1 is a distinct theorem/protocol from Kent 2022 S2",
+    "PROPOSAL: ProtocolSpec/BoundResult could carry dataset_version_doi so lane E records 7979319 vs 7997998"
+  ],
+  "whether_paid_jobs_run": false
+}
