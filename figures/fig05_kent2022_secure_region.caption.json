@@ -1,0 +1,48 @@
+{
+ "figure_id": "fig05",
+ "title": "Kent 2022 S-token secure region (beta_max vs theta)",
+ "status": "READY",
+ "caption": "Game S2 only: Kent, Lowndes, Pitalua-Garcia, Rarity, npj Quantum Inf. 8, 28 (2022), Theorem 1 (eps_unf) with Lemmas 2-3, re-evaluated by qmint.proofs.finite_size following the paper's Fig. 5 procedure (N = 4e+07, each exponential term <= 1e-9/2, beta_PB = beta_PS = beta). Curves: largest admissible bias per misalignment theta for three error rates E; below a curve the hypothetical tuple is certified, above it UNCERTIFIED; where no beta is admissible the curve stops (no value is drawn, never zero). Stars: values quoted in the paper (DIGITIZED_FIGURE). X: the paper's experimental tuple (E = 0.058, theta = 10 deg) lies outside the Theorem 1 domain; lane D's independent checker returns UNCERTIFIED. This is NOT the Schiansky 2023 payment protocol (game D1) and no hybrid of the two proofs is drawn.",
+ "evidence_kinds": [
+  "PUBLISHED_THEOREM",
+  "DIGITIZED_FIGURE",
+  "PUBLISHED_AGGREGATE"
+ ],
+ "evidence_tags": [
+  "DIGITIZED",
+  "PUBLISHED",
+  "THEOREM"
+ ],
+ "synthetic_content": false,
+ "legend": [
+  "[THEOREM] beta_max, E = 0.01 (Kent 2022 Thm 1, hypothetical tuple)",
+  "[THEOREM] beta_max, E = 0.03 (Kent 2022 Thm 1, hypothetical tuple)",
+  "[THEOREM] beta_max, E = 0.058 (Kent 2022 Thm 1, hypothetical tuple)",
+  "[DIGITIZED] paper Fig. 5 values quoted in Methods",
+  "[PUBLISHED] Kent experimental tuple (max beta): OUTSIDE Thm 1 domain, UNCERTIFIED"
+ ],
+ "manifest_id": "figure-fig05_kent2022_secure_region",
+ "manifest_path": "figures/fig05_kent2022_secure_region.manifest.json",
+ "manifest_sha256": "15ba2c585b561de32e127f4e768862dbe10a1d85f1d5943177deea8030798f68",
+ "inputs": [
+  {
+   "path": "proofs/certificates/reproduction_v1.json",
+   "sha256": "82969e1ee62795bcf24f2204fa34155a721ce16083a340049b7335707ab3e37b"
+  },
+  {
+   "path": "proofs/certificates/S2_kent_experimental_tuple.json",
+   "sha256": "29610b7b4d921ea7ea8443a101933e9602aec65f3a96586be9f72882c6a88286"
+  }
+ ],
+ "data_csv": "figures/fig05_kent2022_secure_region.csv",
+ "outputs": [
+  "figures/fig05_kent2022_secure_region.svg",
+  "figures/fig05_kent2022_secure_region.png",
+  "figures/fig05_kent2022_secure_region.csv"
+ ],
+ "sources": [
+  "https://www.nature.com/articles/s41534-022-00524-4"
+ ],
+ "notes": [],
+ "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper --force"
+}

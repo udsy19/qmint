@@ -1,0 +1,29 @@
+{
+ "figure_id": "fig09",
+ "title": "Ablations and robustness",
+ "status": "PENDING",
+ "caption": "PENDING: Ablations and robustness. Awaiting lane I: needs paired point-vs-interval calibration C6 records (renderer plots.fig9_ablation).",
+ "evidence_kinds": [
+  "UNCERTIFIED"
+ ],
+ "evidence_tags": [
+  "UNCERTIFIED"
+ ],
+ "synthetic_content": false,
+ "legend": [],
+ "manifest_id": "figure-fig09_ablations_robustness",
+ "manifest_path": "figures/fig09_ablations_robustness.manifest.json",
+ "manifest_sha256": "658a7d5f8bb379d369d66dc9bea6df52a70b57d0ef9c09a0f3baa9f744d75f77",
+ "inputs": [],
+ "data_csv": "figures/fig09_ablations_robustness.csv",
+ "outputs": [
+  "figures/fig09_ablations_robustness.svg",
+  "figures/fig09_ablations_robustness.png",
+  "figures/fig09_ablations_robustness.csv"
+ ],
+ "sources": [],
+ "notes": [
+  "Awaiting lane I: needs paired point-vs-interval calibration C6 records (renderer plots.fig9_ablation)."
+ ],
+ "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper --force"
+}

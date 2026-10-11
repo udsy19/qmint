@@ -1,0 +1,80 @@
+{
+  "lane": "N",
+  "task": "N1",
+  "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+  "branch": "feat/N-paper",
+  "starting_commit_sha": "9a4e8a9",
+  "final_commit_sha": "SEE_GIT_LOG: the commit that adds this file (harness a1f5f31 + fix 3 commits later; figures regenerated in db840cb)",
+  "changed_paths": [
+    "qmint/evaluation/statistics.py", "qmint/evaluation/experiments.py", "qmint/evaluation/plots.py",
+    "qmint/evaluation/tables.py", "qmint/evaluation/make_figures.py", "qmint/evaluation/entrypoints.py",
+    "tests/unit/evaluation/test_evaluation.py", "figures/", "reports/paper/", "handoffs/N-N1.json", "handoffs/N-N1.md"
+  ],
+  "commands_run": [
+    "$PY -m qmint.evaluation.make_figures --out figures --tables-out reports/paper --force",
+    "$PY -m qmint.evaluation.make_figures --check",
+    "$PY scripts/verify_manifest.py figures",
+    "$PY -m pytest tests/contracts tests/unit/evaluation",
+    "$PY -m pytest tests -m 'not network and not realdata and not slow'",
+    "$PY -m ruff check qmint/evaluation tests/unit/evaluation",
+    "$PY scripts/run_core.py --offline --seed 42"
+  ],
+  "test_exit_codes": {
+    "pytest tests/contracts tests/unit/evaluation": "0 (43 passed; 15 lane N)",
+    "pytest tests -m 'not network and not realdata and not slow'": "0 (810 passed, 5 deselected)",
+    "ruff check qmint/evaluation tests/unit/evaluation": 0,
+    "make_figures --check": 0,
+    "verify_manifest.py figures": 0,
+    "run_core --offline": "0 (evaluation stage PASS; output removed afterwards, experiments/ not owned)"
+  },
+  "evidence_files": [
+    "figures/index.json", "figures/fig0[2-9]_*.{svg,png,csv,caption.json,manifest.json}", "figures/fig10_*",
+    "reports/paper/table1_theorem_families.{md,csv}", "reports/paper/table4_negative_results.{md,csv}",
+    "reports/paper/table5_scope_constraints.{md,csv}", "reports/paper/NEGATIVE_RESULTS_draft.md",
+    "reports/paper/REPRODUCE_draft.md"
+  ],
+  "figures": {
+    "fig02": "READY: W1 (3/4)^n theorem + W1_CV separate labelled DIFFERENT GAME + A04 MC n=1,2,4,8 (CP95) + honest n=8 + SDP n=1,2 certified brackets (SCS/Clarabel) and bracket-width panel",
+    "fig03": "READY: per-qubit exact both-pass values re-executed from Kraus ops and asserted equal to 5/8, (3+sqrt5)/8, 2/3, (3+2sqrt2)/8, 3/4 + MC n=1; A06 (toy W2, NO_THEOREM), A08 (leaky oracle), CTRL secret leak in red",
+    "fig04": "READY: per-run QBER Z/X with CP95 vs PUBLISHED_2023, residual drift; caption carries Zenodo 7979319 DOI, Archive.zip sha256 + upstream md5, holdout p-value, overdispersion",
+    "fig05": "READY: Kent 2022 Fig.5-style beta_max vs theta for E in {0.01,0.03,0.058} via qmint.proofs.reproduce.kent_fig5_beta_max; paper values (DIGITIZED) and experimental tuple (UNCERTIFIED); Kent only",
+    "fig06": "PENDING: renderer plots.fig6_spacetime(TransactionTrace) implemented; builds automatically from non-SYNTHETIC 'trace' records in experiments/",
+    "fig07": "PENDING: renderer plots.fig7_latency(BenchmarkRecord, comparability) implemented; needs quantum + classical 'benchmark' records in experiments/",
+    "fig08": "PENDING: renderer plots.fig8_pareto(BenchmarkRecord, SecurityCertificate) implemented; C5+C6 pairing convention not agreed with lane I",
+    "fig09": "PENDING: renderer plots.fig9_ablation implemented; awaiting lane I paired records",
+    "fig10": "READY: lane F analytic (SYNTHETIC) + Aer noisy (Wilson95) per channel; lane J 8q ideal/noisy; QPU NOT RUN; verbatim caption"
+  },
+  "assumptions_verified": [
+    "Figure numbers come only from committed evidence or re-executed package APIs; fig03 asserts closed forms against re-executed values and lane C evidence; fig05 asserts its E grid against lane D reproduction rows; fig10 asserts lane F caption wording",
+    "Builds are byte-deterministic (svg hashsalt, no Date/Software metadata): two --force rebuilds gave identical svg/png/csv hashes",
+    "Kent theta=0 is outside the Theorem 1 domain (Table 5 item 2: 0 < theta < pi/4); grid starts at 1e-6 deg as lane D does",
+    "Palette: dataviz reference slots blue/orange/aqua validated all-pairs (light); red used only with blue (fig03); every evidence class also differs by line style/marker and carries a [TAG] in its legend label"
+  ],
+  "performance_numbers_with_sources": [
+    "No new physics numbers. All plotted values are re-derived from: handoffs/C-C1-evidence.json (MONTE_CARLO, CERTIFIED_NUMERIC), proofs/certificates/*.json and qmint.proofs (PUBLISHED_THEOREM, DIGITIZED_FIGURE), reports/data_working/schiansky2023 (PHOTON_EXPERIMENT), handoffs/F-F1_evidence.json + qollab/evidence/local_aer_runs.json (SYNTHETIC, SIMULATOR_IDEAL/NOISY)",
+    "Full harness build ~3 s on darwin-arm64"
+  ],
+  "blockers": [
+    "Figs 6-7 wait for lane GH integration records in experiments/ (C4 traces for paper-faithful S-money and lane-H race on one network; C6 records for both quantum and classical sides). Lane H's reports/classical_baseline_notes/benchmark_records.jsonl is classical-only and not in the record store, so it is not used",
+    "Figs 8-9 wait for lane I record formats",
+    "Fig 1 (schematic) not in this phase",
+    "Manuscript inputs required by the work order (lane M review SHA, lane A novelty matrix) not yet available"
+  ],
+  "known_limitations": [
+    "EvidenceManifest (C6) holds one evidence_kind; figure manifests use the primary kind and the caption JSON lists all kinds",
+    "Fig 4 per-run CP intervals understate the spread (runs overdispersed); stated in caption, lane E's conservative hull not plotted",
+    "Fig 10 Aer intervals treat shots of one job as independent (valid for a drift-free simulator only; stated in caption)",
+    "Tables 4/5 are curated: row selection is editorial, but every anchor is verbatim in its source and every number in a finding occurs in an anchor (enforced at build)",
+    "Committed-figure freshness test fails after any change to pinned inputs/modules until make_figures is re-run (intended)",
+    "make_figures.py itself is not pinned as a script in figure manifests (it writes, not computes)"
+  ],
+  "interfaces_changed": [
+    "None to frozen contracts.",
+    "PROPOSAL (lane L owns scripts/): scripts/make_figures.py = `import _bootstrap; from qmint.evaluation.make_figures import main; raise SystemExit(main())`",
+    "PROPOSAL (C6 v2): EvidenceManifest.evidence_kinds: list[EvidenceKind] for multi-evidence artifacts such as figures",
+    "PROPOSAL (lane A/D): align seed obligation id P-W1-CV with registry P-W1CV (table1 maps it and reports the mismatch)",
+    "PROPOSAL (lanes G/H/I): write figure inputs as RecordStore records (contracts trace/benchmark/certificate) with non-SYNTHETIC evidence; fig6/7 then build automatically; agree a C5<->C6 pairing key for fig8 (K proposed certificate_ref)",
+    "NEW: qmint/evaluation/entrypoints.py (cli_main 'figures', run_core_stage) per lane-L convention"
+  ],
+  "whether_paid_jobs_run": false
+}

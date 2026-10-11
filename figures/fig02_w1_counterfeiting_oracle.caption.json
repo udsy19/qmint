@@ -1,0 +1,47 @@
+{
+ "figure_id": "fig02",
+ "title": "Exact counterfeiting oracle (W1)",
+ "status": "READY",
+ "caption": "Game W1 (Wiesner simple 1->2 counterfeiting, exact projective verifier, no oracle). Solid line: MVW 2012 Theorem 1 optimum (3/4)^n, evaluated by qmint.proofs.ideal_bounds. Grey dashed: (3/4+sqrt2/8)^n is the optimum of the DIFFERENT classical-verification game W1_CV (MVW Theorem 2) and is not a bound for W1. Blue circles: Monte Carlo success of the optimal MVW channel attack (lane C, 10^4 independent notes per n, Clopper-Pearson 95%), a lower bound on the worst case. Diamonds: Choi-matrix SDP optimum for n=1,2 with a certified bracket [exact achieving channel, exact-rational dual upper bound]; right panel shows the bracket width. Lane D re-verified the upper bounds independently (proofs/certificates/reproduction_v1.json). n>=3 SDP: UNSUPPORTED (size guard); no large-n numerical extrapolation is drawn.",
+ "evidence_kinds": [
+  "PUBLISHED_THEOREM",
+  "MONTE_CARLO",
+  "CERTIFIED_NUMERIC",
+  "SIMULATOR_IDEAL"
+ ],
+ "evidence_tags": [
+  "MC",
+  "SDP",
+  "SIM-IDEAL",
+  "THEOREM"
+ ],
+ "synthetic_content": false,
+ "legend": [
+  "[THEOREM] W1 optimum (3/4)^n, MVW 2012 Thm 1",
+  "[THEOREM] W1_CV (3/4+sqrt2/8)^n - DIFFERENT GAME (classical verification), MVW Thm 2",
+  "[SDP] certified bracket [exact lower, certified upper], n=1,2",
+  "[MC] optimal MVW channel attack, 95% CP (lane C)",
+  "[SIM-IDEAL] honest note acceptance, 95% CP",
+  "[SDP] exact rational LDL^T dual (lane C), re-verified by lane D"
+ ],
+ "manifest_id": "figure-fig02_w1_counterfeiting_oracle",
+ "manifest_path": "figures/fig02_w1_counterfeiting_oracle.manifest.json",
+ "manifest_sha256": "768ba01634236afecf94f412a20d948ba46eae4555318d82ceb2c67e4f593006",
+ "inputs": [
+  {
+   "path": "handoffs/C-C1-evidence.json",
+   "sha256": "ce0de9372c30aa9baa2ef69058bf30256cb56c292f56798334b6080bcd7bcf44"
+  }
+ ],
+ "data_csv": "figures/fig02_w1_counterfeiting_oracle.csv",
+ "outputs": [
+  "figures/fig02_w1_counterfeiting_oracle.svg",
+  "figures/fig02_w1_counterfeiting_oracle.png",
+  "figures/fig02_w1_counterfeiting_oracle.csv"
+ ],
+ "sources": [
+  "https://arxiv.org/abs/1202.4010"
+ ],
+ "notes": [],
+ "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper --force"
+}

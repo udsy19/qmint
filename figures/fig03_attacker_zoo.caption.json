@@ -1,0 +1,42 @@
+{
+ "figure_id": "fig03",
+ "title": "The attacker zoo (W1, out-of-model in red)",
+ "status": "READY",
+ "caption": "Attacker zoo. Left, game W1 only (one note, exact projective verifier, no oracle): grey bars are the exact per-qubit both-pass probabilities re-computed from each attack's Kraus operators (qmint.attacks.heuristic) and checked against the closed forms shown; blue points are lane C Monte Carlo estimates at n=1 (Clopper-Pearson 95%). Measure-resend reaches 5/8, not 3/4. No in-model attack exceeds the MVW optimum 3/4. Right, red: attacks that break a W1 hypothesis (A06 runs on a toy lossy threshold verifier, game W2, NO_THEOREM; A08 uses a leaky accept/reject oracle; CTRL is given the secret basis). They are OUT_OF_MODEL and are NOT counterexamples to MVW Theorem 1; ticks show (3/4)^n for the same n for contrast only.",
+ "evidence_kinds": [
+  "PUBLISHED_THEOREM",
+  "MONTE_CARLO"
+ ],
+ "evidence_tags": [
+  "MC",
+  "THEOREM"
+ ],
+ "synthetic_content": false,
+ "legend": [
+  "[MC] Monte Carlo n=1, 10^4 notes, 95% CP (lower bound on worst case)",
+  "[THEOREM] W1 optimum 3/4 over ALL channels (MVW Thm 1)",
+  "[THEOREM] exact per-qubit both-pass value of the attack (closed form in label)",
+  "[OUT-OF-MODEL] breaks a W1 hypothesis: NOT a counterexample to Thm 1",
+  "[THEOREM] (3/4)^n for the same n, contrast only"
+ ],
+ "manifest_id": "figure-fig03_attacker_zoo",
+ "manifest_path": "figures/fig03_attacker_zoo.manifest.json",
+ "manifest_sha256": "7d7b74cecb69b2838873d66b0d4aec391d68e6427fe01965a0802b84c0484c28",
+ "inputs": [
+  {
+   "path": "handoffs/C-C1-evidence.json",
+   "sha256": "ce0de9372c30aa9baa2ef69058bf30256cb56c292f56798334b6080bcd7bcf44"
+  }
+ ],
+ "data_csv": "figures/fig03_attacker_zoo.csv",
+ "outputs": [
+  "figures/fig03_attacker_zoo.svg",
+  "figures/fig03_attacker_zoo.png",
+  "figures/fig03_attacker_zoo.csv"
+ ],
+ "sources": [
+  "https://arxiv.org/abs/1202.4010"
+ ],
+ "notes": [],
+ "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper --force"
+}

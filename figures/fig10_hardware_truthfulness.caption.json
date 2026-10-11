@@ -1,0 +1,55 @@
+{
+ "figure_id": "fig10",
+ "title": "Hardware truthfulness (simulator only; QPU not run)",
+ "status": "READY",
+ "caption": "Quantum-circuit primitive demonstration, not proof of a physically deployable quantum-cash system. Honest BB84 note verification with the exact (zero-tolerance) verifier. Lines: analytic product formula under HYPOTHETICAL qubit noise plus readout error (SYNTHETIC, lane F). Filled triangles: Qiskit Aer density-matrix runs (SIMULATOR_NOISY, 20000 shots, Wilson 95%; shots from one job are the sampling unit, valid only because a simulator has no drift). Bottom right: lane J 8-qubit note, Aer ideal vs a different hypothetical noise model. QPU: not run - no authorized hardware job exists; no paid job was submitted. Acceptance collapses with n under small noise: the exact verifier is not noise tolerant (that requires a threshold game W2, for which no bound is registered).",
+ "evidence_kinds": [
+  "SIMULATOR_IDEAL",
+  "SIMULATOR_NOISY",
+  "SYNTHETIC"
+ ],
+ "evidence_tags": [
+  "SIM-IDEAL",
+  "SIM-NOISY",
+  "SYNTHETIC"
+ ],
+ "synthetic_content": true,
+ "legend": [
+  "[THEOREM] ideal honest acceptance = 1 (noiseless exact verifier)",
+  "[SYNTHETIC] analytic, depolarizing p=0 + readout 1%/2%",
+  "[SYNTHETIC] analytic, depolarizing p=0.05 + readout 1%/2%",
+  "[SIM-NOISY] Aer density-matrix, depolarizing p=0.05, 95% Wilson",
+  "[THEOREM] ideal honest acceptance = 1 (noiseless exact verifier)",
+  "[SYNTHETIC] analytic, dephasing p=0 + readout 1%/2%",
+  "[SYNTHETIC] analytic, dephasing p=0.05 + readout 1%/2%",
+  "[SIM-NOISY] Aer density-matrix, dephasing p=0.05, 95% Wilson",
+  "[THEOREM] ideal honest acceptance = 1 (noiseless exact verifier)",
+  "[SYNTHETIC] analytic, amplitude_damping p=0 + readout 1%/2%",
+  "[SYNTHETIC] analytic, amplitude_damping p=0.05 + readout 1%/2%",
+  "[SIM-NOISY] Aer density-matrix, amplitude_damping p=0.05, 95% Wilson",
+  "[SIM-IDEAL] Aer ideal, 8 qubits, 95% Wilson",
+  "[SIM-NOISY] Aer noisy (hypothetical, not IonQ-calibrated), 95% Wilson"
+ ],
+ "manifest_id": "figure-fig10_hardware_truthfulness",
+ "manifest_path": "figures/fig10_hardware_truthfulness.manifest.json",
+ "manifest_sha256": "963e6795be8a670e5f8648ca26e2d6d229e05ddbb9ef61f9c985ab467867ead8",
+ "inputs": [
+  {
+   "path": "handoffs/F-F1_evidence.json",
+   "sha256": "1025e4da39838df5a9bf7425a6690075392bc88858d3ea8479628b453fd6b0a7"
+  },
+  {
+   "path": "qollab/evidence/local_aer_runs.json",
+   "sha256": "95ca9ba95cb0f11a212fd9b43f8464106bfd687f0ab943aa6eb827e0d24d171c"
+  }
+ ],
+ "data_csv": "figures/fig10_hardware_truthfulness.csv",
+ "outputs": [
+  "figures/fig10_hardware_truthfulness.svg",
+  "figures/fig10_hardware_truthfulness.png",
+  "figures/fig10_hardware_truthfulness.csv"
+ ],
+ "sources": [],
+ "notes": [],
+ "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper --force"
+}

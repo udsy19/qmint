@@ -1,0 +1,29 @@
+{
+ "figure_id": "fig06",
+ "title": "Double-spend space-time diagram",
+ "status": "PENDING",
+ "caption": "PENDING: Double-spend space-time diagram. Awaiting lane G/H integration: needs C4 TransactionTrace records in experiments/ (paper-faithful S-money and lane-H classical race on one SpacetimeNetwork).",
+ "evidence_kinds": [
+  "UNCERTIFIED"
+ ],
+ "evidence_tags": [
+  "UNCERTIFIED"
+ ],
+ "synthetic_content": false,
+ "legend": [],
+ "manifest_id": "figure-fig06_spacetime_double_spend",
+ "manifest_path": "figures/fig06_spacetime_double_spend.manifest.json",
+ "manifest_sha256": "8e58163fc61fd5da482146f7a5e0755c646e5782232cc843bc993a787f0c2594",
+ "inputs": [],
+ "data_csv": "figures/fig06_spacetime_double_spend.csv",
+ "outputs": [
+  "figures/fig06_spacetime_double_spend.svg",
+  "figures/fig06_spacetime_double_spend.png",
+  "figures/fig06_spacetime_double_spend.csv"
+ ],
+ "sources": [],
+ "notes": [
+  "Awaiting lane G/H integration: needs C4 TransactionTrace records in experiments/ (paper-faithful S-money and lane-H classical race on one SpacetimeNetwork)."
+ ],
+ "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper --force"
+}
