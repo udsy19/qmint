@@ -2,6 +2,8 @@
 
 **This effort is supported by Qollab & IonQ.**
 
+**Demo video (2:32):** https://drive.google.com/file/d/1Q91bDAflNIMsbsbJLyPn0Bf0A6DAJHqJ/view?usp=sharing · **Code:** https://github.com/udsy19/qmint
+
 QMint is an open-source research platform that asks a sharp question: *when does quantum money actually beat a well-engineered classical payment system — and how do we prove it, rather than claim it?* It reproduces the published security results for quantum tokens, attacks them with optimal adversaries, checks them against real photon data, and compares them with strong classical baselines. Every number carries an evidence label (theorem, certified numeric, Monte Carlo, simulator, real photon experiment), and negative results are reported as seriously as positive ones.
 
 > Research platform, not money. Nothing here is a deployable banknote or a payment service, and a simulator copying a statevector is not "cloning".
