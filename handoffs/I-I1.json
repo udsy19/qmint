@@ -1,0 +1,110 @@
+{
+ "lane": "I",
+ "task": "I1",
+ "input_contract_sha": "9a4e8a9368e75d3e8e329231020e1992bc7f04ea",
+ "branch": "feat/I-compiler",
+ "starting_commit_sha": "9a4e8a9368e75d3e8e329231020e1992bc7f04ea",
+ "preregistration_commit_sha": "0268feed3b37bc0c6f6b544ccfc6eb882f134e91",
+ "results_generated_at_sha": "ad36dbbf7ec271c9860bf1c085b22f585fff89da",
+ "final_commit_sha": "see git log (handoff commit follows ad36dbb)",
+ "changed_paths": [
+  "benchmarks/",
+  "qmint/compiler/",
+  "tests/unit/compiler/",
+  "reports/optimizer_working/",
+  "handoffs/I-I1.json",
+  "handoffs/I-I1.md"
+ ],
+ "commands_run": [
+  "$PY -m pytest tests/contracts tests/unit/compiler -q",
+  "$PY -m pytest tests/unit/proofs tests/integration -q",
+  "$PY -m ruff check qmint/compiler tests/unit/compiler",
+  "$PY -m qmint.cli compiler experiments"
+ ],
+ "test_exit_codes": {
+  "contracts+compiler": 0,
+  "proofs+integration": 0,
+  "ruff": 0
+ },
+ "test_counts": {
+  "contracts+compiler": 94,
+  "proofs+integration": 261
+ },
+ "evidence_files": [
+  "reports/optimizer_working/results.json",
+  "reports/optimizer_working/results.md",
+  "reports/optimizer_working/selections.csv",
+  "reports/optimizer_working/pareto_s2_certified.csv",
+  "reports/optimizer_working/oracle_agreement.csv",
+  "reports/optimizer_working/ablation_uncertainty.csv",
+  "reports/optimizer_working/ablation_fixed_n.csv",
+  "reports/optimizer_working/ablation_sites.csv",
+  "reports/optimizer_working/d1_uncertified.csv",
+  "reports/optimizer_working/d1_holdout.csv",
+  "reports/optimizer_working/released_compiler_certificates.json",
+  "reports/optimizer_working/fig8_pareto_s2.png",
+  "reports/optimizer_working/fig9_uncertainty_ablation.png"
+ ],
+ "assumptions_verified": [
+  "M1-M3 monotonicity tested numerically through lane D engine",
+  "compiler == exhaustive oracle on 16/16 small grids",
+  "Table 6 / D1 hypotheses DECLARED, not verified"
+ ],
+ "performance_numbers_with_sources": {
+  "S2_primary_cell_N": {
+   "F5a_point": {
+    "published": 40000000.0,
+    "naive": 18836491,
+    "compiler": 10592537
+   },
+   "F5a-half_interval": {
+    "naive": 749894209,
+    "compiler": 105925373
+   },
+   "evidence": "PUBLISHED_THEOREM bound (KLPR2022), CERTIFIED by lane D checker; devices DIGITIZED_FIGURE/HYPOTHETICAL"
+  },
+  "oracle_vs_compiler_S2_small": {
+   "engine_calls": [
+    387072,
+    353
+   ],
+   "seconds": [
+    6.49,
+    0.0116
+   ],
+   "peak_bytes": [
+    1049385,
+    164729
+   ],
+   "evidence": "measured"
+  },
+  "checker": {
+   "released": 320,
+   "rejected": 3,
+   "rejected_selector": "naive_analytic (float precision near f->0)",
+   "D1_uncertified_by_construction": 71
+  },
+  "D1_holdout": {
+   "coverage_iid": 0.0,
+   "coverage_drift": 1.0,
+   "drift_aware_feasible": false,
+   "evidence": "PHOTON_EXPERIMENT + PUBLISHED_AGGREGATE; UNCERTIFIED"
+  },
+  "G5": "POSITIVE by pre-registered rule, driven by HYPOTHETICAL F5a-half (1.12x point, 7.08x interval); modest, L2-candidate only"
+ },
+ "blockers": [],
+ "known_limitations": [
+  "no real S2 calibration; S2 devices are digitized/hypothetical",
+  "interval boxes hypothetical",
+  "D1 never certifiable",
+  "gain mechanism = robustness over-provisioning in Kent's hand-tuned tuple; domain transfer of QKD parameter optimisation (novelty C1/C4)",
+  "strict match on eps_rob capped at 1e-300",
+  "holdout stats visible pre-registration (disclosed)"
+ ],
+ "interfaces_changed": [],
+ "proposed_interface_changes": [
+  "lane D: outward rounding margin on float engine bounds near f->0 so drafts are never optimistic vs checker",
+  "contracts: log10-valued Targets for bounds below float range"
+ ],
+ "whether_paid_jobs_run": false
+}
