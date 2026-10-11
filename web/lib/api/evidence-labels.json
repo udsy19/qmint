@@ -1,0 +1,193 @@
+{
+  "labels": [
+    {
+      "css": "demo-adapter",
+      "group": "api_status",
+      "key": "DEMO_ADAPTER",
+      "label": "DEMO ADAPTER",
+      "origin": "api",
+      "title": "Demonstration computed from analytic / published formulas or merged lane-F/G code while the owning lane is not merged; not that lane's output",
+      "tone": "warn"
+    },
+    {
+      "css": "not-available",
+      "group": "api_status",
+      "key": "NOT_AVAILABLE",
+      "label": "NOT AVAILABLE",
+      "origin": "api",
+      "title": "Nothing honest to show yet; see the reason",
+      "tone": "neutral"
+    },
+    {
+      "css": "status-certified",
+      "group": "certificate_status",
+      "key": "CERTIFIED",
+      "label": "CERTIFIED",
+      "origin": "theory",
+      "title": "Every target met by an applicable, independently checked bound",
+      "tone": "ok"
+    },
+    {
+      "css": "status-infeasible",
+      "group": "certificate_status",
+      "key": "INFEASIBLE",
+      "label": "INFEASIBLE",
+      "origin": "none",
+      "title": "Applicable bounds exist but targets cannot be met",
+      "tone": "warn"
+    },
+    {
+      "css": "status-out-of-model",
+      "group": "certificate_status",
+      "key": "OUT_OF_MODEL",
+      "label": "OUT-OF-MODEL",
+      "origin": "none",
+      "title": "Request violates the proof's trust/physical model",
+      "tone": "danger"
+    },
+    {
+      "css": "status-uncertified",
+      "group": "certificate_status",
+      "key": "UNCERTIFIED",
+      "label": "UNCERTIFIED",
+      "origin": "none",
+      "title": "Missing bound, assumption or independent check",
+      "tone": "warn"
+    },
+    {
+      "css": "status-unsafe",
+      "group": "certificate_status",
+      "key": "UNSAFE",
+      "label": "UNSAFE",
+      "origin": "none",
+      "title": "An attack exceeds the claimed bound or targets",
+      "tone": "danger"
+    },
+    {
+      "css": "certified-numeric",
+      "group": "evidence_kind",
+      "key": "CERTIFIED_NUMERIC",
+      "label": "CERTIFIED-NUMERIC",
+      "origin": "numeric",
+      "title": "Numeric bound with rigorous residual accounting",
+      "tone": "info"
+    },
+    {
+      "css": "digitized-figure",
+      "group": "evidence_kind",
+      "key": "DIGITIZED_FIGURE",
+      "label": "DIGITIZED-FIGURE",
+      "origin": "theory",
+      "title": "Read off a published figure; carries digitization error",
+      "tone": "neutral"
+    },
+    {
+      "css": "measured-latency",
+      "group": "evidence_kind",
+      "key": "MEASURED_LATENCY",
+      "label": "MEASURED-LATENCY",
+      "origin": "measured",
+      "title": "Latency from real measurements",
+      "tone": "info"
+    },
+    {
+      "css": "modelled-latency",
+      "group": "evidence_kind",
+      "key": "MODELLED_LATENCY",
+      "label": "MODELLED-LATENCY",
+      "origin": "simulated",
+      "title": "Latency from a model (light-cone, queue model); not a measurement",
+      "tone": "neutral"
+    },
+    {
+      "css": "monte-carlo",
+      "group": "evidence_kind",
+      "key": "MONTE_CARLO",
+      "label": "MONTE-CARLO (lower bound)",
+      "origin": "simulated",
+      "title": "Sampled attack success: a LOWER bound on worst-case attack success, never an upper bound",
+      "tone": "neutral"
+    },
+    {
+      "css": "numerical",
+      "group": "evidence_kind",
+      "key": "NUMERICAL_SDP",
+      "label": "NUMERICAL",
+      "origin": "numeric",
+      "title": "Floating-point SDP solver output; not a proof without residual accounting",
+      "tone": "neutral"
+    },
+    {
+      "css": "photon-experiment",
+      "group": "evidence_kind",
+      "key": "PHOTON_EXPERIMENT",
+      "label": "PHOTON-EXPERIMENT",
+      "origin": "measured",
+      "title": "Real recorded photon events with dataset hash",
+      "tone": "info"
+    },
+    {
+      "css": "published-aggregate",
+      "group": "evidence_kind",
+      "key": "PUBLISHED_AGGREGATE",
+      "label": "PUBLISHED-AGGREGATE",
+      "origin": "theory",
+      "title": "Number quoted from a paper table or text",
+      "tone": "neutral"
+    },
+    {
+      "css": "theorem",
+      "group": "evidence_kind",
+      "key": "PUBLISHED_THEOREM",
+      "label": "THEOREM",
+      "origin": "theory",
+      "title": "Bound transcribed from a peer-reviewed proof",
+      "tone": "info"
+    },
+    {
+      "css": "qpu",
+      "group": "evidence_kind",
+      "key": "QPU",
+      "label": "QPU",
+      "origin": "measured",
+      "title": "Actual quantum hardware job with job id",
+      "tone": "info"
+    },
+    {
+      "css": "simulator-ideal",
+      "group": "evidence_kind",
+      "key": "SIMULATOR_IDEAL",
+      "label": "SIMULATOR-IDEAL",
+      "origin": "simulated",
+      "title": "Noiseless circuit/statevector simulation",
+      "tone": "neutral"
+    },
+    {
+      "css": "simulator-noisy",
+      "group": "evidence_kind",
+      "key": "SIMULATOR_NOISY",
+      "label": "SIMULATOR-NOISY",
+      "origin": "simulated",
+      "title": "Simulation under a declared noise model",
+      "tone": "neutral"
+    },
+    {
+      "css": "synthetic",
+      "group": "evidence_kind",
+      "key": "SYNTHETIC",
+      "label": "SYNTHETIC",
+      "origin": "simulated",
+      "title": "Generated fixture or hypothetical scenario",
+      "tone": "warn"
+    },
+    {
+      "css": "uncertified",
+      "group": "evidence_kind",
+      "key": "UNCERTIFIED",
+      "label": "UNCERTIFIED",
+      "origin": "none",
+      "title": "No applicable evidence",
+      "tone": "warn"
+    }
+  ]
+}
