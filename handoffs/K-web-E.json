@@ -1,0 +1,106 @@
+{
+ "lane": "K-web",
+ "task": "E (benchmarks explorer + Security Certificate Studio)",
+ "branch": "feat/KE-web",
+ "input_contract_sha": "6a8053e",
+ "starting_commit_sha": "6a8053e",
+ "final_commit_sha": "see git log (handoff commit after 1c32918)",
+ "code_commits": [
+  "81fcbc3",
+  "1c32918"
+ ],
+ "changed_paths": [
+  "qmint/api/routes/benchmarks.py",
+  "qmint/api/routes/certificates.py",
+  "tests/unit/api/test_e_benchmarks.py",
+  "tests/unit/api/test_e_certificates.py",
+  "web/app/(platform)/benchmarks/_components/explorer.tsx",
+  "web/app/(platform)/benchmarks/_components/model.test.ts",
+  "web/app/(platform)/benchmarks/_components/model.ts",
+  "web/app/(platform)/benchmarks/_components/sections.tsx",
+  "web/app/(platform)/benchmarks/page.tsx",
+  "web/app/(platform)/certificates/page.tsx",
+  "web/components/certificates/__fixtures__/d1-schiansky.json",
+  "web/components/certificates/__fixtures__/w1-n73.json",
+  "web/components/certificates/__fixtures__/w1-privacy.json",
+  "web/components/certificates/form-model.test.ts",
+  "web/components/certificates/form-model.ts",
+  "web/components/certificates/results.test.tsx",
+  "web/components/certificates/results.tsx",
+  "web/components/certificates/studio.tsx",
+  "web/components/charts/chart-frame.tsx",
+  "web/components/charts/index.ts",
+  "web/components/charts/interval-plot.tsx",
+  "web/components/charts/line-band-chart.tsx",
+  "web/components/charts/scale.test.ts",
+  "web/components/charts/scale.ts",
+  "web/components/charts/scatter-pareto.tsx",
+  "web/lib/api/openapi.json",
+  "web/lib/api/schema.d.ts",
+  "handoffs/K-web-E.md",
+  "handoffs/K-web-E.json"
+ ],
+ "commands_run": [
+  "pnpm typecheck",
+  "pnpm lint",
+  "pnpm test",
+  "QMINT_API_ORIGIN=http://127.0.0.1:8784 pnpm build",
+  "pnpm gen:api",
+  "$PY -m pytest tests/unit/api tests/contracts -q -o addopts=''",
+  "$PY -m ruff check qmint/api/routes/benchmarks.py qmint/api/routes/certificates.py tests/unit/api/test_e_*.py",
+  "uvicorn :8784 + next dev -p 3004 + playwright screenshots 390/768/1440/1920"
+ ],
+ "test_exit_codes": {
+  "typecheck": 0,
+  "lint": 0,
+  "vitest": "0 (37/37)",
+  "build": 0,
+  "ruff": 0,
+  "pytest_api_contracts": "1: 76 passed, 3 failed \u2014 all 3 in test_api.py asserting the replaced DEMO_ADAPTER behaviour (test_certificates_never_certified, test_certificate_min_size_and_failed_assumption, test_benchmarks_rows); superseded by tests/unit/api/test_e_*.py (19 passed). Proposed: lead deletes the three."
+ },
+ "evidence_files": [
+  "reports/classical_baseline_notes/benchmark_records.jsonl",
+  "reports/classical_baseline_notes/comparability_matrix.csv",
+  "reports/data_working/schiansky2023/{per_run.csv,summary.json,calibration_records.json}",
+  "proofs/OBLIGATIONS.yaml",
+  "proofs/certificates/*.json",
+  "web/components/certificates/__fixtures__/*.json (real POST /certificates responses)"
+ ],
+ "screenshots": [
+  "/private/tmp/claude-501/ke-shots/bench-{390,768,1440,1920}.png",
+  "/private/tmp/claude-501/ke-shots/cert-{390,768,1440,1920}.png",
+  "/private/tmp/claude-501/ke-shots/cert-{mismatch,kentexp,d1}-1440.png"
+ ],
+ "assumptions_verified": [
+  "CERTIFIED only from IndependentProofChecker (mock-refusal test)",
+  "D1 never certified",
+  "missing privacy theorem -> null, rendered 'no applicable bound'",
+  "calibration family mismatch -> OUT_OF_MODEL, not transferred",
+  "quantum vs classical latencies never on one axis until lane GH",
+  "no single score; X11 statuses shown per pair"
+ ],
+ "performance_numbers_with_sources": [
+  "W1 n_min(1e-9)=73 (lane D ideal_bounds)",
+  "D1 p_d=5.911e-45 at N=4.2e6 (Schiansky SI Eq.22, lane D)",
+  "Jinan S-money modelled 15.337 us vs published 15.34 us (lane G)",
+  "photon QBER state-avg Z 1.4491% / X 3.2787% vs published 1.45/3.28% (lane E)"
+ ],
+ "blockers": [
+  "lane GH (matched topology) not merged -> NOT_AVAILABLE slot",
+  "lane I (compiler) not merged -> optimisation NOT_AVAILABLE"
+ ],
+ "known_limitations": [
+  "Studio classification INFEASIBLE/OUT_OF_MODEL is derived from reasons; the checker itself only emits CERTIFIED/UNCERTIFIED (labelled in UI and API)",
+  "Explorer table scrolls horizontally on mobile (contained, no page overflow)",
+  "390px benchmarks recapture needed after useNarrow gutter change",
+  "D<->E semantic mismatch: assumption_check maps E's basis_bias_interval (fraction in Z, ~0.5) to Kent beta_PB (a bias); masked today by the family check \u2014 proposal in md"
+ ],
+ "interfaces_changed": [
+  "GET /api/v1/benchmarks: data.rows replaced by data.{protocols,comparability,latency_cases,photon,matched_topology,reproducibility,comparability_note}",
+  "POST /api/v1/certificates: new request {game, protocol_id, targets{4 axes}, parameters{name: number|{lo,hi}}, honest_error_tolerance, declared_assumptions, noise_source, calibration}; response has theorem, declarations, axes[BoundResult], sizing(+curve), optimization, draft/checked certificates, checker, classification, export",
+  "new GET /api/v1/certificates/catalog",
+  "web/lib/api/{openapi.json,schema.d.ts} regenerated",
+  "web/components/charts/* exported for agent D: ChartFrame, ChartLegend, IntervalPlot, LineBandChart, ScatterPareto, scale helpers"
+ ],
+ "whether_paid_jobs_run": false
+}
