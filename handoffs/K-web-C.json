@@ -1,0 +1,72 @@
+{
+  "lane": "K-web-C",
+  "task": "platform shell, /app overview, /research library, /docs",
+  "input_contract_sha": "6a8053e",
+  "branch": "feat/KC-web",
+  "starting_commit_sha": "6a8053e",
+  "final_commit_sha": "2a70399 (code); handoff commit follows",
+  "changed_paths": [
+    "qmint/api/routes/research.py",
+    "qmint/api/routes/meta.py",
+    "qmint/api/routes/protocols.py",
+    "qmint/api/routes/evidence.py",
+    "tests/unit/api/test_c_routes.py",
+    "web/app/(platform)/layout.tsx",
+    "web/app/(platform)/app/page.tsx",
+    "web/app/(platform)/research/**",
+    "web/app/(platform)/docs/**",
+    "web/components/shell/**",
+    "web/components/research/**",
+    "web/components/docs/**",
+    "web/lib/api/openapi.json",
+    "web/lib/api/schema.d.ts",
+    "handoffs/K-web-C.md",
+    "handoffs/K-web-C.json"
+  ],
+  "commands_run": [
+    "pnpm typecheck",
+    "pnpm lint",
+    "pnpm test",
+    "pnpm build",
+    "pnpm gen:api",
+    "python -m pytest tests/unit/api tests/contracts -q",
+    "python -m ruff check qmint/api tests/unit/api",
+    "playwright screenshots 390/768/1440/1920"
+  ],
+  "test_exit_codes": {
+    "pnpm typecheck": 0,
+    "pnpm lint": 0,
+    "pnpm test (34/34)": 0,
+    "pnpm build": 0,
+    "pytest tests/unit/api tests/contracts": "1 (70 passed, 1 expected failure test_api.py::test_research_sources_unverified asserting removed plan label)",
+    "ruff": 0
+  },
+  "evidence_files": [
+    "/private/tmp/claude-501/-Users-udsy-PycharmProjects-Qollab-QMint/634384d6-a062-4a24-8650-bcd5800df2da/scratchpad/kc/shots/"
+  ],
+  "assumptions_verified": [
+    "research statuses shown verbatim from lane files",
+    "gate statuses equal TRACKER.yaml (test)",
+    "game anchors never cross games (test)",
+    "transcribed W1/W1_CV/S1 bases equal lane D log10_bound at size 1 (test)",
+    "docs example commands executed with exit 0"
+  ],
+  "performance_numbers_with_sources": [],
+  "blockers": [
+    "lead: delete tests/unit/api/test_api.py::test_research_sources_unverified (superseded by test_c_routes.py)"
+  ],
+  "known_limitations": [
+    "LaTeX shown as source, not typeset",
+    "common.py probes lane A as a package so /meta shows A absent",
+    "T-MVW12-THM2 proof_obligation P-W1-CV vs obligation id P-W1CV",
+    "pyproject license Apache-2.0 vs MIT LICENSE",
+    "record store empty in this checkout (explicit empty state)"
+  ],
+  "interfaces_changed": [
+    "GET /api/v1/research/sources: status OK, entries from lane files (new fields kind/status/games/dois/related/...), adds files+glossary",
+    "GET /api/v1/research/sources/{entry_id} (new)",
+    "GET /api/v1/meta/tracker (new)",
+    "GameInfo.anchors (new, default [])"
+  ],
+  "whether_paid_jobs_run": false
+}

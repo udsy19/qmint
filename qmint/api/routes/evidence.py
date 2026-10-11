@@ -83,22 +83,25 @@ router = APIRouter(prefix="/evidence", tags=["evidence"])
 
 @router.get("", response_model=EvidenceResponse)
 def evidence() -> EvidenceResponse:
+    """Index of experiment records in the RecordStore registry, newest first (may be empty)."""
     cfg = load_config()
     store = RecordStore(cfg.experiments_dir)
-    recs = [
-        RecordSummary(**{k: line[k] for k in RecordSummary.model_fields})
-        for line in store.iter_registry()
-    ]
+    recs = sorted(
+        (RecordSummary(**{k: line[k] for k in RecordSummary.model_fields}) for line in store.iter_registry()),
+        key=lambda r: r.created_utc,
+        reverse=True,
+    )
     return EvidenceResponse(
         status="OK",
         evidence_kind=None,
-        provenance=provenance("qmint.core.records.RecordStore", notes="read-only registry index"),
+        provenance=provenance("qmint.core.records.RecordStore", notes="read-only registry index, newest first"),
         data=EvidenceData(experiments_dir=str(cfg.experiments_dir.relative_to(cfg.root)), records=recs),
     )
 
 
 @router.get("/labels", response_model=EvidenceLabelsResponse)
 def labels() -> EvidenceLabelsResponse:
+    """Display labels for every EvidenceKind, CertificateStatus and API status."""
     return EvidenceLabelsResponse(
         status="OK", evidence_kind=None, provenance=provenance("qmint.ui.evidence_badges"), data=evidence_labels()
     )
