@@ -50,7 +50,7 @@ from qmint.core.contracts import (
     TraceEvent,
     TransactionTrace,
 )
-from qmint.protocols.common import SecretHolder
+from qmint.protocols.common import EventLog, SecretHolder
 from qmint.protocols.register import FactorizedRegister, RegisterHandle, bb84_ket, bb84_projector
 
 PAPER_URL = "https://doi.org/10.1038/s41534-022-00524-4"
@@ -145,10 +145,6 @@ class ProtocolOrderError(RuntimeError):
     """A step was attempted out of the published order (or before its inputs exist)."""
 
 
-class CausalityError(RuntimeError):
-    """An event would precede one of its causal parents."""
-
-
 def _bits(v: Sequence[int], n: int, name: str) -> tuple[int, ...]:
     out = tuple(int(x) for x in v)
     if len(out) != n or any(x not in (0, 1) for x in out):
@@ -187,8 +183,7 @@ class KentSMoneySession(SecretHolder):
         self.token_id = token_id
         self._rng = np.random.default_rng(seed)
         self.sites = {**DEFAULT_SITES, **(sites or {})}
-        self.events: list[TraceEvent] = []
-        self._last: dict[str, str] = {}
+        self.log = EventLog(self.sites)
         self._bob: dict[str, dict[str, Any]] = {r: {} for r in BOB_ROLES}
         self._secret: IssuerSecret | None = None
         self.bob_received: list[tuple[float, str, str, Any]] = []  # (time, Bob role, item, value)
@@ -200,40 +195,15 @@ class KentSMoneySession(SecretHolder):
         return f"KentSMoneySession(scheme={self.scheme.value}, N={self.params.N}, events={len(self.events)})"
 
     # ------------------------------------------------------------------ events
-    def _ev(
-        self,
-        role: str,
-        kind: str,
-        t: float,
-        parents: Sequence[str] = (),
-        message_id: str | None = None,
-        **detail: Any,
-    ) -> str:
-        by_id = {e.event_id: e for e in self.events}
-        ps = [p for p in dict.fromkeys(parents) if p]
-        for p in ps:
-            if by_id[p].time_ns > t:
-                raise CausalityError(f"{kind} at {role} (t={t}) precedes parent {p} (t={by_id[p].time_ns})")
-        eid = f"ev-{len(self.events) + 1:04d}"
-        self.events.append(
-            TraceEvent(
-                event_id=eid,
-                site_id=self.sites[role],
-                kind=kind,
-                time_ns=float(t),
-                causal_parent_ids=ps,
-                message_id=message_id,
-                detail={"role": role, **detail},
-            )
-        )
-        self._last[role] = eid
-        return eid
+    @property
+    def events(self) -> list[TraceEvent]:
+        return self.log.events
 
     def record_alice_event(self, role: str, kind: str, t: float, **detail: Any) -> str:
         """Alice-internal event (measurement, branch choice...). Not visible to Bob."""
         if role not in ALICE_ROLES:
             raise ValueError("record_alice_event is for Alice's agents")
-        return self._ev(role, kind, t, [self._last.get(role, "")], **detail)
+        return self.log.event(role, kind, t, **detail)
 
     def _msg(
         self,
@@ -244,25 +214,12 @@ class KentSMoneySession(SecretHolder):
         t_send: float,
         t_recv: float | None,
         send_kind: str = "message_send",
-    ) -> str:
-        mid = f"msg-{len(self.events) + 1:04d}-{item}"
-        s = self._ev(src, send_kind, t_send, [self._last.get(src, "")], message_id=mid, item=item, to=dst)
-        lat = {} if t_recv is not None else {"latency": "unmodelled"}
-        r = self._ev(
-            dst,
-            "message_receive",
-            t_send if t_recv is None else t_recv,
-            [s, self._last.get(dst, "")],
-            message_id=mid,
-            item=item,
-            frm=src,
-            **lat,
-        )
+    ) -> None:
+        t_r = self.log.message(src, dst, item, t_send, t_recv, send_kind)
         if dst in BOB_ROLES:
             self._bob[dst][item] = value
             if src in ALICE_ROLES:
-                self.bob_received.append((self.events[-1].time_ns, dst, item, value))
-        return r
+                self.bob_received.append((t_r, dst, item, value))
 
     # --------------------------------------------------------- stage I (quantum)
     def bank_send_quantum(self, t_ns: float, t_recv_ns: float | None = None) -> RegisterHandle:
@@ -276,19 +233,19 @@ class KentSMoneySession(SecretHolder):
         self._secret = IssuerSecret(
             token_id=self.token_id, protocol_id=self.protocol_id, bases=bases, bits=t, extra={"u": u}
         )
-        self._ev("B", "issue", t_ns, [], scheme=self.scheme.value, N=n)
+        issue = self.log.event("B", "issue", t_ns, scheme=self.scheme.value, N=n)
         reg = FactorizedRegister()
         qs = reg.add_product_state(
             [np.outer(v, v.conj()) for v in (bb84_ket(b, x) for b, x in zip(bases, t, strict=True))]
         )
-        self._ev("A", "quantum_exchange", t_ns if t_recv_ns is None else t_recv_ns, [self._last["B"]], N=n)
+        self.log.event("A", "quantum_exchange", t_ns if t_recv_ns is None else t_recv_ns, [issue], N=n)
         record = TokenRecord(
             token_id=self.token_id,
             protocol_id=self.protocol_id,
             n_prepared=n,
             source_state_family="BB84",
             public_metadata={"scheme": self.scheme.value, "paper": PAPER_URL},
-            issue_event_id=self._last["B"],
+            issue_event_id=issue,
             state_kind=StateKind.IDEAL_SIMULATED if self.scheme.ideal else StateKind.NOISY_SIMULATED,
             ownership_context="alice_A",
             backend_provenance="SIMULATOR:qmint.protocols.register.FactorizedRegister",
@@ -316,7 +273,7 @@ class KentSMoneySession(SecretHolder):
         n = len(lam)
         if n < self.params.gamma_det * self.params.N:
             self.aborted = True
-            self._ev("B", "reject", t_ns, [self._last["B"]], reason="abort: n < gamma_det*N", n=n)
+            self.log.event("B", "reject", t_ns, reason="abort: n < gamma_det*N", n=n)
         return not self.aborted
 
     def _n_reported(self) -> int:
@@ -368,7 +325,7 @@ class KentSMoneySession(SecretHolder):
                 self._msg("B", bi, "d", self._bob["B"]["d"], t_ns, ta)
                 di = tuple(x ^ i for x in self._bob["B"]["d"])  # d_0 = d, d_1 = complement(d)
                 self._bob[bi]["d_i"] = di
-                self._ev(bi, "other", self.events[-1].time_ns, [self._last[bi]], action="compute d_i")
+                self.log.event(bi, "other", self.events[-1].time_ns, action="compute d_i")
 
     # ----------------------------------------------------------- stage II
     def alice_send_c(self, c: int, t_ns: float) -> None:
@@ -393,7 +350,7 @@ class KentSMoneySession(SecretHolder):
             else:  # IQT2 step 6 / QT2 step 7: d~_{i,k} = i xor c for all k
                 dt = (i ^ c,) * n
             self._bob[bi]["dtilde"] = dt
-            self._ev(bi, "other", self.events[-1].time_ns, [self._last[bi]], action="compute dtilde")
+            self.log.event(bi, "other", self.events[-1].time_ns, action="compute dtilde")
 
     def present(self, i: int, x: Sequence[int], t_ns: float, t_result_ns: float | None = None) -> bool:
         """A_i presents token x to B_i at Q_i; B_i validates locally (instant validation)."""
@@ -408,8 +365,8 @@ class KentSMoneySession(SecretHolder):
         self._msg(ai, bi, "x", xb, t_ns, t_ns)
         if self._reveal_time is None:
             self._reveal_time = t_ns
-        self._ev(bi, "privacy_reveal", t_ns, [self._last[bi]], revealed="presentation point b", b=i)
-        self._ev(bi, "local_validation_start", t_ns, [self._last[bi]])
+        self.log.event(bi, "privacy_reveal", t_ns, revealed="presentation point b", b=i)
+        self.log.event(bi, "local_validation_start", t_ns)
         mem = self._bob[bi]
         ref, basis = (mem["t"], mem["u"]) if self.scheme.ideal else (mem["r"], mem["s"])
         delta = [k for k in range(n) if mem["dtilde"][k] == basis[k]]
@@ -420,7 +377,7 @@ class KentSMoneySession(SecretHolder):
             ok = errors <= len(delta) * float(self.params.gamma_err)
         tr = t_ns if t_result_ns is None else t_result_ns
         kind = "verification_result_available_local" if ok else "reject"
-        self._ev(bi, kind, tr, [self._last[bi]], accepted=ok, delta_size=len(delta), errors=errors)
+        self.log.event(bi, kind, tr, accepted=ok, delta_size=len(delta), errors=errors)
         self.outcomes[i] = ValidationOutcome(i, ok, len(delta), errors)
         return ok
 

@@ -14,6 +14,7 @@ from scipy.stats import binom, binomtest
 from qmint.core.contracts import ProtocolSpec, SecretBoundaryError, TransactionTrace
 from qmint.core.serialization import canonical_json
 from qmint.protocols import kent_smoney_2022 as K
+from qmint.protocols.common import CausalityError
 from qmint.protocols.register import bb84_projector, projector_from_angle
 
 IDEAL = [K.KentScheme.IQT1, K.KentScheme.IQT2]
@@ -106,7 +107,7 @@ def test_trace_is_valid_dag_with_published_order(scheme):
 def test_arrival_before_send_is_rejected():
     s = K.KentSMoneySession(params(K.KentScheme.IQT1, 4), seed=1)
     a = K.HonestAlice(s, seed=2)
-    with pytest.raises(K.CausalityError):
+    with pytest.raises(CausalityError):
         a.run(0, K.monotone_times(), arrivals={"bank_distribute": {"B0": -5.0, "B1": -5.0}})
 
 
