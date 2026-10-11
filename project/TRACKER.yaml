@@ -127,11 +127,15 @@ tasks:
     description: Spacetime topology and causal simulations
     owner: subagent-lane-G
     branch: feat/G-networks
-    status: CLAIMED
-    evidence: []
+    status: MERGED
+    evidence:
+    - handoffs/G-G1.json
+    - RIPE msm 7714918/10683825 fixture
+    - Jiang 2024 2.766km->15.337us modelled vs 15.34us published
     blockers: []
-    commit: null
+    commit: 0cdec21
     start_sha: ece05ef
+    notes: classical_race_fixtures.py to be replaced by lane H then deleted
   H1:
     lane: H
     description: Atomic ledger/escrow/PQC classical baselines
