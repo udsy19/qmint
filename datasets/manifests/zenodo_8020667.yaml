@@ -28,7 +28,7 @@ versions:
 contents: [00_m_startboth.py (instrument control), 01_a_prepdata2.py, 02_a_off_clean5hv_alt.py,
            03_a_coinc1_bb84.py, drift_alt.py, find_start.py, README]
 qmint_policy: >-
-  License conflict (metadata CC-BY-4.0 vs shipped AGPL-3.0) => treat as AGPL-3.0; QMint (Apache-2.0)
+  License conflict (metadata CC-BY-4.0 vs shipped AGPL-3.0) => treat as AGPL-3.0; QMint (MIT)
   copies NO code. qmint.photonics is an independent reconstruction informed by reading these scripts.
 findings_from_reading:
   - "01: reads TTM8000 text cols 1 (channel) and 3 (tick); ns = (tick - tick[0]) * 82.3045/1000."

@@ -6,7 +6,7 @@
 | Data, 7997998 (v2) | CC-BY-4.0 | same CC BY 3.0 text | Same as v1 |
 | Code, 7985331 (v0) | CC-BY-4.0 | none | Read only |
 | Code, 7997961 (v1) | CC-BY-4.0 | CC BY 3.0 text | Read only |
-| Code, 8020667 (v2, cited by the paper) | CC-BY-4.0 | **GNU AGPL v3** | Read only. **No code copied.** `qmint/photonics` is an independent reconstruction (Apache-2.0). |
+| Code, 8020667 (v2, cited by the paper) | CC-BY-4.0 | **GNU AGPL v3** | Read only. **No code copied.** `qmint/photonics` is an independent reconstruction (MIT). |
 
 The metadata and the shipped license files disagree for both the data (4.0 vs 3.0) and the code
 (CC-BY vs AGPL). Both CC BY versions allow redistributing derived numbers with attribution, so

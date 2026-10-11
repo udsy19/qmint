@@ -1,5 +1,7 @@
 # QMint — proof-carrying quantum payment security research platform
 
+This effort is supported by Qollab & IonQ.
+
 **Status: research simulator and evaluation harness (claim level L0 until a record says otherwise).**
 Not a payment system, not physical quantum money, not a security certification.
 
@@ -10,3 +12,5 @@ Not a payment system, not physical quantum money, not a security certification.
 uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -r requirements.lock
 .venv/bin/python -m pytest -q
 ```
+
+License: MIT (`LICENSE`). Disclosure of starting material and AI assistance: `DISCLOSURE.md`.
