@@ -1,0 +1,76 @@
+{
+  "lane": "F",
+  "task": "F1",
+  "scope": "F1 Qiskit BB84 reference, F2 W1 cloner circuits, F3 qubit noise channels, F4 photonic forward model (X03, X15-local, Figure 10 data)",
+  "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+  "branch": "feat/F-quantum",
+  "starting_commit_sha": "ece05ef02f3f89c2f75edc2393f478e77061ca56",
+  "code_commit_sha": "0c7815169d1a82a7588950aa7a99b9c7e1c73bba",
+  "final_commit_sha": "SEE_GIT_LOG (handoff commit directly follows code commit 0c78151)",
+  "changed_paths": [
+    "qmint/quantum/bb84.py",
+    "qmint/quantum/circuits.py",
+    "qmint/quantum/references.py",
+    "qmint/quantum/channels.py",
+    "qmint/quantum/photonic_model.py",
+    "qmint/quantum/cloner.py",
+    "qmint/quantum/records.py",
+    "qmint/quantum/evidence.py",
+    "tests/unit/quantum/test_quantum_bb84_and_bit_order.py",
+    "tests/unit/quantum/test_quantum_three_way.py",
+    "tests/unit/quantum/test_quantum_channels_and_shots.py",
+    "tests/unit/quantum/test_quantum_cloner.py",
+    "tests/unit/quantum/test_quantum_photonic_model.py",
+    "handoffs/F-F1.json",
+    "handoffs/F-F1.md",
+    "handoffs/F-F1_evidence.json"
+  ],
+  "commands_run": [
+    "$PY -m pytest tests/contracts tests/unit/quantum -q",
+    "$PY -m ruff check qmint/quantum tests/unit/quantum",
+    "$PY -m qmint.quantum.evidence handoffs/F-F1_evidence.json 0c7815169d1a82a7588950aa7a99b9c7e1c73bba"
+  ],
+  "test_exit_codes": {
+    "pytest tests/contracts tests/unit/quantum": {"exit": 0, "passed": 164, "failed": 0, "contracts": 18, "quantum": 146},
+    "ruff check qmint/quantum tests/unit/quantum": {"exit": 0}
+  },
+  "evidence_files": [
+    {"path": "handoffs/F-F1_evidence.json", "sha256": "1025e4da39838df5a9bf7425a6690075392bc88858d3ea8479628b453fd6b0a7",
+     "note": "deterministic seeds; Aer job_id UUIDs differ per run so the file hash is not reproducible byte-for-byte"}
+  ],
+  "assumptions_verified": [
+    "C7: (Z,0)=|0>,(Z,1)=|1>,(X,0)=|+>,(X,1)=|->; note qubit i = Qiskit qubit i -> clbit i; counts decoded only via circuits.decode_bitstring (tested with asymmetric circuits, hex keys, malformed keys)",
+    "Verification in secret basis: H before Z-measure for X qubits (gate-sequence test)",
+    "Dense simulation capped at 8 qubits (bb84.MAX_STATEVECTOR_QUBITS); large n only via analytic product formulas",
+    "MVW 2012 W1 optimum (3/4)^n read from https://arxiv.org/abs/1202.4010 abstract; optimal channel Kraus A0,A1 read from PDF Sec. 3.2 (primal solution X=J(Phi))",
+    "Bruss et al. 2000 phase-covariant cloner read from https://arxiv.org/pdf/quant-ph/9909046 Sec. IV eqs. (26),(33),(34),(35); text extraction lost sqrt/fraction layout, coefficients a=1/2+sqrt(1/8), b=sqrt(1/8), c=1/2-sqrt(1/8) confirmed by normalisation a^2+2b^2+c^2=1 and F=a^2+b^2=1/2+sqrt(1/8) (eq. 34)",
+    "Aer depolarizing_error(p,1), pauli_error Z-flip, amplitude_damping_error(g) superoperators equal our Kraus maps (test)"
+  ],
+  "performance_numbers_with_sources": [
+    {"quantity": "X03 max |Qiskit - NumPy| over 64 cases (n=1..8, ideal + 3 channels w/ readout, secret & mixed bases)", "value": 7.0e-15, "evidence_kind": "SIMULATOR_IDEAL/SIMULATOR_NOISY"},
+    {"quantity": "X03 max |QuTiP - NumPy|", "value": 1.7e-15, "evidence_kind": "SIMULATOR_IDEAL/SIMULATOR_NOISY"},
+    {"quantity": "Aer noisy acceptance (p=0.05 channel + readout 0.01/0.02, n=1,4,8, 20000 shots): analytic inside 99.9% Clopper-Pearson CI", "value": "9/9", "evidence_kind": "SIMULATOR_NOISY"},
+    {"quantity": "Bruss 2000 cloner W1 both-pass per qubit", "value": 0.7285533905932737, "analytic": "(3+2sqrt2)/8", "label": "heuristic_circuit_attack", "evidence_kind": "SIMULATOR_IDEAL", "aer_estimate": "29177/40000 = 0.7294, 99% CI [0.7237, 0.7351]"},
+    {"quantity": "MVW 2012 Sec 3.2 channel as 3-qubit Stinespring circuit, W1 both-pass per qubit", "value": 0.75, "exact_rational": "3/4", "label": "mvw2012_optimal_channel_circuit", "evidence_kind": "SIMULATOR_IDEAL", "aer_estimate": "30042/40000 = 0.7511, 99% CI [0.7454, 0.7566]"},
+    {"quantity": "Cloner circuit resources (1 note qubit)", "value": "width 3, generic transpile 18-19 CX (unitary synthesis of an 8x8 completion; not hardware-native, not minimal)"},
+    {"quantity": "Honest mean acceptance, exact-match verifier, readout 1%/2% only, n=8 / n=128", "value": [0.8861, 0.1445], "evidence_kind": "SYNTHETIC"},
+    {"quantity": "Honest mean acceptance, depolarizing 0.05 + readout, n=8 / n=128", "value": [0.7259, 0.0059], "evidence_kind": "SYNTHETIC"},
+    {"quantity": "Photonic MC p_detect (Poisson mu=0.5, 3 dB, eta_det 0.6, p_dark 1e-3) vs analytic", "value": "MC 0.14019, 99.9% CI [0.1376, 0.1428]; analytic 0.14132", "evidence_kind": "SYNTHETIC"}
+  ],
+  "blockers": [],
+  "known_limitations": [
+    "All results are local simulation (SIMULATOR_IDEAL/NOISY) or analytic under hypothetical parameters (SYNTHETIC). No calibration against any physical backend was available; noise parameters are hypothetical scenarios.",
+    "A simulator statevector is classical data copyable by the host; nothing here demonstrates software-level no-cloning.",
+    "Noise location model: one channel per note qubit between preparation and verification, plus readout error; gate-level noise on H/X is not modelled separately. Only single-channel NoiseSpec (no composition).",
+    "MVW 'optimal' label applies only to the W1 game per qubit (exact rational check = 3/4); it says nothing about W1_CV, W2 or noisy settings. The 8x8 unitary completion is synthesised generically (~18 CX) and is not a resource-optimal circuit.",
+    "Cloner circuits limited to n<=2 note qubits (3n<=8); larger n uses p^n, valid only for the independent per-qubit attack (MVW shows per-qubit is optimal for W1, not re-derived here).",
+    "Photonic model is phenomenological (independent photon loss, threshold detectors, independent dark counts, random-bit squashing for double clicks, single-mode thermal SPDC). No afterpulsing, dead time, timing jitter, detector efficiency mismatch or multimode SPDC. Not compared to measured photon statistics yet (needs lane E calibration).",
+    "Exact-match Wiesner verification collapses under realistic loss (photonic n=8 accept < 1e-6 at 3 dB, mu=0.1); a loss/threshold-tolerant verifier is game W2 and has no closed form assumed here.",
+    "MeasurementEvent times use a logical simulator clock (event_time_utc_ns = start + shot index, accuracy 0) and are not UTC; each shot is a freshly prepared note.",
+    "Figure 10 plot not rendered; data is in handoffs/F-F1_evidence.json (honest_acceptance_curves, aer_noisy_points, verify_circuit_resources)."
+  ],
+  "interfaces_changed": [
+    "None to frozen contracts. Proposal (v2, optional): a C2/C6 'BackendProvenance' record (currently lane-internal qmint/quantum/records.BackendProvenance) so lanes F and J share one provenance schema; and a MeasurementEvent field distinguishing logical simulator time from UTC (currently encoded via clock_id='simulator_logical_clock')."
+  ],
+  "whether_paid_jobs_run": false
+}
