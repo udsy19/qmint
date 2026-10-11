@@ -1,0 +1,53 @@
+{
+  "ML_DSA_44": {
+    "fips204_table2_sk_pk_sig": [
+      2560,
+      1312,
+      2420
+    ],
+    "implementation_note": "dilithium_py 1.4.0 pure-Python reference ML-DSA; timings not representative of optimized implementations; byte sizes per FIPS 204 Table 2",
+    "keygen_ns_median": 2948500,
+    "parameter_set": "ML_DSA_44",
+    "pk_bytes": 1312,
+    "reps": 5,
+    "sig_bytes": 2420,
+    "sign_ns_median": 7486209,
+    "sk_bytes": 2560,
+    "timing_evidence": "wall-clock perf_counter_ns on this host, pure-Python reference implementation",
+    "verify_ns_median": 3366333
+  },
+  "ML_DSA_65": {
+    "fips204_table2_sk_pk_sig": [
+      4032,
+      1952,
+      3309
+    ],
+    "implementation_note": "dilithium_py 1.4.0 pure-Python reference ML-DSA; timings not representative of optimized implementations; byte sizes per FIPS 204 Table 2",
+    "keygen_ns_median": 4666542,
+    "parameter_set": "ML_DSA_65",
+    "pk_bytes": 1952,
+    "reps": 5,
+    "sig_bytes": 3309,
+    "sign_ns_median": 22514334,
+    "sk_bytes": 4032,
+    "timing_evidence": "wall-clock perf_counter_ns on this host, pure-Python reference implementation",
+    "verify_ns_median": 5239625
+  },
+  "ML_DSA_87": {
+    "fips204_table2_sk_pk_sig": [
+      4896,
+      2592,
+      4627
+    ],
+    "implementation_note": "dilithium_py 1.4.0 pure-Python reference ML-DSA; timings not representative of optimized implementations; byte sizes per FIPS 204 Table 2",
+    "keygen_ns_median": 7179459,
+    "parameter_set": "ML_DSA_87",
+    "pk_bytes": 2592,
+    "reps": 5,
+    "sig_bytes": 4627,
+    "sign_ns_median": 29519625,
+    "sk_bytes": 4896,
+    "timing_evidence": "wall-clock perf_counter_ns on this host, pure-Python reference implementation",
+    "verify_ns_median": 8150916
+  }
+}
