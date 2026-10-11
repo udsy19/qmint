@@ -13,7 +13,7 @@
  "legend": [],
  "manifest_id": "figure-fig09_ablations_robustness",
  "manifest_path": "figures/fig09_ablations_robustness.manifest.json",
- "manifest_sha256": "b55f5ebbba058a6421a65d7e02d466462b3168eba46305cf994b55557c9059d3",
+ "manifest_sha256": "6df72648fe69f59a292bf33a0f3b1431f4e9fbdd9a16835056b33fdccb95029b",
  "inputs": [],
  "data_csv": "figures/fig09_ablations_robustness.csv",
  "outputs": [
