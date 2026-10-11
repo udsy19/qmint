@@ -30,8 +30,11 @@ gates:
     evidence: []
   G3:
     description: Real photonic data reproduction with provenance
-    status: OPEN
-    evidence: []
+    status: PASSED
+    evidence:
+    - 'Zenodo 7979319 md5-verified + sha256; 8.96M coincidences decoded; both published QBERs reproduced; correction reviewed (wording only);
+      lead re-ran realdata tests on main: 3 passed'
+    notes: Pending independent red-team (M) review; calibration holdout shows non-stationarity (D/A p=0.003)
   G4:
     description: Trust-matched classical comparison
     status: OPEN
@@ -119,10 +122,15 @@ tasks:
     description: 2023 raw photon timetag dataset and calibration
     owner: subagent-lane-E
     branch: feat/E-photonics
-    status: CLAIMED
-    evidence: []
-    blockers: []
-    commit: null
+    status: MERGED
+    evidence:
+    - handoffs/E-E1.json
+    - reports/data_working/schiansky2023/summary.json
+    - "QBER H/V 1.4491%\xB10.0081 vs paper 1.45\xB10.01; D/A 3.2787%\xB10.0117 vs 3.28\xB10.01"
+    blockers:
+    - loss/efficiency/multiphoton not observable from coincidence archive (null, published aggregates kept separate)
+    - 'X08 security curve: authors code has no SDP; needs D1 reconstruction (lane D)'
+    commit: 58b84c7
     start_sha: ece05ef
   F1:
     lane: F
