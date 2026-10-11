@@ -1,6 +1,8 @@
-"""Evidence and security badges, derived ONLY from ``EvidenceKind`` / ``CertificateStatus``.
+"""Evidence and security display labels, derived ONLY from ``EvidenceKind`` / ``CertificateStatus``.
 
-Rules enforced here (master plan sections 6, 9; Agent K work order):
+Single source of the label table served by ``GET /api/v1/evidence/labels`` and exported to
+``web/lib/api/evidence-labels.json`` by ``qmint.api.export`` (moved here from the retired
+``qmint.ui`` static workbench). Rules enforced here (master plan sections 6, 9; Agent K work order):
   * A badge is a pure function of the frozen enum -- never of a free-text field or a number.
   * Simulated/synthetic/modelled origins and measured/experimental origins never share a badge
     label or a CSS class (``origin`` differs, and the label sets are disjoint).
@@ -100,7 +102,7 @@ _STATUS: dict[CertificateStatus, Badge] = {
     ),
 }
 
-# Fail at import time if a frozen enum gains a member the UI does not know how to label.
+# Fail at import time if a frozen enum gains a member the API does not know how to label.
 assert set(_EVIDENCE) == set(EvidenceKind), "every EvidenceKind needs a badge"
 assert set(_STATUS) == set(CertificateStatus), "every CertificateStatus needs a badge"
 assert all(b.tone != "ok" for b in _EVIDENCE.values()), "evidence badges are never green"

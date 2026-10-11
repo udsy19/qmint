@@ -2381,6 +2381,154 @@
         "title": "Health",
         "type": "object"
       },
+      "Highlight": {
+        "additionalProperties": false,
+        "properties": {
+          "evidence_kind": {
+            "$ref": "#/components/schemas/EvidenceKind"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "quantities": {
+            "items": {
+              "$ref": "#/components/schemas/Quantity"
+            },
+            "title": "Quantities",
+            "type": "array"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/HighlightSource"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "evidence_kind",
+          "quantities",
+          "sources"
+        ],
+        "title": "Highlight",
+        "type": "object"
+      },
+      "HighlightSource": {
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "title": "Field",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "sha256": {
+            "title": "Sha256",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "sha256",
+          "field"
+        ],
+        "title": "HighlightSource",
+        "type": "object"
+      },
+      "HighlightsData": {
+        "additionalProperties": false,
+        "properties": {
+          "highlights": {
+            "items": {
+              "$ref": "#/components/schemas/Highlight"
+            },
+            "title": "Highlights",
+            "type": "array"
+          },
+          "unavailable": {
+            "items": {
+              "$ref": "#/components/schemas/Unavailable"
+            },
+            "title": "Unavailable",
+            "type": "array"
+          }
+        },
+        "required": [
+          "highlights",
+          "unavailable"
+        ],
+        "title": "HighlightsData",
+        "type": "object"
+      },
+      "HighlightsResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/HighlightsData"
+          },
+          "evidence_kind": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EvidenceKind"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/ApiProvenance"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "status": {
+            "enum": [
+              "OK",
+              "DEMO_ADAPTER",
+              "NOT_AVAILABLE"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "evidence_kind",
+          "provenance",
+          "data"
+        ],
+        "title": "HighlightsResponse",
+        "type": "object"
+      },
       "Interval": {
         "additionalProperties": false,
         "description": "Closed interval [lo, hi] with explicit unit and (optional) confidence semantics.",
@@ -2513,7 +2661,7 @@
       },
       "LabQuantity": {
         "additionalProperties": false,
-        "description": "``Quantity`` plus methods ``monte_carlo`` (fresh notes) and ``numerical_sdp`` (proposed for schemas.Method).",
+        "description": "``Quantity`` under the OpenAPI name the lab web client already imports (``schemas.Method`` now\nincludes ``monte_carlo`` and ``numerical_sdp``, so no widening is needed).",
         "properties": {
           "evidence_kind": {
             "$ref": "#/components/schemas/EvidenceKind"
@@ -2560,28 +2708,19 @@
             "title": "Log10 Value"
           },
           "method": {
-            "anyOf": [
-              {
-                "enum": [
-                  "closed_form",
-                  "exact_enumeration",
-                  "aer_sampling",
-                  "event_simulation",
-                  "published_value",
-                  "measured_dataset",
-                  "not_available"
-                ],
-                "type": "string"
-              },
-              {
-                "enum": [
-                  "monte_carlo",
-                  "numerical_sdp"
-                ],
-                "type": "string"
-              }
+            "enum": [
+              "closed_form",
+              "exact_enumeration",
+              "aer_sampling",
+              "monte_carlo",
+              "numerical_sdp",
+              "event_simulation",
+              "published_value",
+              "measured_dataset",
+              "not_available"
             ],
-            "title": "Method"
+            "title": "Method",
+            "type": "string"
           },
           "note": {
             "anyOf": [
@@ -3681,6 +3820,8 @@
               "closed_form",
               "exact_enumeration",
               "aer_sampling",
+              "monte_carlo",
+              "numerical_sdp",
               "event_simulation",
               "published_value",
               "measured_dataset",
@@ -3785,7 +3926,8 @@
             "type": "string"
           },
           "evidence_kind": {
-            "$ref": "#/components/schemas/EvidenceKind"
+            "$ref": "#/components/schemas/EvidenceKind",
+            "description": "Evidence kind as served: the record's own kind only when provenance_verified, else SYNTHETIC"
           },
           "flags": {
             "items": {
@@ -3798,9 +3940,25 @@
             "title": "Payload Sha256",
             "type": "string"
           },
+          "provenance_problems": {
+            "description": "Why the record was downgraded to SYNTHETIC (empty if verified)",
+            "items": {
+              "type": "string"
+            },
+            "title": "Provenance Problems",
+            "type": "array"
+          },
+          "provenance_verified": {
+            "title": "Provenance Verified",
+            "type": "boolean"
+          },
           "record_id": {
             "title": "Record Id",
             "type": "string"
+          },
+          "recorded_evidence_kind": {
+            "$ref": "#/components/schemas/EvidenceKind",
+            "description": "Evidence kind the registry line claims"
           },
           "reproducibility": {
             "title": "Reproducibility",
@@ -3811,6 +3969,9 @@
           "record_id",
           "contract",
           "evidence_kind",
+          "recorded_evidence_kind",
+          "provenance_verified",
+          "provenance_problems",
           "payload_sha256",
           "reproducibility",
           "flags",
@@ -5245,6 +5406,25 @@
         "title": "TrackerResponse",
         "type": "object"
       },
+      "Unavailable": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "reason"
+        ],
+        "title": "Unavailable",
+        "type": "object"
+      },
       "UncertaintyStep": {
         "additionalProperties": false,
         "properties": {
@@ -5485,7 +5665,7 @@
     },
     "/api/v1/evidence": {
       "get": {
-        "description": "Index of experiment records in the RecordStore registry, newest first (may be empty).",
+        "description": "Index of experiment records in the RecordStore registry, newest first (may be empty).\n\nEach record passes the provenance gate: unverifiable or fixture records are served as SYNTHETIC.",
         "operationId": "evidence_api_v1_evidence_get",
         "responses": {
           "200": {
@@ -5500,6 +5680,28 @@
           }
         },
         "summary": "Evidence",
+        "tags": [
+          "evidence"
+        ]
+      }
+    },
+    "/api/v1/evidence/highlights": {
+      "get": {
+        "description": "Headline numbers (SDP bracket, reproduced QBER, matched-topology latency) with source files and evidence.",
+        "operationId": "highlights_api_v1_evidence_highlights_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HighlightsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Highlights",
         "tags": [
           "evidence"
         ]

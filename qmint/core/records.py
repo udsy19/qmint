@@ -246,10 +246,40 @@ class RecordStore:
         return record
 
     def get(self, record_id: str) -> ExperimentRecord:
-        record = ExperimentRecord.model_validate_json(self._path(record_id).read_text(encoding="utf-8"))
+        """Load a record, refusing anything the registry does not vouch for.
+
+        Self-consistency of the result file is not enough (its hash lives in the same file), so
+        the record must also (a) have exactly one ``run_registry.jsonl`` line, (b) match that
+        line's ``record_sha256``, ``payload_sha256``, contract and evidence kind, and (c) carry an
+        envelope ``evidence_kind`` equal to the payload's own evidence field. This detects
+        injected result files and SYNTHETIC -> MONTE_CARLO relabelling (red-team M-L1).
+        """
+        path = self._path(record_id)
+        record = ExperimentRecord.model_validate_json(path.read_text(encoding="utf-8"))
+        if record.record_id != record_id:
+            raise ValueError(f"record file {path.name} carries record_id {record.record_id!r}")
         CONTRACT_MODELS[record.contract].model_validate(record.payload)
         if canonical_hash(record.payload) != record.payload_sha256:
             raise ValueError(f"record {record_id} payload hash mismatch (tampered?)")
+        field = EVIDENCE_FIELD[record.contract]
+        if field is not None and record.payload.get(field) != record.evidence_kind.value:
+            raise ValueError(
+                f"record {record_id} envelope evidence_kind {record.evidence_kind.value} != payload {field}"
+            )
+        lines = [line for line in self.iter_registry() if line.get("record_id") == record_id]
+        if len(lines) != 1:
+            raise ValueError(f"record {record_id} has {len(lines)} run_registry.jsonl entries (expected 1)")
+        (line,) = lines
+        expected = {
+            "record_sha256": canonical_hash(record),
+            "payload_sha256": record.payload_sha256,
+            "contract": record.contract,
+            "evidence_kind": record.evidence_kind.value,
+            "result_path": path.relative_to(self.experiments_dir).as_posix(),
+        }
+        bad = sorted(k for k, v in expected.items() if line.get(k) != v)
+        if bad:
+            raise ValueError(f"record {record_id} does not match its registry entry ({', '.join(bad)}); relabelled?")
         return record
 
     def iter_registry(self) -> Iterator[dict[str, Any]]:

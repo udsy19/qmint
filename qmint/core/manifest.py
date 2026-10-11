@@ -120,8 +120,32 @@ def write_manifest(manifest: EvidenceManifest, path: Path) -> Path:
     return path
 
 
+MANIFEST_SUFFIXES = (".json", ".yaml", ".yml")
+
+
 def load_manifest(path: Path) -> EvidenceManifest:
-    return EvidenceManifest.model_validate_json(path.read_text(encoding="utf-8"))
+    """Load an EvidenceManifest from canonical JSON or (for hand-maintained dataset manifests) YAML."""
+    text = path.read_text(encoding="utf-8")
+    if path.suffix in (".yaml", ".yml"):
+        import yaml
+
+        return EvidenceManifest.model_validate(yaml.safe_load(text))
+    return EvidenceManifest.model_validate_json(text)
+
+
+def is_evidence_manifest_file(path: Path) -> bool:
+    """True for a JSON file, or a YAML file that declares ``manifest_id`` (an EvidenceManifest).
+
+    Other YAML files in a manifest directory (lane E's dataset descriptors) are not manifests.
+    """
+    if path.suffix == ".json":
+        return True
+    if path.suffix not in (".yaml", ".yml"):
+        return False
+    import yaml
+
+    doc = yaml.safe_load(path.read_text(encoding="utf-8"))
+    return isinstance(doc, dict) and "manifest_id" in doc
 
 
 @dataclass(frozen=True)

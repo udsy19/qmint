@@ -16,7 +16,7 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from .common import API_VERSION
-from .routes import benchmarks, certificates, evidence, lab, meta, protocols, research
+from .routes import benchmarks, certificates, evidence, highlights, lab, meta, protocols, research
 from .schemas import ApiError, ApiErrorBody
 
 PREFIX = "/api/v1"
@@ -57,7 +57,7 @@ def create_app() -> FastAPI:
         log.exception("unhandled API error")
         return _error(500, "internal_error", f"{type(exc).__name__}: {exc}")
 
-    for r in (meta, protocols, lab, benchmarks, certificates, research, evidence):
+    for r in (meta, protocols, lab, benchmarks, certificates, research, evidence, highlights):
         app.include_router(r.router, prefix=PREFIX)
     return app
 
