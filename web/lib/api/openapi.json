@@ -96,38 +96,6 @@
         "title": "ApiProvenance",
         "type": "object"
       },
-      "AssumptionCheck": {
-        "additionalProperties": false,
-        "properties": {
-          "assumption": {
-            "title": "Assumption",
-            "type": "string"
-          },
-          "detail": {
-            "title": "Detail",
-            "type": "string"
-          },
-          "satisfied": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "None = cannot be checked by this adapter",
-            "title": "Satisfied"
-          }
-        },
-        "required": [
-          "assumption",
-          "satisfied",
-          "detail"
-        ],
-        "title": "AssumptionCheck",
-        "type": "object"
-      },
       "AttackData": {
         "additionalProperties": false,
         "properties": {
@@ -524,6 +492,114 @@
         "title": "AttackResult",
         "type": "object"
       },
+      "AxisAnchor": {
+        "additionalProperties": false,
+        "properties": {
+          "anchor": {
+            "title": "Anchor",
+            "type": "string"
+          },
+          "axis": {
+            "$ref": "#/components/schemas/SecurityAxis"
+          },
+          "bound_id": {
+            "title": "Bound Id",
+            "type": "string"
+          },
+          "domain": {
+            "title": "Domain",
+            "type": "string"
+          },
+          "domain_only": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Domain Only",
+            "type": "array"
+          },
+          "formula": {
+            "title": "Formula",
+            "type": "string"
+          },
+          "monotonicity": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Monotonicity",
+            "type": "object"
+          }
+        },
+        "required": [
+          "axis",
+          "bound_id",
+          "anchor",
+          "formula",
+          "domain",
+          "monotonicity",
+          "domain_only"
+        ],
+        "title": "AxisAnchor",
+        "type": "object"
+      },
+      "AxisResult": {
+        "additionalProperties": false,
+        "properties": {
+          "applicable": {
+            "title": "Applicable",
+            "type": "boolean"
+          },
+          "axis": {
+            "$ref": "#/components/schemas/SecurityAxis"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "meets_target": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meets Target"
+          },
+          "result": {
+            "$ref": "#/components/schemas/BoundResult"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target"
+          },
+          "uncertainty": {
+            "items": {
+              "$ref": "#/components/schemas/UncertaintyStep"
+            },
+            "title": "Uncertainty",
+            "type": "array"
+          }
+        },
+        "required": [
+          "axis",
+          "label",
+          "target",
+          "result",
+          "applicable",
+          "meets_target",
+          "uncertainty"
+        ],
+        "title": "AxisResult",
+        "type": "object"
+      },
       "Basis": {
         "description": "BB84 basis. Z: {|0>,|1>}; X: {|+>,|->}. Never inferred from Qiskit bit order.",
         "enum": [
@@ -533,113 +609,51 @@
         "title": "Basis",
         "type": "string"
       },
-      "BenchmarkRow": {
-        "additionalProperties": false,
-        "properties": {
-          "assumptions": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Assumptions",
-            "type": "array"
-          },
-          "family": {
-            "enum": [
-              "quantum",
-              "classical"
-            ],
-            "title": "Family",
-            "type": "string"
-          },
-          "id": {
-            "title": "Id",
-            "type": "string"
-          },
-          "protocol_id": {
-            "title": "Protocol Id",
-            "type": "string"
-          },
-          "quantities": {
-            "items": {
-              "$ref": "#/components/schemas/Quantity"
-            },
-            "title": "Quantities",
-            "type": "array"
-          },
-          "reason": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Reason"
-          },
-          "reproduce": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Reproduce"
-          },
-          "sources": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Sources",
-            "type": "array"
-          },
-          "status": {
-            "enum": [
-              "OK",
-              "DEMO_ADAPTER",
-              "NOT_AVAILABLE"
-            ],
-            "title": "Status",
-            "type": "string"
-          },
-          "title": {
-            "title": "Title",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "title",
-          "family",
-          "protocol_id",
-          "status",
-          "quantities",
-          "assumptions",
-          "reproduce",
-          "sources"
-        ],
-        "title": "BenchmarkRow",
-        "type": "object"
-      },
       "BenchmarksData": {
         "additionalProperties": false,
         "properties": {
+          "comparability": {
+            "items": {
+              "$ref": "#/components/schemas/ComparabilityPair"
+            },
+            "title": "Comparability",
+            "type": "array"
+          },
           "comparability_note": {
             "title": "Comparability Note",
             "type": "string"
           },
-          "rows": {
+          "latency_cases": {
             "items": {
-              "$ref": "#/components/schemas/BenchmarkRow"
+              "$ref": "#/components/schemas/LatencyCase"
             },
-            "title": "Rows",
+            "title": "Latency Cases",
             "type": "array"
+          },
+          "matched_topology": {
+            "$ref": "#/components/schemas/Slot"
+          },
+          "photon": {
+            "$ref": "#/components/schemas/PhotonData"
+          },
+          "protocols": {
+            "items": {
+              "$ref": "#/components/schemas/ProtocolRow"
+            },
+            "title": "Protocols",
+            "type": "array"
+          },
+          "reproducibility": {
+            "$ref": "#/components/schemas/Reproducibility"
           }
         },
         "required": [
-          "rows",
+          "protocols",
+          "comparability",
+          "latency_cases",
+          "photon",
+          "matched_topology",
+          "reproducibility",
           "comparability_note"
         ],
         "title": "BenchmarksData",
@@ -694,48 +708,465 @@
         "title": "BenchmarksResponse",
         "type": "object"
       },
-      "CertificateData": {
+      "BoundResult": {
         "additionalProperties": false,
+        "description": "Output of a ProofEvaluator. ``value is None`` means no applicable bound (never 0).",
         "properties": {
-          "assumption_checks": {
-            "items": {
-              "$ref": "#/components/schemas/AssumptionCheck"
-            },
-            "title": "Assumption Checks",
-            "type": "array"
-          },
-          "certificate": {
-            "$ref": "#/components/schemas/SecurityCertificate"
-          },
-          "demo_bounds": {
-            "items": {
-              "$ref": "#/components/schemas/Quantity"
-            },
-            "title": "Demo Bounds",
-            "type": "array"
-          },
-          "demo_bounds_status": {
-            "title": "Demo Bounds Status",
-            "type": "string"
-          },
-          "reasons": {
+          "assumptions_checked": {
             "items": {
               "type": "string"
             },
-            "title": "Reasons",
+            "title": "Assumptions Checked",
             "type": "array"
           },
-          "theorem": {
-            "$ref": "#/components/schemas/GameInfo"
+          "axis": {
+            "$ref": "#/components/schemas/SecurityAxis"
+          },
+          "evidence_kind": {
+            "$ref": "#/components/schemas/EvidenceKind"
+          },
+          "failed_assumptions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Failed Assumptions",
+            "type": "array"
+          },
+          "game_id": {
+            "$ref": "#/components/schemas/GameId"
+          },
+          "log10_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Log10 Value"
+          },
+          "notes": {
+            "default": "",
+            "title": "Notes",
+            "type": "string"
+          },
+          "out_of_domain": {
+            "default": false,
+            "title": "Out Of Domain",
+            "type": "boolean"
+          },
+          "protocol_id": {
+            "title": "Protocol Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProofStatus"
+          },
+          "theorem_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Theorem Id"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
           }
         },
         "required": [
-          "certificate",
+          "protocol_id",
+          "game_id",
+          "axis",
+          "status",
+          "evidence_kind"
+        ],
+        "title": "BoundResult",
+        "type": "object"
+      },
+      "CalibrationInfo": {
+        "additionalProperties": false,
+        "properties": {
+          "accepted_families": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Accepted Families",
+            "type": "array"
+          },
+          "calibration_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calibration Id"
+          },
+          "data_origin": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EvidenceKind"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "dataset_sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dataset Sha256"
+          },
+          "experiment_family": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Experiment Family"
+          },
+          "family_matches": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Family Matches"
+          },
+          "intervals": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "type": "object"
+            },
+            "title": "Intervals",
+            "type": "object"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "none",
+              "schiansky_photon_Z",
+              "schiansky_photon_X",
+              "schiansky_published_aggregate"
+            ],
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source",
+          "calibration_id",
+          "experiment_family",
+          "data_origin",
+          "dataset_sha256",
+          "accepted_families",
+          "family_matches",
+          "intervals",
+          "note"
+        ],
+        "title": "CalibrationInfo",
+        "type": "object"
+      },
+      "CalibrationOption": {
+        "additionalProperties": false,
+        "properties": {
+          "calibration_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calibration Id"
+          },
+          "data_origin": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EvidenceKind"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "experiment_family": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Experiment Family"
+          },
+          "intervals": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "type": "object"
+            },
+            "title": "Intervals",
+            "type": "object"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "none",
+              "schiansky_photon_Z",
+              "schiansky_photon_X",
+              "schiansky_published_aggregate"
+            ],
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source",
+          "label",
+          "calibration_id",
+          "experiment_family",
+          "data_origin",
+          "intervals"
+        ],
+        "title": "CalibrationOption",
+        "type": "object"
+      },
+      "CatalogData": {
+        "additionalProperties": false,
+        "properties": {
+          "calibrations": {
+            "items": {
+              "$ref": "#/components/schemas/CalibrationOption"
+            },
+            "title": "Calibrations",
+            "type": "array"
+          },
+          "games": {
+            "items": {
+              "$ref": "#/components/schemas/GameEntry"
+            },
+            "title": "Games",
+            "type": "array"
+          },
+          "noise_sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Noise Sources",
+            "type": "array"
+          },
+          "presets": {
+            "items": {
+              "$ref": "#/components/schemas/Preset"
+            },
+            "title": "Presets",
+            "type": "array"
+          }
+        },
+        "required": [
+          "games",
+          "calibrations",
+          "presets",
+          "noise_sources"
+        ],
+        "title": "CatalogData",
+        "type": "object"
+      },
+      "CatalogResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CatalogData"
+          },
+          "evidence_kind": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EvidenceKind"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/ApiProvenance"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "status": {
+            "enum": [
+              "OK",
+              "DEMO_ADAPTER",
+              "NOT_AVAILABLE"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "evidence_kind",
+          "provenance",
+          "data"
+        ],
+        "title": "CatalogResponse",
+        "type": "object"
+      },
+      "CertificateData": {
+        "additionalProperties": false,
+        "properties": {
+          "axes": {
+            "items": {
+              "$ref": "#/components/schemas/AxisResult"
+            },
+            "title": "Axes",
+            "type": "array"
+          },
+          "calibration": {
+            "$ref": "#/components/schemas/CalibrationInfo"
+          },
+          "checked_certificate": {
+            "$ref": "#/components/schemas/SecurityCertificate"
+          },
+          "checker": {
+            "$ref": "#/components/schemas/CheckerInfo"
+          },
+          "classification": {
+            "$ref": "#/components/schemas/Classification"
+          },
+          "declarations": {
+            "items": {
+              "$ref": "#/components/schemas/Declaration"
+            },
+            "title": "Declarations",
+            "type": "array"
+          },
+          "draft_certificate": {
+            "$ref": "#/components/schemas/SecurityCertificate"
+          },
+          "effective_parameters": {
+            "additionalProperties": true,
+            "title": "Effective Parameters",
+            "type": "object"
+          },
+          "export": {
+            "$ref": "#/components/schemas/ExportBlock"
+          },
+          "game": {
+            "$ref": "#/components/schemas/GameId"
+          },
+          "no_theorem_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "No Theorem Reason"
+          },
+          "optimization": {
+            "$ref": "#/components/schemas/Sizing"
+          },
+          "protocol_id": {
+            "title": "Protocol Id",
+            "type": "string"
+          },
+          "sizing": {
+            "$ref": "#/components/schemas/Sizing"
+          },
+          "theorem": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TheoremInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "game",
+          "protocol_id",
+          "effective_parameters",
           "theorem",
-          "reasons",
-          "assumption_checks",
-          "demo_bounds",
-          "demo_bounds_status"
+          "no_theorem_reason",
+          "declarations",
+          "calibration",
+          "axes",
+          "sizing",
+          "optimization",
+          "draft_certificate",
+          "checked_certificate",
+          "checker",
+          "classification",
+          "export"
         ],
         "title": "CertificateData",
         "type": "object"
@@ -743,48 +1174,77 @@
       "CertificateRequest": {
         "additionalProperties": false,
         "properties": {
-          "adversary_assumptions": {
+          "calibration": {
+            "default": "none",
+            "enum": [
+              "none",
+              "schiansky_photon_Z",
+              "schiansky_photon_X",
+              "schiansky_published_aggregate"
+            ],
+            "title": "Calibration",
+            "type": "string"
+          },
+          "declared_assumptions": {
             "items": {
               "type": "string"
             },
-            "title": "Adversary Assumptions",
+            "maxItems": 32,
+            "title": "Declared Assumptions",
             "type": "array"
-          },
-          "channel": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/NoiseIn"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "epsilon_unf_target": {
-            "default": 1e-09,
-            "exclusiveMaximum": 1.0,
-            "exclusiveMinimum": 0.0,
-            "title": "Epsilon Unf Target",
-            "type": "number"
           },
           "game": {
             "$ref": "#/components/schemas/GameId",
             "default": "W1"
           },
           "honest_error_tolerance": {
-            "default": 0.0,
-            "maximum": 0.5,
-            "minimum": 0.0,
-            "title": "Honest Error Tolerance",
-            "type": "number"
+            "anyOf": [
+              {
+                "exclusiveMaximum": 0.5,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "ideal games: any value > 0 is outside the theorem; S2: used as gamma_err when not given",
+            "title": "Honest Error Tolerance"
           },
-          "n": {
-            "default": 64,
-            "description": "qubits (W1) or N (S1)",
-            "maximum": 2000.0,
-            "minimum": 1.0,
-            "title": "N",
-            "type": "integer"
+          "noise_source": {
+            "anyOf": [
+              {
+                "enum": [
+                  "published_kent_2022",
+                  "published_schiansky_2023",
+                  "hypothetical",
+                  "calibration"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Noise Source"
+          },
+          "parameters": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "$ref": "#/components/schemas/IntervalIn"
+                }
+              ]
+            },
+            "description": "theorem parameters: a number or an interval {lo, hi}",
+            "title": "Parameters",
+            "type": "object"
           },
           "protocol_id": {
             "anyOf": [
@@ -795,8 +1255,11 @@
                 "type": "null"
               }
             ],
-            "description": "defaults to the first protocol registered for game",
+            "description": "defaults to the protocol registered for the game",
             "title": "Protocol Id"
+          },
+          "targets": {
+            "$ref": "#/components/schemas/TargetsIn"
           }
         },
         "title": "CertificateRequest",
@@ -861,6 +1324,39 @@
         ],
         "title": "CertificateStatus",
         "type": "string"
+      },
+      "CheckerInfo": {
+        "additionalProperties": false,
+        "properties": {
+          "checker_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checker Id"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/CertificateStatus"
+          }
+        },
+        "required": [
+          "status",
+          "checker_id",
+          "reasons"
+        ],
+        "title": "CheckerInfo",
+        "type": "object"
       },
       "CircuitDescription": {
         "additionalProperties": false,
@@ -938,6 +1434,110 @@
         "title": "ClaimLevel",
         "type": "string"
       },
+      "Classification": {
+        "additionalProperties": false,
+        "properties": {
+          "derived_from": {
+            "title": "Derived From",
+            "type": "string"
+          },
+          "headline": {
+            "title": "Headline",
+            "type": "string"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "verdict": {
+            "enum": [
+              "CERTIFIED",
+              "UNCERTIFIED",
+              "INFEASIBLE",
+              "OUT_OF_MODEL"
+            ],
+            "title": "Verdict",
+            "type": "string"
+          }
+        },
+        "required": [
+          "verdict",
+          "headline",
+          "reasons",
+          "derived_from"
+        ],
+        "title": "Classification",
+        "type": "object"
+      },
+      "ComparabilityPair": {
+        "additionalProperties": false,
+        "properties": {
+          "columns": {
+            "items": {
+              "$ref": "#/components/schemas/Concession"
+            },
+            "title": "Columns",
+            "type": "array"
+          },
+          "left_protocol": {
+            "title": "Left Protocol",
+            "type": "string"
+          },
+          "pair_id": {
+            "title": "Pair Id",
+            "type": "string"
+          },
+          "right_protocol": {
+            "title": "Right Protocol",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "COMPARABLE",
+              "QUALIFIED",
+              "INCOMPARABLE"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "pair_id",
+          "left_protocol",
+          "right_protocol",
+          "status",
+          "columns"
+        ],
+        "title": "ComparabilityPair",
+        "type": "object"
+      },
+      "Concession": {
+        "additionalProperties": false,
+        "properties": {
+          "column": {
+            "title": "Column",
+            "type": "string"
+          },
+          "left": {
+            "title": "Left",
+            "type": "string"
+          },
+          "right": {
+            "title": "Right",
+            "type": "string"
+          }
+        },
+        "required": [
+          "column",
+          "left",
+          "right"
+        ],
+        "title": "Concession",
+        "type": "object"
+      },
       "ConfidenceInterval": {
         "additionalProperties": false,
         "description": "Interval around an estimate. For published aggregates this is the quoted +/- range.",
@@ -974,6 +1574,68 @@
           "method"
         ],
         "title": "ConfidenceInterval",
+        "type": "object"
+      },
+      "Declaration": {
+        "additionalProperties": false,
+        "properties": {
+          "declared": {
+            "title": "Declared",
+            "type": "boolean"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "declared"
+        ],
+        "title": "Declaration",
+        "type": "object"
+      },
+      "DoubleSpendOutcome": {
+        "additionalProperties": false,
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "outcome": {
+            "enum": [
+              "PREVENTED",
+              "SUCCEEDS",
+              "DETECTED_NOT_PREVENTED",
+              "OUT_OF_MODEL",
+              "BOUNDED_BY_THEOREM"
+            ],
+            "title": "Outcome",
+            "type": "string"
+          },
+          "successful": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Successful"
+          }
+        },
+        "required": [
+          "outcome",
+          "successful",
+          "detail"
+        ],
+        "title": "DoubleSpendOutcome",
         "type": "object"
       },
       "EvidenceData": {
@@ -1192,6 +1854,92 @@
         "title": "EvidenceResponse",
         "type": "object"
       },
+      "ExportBlock": {
+        "additionalProperties": false,
+        "properties": {
+          "canonical_json": {
+            "title": "Canonical Json",
+            "type": "string"
+          },
+          "filename": {
+            "title": "Filename",
+            "type": "string"
+          },
+          "obligations_sha256": {
+            "title": "Obligations Sha256",
+            "type": "string"
+          },
+          "sha256": {
+            "title": "Sha256",
+            "type": "string"
+          }
+        },
+        "required": [
+          "filename",
+          "canonical_json",
+          "sha256",
+          "obligations_sha256"
+        ],
+        "title": "ExportBlock",
+        "type": "object"
+      },
+      "GameEntry": {
+        "additionalProperties": false,
+        "properties": {
+          "declarations": {
+            "items": {
+              "$ref": "#/components/schemas/Declaration"
+            },
+            "title": "Declarations",
+            "type": "array"
+          },
+          "game": {
+            "$ref": "#/components/schemas/GameId"
+          },
+          "no_theorem_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "No Theorem Reason"
+          },
+          "protocol_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Protocol Ids",
+            "type": "array"
+          },
+          "sizing_available": {
+            "title": "Sizing Available",
+            "type": "boolean"
+          },
+          "theorem": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TheoremInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "game",
+          "protocol_ids",
+          "theorem",
+          "no_theorem_reason",
+          "declarations",
+          "sizing_available"
+        ],
+        "title": "GameEntry",
+        "type": "object"
+      },
       "GameId": {
         "description": "Named, versioned security experiments (master plan 3.1).",
         "enum": [
@@ -1398,6 +2146,25 @@
         "title": "Interval",
         "type": "object"
       },
+      "IntervalIn": {
+        "additionalProperties": false,
+        "properties": {
+          "hi": {
+            "title": "Hi",
+            "type": "number"
+          },
+          "lo": {
+            "title": "Lo",
+            "type": "number"
+          }
+        },
+        "required": [
+          "lo",
+          "hi"
+        ],
+        "title": "IntervalIn",
+        "type": "object"
+      },
       "IssuerQubit": {
         "additionalProperties": false,
         "properties": {
@@ -1504,6 +2271,68 @@
           "detail"
         ],
         "title": "LaneStatus",
+        "type": "object"
+      },
+      "LatencyCase": {
+        "additionalProperties": false,
+        "properties": {
+          "assumptions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Assumptions",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "paper_topology",
+              "measured_network"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "protocol_id": {
+            "title": "Protocol Id",
+            "type": "string"
+          },
+          "quantities": {
+            "items": {
+              "$ref": "#/components/schemas/Quantity"
+            },
+            "title": "Quantities",
+            "type": "array"
+          },
+          "reproduce": {
+            "title": "Reproduce",
+            "type": "string"
+          },
+          "sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "kind",
+          "protocol_id",
+          "quantities",
+          "assumptions",
+          "reproduce",
+          "sources"
+        ],
+        "title": "LatencyCase",
         "type": "object"
       },
       "MeasurementStats": {
@@ -1871,6 +2700,230 @@
         "title": "OutcomeProbability",
         "type": "object"
       },
+      "PhotonBasis": {
+        "additionalProperties": false,
+        "properties": {
+          "basis": {
+            "enum": [
+              "Z",
+              "X"
+            ],
+            "title": "Basis",
+            "type": "string"
+          },
+          "calibration_id": {
+            "title": "Calibration Id",
+            "type": "string"
+          },
+          "holdout_p_value": {
+            "title": "Holdout P Value",
+            "type": "number"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "pooled": {
+            "$ref": "#/components/schemas/Quantity"
+          },
+          "published": {
+            "$ref": "#/components/schemas/Quantity"
+          },
+          "run_dispersion_chi2_per_dof": {
+            "title": "Run Dispersion Chi2 Per Dof",
+            "type": "number"
+          },
+          "state_averaged": {
+            "$ref": "#/components/schemas/Quantity"
+          }
+        },
+        "required": [
+          "basis",
+          "label",
+          "pooled",
+          "state_averaged",
+          "published",
+          "run_dispersion_chi2_per_dof",
+          "holdout_p_value",
+          "calibration_id"
+        ],
+        "title": "PhotonBasis",
+        "type": "object"
+      },
+      "PhotonData": {
+        "additionalProperties": false,
+        "properties": {
+          "bases": {
+            "items": {
+              "$ref": "#/components/schemas/PhotonBasis"
+            },
+            "title": "Bases",
+            "type": "array"
+          },
+          "ci_method": {
+            "title": "Ci Method",
+            "type": "string"
+          },
+          "dataset": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Dataset",
+            "type": "object"
+          },
+          "not_observable": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Not Observable",
+            "type": "array"
+          },
+          "published_aggregate_calibration_id": {
+            "title": "Published Aggregate Calibration Id",
+            "type": "string"
+          },
+          "reproduce": {
+            "title": "Reproduce",
+            "type": "string"
+          },
+          "runs": {
+            "items": {
+              "$ref": "#/components/schemas/PhotonRun"
+            },
+            "title": "Runs",
+            "type": "array"
+          },
+          "sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Sources",
+            "type": "array"
+          }
+        },
+        "required": [
+          "runs",
+          "bases",
+          "published_aggregate_calibration_id",
+          "not_observable",
+          "dataset",
+          "ci_method",
+          "reproduce",
+          "sources"
+        ],
+        "title": "PhotonData",
+        "type": "object"
+      },
+      "PhotonRun": {
+        "additionalProperties": false,
+        "properties": {
+          "basis": {
+            "enum": [
+              "Z",
+              "X"
+            ],
+            "title": "Basis",
+            "type": "string"
+          },
+          "chunk": {
+            "title": "Chunk",
+            "type": "integer"
+          },
+          "ci_hi": {
+            "title": "Ci Hi",
+            "type": "number"
+          },
+          "ci_lo": {
+            "title": "Ci Lo",
+            "type": "number"
+          },
+          "folder": {
+            "title": "Folder",
+            "type": "string"
+          },
+          "n_errors": {
+            "title": "N Errors",
+            "type": "integer"
+          },
+          "n_pairs": {
+            "title": "N Pairs",
+            "type": "integer"
+          },
+          "n_sifted": {
+            "title": "N Sifted",
+            "type": "integer"
+          },
+          "qber": {
+            "title": "Qber",
+            "type": "number"
+          }
+        },
+        "required": [
+          "folder",
+          "chunk",
+          "basis",
+          "n_pairs",
+          "n_sifted",
+          "n_errors",
+          "qber",
+          "ci_lo",
+          "ci_hi"
+        ],
+        "title": "PhotonRun",
+        "type": "object"
+      },
+      "Preset": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "request": {
+            "$ref": "#/components/schemas/CertificateRequest"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "summary",
+          "source",
+          "request"
+        ],
+        "title": "Preset",
+        "type": "object"
+      },
+      "ProofStatus": {
+        "description": "Status of a proof obligation / bound (master plan 3.6).",
+        "enum": [
+          "PUBLISHED_REPRODUCED",
+          "NUMERICALLY_SUPPORTED",
+          "CERTIFIED_NUMERIC",
+          "CONJECTURE",
+          "UNSUPPORTED"
+        ],
+        "title": "ProofStatus",
+        "type": "string"
+      },
       "ProtocolInfo": {
         "additionalProperties": false,
         "properties": {
@@ -1911,6 +2964,258 @@
           "note"
         ],
         "title": "ProtocolInfo",
+        "type": "object"
+      },
+      "ProtocolRow": {
+        "additionalProperties": false,
+        "properties": {
+          "adversary": {
+            "title": "Adversary",
+            "type": "string"
+          },
+          "classical_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Classical Bytes"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "comparability_pair": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comparability Pair"
+          },
+          "comparability_status": {
+            "enum": [
+              "COMPARABLE",
+              "QUALIFIED",
+              "INCOMPARABLE",
+              "REFERENCE",
+              "NO_PAIR"
+            ],
+            "title": "Comparability Status",
+            "type": "string"
+          },
+          "cross_check": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Quantity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "double_spend": {
+            "$ref": "#/components/schemas/DoubleSpendOutcome"
+          },
+          "environment_lock": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Environment Lock"
+          },
+          "evidence_kind": {
+            "$ref": "#/components/schemas/EvidenceKind"
+          },
+          "family": {
+            "enum": [
+              "quantum",
+              "classical"
+            ],
+            "title": "Family",
+            "type": "string"
+          },
+          "flexibility": {
+            "title": "Flexibility",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "issuer_calls": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Issuer Calls"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "latency_basis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latency Basis"
+          },
+          "latency_unavailable_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latency Unavailable Reason"
+          },
+          "local_validation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Quantity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "network_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Network Id"
+          },
+          "pre_distribution": {
+            "title": "Pre Distribution",
+            "type": "string"
+          },
+          "pre_presentation_commit": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Quantity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "privacy": {
+            "title": "Privacy",
+            "type": "string"
+          },
+          "protocol_id": {
+            "title": "Protocol Id",
+            "type": "string"
+          },
+          "record_git_sha": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Record Git Sha"
+          },
+          "reproduce": {
+            "title": "Reproduce",
+            "type": "string"
+          },
+          "site_count": {
+            "title": "Site Count",
+            "type": "integer"
+          },
+          "sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "trust_model": {
+            "title": "Trust Model",
+            "type": "string"
+          },
+          "trusted_hardware": {
+            "title": "Trusted Hardware",
+            "type": "string"
+          },
+          "variant": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variant"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "label",
+          "family",
+          "protocol_id",
+          "variant",
+          "network_id",
+          "site_count",
+          "double_spend",
+          "local_validation",
+          "cross_check",
+          "pre_presentation_commit",
+          "latency_unavailable_reason",
+          "trust_model",
+          "trusted_hardware",
+          "adversary",
+          "pre_distribution",
+          "flexibility",
+          "privacy",
+          "issuer_calls",
+          "classical_bytes",
+          "comparability_pair",
+          "comparability_status",
+          "evidence_kind",
+          "method",
+          "latency_basis",
+          "record_git_sha",
+          "environment_lock",
+          "reproduce",
+          "sources"
+        ],
+        "title": "ProtocolRow",
         "type": "object"
       },
       "ProtocolsResponse": {
@@ -2155,6 +3460,47 @@
         "title": "RecordSummary",
         "type": "object"
       },
+      "Reproducibility": {
+        "additionalProperties": false,
+        "properties": {
+          "commands": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Commands",
+            "type": "array"
+          },
+          "environment_locks": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Environment Locks",
+            "type": "array"
+          },
+          "evidence_files": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Files",
+            "type": "array"
+          },
+          "lane_h_git_shas": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Lane H Git Shas",
+            "type": "array"
+          }
+        },
+        "required": [
+          "commands",
+          "lane_h_git_shas",
+          "environment_locks",
+          "evidence_files"
+        ],
+        "title": "Reproducibility",
+        "type": "object"
+      },
       "ResearchData": {
         "additionalProperties": false,
         "properties": {
@@ -2294,6 +3640,16 @@
         "title": "ResearchSource",
         "type": "object"
       },
+      "SecurityAxis": {
+        "enum": [
+          "epsilon_unf",
+          "epsilon_cor",
+          "epsilon_rob",
+          "epsilon_priv"
+        ],
+        "title": "SecurityAxis",
+        "type": "string"
+      },
       "SecurityCertificate": {
         "additionalProperties": false,
         "properties": {
@@ -2424,6 +3780,70 @@
         "title": "SecurityCertificate",
         "type": "object"
       },
+      "Sizing": {
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "quantities": {
+            "items": {
+              "$ref": "#/components/schemas/Quantity"
+            },
+            "title": "Quantities",
+            "type": "array"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "OK",
+              "NOT_AVAILABLE"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "label",
+          "reason",
+          "quantities"
+        ],
+        "title": "Sizing",
+        "type": "object"
+      },
+      "Slot": {
+        "additionalProperties": false,
+        "properties": {
+          "expected_source": {
+            "title": "Expected Source",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "OK",
+              "NOT_AVAILABLE"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "reason",
+          "expected_source"
+        ],
+        "title": "Slot",
+        "type": "object"
+      },
       "StateKind": {
         "enum": [
           "physical_quantum",
@@ -2492,6 +3912,165 @@
           }
         },
         "title": "Targets",
+        "type": "object"
+      },
+      "TargetsIn": {
+        "additionalProperties": false,
+        "properties": {
+          "epsilon_cor": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 1.0,
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Epsilon Cor"
+          },
+          "epsilon_priv": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 1.0,
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Epsilon Priv"
+          },
+          "epsilon_rob": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 1.0,
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Epsilon Rob"
+          },
+          "epsilon_unf": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 1.0,
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Epsilon Unf"
+          }
+        },
+        "title": "TargetsIn",
+        "type": "object"
+      },
+      "TheoremInfo": {
+        "additionalProperties": false,
+        "properties": {
+          "assumptions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Assumptions",
+            "type": "array"
+          },
+          "axes": {
+            "items": {
+              "$ref": "#/components/schemas/AxisAnchor"
+            },
+            "title": "Axes",
+            "type": "array"
+          },
+          "caveats": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Caveats",
+            "type": "array"
+          },
+          "citation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Citation"
+          },
+          "claim_id": {
+            "title": "Claim Id",
+            "type": "string"
+          },
+          "finite_or_asymptotic": {
+            "title": "Finite Or Asymptotic",
+            "type": "string"
+          },
+          "game": {
+            "title": "Game",
+            "type": "string"
+          },
+          "parameters": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Parameters",
+            "type": "object"
+          },
+          "protocol": {
+            "title": "Protocol",
+            "type": "string"
+          },
+          "quantifier": {
+            "title": "Quantifier",
+            "type": "string"
+          },
+          "statement": {
+            "title": "Statement",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          }
+        },
+        "required": [
+          "claim_id",
+          "game",
+          "protocol",
+          "status",
+          "statement",
+          "citation",
+          "url",
+          "quantifier",
+          "finite_or_asymptotic",
+          "assumptions",
+          "caveats",
+          "parameters",
+          "axes"
+        ],
+        "title": "TheoremInfo",
         "type": "object"
       },
       "TokenRecord": {
@@ -2598,6 +4177,46 @@
           "backend_provenance"
         ],
         "title": "TokenRecord",
+        "type": "object"
+      },
+      "UncertaintyStep": {
+        "additionalProperties": false,
+        "properties": {
+          "direction": {
+            "enum": [
+              "increasing",
+              "decreasing",
+              "domain_only",
+              "undocumented"
+            ],
+            "title": "Direction",
+            "type": "string"
+          },
+          "endpoint_used": {
+            "title": "Endpoint Used",
+            "type": "string"
+          },
+          "hi": {
+            "title": "Hi",
+            "type": "number"
+          },
+          "lo": {
+            "title": "Lo",
+            "type": "number"
+          },
+          "parameter": {
+            "title": "Parameter",
+            "type": "string"
+          }
+        },
+        "required": [
+          "parameter",
+          "lo",
+          "hi",
+          "direction",
+          "endpoint_used"
+        ],
+        "title": "UncertaintyStep",
         "type": "object"
       },
       "Unit": {
@@ -2752,6 +4371,47 @@
           }
         },
         "summary": "Certificates",
+        "tags": [
+          "certificates"
+        ]
+      }
+    },
+    "/api/v1/certificates/catalog": {
+      "get": {
+        "operationId": "catalog_api_v1_certificates_catalog_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Request validation error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Internal error"
+          }
+        },
+        "summary": "Catalog",
         "tags": [
           "certificates"
         ]
