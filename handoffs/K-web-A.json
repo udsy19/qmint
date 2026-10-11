@@ -1,0 +1,56 @@
+{
+  "lane": "K",
+  "task": "web-A (phase 1: design research, design system, foundations, API contract)",
+  "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+  "branch": "feat/K-web",
+  "starting_commit_sha": "b281e8d",
+  "final_commit_sha": "89b6535adfa82bce1d303b4ef6b06fa55da35510 (code; this handoff is committed on top)",
+  "changed_paths": ["web/", "qmint/api/", "tests/unit/api/", "docs/design/DESIGN_DIRECTION.md", "docs/design/DESIGN_SYSTEM.md", "docs/design/MOBBIN_RESEARCH.md", "docs/design/WEB_OWNERSHIP.md", "docs/design/screenshots/phase1/", "handoffs/K-web-A.json", "handoffs/K-web-A.md"],
+  "commands_run": [
+    "cd web && pnpm typecheck",
+    "cd web && pnpm lint",
+    "cd web && pnpm test",
+    "cd web && pnpm build",
+    "cd web && QMINT_WEB_URL=http://localhost:3000 pnpm e2e (API on :8787 + pnpm dev running)",
+    "$PY -m pytest tests/unit/api tests/unit/ui tests/contracts -q -o addopts=''",
+    "$PY -m ruff check qmint/api tests/unit/api",
+    "$PY -m qmint.api.export && openapi-typescript (pnpm gen:api)",
+    "node scratchpad/shots.mjs (Playwright screenshots of /design-system at 1440 and 390)"
+  ],
+  "test_exit_codes": {
+    "pnpm typecheck": 0, "pnpm lint": 0, "pnpm test (16 tests, 4 files)": 0, "pnpm build (11 routes static)": 0,
+    "pnpm e2e (22 tests: 2 projects x 11)": 0,
+    "pytest tests/unit/api tests/unit/ui tests/contracts (84 passed)": 0, "ruff qmint/api tests/unit/api": 0
+  },
+  "evidence_files": ["docs/design/MOBBIN_RESEARCH.md", "docs/design/screenshots/phase1/design-system-1440-top.png", "docs/design/screenshots/phase1/design-system-1440-full.png", "docs/design/screenshots/phase1/design-system-390-top.png", "docs/design/screenshots/phase1/design-system-390-full.png", "web/lib/api/openapi.json", "web/lib/api/evidence-labels.json"],
+  "assumptions_verified": [
+    "geist 1.7.2 ships five Geist Pixel cuts (Square, Grid, Circle, Triangle, Line) via geist/font/pixel (next/font/local, weight 500); Square + Grid loaded",
+    "@playwright/test 1.62.0 uses chromium-1234, already cached; no browser download",
+    "Mobbin MCP authenticated; 32 queries; 47 references; no ai_usage_notice returned by any response",
+    "Text tokens foreground/muted/subtle >= 4.5:1 on background and surface (computed)",
+    "No horizontal scroll at 390px on all 9 routes (e2e)"
+  ],
+  "performance_numbers_with_sources": [
+    "API measure_resend W1 both-pass = (5/8)^n by exact enumeration (bb84.overlap_squared); single-copy pass (3/4)^n. The work order's 'measure-resend (3/4)^n' is the single-copy pass rate, not W1 counterfeit success.",
+    "API Bruss cloner both-pass (3+2*sqrt2)/8 per qubit; MVW channel 3/4 per qubit (lane F, SIMULATOR_IDEAL; Aer MC only for n<=2 since circuit needs 3n qubits <= 8)",
+    "Benchmarks: Jiang 2024 2.766 km / 60.54 km modelled S-money latency via lane G code vs published 15.34 / 304.20 us (PUBLISHED_AGGREGATE); RIPE HEL-TMP MEASURED_LATENCY with RTT/2 assumption"
+  ],
+  "blockers": [],
+  "known_limitations": [
+    "Dark theme only.",
+    "Exact analytic values are labelled SIMULATOR_IDEAL because the frozen EvidenceKind has no ANALYTIC kind; API adds Quantity.method to disambiguate.",
+    "qiskit 2.5 segfaults when circuits are built concurrently on different threads; API serialises all quantum work on one worker thread (throughput limit).",
+    "Certificates are always UNCERTIFIED (lanes D, I not merged); W1/S1 demo bounds only, labelled DEMO_ADAPTER, honest-error tolerance not accounted.",
+    "Research sources are parsed from master plan section 16 and labelled 'from plan, unverified'.",
+    "Classical baselines NOT_AVAILABLE until lane H merges.",
+    "Mobbin 'mobile web' searches returned desktop captures; mobile decisions rest on Linear/GitHub iOS references. Raycast not on Mobbin web.",
+    "Wave-1 qmint/ui static renderer and app/site/ still present (evidence_badges.py is the label source); deletion plan in WEB_OWNERSHIP.md.",
+    "web/components/route-stub.tsx is a phase-1 placeholder; agent F deletes it when unused.",
+    "motion library not installed (CSS-only motion in phase 1)."
+  ],
+  "interfaces_changed": [
+    "New: HTTP API /api/v1 (qmint/api) with OpenAPI at web/lib/api/openapi.json; frozen contracts untouched.",
+    "Proposal (v2 contract): add EvidenceKind ANALYTIC (exact closed-form/enumeration model value) so exact values need not be labelled SIMULATOR_IDEAL."
+  ],
+  "whether_paid_jobs_run": false
+}
