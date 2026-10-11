@@ -44,7 +44,17 @@ def test_double_spend_outcomes_per_protocol(records):
     assert by[("classical_h4_pqc_signed", "mldsa_none")] == {1}
     assert by[("classical_h4_pqc_signed", "mldsa_h1_ledger")] == {0}
     assert by[("classical_h5_secure_hardware", "assumption_violated_clone")] == {1}
-    assert by[("classical_h6_anonymous_ecash", "cfn88_sec1_k16")] == {1}
+    # strong adversary (M-H4): the race plus a re-presentation after the outcome = 2 extra offline accepts
+    assert by[("classical_h6_anonymous_ecash", "cfn88_sec1_k16")] == {2}
+    for mode in ("preassigned", "late_commit_disclosed", "late_commit_ot_private"):
+        assert by[("classical_h3_preallocated_escrow", mode)] == {0}
+    assert by[("classical_h2_quorum", "sharded_quorum_f1")] == {0}
+    for r in records:  # every record states the outcome per adversary; reported value is the worst case
+        adv = r.configuration["double_spends_by_adversary"]
+        strong = adv["strong_matched_topology"]
+        worst = max(adv["replay_same_secret_at_other_site"],
+                    strong["double_spends_successful"] if isinstance(strong, dict) else 0)
+        assert r.double_spends_successful == worst
 
 
 def test_comparability_matrix_columns_and_statuses(tmp_path):

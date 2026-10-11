@@ -102,3 +102,33 @@ def test_event_race_one_accept_and_latency_includes_coordinator_rtt(net3):
     part = r.extra["partition"]
     assert part["decisions"]["B"] == "REJECT_UNAVAILABLE"  # safe but unavailable
     assert part["availability_fraction"] == 0.5
+
+
+def test_idempotency_keys_are_random_per_presentation_not_merchant_counter():
+    """M-H3: two tills of one merchant (or a restarted till) never share a key, so the 2nd presentation is a
+    double spend, not an idempotent replay; a replayed ACCEPT for a key the terminal has not got pending is dropped."""
+    c = _coord(["t"])
+    out = []
+    for nid in ("tA", "tB", "tA"):  # second till, then a restarted tA (fresh object)
+        term = MerchantTerminal(nid, "A", "m0", KEYS["m0"], "coord")
+        (req,) = term.handle(Message("Present", "cust", nid, {"token_id": "t"}), 0.0)
+        assert len(req.payload["idem_key"]) == 32
+        (resp,) = c.handle(req, 0.0)
+        out.append(term.handle(resp, 0.0)[0].payload["decision"])
+    assert out == ["ACCEPT", "REJECT_DOUBLE_SPEND", "REJECT_DOUBLE_SPEND"]
+    other = MerchantTerminal("tC", "A", "m0", KEYS["m0"], "coord")
+    forged = Message("SpendResponse", "coord", "tC", {"token_id": "t", "idem_key": "0" * 32, "decision": "ACCEPT",
+                                                     "replayed": True})
+    assert other.handle(forged, 0.0) == []
+
+
+def test_own_retry_replay_is_honoured_and_flagged():
+    c = _coord(["t"])
+    t = MerchantTerminal("tA", "A", "m0", KEYS["m0"], "coord")
+    (req,) = t.handle(Message("Present", "cust", "tA", {"token_id": "t"}), 0.0)
+    c.handle(req, 0.0)  # first response lost
+    (retry,) = t.on_timeout(req.payload["idem_key"], 1e6)
+    (resp,) = c.handle(retry, 0.0)
+    (res,) = t.handle(resp, 0.0)
+    assert (res.payload["decision"], res.payload["replayed"]) == ("ACCEPT", True)
+    assert c.credits == {"m0": 1}

@@ -69,9 +69,10 @@ class ShardReplica:
             return []
         raise ValueError(f"unexpected message {msg.kind}")
 
-    def _reply(self, client: str, token_id: str, idem_key: str, decision: Decision, now_ns: float) -> Message:
+    def _reply(self, client: str, token_id: str, idem_key: str, decision: Decision, now_ns: float,
+               replayed: bool = False) -> Message:
         return new_msg("SpendResponse", self.node_id, client, "h2", token_id=token_id, idem_key=idem_key,
-                       decision=decision.value, decided_at_ns=now_ns + self.processing_ns)
+                       decision=decision.value, replayed=replayed, decided_at_ns=now_ns + self.processing_ns)
 
     def _on_spend(self, msg: Message, now_ns: float) -> list[Message]:
         if not self.is_leader:
@@ -86,7 +87,7 @@ class ShardReplica:
         if tok in self.committed:
             same = self.committed[tok] == (idem, merchant)
             return [self._reply(msg.src, tok, idem, Decision.ACCEPT if same else Decision.REJECT_DOUBLE_SPEND,
-                                now_ns)]
+                                now_ns, replayed=same)]
         if tok in self.inflight:
             if (self.inflight[tok]["idem"], self.inflight[tok]["merchant"]) == (idem, merchant):
                 return []  # retry of an in-flight request: answer comes when it commits

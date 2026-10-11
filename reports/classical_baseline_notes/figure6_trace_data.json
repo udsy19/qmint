@@ -9,6 +9,7 @@
    "panels": {
     "H1_race": {
      "adversarial_double_spend_attempt": true,
+     "adversary": "replay",
      "events": [
       {
        "actor": "alice",
@@ -457,9 +458,10 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": null,
-      "classical_bytes": 1325,
+      "classical_bytes": 1359,
       "commit_at_Lb_before_presentation": null,
       "honest_decision": "REJECT_DOUBLE_SPEND",
       "issuer_aware_ns": 16844.0,
@@ -470,11 +472,12 @@
      },
      "protocol": "H1",
      "protocol_id": "classical_h1_online_ledger",
-     "trace_id": "gh-H1-paper_jinan_2.766km_fibre-b1-jiang_dTproc_1507ns-seed0-race",
+     "trace_id": "gh-H1-paper_jinan_2.766km_fibre-b1-jiang_dTproc_1507ns-seed0-replay",
      "variant": "coordinator"
     },
     "H3_late_commit": {
      "adversarial_double_spend_attempt": false,
+     "adversary": null,
      "events": [
       {
        "actor": "alice",
@@ -863,6 +866,7 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": 15337.0,
       "classical_bytes": 738,
@@ -881,6 +885,7 @@
     },
     "H3_late_commit_ot": {
      "adversarial_double_spend_attempt": false,
+     "adversary": null,
      "events": [
       {
        "actor": "alice",
@@ -1269,6 +1274,7 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": 15337.0,
       "classical_bytes": 1071,
@@ -1287,6 +1293,7 @@
     },
     "S1": {
      "adversarial_double_spend_attempt": false,
+     "adversary": null,
      "events": [
       {
        "actor": "A0",
@@ -1651,6 +1658,7 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": 15337.0,
       "classical_bytes": null,
@@ -1687,6 +1695,7 @@
    "panels": {
     "H1_race": {
      "adversarial_double_spend_attempt": true,
+     "adversary": "replay",
      "events": [
       {
        "actor": "alice",
@@ -2135,9 +2144,10 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": null,
-      "classical_bytes": 1383,
+      "classical_bytes": 1417,
       "commit_at_Lb_before_presentation": null,
       "honest_decision": "REJECT_DOUBLE_SPEND",
       "issuer_aware_ns": 305714.0,
@@ -2148,11 +2158,12 @@
      },
      "protocol": "H1",
      "protocol_id": "classical_h1_online_ledger",
-     "trace_id": "gh-H1-paper_yiyuan_mazhan_60.54km_fibre-b1-jiang_dTproc_1507ns-seed0-race",
+     "trace_id": "gh-H1-paper_yiyuan_mazhan_60.54km_fibre-b1-jiang_dTproc_1507ns-seed0-replay",
      "variant": "coordinator"
     },
     "H3_late_commit": {
      "adversarial_double_spend_attempt": false,
+     "adversary": null,
      "events": [
       {
        "actor": "alice",
@@ -2541,6 +2552,7 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": 304207.0,
       "classical_bytes": 781,
@@ -2559,6 +2571,7 @@
     },
     "H3_late_commit_ot": {
      "adversarial_double_spend_attempt": false,
+     "adversary": null,
      "events": [
       {
        "actor": "alice",
@@ -2947,6 +2960,7 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": 304207.0,
       "classical_bytes": 1102,
@@ -2965,6 +2979,7 @@
     },
     "S1": {
      "adversarial_double_spend_attempt": false,
+     "adversary": null,
      "events": [
       {
        "actor": "A0",
@@ -3329,6 +3344,7 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": 304207.0,
       "classical_bytes": null,
@@ -3365,6 +3381,7 @@
    "panels": {
     "H1_race": {
      "adversarial_double_spend_attempt": true,
+     "adversary": "replay",
      "events": [
       {
        "actor": "alice",
@@ -3813,9 +3830,10 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": null,
-      "classical_bytes": 1391,
+      "classical_bytes": 1425,
       "commit_at_Lb_before_presentation": null,
       "honest_decision": "REJECT_DOUBLE_SPEND",
       "issuer_aware_ns": 2387840.0,
@@ -3826,11 +3844,12 @@
      },
      "protocol": "H1",
      "protocol_id": "classical_h1_online_ledger",
-     "trace_id": "gh-H1-ripe_helsinki_tampere-b1-jiang_dTproc_1507ns-seed0-race",
+     "trace_id": "gh-H1-ripe_helsinki_tampere-b1-jiang_dTproc_1507ns-seed0-replay",
      "variant": "coordinator"
     },
     "H3_late_commit": {
      "adversarial_double_spend_attempt": false,
+     "adversary": null,
      "events": [
       {
        "actor": "alice",
@@ -4232,6 +4251,7 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": 2386333.0,
       "classical_bytes": 793,
@@ -4250,6 +4270,7 @@
     },
     "H3_late_commit_ot": {
      "adversarial_double_spend_attempt": false,
+     "adversary": null,
      "events": [
       {
        "actor": "alice",
@@ -4651,6 +4672,7 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": 2386333.0,
       "classical_bytes": 1111,
@@ -4669,6 +4691,7 @@
     },
     "S1": {
      "adversarial_double_spend_attempt": false,
+     "adversary": null,
      "events": [
       {
        "actor": "A0",
@@ -5045,6 +5068,7 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": 2386333.0,
       "classical_bytes": null,
@@ -5081,6 +5105,7 @@
    "panels": {
     "H1_race": {
      "adversarial_double_spend_attempt": true,
+     "adversary": "replay",
      "events": [
       {
        "actor": "alice",
@@ -5529,9 +5554,10 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": null,
-      "classical_bytes": 1325,
+      "classical_bytes": 1359,
       "commit_at_Lb_before_presentation": null,
       "honest_decision": "REJECT_DOUBLE_SPEND",
       "issuer_aware_ns": 503360.14279722795,
@@ -5542,11 +5568,12 @@
      },
      "protocol": "H1",
      "protocol_id": "classical_h1_online_ledger",
-     "trace_id": "gh-H1-synthetic_100km-b1-jiang_dTproc_1507ns-seed0-race",
+     "trace_id": "gh-H1-synthetic_100km-b1-jiang_dTproc_1507ns-seed0-replay",
      "variant": "coordinator"
     },
     "H3_late_commit": {
      "adversarial_double_spend_attempt": false,
+     "adversary": null,
      "events": [
       {
        "actor": "alice",
@@ -5935,6 +5962,7 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": 501853.14279722795,
       "classical_bytes": 738,
@@ -5953,6 +5981,7 @@
     },
     "H3_late_commit_ot": {
      "adversarial_double_spend_attempt": false,
+     "adversary": null,
      "events": [
       {
        "actor": "alice",
@@ -6341,6 +6370,7 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": 501853.14279722795,
       "classical_bytes": 1071,
@@ -6359,6 +6389,7 @@
     },
     "S1": {
      "adversarial_double_spend_attempt": false,
+     "adversary": null,
      "events": [
       {
        "actor": "A0",
@@ -6723,6 +6754,7 @@
       }
      ],
      "metrics": {
+      "accepted_presentations": 1,
       "accepted_sites": 1,
       "choice_to_local_accept_ns": 501853.14279722795,
       "classical_bytes": null,

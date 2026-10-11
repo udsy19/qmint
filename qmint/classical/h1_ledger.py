@@ -9,6 +9,11 @@ protocol_id: ``classical_h1_online_ledger`` (game C1).
 * ``MerchantTerminal``: site-local terminal that forwards a presentation to the
   coordinator, retries with the SAME idempotency key on timeout, and gives up with
   ``REJECT_UNAVAILABLE`` (a liveness failure, never a double accept) after ``max_attempts``.
+  Every presentation gets a fresh random 128-bit idempotency key (``secrets.token_hex``),
+  persisted with the pending request; it is never derived from (merchant, token, local
+  counter), so a second till of the same merchant or a restarted till cannot collide with an
+  earlier request (lane M finding M-H3). A ``replayed=True`` ACCEPT is honoured only for a key
+  this terminal has pending (its own retry); anything else is dropped.
 
 Double spend succeeds only under a declared protocol fault (e.g. a compromised
 coordinator or merchant MAC key); validation latency always includes the honest
@@ -19,6 +24,8 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import random
+import secrets
 import threading
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -102,7 +109,15 @@ class MerchantTerminal:
     max_attempts: int = 3
     router: Callable[[str], str] | None = None  # token_id -> authoritative node (H2 home-shard leader)
     pending: dict[str, dict] = field(default_factory=dict)  # idem_key -> {token, customer, attempts}
-    _counter: int = 0
+    # Source of idempotency keys. None (default): OS CSPRNG. A seeded ``random.Random`` ONLY for
+    # reproducible simulations (two terminals must never share one seed).
+    idem_rng: random.Random | None = field(default=None, repr=False)
+
+    def _new_idem_key(self) -> str:
+        while True:
+            k = secrets.token_hex(16) if self.idem_rng is None else f"{self.idem_rng.getrandbits(128):032x}"
+            if k not in self.pending:
+                return k
 
     def _request(self, idem_key: str) -> Message:
         st = self.pending[idem_key]
@@ -113,17 +128,16 @@ class MerchantTerminal:
 
     def handle(self, msg: Message, now_ns: float) -> list[Message]:
         if msg.kind == "Present":
-            self._counter += 1
-            idem_key = hashlib.sha256(
-                f"{self.merchant_id}|{msg.payload['token_id']}|{self._counter}".encode()).hexdigest()[:32]
+            idem_key = self._new_idem_key()
             self.pending[idem_key] = {"token_id": msg.payload["token_id"], "customer": msg.src, "attempts": 1}
             return [self._request(idem_key)]
         if msg.kind == "SpendResponse":
             st = self.pending.pop(msg.payload["idem_key"], None)
             if st is None:
-                return []  # late duplicate response for an already-resolved request
+                return []  # late duplicate / foreign replayed response: never released as a new ACCEPT
             return [new_msg("Result", self.node_id, st["customer"], "h1", token_id=st["token_id"],
-                            decision=msg.payload["decision"], decided_at_ns=now_ns + self.processing_ns)]
+                            decision=msg.payload["decision"], replayed=bool(msg.payload.get("replayed")),
+                            decided_at_ns=now_ns + self.processing_ns)]
         raise ValueError(f"unexpected message {msg.kind}")
 
     def on_timeout(self, idem_key: str, now_ns: float) -> list[Message]:

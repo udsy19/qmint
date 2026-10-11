@@ -7,6 +7,25 @@ discrete-event engine through `qmint/classical/engine_adapter.py`. Every number 
 not measurements. `pqc_timings.json` holds wall-clock CPU timings of a pure-Python reference ML-DSA on an Apple M4 Pro.
 Those timings are not representative of optimized implementations.
 
+## Lane-M red-team fixes (lane FGH)
+
+| id | fix | regression |
+|---|---|---|
+| M-H1 | H3-OT secrets are `HMAC-SHA256(issuer_key, …)` with an issuer-private 256-bit key from `secrets.token_bytes`. Public data (seed, token id, site index) no longer determines them. Simulations pass an explicit key for reproducibility; no customer-side agent receives it. | `tests/adversarial/test_m_classical.py::test_h3_ot_secrets_unpredictable` (xfail removed) |
+| M-H2 | Stage II is one-shot per token in both late-commit modes. The issuer latches the first `Commit`/`CommitC` before relaying it and refuses (does not relay) any later one. A site ignores a second `Activate`/`RelayC`. A presentation held by `hold_until_active` is decided by the first commit only. | `…::test_h3_{disclosed,ot}_second_commit_refused`, `tests/unit/classical/test_classical_h3.py` |
+| M-H3 | H1/H2 idempotency keys are random 128-bit values per presentation, persisted with the pending request. They are no longer `sha256(merchant, token, local counter)`. A `replayed=True` ACCEPT is honoured only for a key the terminal has pending, and the flag is forwarded in `Result` (so H1 `classical_bytes` grows by 17 B and H2 by 34 B). A second till of the same merchant, or a restarted till, gets `REJECT_DOUBLE_SPEND`. | `…::test_h1_second_terminal_same_merchant_does_not_release_goods_twice`, `test_classical_h1.py` |
+| M-H4 | A **strong** double-spend adversary has been added next to the weak `replay` one. See the matched-topology section. In `benchmark_records.jsonl`, `double_spends_successful` is now the worst case over both adversaries, and `configuration.double_spends_by_adversary` lists each one. | `tests/integration/test_gh_matched.py::test_strong_adversary_*`, `test_classical_records.py` |
+| M-G1 | `run_s_money` draws z uniformly by default (seeded). Bob's pre-presentation view is identical for b = 0 and b = 1. | `tests/adversarial/test_m_networks.py::test_default_run_hides_choice_from_bank`, `tests/unit/networks/test_networks_s_money.py` |
+
+**Changed result:**
+- H6's `double_spends_successful` goes from 1 to 2, because the strong adversary also re-presents the coin after
+  the race and the offline merchant accepts it a third time.
+- No other double-spend outcome changes. Every preventing design (H1, H2, H3 ×3, H4+H1, H4+H3, and H5 with its
+  assumption holding) still has 0 double spends, now against the strong adversary as well.
+- Against the code *before* these fixes, the strong adversary gets 1 extra accept on H1, H2, H4+H1 and both H3
+  late-commit modes. This was checked by re-introducing the three bugs in-process.
+- So the earlier "prevented" entries were valid only against the replay adversary, as M-H4 said.
+
 ## What the strongest classical construction is, per scenario
 
 | Scenario requirement | Best classical construction found | What it gives up versus S1 (ideal) |
@@ -45,11 +64,15 @@ extra trust or hardness assumptions are disallowed.
 
 ## Matched topology: S-money vs H0–H6 on one engine (lane GH)
 
-Regenerate with `python -m qmint.classical.matched_topology` (about 1 min). Outputs:
-- `matched_topology_results.csv`: 264 rows = 6 topologies × 11 protocols × 2 processing models × b ∈ {1, 0}.
+Regenerate with `python -m qmint.classical.matched_topology` (about 3 min). Outputs:
+- `matched_topology_results.csv`: 528 rows = 6 topologies × 11 protocols × 4 processing models × b ∈ {1, 0}.
   RIPE rows are medians over 20 seeds.
+  - `race_accepted_sites` is the outcome of the weak replay adversary.
+  - `strong_accepted_presentations` and `strong_double_spends` are the outcomes of the strong adversary
+    (maximum over seeds).
 - `matched_topology_records.jsonl`: one C6 record per (topology, protocol, processing model), b = 1.
-- `matched_topology_traces.jsonl`: C4 traces, seed 0, b = 1, Jiang processing, honest runs plus double-spend races.
+- `matched_topology_traces.jsonl`: C4 traces, seed 0, b = 1, Jiang processing. It holds the honest runs plus the
+  replay and strong double-spend runs.
 - `figure6_trace_data.json`: spacetime-diagram data (S1 vs H1 race vs H3 late commit, plain and OT) for Jinan,
   Yiyuan–Mazhan, 100 km and RIPE.
 
@@ -59,9 +82,14 @@ Every protocol runs on the same lane-G `TopologyCase`, with the same seed and th
 - Both sites see a presentation at the same nominal time.
 - The issuer, ledger and HQ sit at L0.
 
-All values are `MODELLED_LATENCY`. RIPE link delays are measured inputs (RTT/2). The processing models are:
-- `jiang_dTproc_1507ns`: every node step costs 1.507 µs (Jiang 2024 SI). Relays cost 0, as in G's S-money B0→B1.
+All values are `MODELLED_LATENCY`. RIPE link delays are measured inputs (RTT/2).
+
+Processing time is **one matched parameter**. Each model applies the same per-step time to every node of every
+protocol, S-money's B_i included. Relays cost 0, both for S-money's B0→B1 and for the H3 issuer. The models are:
 - `zero_processing`: communication only.
+- `jiang_dTproc_1507ns`: 1.507 µs per step (Jiang 2024 SI).
+- `h_site_10us`: 10 µs per step, lane H's declared terminal time, applied to everything.
+- `h_coord_50us`: 50 µs per step, lane H's declared coordinator time, applied to everything.
 
 Every trace passes G's causality check.
 
@@ -98,3 +126,44 @@ What the numbers say:
   Jiang's classical reference. That edge buys late choice without a trusted relay that learns b, which only
   H3-OT matches. H3-OT matches it computationally, with an ideal OT that is NOT_IMPLEMENTED.
 - The comparability statuses in `comparability_matrix.csv` are unchanged by these results.
+
+### Double-spend adversaries (M-H4)
+- **`replay` (weak; the adversary of the earlier H/GH runs):** the genuine presentation is made at both sites at
+  the same nominal time.
+- **`strong`:** `replay` plus an adaptive second wave, made after the first outcome is in the customer's causal
+  past. It uses only what a customer legitimately holds:
+  - a second Stage-II commit to the other site (H3 late-commit modes);
+  - re-presentation at the other site;
+  - OT secrets derived from public data (H3-OT, the pre-fix M-H1 derivation);
+  - for the ledger designs, presentations at a second till of the same merchant at the other site and at a fresh
+    (restarted) till at L_b (the M-H3 deployment).
+- Outcomes are the same on all 6 topologies, all 4 processing models, b ∈ {0, 1} and all RIPE seeds:
+  - 0 double spends for H1, H2, H3 ×3, H4+H1, H4+H3 and H5;
+  - 1 for H0;
+  - 2 for H6 (detection only).
+- S-money double spending is **not simulated**, because token validity is symbolic in G's model. Its security
+  comes from Kent 2022 Lemma 1 in the ideal model, not from these runs.
+
+### Processing-time sensitivity (lane-M re-audit of M-H5)
+- **The unmatched comparison M-H5 warned about.** Lane H's scenarios use 10 µs per site and 50 µs per
+  coordinator, and G's S-money uses 1.507 µs. Put side by side, those would give H1 ≈ 111.5 µs against S1 ≈ 15.3 µs
+  at Jinan. About 68.5 µs of that 96 µs gap is the processing mismatch alone.
+- **The matched comparison.** With processing matched (S1 − protocol, choice → accept at L1, µs, b = 1):
+
+| topology | protocol | zero | 1.507 µs | 10 µs | 50 µs |
+|---|---|---|---|---|---|
+| Jinan 2.766 km | H3 late-commit (both), H3-pre, H4+H3, H0 | 0 | 0 | 0 | 0 |
+| Jinan 2.766 km | H5, H6 (challenge round) | 0 | −1.51 | −10 | −50 |
+| Jinan 2.766 km | H1, H4+H1 | −27.66 | −30.67 | −47.66 | −127.66 |
+| Jinan 2.766 km | H2 (2 of 3 replicas at L0) | −27.66 | −33.69 | −67.66 | −227.66 |
+| Yiyuan–Mazhan 60.54 km | H1, H4+H1 | −605.4 | −608.41 | −625.4 | −705.4 |
+| RIPE HEL–TMP (median) | H3 late-commit (both) | 0 | 0 | 0 | 0 |
+| RIPE HEL–TMP (median) | H0, H4+H3 | +50.95 | +50.95 | +50.95 | +50.95 |
+| RIPE HEL–TMP (median) | H1, H4+H1 | −4040.1 | −4043.1 | −4060.1 | −4140.1 |
+
+- **What the sensitivity shows:**
+  - S1's edge over a remote ledger is 2 one-way delays plus 2 processing steps. It grows by 2p, because the ledger
+    path has 3 steps against S1's 1.
+  - S1's equality with H3 late-commit does not depend on p.
+  - On RIPE, signal-only designs keep their roughly 51 µs lead over S1 at every p.
+- **What does not change:** no qualitative conclusion above depends on the processing model.

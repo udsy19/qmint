@@ -51,8 +51,7 @@ def test_superluminal_empirical_latency_raises():
         run_s_money(TopologyCase(case.network, fast, case.provenance), b=1)
 
 
-# --------------------------------------------------------------- M-G1: default z leaks b
-@pytest.mark.xfail(strict=True, reason="M-G1: run_s_money defaults z=0, so the commitment c = b is visible to B0 before presentation")
+# --------------------------------------------------------------- M-G1: default z leaks b (FIXED, lane FGH)
 @pytest.mark.parametrize("case", [jiang2024_intracity()], ids=lambda c: c.network.network_id)
 def test_default_run_hides_choice_from_bank(case):
     assert _bob_view(run_s_money(case, b=0)) == _bob_view(run_s_money(case, b=1))

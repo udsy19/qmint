@@ -1,0 +1,72 @@
+{
+  "lane": "FGH",
+  "task": "1 (fix lane: lane-M findings M-H1, M-H2, M-H3, M-H4, M-G1 + M-H5 processing re-audit)",
+  "input_contract_sha": "02aeab190025e51992cca0736f86dc731c1abee2",
+  "branch": "feat/FGH-fixes",
+  "starting_commit_sha": "02aeab190025e51992cca0736f86dc731c1abee2",
+  "code_and_reports_commit_sha": "8a8c529d1e6f9ffcb2a355b648eb6e9111f65b9a",
+  "final_commit_sha": "see git log (handoff commit follows 8a8c529)",
+  "m_findings_fixed": ["M-H1", "M-H2", "M-H3", "M-H4", "M-G1"],
+  "m_reaudit_addressed": ["M-H5 processing-time fairness: one matched per-step processing parameter for every protocol incl. S-money; 4 models swept", "GH re-audit: hold_until_active + second commit cannot release a held presentation (unit test)"],
+  "changed_paths": [
+    "qmint/classical/h3_escrow.py", "qmint/classical/h1_ledger.py", "qmint/classical/h2_quorum.py",
+    "qmint/classical/scenarios.py", "qmint/classical/matched_topology.py", "qmint/classical/run_baselines.py",
+    "qmint/classical/comparability.py", "qmint/networks/s_money_sites.py",
+    "tests/unit/classical/test_classical_h1.py", "tests/unit/classical/test_classical_h3.py",
+    "tests/unit/classical/test_classical_records.py", "tests/unit/networks/test_networks_s_money.py",
+    "tests/integration/test_gh_matched.py", "tests/integration/test_gh_engine_race.py",
+    "tests/adversarial/test_m_classical.py (5 strict-xfail markers removed + now-unused pytest import; assertions untouched)",
+    "tests/adversarial/test_m_networks.py (xfail marker removed; assertion untouched)",
+    "reports/classical_baseline_notes/* (regenerated)", "handoffs/FGH-1.json", "handoffs/FGH-1.md"
+  ],
+  "commands_run": [
+    "$PY -m qmint.classical.run_baselines --pqc-reps 5",
+    "$PY -m qmint.classical.matched_topology",
+    "$PY -m ruff check qmint tests",
+    "$PY -m pytest tests -q -m \"not network and not slow\" -o addopts=\"\""
+  ],
+  "test_exit_codes": {"ruff": 0, "pytest_full_not_network_not_slow": 0},
+  "test_counts": {"before": "983 passed, 2 deselected, 26 xfailed", "after": "1001 passed, 2 deselected, 21 xfailed"},
+  "evidence_files": [
+    "reports/classical_baseline_notes/matched_topology_results.csv",
+    "reports/classical_baseline_notes/matched_topology_records.jsonl",
+    "reports/classical_baseline_notes/matched_topology_traces.jsonl",
+    "reports/classical_baseline_notes/figure6_trace_data.json",
+    "reports/classical_baseline_notes/benchmark_records.jsonl",
+    "reports/classical_baseline_notes/comparability_matrix.csv",
+    "reports/classical_baseline_notes/README.md"
+  ],
+  "assumptions_verified": [
+    "Strong adversary is sensitive to the bugs: re-introducing M-H1/H2/H3 in-process gives 2 accepted presentations for H1, H2, H4+H1, H3-late-disclosed, H3-late-OT (synthetic_100km); with fixes, 1",
+    "Latency columns of the matched CSV for the two pre-existing processing models are bit-identical to the previous committed CSV (0 diffs over 264 rows)",
+    "Default-z coupling (c drawn from seed, z = c XOR b) gives z uniform and independent of b; Bob's pre-presentation view identical for b=0/1 per seed (40 seeds tested)"
+  ],
+  "performance_numbers_with_sources": {
+    "evidence_kind": "MODELLED_LATENCY (security outcomes: discrete, from H state machines on G's engine)",
+    "strong_adversary_double_spends_all_topologies_proc_models_b_seeds": {"H0": 1, "H1": 0, "H2": 0, "H3_preassigned": 0, "H3_late_commit_disclosed": 0, "H3_late_commit_ot_private": 0, "H4+H1": 0, "H4+H3": 0, "H5": 0, "H6": 2},
+    "headline_change": "H6 double_spends_successful 1 -> 2 in benchmark_records (strong adversary re-presents the coin offline). No other double-spend outcome changes; all latency headlines unchanged.",
+    "processing_sensitivity_jinan_S1_minus_H1_us": {"zero": -27.66, "jiang_1.507us": -30.67, "10us": -47.66, "50us": -127.66},
+    "processing_sensitivity_note": "S1 edge over remote ledger = 2 one-way + 2p; S1 == H3-late for every p; unmatched H(10/50us) vs S1(1.507us) would have inflated the Jinan gap from 30.67 to ~96 us",
+    "classical_bytes": "H1 +17 B, H2 +34 B per record (replayed flag now forwarded in Result/SpendResponse)"
+  },
+  "blockers": [],
+  "known_limitations": [
+    "Simulations pass an explicit deterministic issuer_key (H3) and seeded idempotency-key RNG (H1/H2) for reproducible traces; production default is the OS CSPRNG. No customer-side agent receives them.",
+    "Restarted-till model: a fresh terminal object/actor of the same merchant; pending-request persistence across a real restart (to retry with the same key) is not modelled.",
+    "Strong adversary's second wave is time-scheduled after the first outcome is in the customer's causal past rather than conditioned on it in-run; it always attempts, which is at least as strong in this deterministic setting.",
+    "S-money double spending is still not simulated (validity symbolic in G's model).",
+    "IdealOT remains an ideal functionality; OT instantiation NOT_IMPLEMENTED.",
+    "audits/*.md status columns (OPEN) not updated: audits/ is not an owned path; lead/M should flip M-H1..H4, M-G1 to FIXED-pending-merge.",
+    "qmint/api/routes/benchmarks.py GH slot text not touched (not owned)."
+  ],
+  "interfaces_changed": [
+    "matched_topology.run_matched/run_classical: `adversarial: bool` -> `adversary: None|'replay'|'strong'`; MatchedRun.adversarial -> .adversary; trace ids end -replay/-strong (was -race)",
+    "matched CSV: new columns strong_accepted_presentations, strong_double_spends; 4 processing models (528 rows)",
+    "EscrowIssuer: new fields issuer_key, committed, refused_commits; seed is now domain separation only",
+    "MerchantTerminal: _counter removed, new idem_rng; Result payload gains `replayed`",
+    "ShardReplica SpendResponse gains `replayed`",
+    "run_s_money: z default None (uniform, seeded)",
+    "scenarios.h1_nodes/h2_cluster: optional extra_tills"
+  ],
+  "whether_paid_jobs_run": false
+}
