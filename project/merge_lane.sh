@@ -22,7 +22,7 @@ case "$LANE" in
   *) echo "unknown lane"; exit 1 ;;
 esac
 BASE=$(git merge-base main "$BRANCH")
-BAD=$(git diff --name-only "$BASE" "$BRANCH" | grep -vP "$PAT" || true)
+BAD=$(git diff --name-only "$BASE" "$BRANCH" | python3 -c 'import re,sys; p=re.compile(sys.argv[1]); [print(l.strip()) for l in sys.stdin if not p.match(l.strip())]' "$PAT")
 if [[ -n "$BAD" ]]; then echo "OWNERSHIP VIOLATION ($LANE):"; echo "$BAD"; exit 2; fi
 PRE=$(git rev-parse HEAD)
 git merge --no-ff -q -m "merge: lane $LANE ($BRANCH)
