@@ -4,7 +4,7 @@
   "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
   "branch": "feat/D-proofs",
   "starting_commit_sha": "ece05ef02f3f89c2f75edc2393f478e77061ca56",
-  "final_commit_sha": "SEE_GIT_LOG (commit containing this file; code at ed1bea3fe05d661548bcb31b24d379e8e9a0dbbd)",
+  "final_commit_sha": "SEE_GIT_LOG (latest commit on feat/D-proofs; this file committed in it)",
   "changed_paths": [
     "proofs/OBLIGATIONS.yaml",
     "proofs/notes/P-*.md (10)",
@@ -16,6 +16,7 @@
     "qmint/proofs/checker.py",
     "qmint/proofs/engine.py",
     "qmint/proofs/results.py",
+    "qmint/proofs/sdp_exact.py",
     "qmint/proofs/reproduce.py",
     "tests/unit/proofs/{conftest,test_registry,test_ideal_bounds,test_finite_size,test_checker}.py",
     "handoffs/D-D1.json",
@@ -28,7 +29,7 @@
     "$PY -m qmint.proofs.reproduce"
   ],
   "test_exit_codes": {
-    "pytest contracts+unit/proofs": "0 (214 passed: 18 contracts + 196 proofs)",
+    "pytest contracts+unit/proofs": "0 (221 passed: 18 contracts + 203 proofs)",
     "pytest smoke": "0 (1 passed)",
     "ruff": 0,
     "reproduce": 0
@@ -43,7 +44,8 @@
   "assumptions_verified": [
     "Read primary sources: MVW2012 arXiv:1202.4010v1 Thm 1/2; Kent et al. 2022 main text + SI (equations from article HTML TeX, cross-read with PDF/SI Eqs. 58-102,194-198); Schiansky 2023 main + SI Note 3 + peer review file + Author Correction (correction touches only Discussion MAC text).",
     "Transcriptions cross-checked against lane A research/THEOREM_REGISTRY_SEED.yaml: Kent Lemmas 2-4, Thm 1-2, lambda/O(theta), Table 6 A-G agree; Schiansky Eqs. 16-23 agree; lane A's N/p_m discrepancy findings reproduced; lane A's Jiang 2024 arithmetic (5.507e-9, 1.82e-11) re-checked from their transcription only (Jiang paper not read by lane D).",
-    "Table 6 physical assumptions are NOT verifiable from data; they are required declarations (ASSUMPTION_MISSING otherwise)."
+    "Table 6 physical assumptions are NOT verifiable from data; they are required declarations (ASSUMPTION_MISSING otherwise).",
+    "Lane C CERTIFIED_NUMERIC SDP claims (handoffs/C-C1-evidence.json on main @ c9f0ec0, read from main repo path; branch not merged) re-verified via separate exact code path qmint/proofs/sdp_exact.py: W1 dual (3/8)^n*1 exactly feasible for n=1,2 (OPT<=3/4, 9/16); W1_CV n=1 own exact dual 0.92677669530531; all C bounds >= these -> CONFIRMED. C's rational Y matrices were not exported, so the claimed VALUES were confirmed, not C's specific matrices."
   ],
   "performance_numbers_with_sources": [
     {
@@ -99,22 +101,32 @@
       "quantity": "D1 p_d rescaled-Chernoff assessment (QMint, not published)",
       "value": 3.3e-07,
       "evidence_kind": "UNCERTIFIED"
+    },
+    {
+      "quantity": "SDP re-verification (lane D exact)",
+      "values": {
+        "W1_n1": "3/4 (C claims 0.750000000003638 SCS / 0.7500000004183676 Clarabel)",
+        "W1_n2": "9/16 (C 0.562500000007276 / 0.5625000002919478)",
+        "W1_CV_n1": "0.92677669530531 (C 0.9267766955417756)"
+      },
+      "evidence_kind": "CERTIFIED_NUMERIC"
     }
   ],
   "blockers": [],
   "known_limitations": [
     "D1 never certified: fitted SDP boundary, informal de Finetti, Chernoff applied to weighted error+loss sum (open question - textbook-valid rescaling weakens p_d from 5.9e-45 to 3.3e-7), MAC p_t not composed.",
     "P-W2, P-S3, P-C1, P-OPT UNSUPPORTED (depend on lanes C, G, H, I); P-PRIV empirical privacy-game test not run (only Kent Lemma 4 transcribed).",
-    "SDP CERTIFIED_NUMERIC acceptance checks residual accounting fields only; it cannot verify that the SDP's G matrix encodes the claimed game (relies on game_definition_sha256) nor that eigenvalue_error_bound is itself rigorous.",
     "Kent SI proofs (Notes IV-VIII) not audited line by line; statements transcribed only.",
     "theta must be strictly in (0, pi/4) per Table 5; paper's theta=0 Fig.5 point reproduced at theta=1e-6 deg.",
     "Calibration mapping loss->P_det=1-loss (S2) is a documented modelling choice.",
-    "BoundResult is not a pydantic-frozen model in contracts v1 (frozen schema, mutable instance); evaluators never mutate results."
+    "BoundResult is not a pydantic-frozen model in contracts v1 (frozen schema, mutable instance); evaluators never mutate results.",
+    "CERTIFIED_NUMERIC SDP certificates accepted only for W1 n<=2 and W1_CV n=1 (exact re-verification limit, Choi dim <=64); W2 SDP certificates refused (no independent W2 operator construction). Lane C W1_CV record lacks delta_shift (checked with (certified-dual)/8)."
   ],
   "interfaces_changed": [
     "None to frozen contracts. New lane-D API: qmint.proofs.engine.ProofEngine (ProofEvaluator; draft_certificate), qmint.proofs.checker.IndependentProofChecker (IndependentChecker), qmint.proofs.ideal_bounds.{log10_bound,min_length_for_target} (drop-in for bootstrap/ideal_bounds.py; lead deletes bootstrap/ and tests/smoke/test_bootstrap_bounds.py at merge).",
     "Request conventions: parameters['declared_assumptions'] (list of registry required_declarations); parameters['noise_source'] in {calibration, published_kent_2022, published_schiansky_2023, hypothetical} or a CalibrationRecord with experiment_family kent_2022 / schiansky_2023; scalar or {lo,hi} interval parameters.",
-    "Migration proposal (not needed by lane D now): add GameId S2_JIANG24 (protocol jiang_2024_tokens) and W1_THRESH_JOINT (MVW Sec 3.5 joint-threshold game) in schemas/v2 if lanes need them; also consider frozen=True on BoundResult."
+    "Migration proposal (not needed by lane D now): add GameId S2_JIANG24 (protocol jiang_2024_tokens) and W1_THRESH_JOINT (MVW Sec 3.5 joint-threshold game) in schemas/v2 if lanes need them; also consider frozen=True on BoundResult.",
+    "SDP certificate parameters schema (SecurityCertificate.parameters.sdp_certificate): {solver, n, dual_objective, delta_shift, certified_bound, certified_bound_exact?, dual_matrix_rational? (rows of 'p/q' strings)}. Proposal to lane C: export the rational dual Y so the checker can verify C's exact matrix, and add delta_shift to the W1_CV record."
   ],
   "whether_paid_jobs_run": false
 }

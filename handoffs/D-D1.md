@@ -28,3 +28,15 @@ Branch `feat/D-proofs`, starting at `ece05ef`. The machine-readable record is `D
 **Open question (flagged, not asserted):** Schiansky applies Chernoff to the weighted mishap sum (4+2√2)e + l. That variable takes values in {0, 1, 6.83}, outside the {0,1} hypothesis of the Chernoff bound. Rescaling it into [0,1], as the textbook bound requires, weakens p_d to 3.3e-7. D1 is therefore never certified.
 
 **Pending other lanes:** P-W2 (lane C), P-S3 (lane G), P-C1 (lane H), P-OPT (lane I), and the empirical privacy-game test for P-PRIV.
+
+**Update: re-verification of lane C's SDP certificates (lead request).** The checker now accepts CERTIFIED_NUMERIC certificates only after an exact re-verification in `qmint/proofs/sdp_exact.py`. That module imports nothing from `qmint.attacks`; it builds its own rational G_n, runs its own exact PSD test with pivoting (valid for singular matrices), and uses its own dual matrices.
+- **W1:** the MVW dual (3/8)^n·1 is exactly feasible for n = 1 and 2, which gives OPT ≤ 3/4 and OPT ≤ 9/16.
+- **W1_CV:** our own exact dual gives OPT ≤ 0.92677669530531.
+
+Every bound lane C claims is at least these values, so all of C's claims are **confirmed**. One gap: C did not export its rational Y matrices, so we confirmed the claimed bound values but not C's specific matrices. The proposal to C is to export Y, plus `delta_shift` for W1_CV.
+
+SDP certificates for W2 are refused. P-W2 in OBLIGATIONS.yaml is now CERTIFIED_NUMERIC for the SDP-support obligation only; W2 itself still has no bound.
+
+**Update: cross-check against lane A's seed.** The transcriptions agree. I reproduced the main-text vs SI discrepancies in Schiansky (N and p_m), and the published p_d only recomputes with N = 4.2e6. The Chernoff question is assessed in `proofs/notes/P-D1.md`, and the MVW Sec. 3.5 joint-threshold result is noted as not covering W2.
+
+Tests: 221 passed. Ruff is clean.
