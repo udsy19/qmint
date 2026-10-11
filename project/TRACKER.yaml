@@ -113,11 +113,15 @@ tasks:
     description: Qiskit and QuTiP independent circuits
     owner: subagent-lane-F
     branch: feat/F-quantum
-    status: CLAIMED
-    evidence: []
+    status: MERGED
+    evidence:
+    - handoffs/F-F1.json
+    - handoffs/F-F1_evidence.json
+    - 146 quantum tests
     blockers: []
-    commit: null
+    commit: b0ed333
     start_sha: ece05ef
+    merge_sha: 0ff0a12
   G1:
     lane: G
     description: Spacetime topology and causal simulations
@@ -180,11 +184,14 @@ tasks:
     description: Core package/CI/integration/frozen schema
     owner: subagent-lane-L
     branch: feat/L-infra
-    status: CLAIMED
-    evidence: []
+    status: MERGED
+    evidence:
+    - handoffs/L-L1.json
+    - .github/workflows/ci.yml
     blockers: []
-    commit: null
+    commit: 42d822c
     start_sha: ece05ef
+    merge_sha: 46b7929
   M1:
     lane: M
     description: Independent red-team audit

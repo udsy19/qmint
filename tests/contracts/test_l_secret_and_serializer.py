@@ -133,8 +133,6 @@ def test_nested_issuer_secret_in_contract_model_refused(store, prov, secret):
     assert not store.registry.exists()
 
 
-@pytest.mark.xfail(strict=True, reason="frozen serializer bug: nested IssuerSecret in Any field is dumped; "
-                   "migration proposed in handoffs/L-L1.json")
 def test_frozen_canonical_json_refuses_nested_secret(secret):
     from qmint.core.contracts import SecurityCertificate
 

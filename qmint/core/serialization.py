@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel
+from pydantic_core import PydanticSerializationError
 
 from qmint.core.contracts import CONTRACT_MODELS, IssuerSecret, SecretBoundaryError
 
@@ -22,7 +23,13 @@ def _plain(obj: Any) -> Any:
     if isinstance(obj, IssuerSecret):
         raise SecretBoundaryError("refusing to serialize IssuerSecret into a public artifact")
     if isinstance(obj, BaseModel):
-        return _plain(obj.model_dump(mode="python"))
+        try:
+            dumped = obj.model_dump(mode="python")
+        except PydanticSerializationError as exc:  # pydantic wraps the nested-secret refusal
+            if "IssuerSecret" in str(exc):
+                raise SecretBoundaryError("refusing to serialize nested IssuerSecret") from exc
+            raise
+        return _plain(dumped)
     if isinstance(obj, Enum):
         return obj.value
     if isinstance(obj, dict):

@@ -1,5 +1,4 @@
 """Zero-dependency theorem-reference smoke tests (stdlib unittest)."""
-import math
 import unittest
 
 try:

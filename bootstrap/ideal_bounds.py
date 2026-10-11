@@ -9,6 +9,7 @@ DO NOT apply ideal formulas to noisy, lossy, thresholded, or adaptive-oracle
 protocols. This is a smoke/reference fixture for future proof-engine agents.
 """
 from __future__ import annotations
+
 import argparse
 import math
 

@@ -25,6 +25,7 @@ from pydantic import (
     ConfigDict,
     Field,
     field_validator,
+    model_serializer,
     model_validator,
 )
 
@@ -341,6 +342,11 @@ class IssuerSecret(_Strict):
 
     def __getstate__(self) -> Any:
         raise SecretBoundaryError("IssuerSecret cannot be pickled")
+
+    @model_serializer(mode="plain")
+    def _refuse_serialization(self) -> Any:
+        # Fires when pydantic serializes a parent model holding this secret in an Any field.
+        raise SecretBoundaryError("IssuerSecret cannot be serialized (nested in a parent model)")
 
     def reveal_for_testing_only(self) -> dict[str, Any]:
         """Controlled TEST_ONLY revelation. Any attack given this output is OUT_OF_MODEL."""
