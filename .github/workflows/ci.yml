@@ -4,23 +4,30 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  test:
+  python:
+    name: Python (lint, tests, offline pipeline)
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       QMINT_ALLOW_NETWORK: "0"
       QMINT_ALLOW_PAID_HARDWARE: "0"
     defaults:
       run:
-        shell: bash  # GitHub runs bash with -eo pipefail
+        shell: bash
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # git sha + dirty state feed the evidence manifests
+          fetch-depth: 0  # git sha feeds the evidence manifests
       - uses: astral-sh/setup-uv@v5
       - name: Create environment from the lock
         run: |
@@ -29,21 +36,35 @@ jobs:
           uv pip install --python .venv/bin/python -r requirements.lock
           uv pip install --python .venv/bin/python --no-deps -e .
       - name: Ruff
-        run: |
-          set -euo pipefail
-          .venv/bin/python -m ruff check .
-      - name: Pytest (no network, no real data)
-        run: |
-          set -euo pipefail
-          .venv/bin/python -m pytest -q -m "not network and not realdata"
+        run: .venv/bin/python -m ruff check .
+      - name: Pytest (no network, no real data, no slow)
+        run: .venv/bin/python -m pytest -q -m "not network and not realdata and not slow"
       - name: CLI doctor
-        run: |
-          set -euo pipefail
-          .venv/bin/qmint doctor --report reports/environment.json
-      - name: Offline core run + manifest verification
+        run: .venv/bin/qmint doctor --report reports/environment.json
+      - name: Offline core run and manifest verification
         run: |
           set -euo pipefail
           .venv/bin/python scripts/run_core.py --offline --seed 42 --out experiments/run_core
           .venv/bin/python scripts/verify_manifest.py experiments/run_core
-      - name: Pyright
-        run: echo "SKIPPED: pyright not configured for this repository"
+
+  web:
+    name: Web (typecheck, lint, unit tests, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
