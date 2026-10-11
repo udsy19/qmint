@@ -118,7 +118,9 @@ claims:
     numerical_method: "SDP (lane C); only a CERTIFIED_NUMERIC dual with residual accounting may ever be certified"
     verification_script: "pending lane C (qmint/attacks)"
     independent_crosscheck: "qmint/proofs/checker.py accepts CERTIFIED_NUMERIC SDP certificates only with residual-accounting fields"
-    caveats: ["Applying (3/4)^n to W2 is refused (tested)."]
+    caveats:
+      - "Applying (3/4)^n to W2 is refused (tested)."
+      - "MVW2012 Sec. 3.5 threshold result (binomial tail in the single-repetition optimum) counts JOINT both-copies successes per repetition; it is not a per-copy threshold verifier and does not cover W2 (agrees with lane A seed T-MVW12-SEC35). Not implemented: would need a new game id (lane A proposal W1_THRESH_JOINT)."
     status: UNSUPPORTED
     bounds: []
 
@@ -287,11 +289,13 @@ claims:
       - "The N->infinity step is an informal appeal to exponential de Finetti without finite-N correction terms."
       - "Chernoff bound (stated for sums of Bernoulli variables) is applied to the weighted mishap combination M(e,l)."
       - "p_d excludes the MAC tag-forgery probability p_t = 1/sqrt|C|; the paper chooses p_d ~ p_t but states no composed epsilon. QMint does not compose them."
-      - "Main text quotes multiphoton probability 6.76 +- 0.12 %; SI Table 2 lists p_m = 6.02 +- 0.28 % and allowed mishaps 0.4849 = (1/2)(1 - p_m/2) consistent with 6.02 %. The published p_d reproduces with 6.02 %."
+      - "Main text vs SI disagree: multiphoton probability 6.76 +- 0.12 % (main; reproduces main-text e_d = 3.79 %) vs p_m = 6.02 +- 0.28 % (SI Table 2; reproduces e_d = 3.82 % and allowed mishaps 0.4849); sub-token length N = 4.2e6 (Fig. 4b) vs 4,482,440 (SI Table 2). The published p_d = 5.911e-45 reproduces ONLY with N = 4.2e6 and p_m = 6.02 % (N = 4,482,440 gives 6.3e-48; p_m = 6.76 % gives 8.7e-45). Cross-checked with lane A (research/THEOREM_REGISTRY_SEED.yaml T-SCH23-FINITE)."
+      - "OPEN QUESTION (QMint assessment, not a claim of error): SI Eqs. (7)-(8) are multiplicative Chernoff bounds for sums of independent variables in {0,1}. The mishap variable per state takes values in {0, 1, 4+2 sqrt 2} (weight > 1 on errors), outside that hypothesis. Rescaling to [0,1] (divide by w = 4+2 sqrt 2) gives the textbook-valid exponent reduced by w: p_d <= exp(-(delta_d^2/2)(1/2)(1-p_m/2) N / w) = 3.3e-7 at the published tuple instead of 5.9e-45. The authors may have a different justification; until resolved D1 stays uncertifiable. Same issue for the honest bound (Eq. 19)."
       - "Therefore results carry evidence kind PUBLISHED_AGGREGATE and status NUMERICALLY_SUPPORTED; the independent checker never marks a D1 certificate CERTIFIED."
     status: NUMERICALLY_SUPPORTED
     reproduced_examples:
-      - "p_d = 5.911e-45 (SI Table 2) at N = 4.2e6, p_m = 0.0602, delta_d = 0.01 (ours 5.9e-45 within 1%)"
+      - "p_d = 5.911e-45 (SI Table 2) at N = 4.2e6, p_m = 0.0602, delta_d = 0.01 (ours 5.911e-45); with SI N = 4,482,440 the same formula gives 6.3e-48, so the published number uses N = 4.2e6"
+      - "e_d(l_m = 0.224) = 3.82 % with p_m = 6.02 % (SI) and 3.79 % with p_m = 6.76 % (main text)"
       - "M(e_m, l_m) for +/- basis: (4+2 sqrt2)(0.03278)+0.224 = 0.448 (SI Table 2: 0.448)"
       - "Eq. (23) admissible at delta_h = 0.031, delta_d = 0.01"
     bounds:

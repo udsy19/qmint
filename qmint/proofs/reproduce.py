@@ -117,6 +117,16 @@ def reproduce() -> dict[str, Any]:
     pd = math.exp(fs.schiansky_ln_pd(d1))
     rows.append(_row("D1 p_d at N=4.2e6, p_m=0.0602, delta_d=0.01", "Schiansky 2023 SI Eq. (22), SI Table 2", 5.911e-45,
                      pd, abs(pd / 5.911e-45 - 1) < 0.01, "PUBLISHED_AGGREGATE"))
+    pd_si_n = math.exp(fs.schiansky_ln_pd(dict(d1, N=4_482_440)))
+    rows.append(_row("D1 p_d with SI Table 2 N=4,482,440 (shows published p_d used N=4.2e6)",
+                     "Schiansky 2023 SI Table 2 vs main Fig. 4b", 5.911e-45, pd_si_n, pd_si_n < 1e-46,
+                     "PUBLISHED_AGGREGATE"))
+    ed_main = fs.schiansky_secure_error(0.224, 0.0676)
+    rows.append(_row("D1 e_d(l_m) with main-text p_m=6.76%", "Schiansky 2023 main text Results", 0.0379, ed_main,
+                     round(ed_main, 4) == 0.0379, "PUBLISHED_AGGREGATE"))
+    resc = math.exp(fs.schiansky_ln_pd_rescaled_assessment(d1))
+    rows.append(_row("QMint assessment: p_d with Chernoff applied to mishaps rescaled into [0,1] (NOT published)",
+                     "open question, see proofs/notes/P-D1.md", None, resc, True, "UNCERTIFIED"))
     m = fs.schiansky_mishaps(0.03278, 0.224)
     rows.append(_row("D1 mishaps M(e_m+-, l_m)", "Schiansky 2023 SI Eq. (18), SI Table 2", 0.448, m, round(m, 3) == 0.448, "PUBLISHED_AGGREGATE"))
     ed = fs.schiansky_secure_error(0.224, 0.0602)

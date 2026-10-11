@@ -192,6 +192,13 @@ def schiansky_ln_pd(p: Mapping[str, float]) -> float:
     return -(p["delta_d"] ** 2 / 2.0) * 0.5 * (1.0 - p["p_m"] / 2.0) * p["N"]
 
 
+def schiansky_ln_pd_rescaled_assessment(p: Mapping[str, float]) -> float:
+    """QMint ASSESSMENT, not a published bound: SI Eq. (22) with the Chernoff bound applied to the
+    mishap variable rescaled into [0, 1] (divide by w = 4 + 2 sqrt 2). Used only in reproduction
+    evidence to quantify the open question; never returned by the evaluator."""
+    return schiansky_ln_pd(p) / MISHAP_ERROR_WEIGHT
+
+
 def schiansky_ln_fail_honest(p: Mapping[str, float]) -> float:
     """SI Eqs. (19)-(20): 1 - p_h <= exp(-(delta_h^2/3) M(e_h,l_h) N)."""
     return -(p["delta_h"] ** 2 / 3.0) * schiansky_mishaps(p["e_h"], p["l_h"]) * p["N"]
@@ -291,7 +298,8 @@ class FiniteSizeBoundEvaluator:
         if used_interval:
             notes += f" | evaluated at worst-case interval endpoints {point}"
         if game == GameId.D1:
-            notes += " | D1: fitted SDP boundary + informal de Finetti reduction; excludes MAC forgery p_t"
+            notes += (" | D1: fitted SDP boundary + informal de Finetti reduction; excludes MAC forgery p_t;"
+                      " open question: Chernoff applied to weighted error+loss sum (see P-D1 dossier)")
         return bounded(
             request,
             spec.bound_id,

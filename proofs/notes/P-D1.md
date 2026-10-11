@@ -14,6 +14,12 @@
 
 **Reproduced.** p_d = 5.911e-45 at N = 4.2e6, p_m = 0.0602, delta_d = 0.01 (SI Table 2: 5.911 +- 0.088 e-45). M(e_m^{+-}, l_m) = 0.448. e_d(l_m) = 3.82 %. Eq. (23) holds at delta_h = 0.031.
 
-**Discrepancy.** The main text quotes multiphoton probability 6.76 +- 0.12 %; SI Table 2 lists p_m = 6.02 +- 0.28 % and "allowed mishaps" 0.4849 = (1/2)(1 - p_m/2), which is consistent only with 6.02 %. The published p_d reproduces with 6.02 %.
+**Main text vs SI discrepancies** (also found independently by lane A, `research/THEOREM_REGISTRY_SEED.yaml` T-SCH23-ASYMPTOTIC/FINITE; our numbers agree with theirs):
+- multiphoton probability: 6.76 +- 0.12 % in the main text (reproduces the main-text e_d = 3.79 %) vs p_m = 6.02 +- 0.28 % in SI Table 2 (reproduces e_d = 3.82 % and "allowed mishaps" 0.4849 = (1/2)(1 - p_m/2));
+- sub-token length: N = 4.2e6 (Fig. 4b) vs 4,482,440 (SI Table 2).
+The published p_d = 5.911e-45 recomputes ONLY with N = 4.2e6 and p_m = 6.02 %. N = 4,482,440 gives 6.3e-48 and p_m = 6.76 % gives 8.7e-45.
+
+**Open question: Chernoff applied to a weighted sum (QMint assessment, not a claim of error).** SI Eqs. (7)-(8) are the multiplicative Chernoff bounds for a sum of independent variables taking values in {0,1}. Per token state the mishap contribution is w * err + loss with w = 4 + 2 sqrt 2 ~ 6.83, so it takes values in {0, 1, w}. That is outside the stated hypothesis, because the MGF step e^{tx} <= 1 + x(e^t - 1) needs x in [0,1]. Rescaling by 1/w puts it in [0,1], and the textbook bound then gives an exponent smaller by a factor w:
+p_d <= exp(-(delta_d^2/2) (1/2)(1 - p_m/2) N / w) ~ 3.3e-7 at the published tuple (vs 5.9e-45). The honest bound (Eq. 19) has the same issue. The authors may have a justification we have not found. QMint records the published formula (NUMERICALLY_SUPPORTED, never certified) and exposes the rescaled value only as reproduction evidence (`schiansky_ln_pd_rescaled_assessment`). It needs lane M review. Independence across states is a further unverified hypothesis (collective-attack / de Finetti).
 
 **Why never CERTIFIED.** (a) The boundary is a fit, not a proven closed form. (b) The de Finetti step is informal and has no finite-N term. (c) Chernoff is applied to a weighted combination of error and loss rather than to a single Bernoulli count. (d) The MAC forgery probability p_t = 1/sqrt|C| is not composed into any stated epsilon. Results carry `PUBLISHED_AGGREGATE` / `NUMERICALLY_SUPPORTED`, and the independent checker always returns UNCERTIFIED for D1. Privacy: no theorem, so no value.
