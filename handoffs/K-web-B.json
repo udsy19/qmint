@@ -1,0 +1,53 @@
+{
+  "lane": "K",
+  "task": "web-B (landing page and brand, route /)",
+  "input_contract_sha": "6a8053eee2dbac62854ca24905631d1538f98517",
+  "branch": "feat/KB-web",
+  "starting_commit_sha": "6a8053e",
+  "final_commit_sha": "c9a47839dfaccd47d9590a178aa3df8d430867ee (code; this handoff is committed on top)",
+  "changed_paths": ["web/app/(marketing)/layout.tsx", "web/app/(marketing)/page.tsx", "web/components/marketing/**", "web/public/brand/qmint-mark.svg", "handoffs/K-web-B.json", "handoffs/K-web-B.md"],
+  "commands_run": [
+    "cd web && pnpm typecheck", "cd web && pnpm lint", "cd web && pnpm test", "cd web && QMINT_API_ORIGIN=http://127.0.0.1:8781 pnpm build",
+    "$PY -m uvicorn qmint.api.app:app --port 8781", "QMINT_API_ORIGIN=http://127.0.0.1:8781 next dev -p 3001",
+    "QMINT_API_ORIGIN=http://127.0.0.1:9 next start -p 3001 (API-offline render check: 200, explicit offline states)",
+    "Playwright 1.62 scripts (scratchpad qa-scripts/): full-page + per-section screenshots at 1440/1920/768/390, instrument interactions, reduced-motion, mobile menu + Esc",
+    "Mobbin: search_sections x2 (hero with product diagram; dark footer with mono column heads)"
+  ],
+  "test_exit_codes": {"pnpm typecheck": 0, "pnpm lint": 0, "pnpm test (34 tests, 8 files; 18 new in components/marketing)": 0, "pnpm build (/ dynamic, others static)": 0},
+  "evidence_files": [
+    "/private/tmp/claude-501/-Users-udsy-PycharmProjects-Qollab-QMint/634384d6-a062-4a24-8650-bcd5800df2da/scratchpad/shots/home-{1440,1920,768,390}-{top,full}.png",
+    "/private/tmp/claude-501/-Users-udsy-PycharmProjects-Qollab-QMint/634384d6-a062-4a24-8650-bcd5800df2da/scratchpad/shots/int-1440-{leak,honest,sampled,mr8}.png",
+    "/private/tmp/claude-501/-Users-udsy-PycharmProjects-Qollab-QMint/634384d6-a062-4a24-8650-bcd5800df2da/scratchpad/shots/reduced-motion-1440.png",
+    "/private/tmp/claude-501/-Users-udsy-PycharmProjects-Qollab-QMint/634384d6-a062-4a24-8650-bcd5800df2da/scratchpad/shots/menu-390.png"
+  ],
+  "assumptions_verified": [
+    "Every hero number is read from POST /api/v1/lab/attack or /lab/mint (seed 42); the only client arithmetic is the leaked-secret control = (honest_accept_note_analytic)^2, labelled OUT-OF-MODEL with its derivation",
+    "Section 05/02 quoted values re-read from committed artefacts by components/marketing/research-values.test.ts: summary.json QBER 1.4491/3.2787 % (+-0.0081/0.0117), 8,964,878 pairs, 22 runs; C-C1-evidence w1_sdp n1/n2_SCS certified duals 0.750000000003638 / 0.562500000007276; ctrl_secret_leak 1.0 OUT_OF_MODEL",
+    "Comparability counts (7 QUALIFIED, 4 INCOMPARABLE) counted from reports/classical_baseline_notes/comparability_matrix.csv",
+    "Paper titles only where present in proofs/OBLIGATIONS.yaml citations (P01, P03, P04); P05 described, not titled",
+    "No horizontal scroll at 390/768/1440/1920; no console errors; reduced motion leaves 0 animated paths; mobile menu closes on Esc"
+  ],
+  "performance_numbers_with_sources": [
+    "Instrument API round trip (attack n=1 + attack n + mint n in parallel) < 100 ms locally; Aer cloner n=2, 2000 shots ~70 ms",
+    "Values shown (from API): MVW n=4 both-pass 0.316406 (exact) = W1 bound; Bruss n=2 0.53079 exact, Aer 0.526 [0.497, 0.555] 99% CI; measure-resend n=8 0.0232831 = (5/8)^8 vs bound 0.100113"
+  ],
+  "blockers": [],
+  "known_limitations": [
+    "/api/v1/lab/attack still returns DEMO_ADAPTER with reason 'lane C (attack suites) not merged' although lane C is merged; shown verbatim (owner KD).",
+    "No API endpoint serves the SDP/QBER/comparability highlights, so web/components/marketing/research-values.ts quotes them with artefact paths and a drift test. Proposal: GET /api/v1/evidence/highlights (owner KC) returning Quantity records; then delete research-values.ts.",
+    "No leaked-secret attack in /lab/attack; the control is derived from /lab/mint. Proposal (KD): add attack 'secret_leak_control' wrapping lane C CTRL_secret_basis_leak with proof_applicability OUT_OF_MODEL.",
+    "Lane A shows as not merged in /meta (qmint.research package absent; research/ is data only) — reported as served.",
+    "Geist Mono renders U+27E9 as a fallback glyph, so kets read |0) at small sizes.",
+    "Section anchors are not in the nav (nav links route to platform pages per brief); /docs, /research etc. are other agents' routes and may still be stubs.",
+    "Committed screenshots are KF's job; mine are in scratchpad only."
+  ],
+  "interfaces_changed": [
+    "None to frozen paths or API. Proposed: GET /api/v1/evidence/highlights (KC); attack 'secret_leak_control' (KD). Candidate primitive promotion: StateGlyph/StateCell (components/marketing/state-glyph.tsx) for D's /lab/mint."
+  ],
+  "mobbin_references_added": [
+    "Dovetail hero section https://mobbin.com/sites/sections/987c2b93-5574-49b7-b9d0-f2b1e2058e9a — branching node diagram with mono labels beside a left text column (instrument branches)",
+    "Linear section https://mobbin.com/sites/sections/f8b93019-f62b-4e58-8f0d-e577baa204f3 — mono side annotations on hairline leaders (hero 'Below/Not' aside)",
+    "Resend footer https://mobbin.com/sites/sections/9301c687-40d0-4d8d-bbb8-b1325bac2679 and Autosend footer https://mobbin.com/sites/sections/f413db09-0a6f-44df-ae35-125468d270dc — mono column heads, status line (footer build line)"
+  ],
+  "whether_paid_jobs_run": false
+}

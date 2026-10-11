@@ -1,4 +1,13 @@
-/** Marketing layout — OWNED BY AGENT B (top nav, footer). Phase 1: pass-through. */
+/** Marketing layout (Agent B): sticky top nav + footer around the public pages. */
+import { MarketingFooter } from "@/components/marketing/footer";
+import { MarketingNav } from "@/components/marketing/nav";
+
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <MarketingNav />
+      {children}
+      <MarketingFooter />
+    </>
+  );
 }
