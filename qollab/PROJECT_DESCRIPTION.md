@@ -48,7 +48,7 @@ A classical file can always be copied. Whether a copied token can be **spent twi
 2. Ideal S-money is **not coordination-free**: a bank relay precedes presentation (Kent 2022, Table I). A classical private late-commit escrow matches its local latency under computational assumptions. What remains for quantum is information-theoretic security, not raw speed.
 3. The 2023 paper's 5.9×10⁻⁴⁵ bound reproduces only with N = 4.2×10⁶ (the SI table lists 4,482,440). It applies a Chernoff step to a weighted error+loss sum, which we flag for review (a conservatively rescaled bound gives 3.3×10⁻⁷).
 4. The published experimental tuple of Kent 2022 lies outside its own Theorem 1, as the paper says.
-5. Real photon error rates are non-stationary across runs (χ²/dof ≈ 10), so calibration intervals must be widened.
+5. Real photon error rates are heterogeneous across runs (overdispersed, χ²/dof ≈ 10, driven by a few outlier runs; no evidence of monotone drift), so calibration intervals must be widened.
 
 ## How to run it
 
