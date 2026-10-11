@@ -3,7 +3,7 @@ schema_version: 1.0.0
 updated_at_utc: '2026-10-11T00:00:00Z'
 bootstrap_contract_commit_sha: ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1
 owner: lead-orchestrator
-project_phase: phase_1_wave_1_dispatched
+project_phase: phase_3_wave_3_dispatched
 status_values:
 - OPEN
 - CLAIMED
@@ -190,9 +190,9 @@ tasks:
   I1:
     lane: I
     description: Resource-optimized security certificate compiler
-    owner: null
-    branch: null
-    status: OPEN
+    owner: subagent-lane-I
+    branch: feat/I-compiler
+    status: CLAIMED
     evidence: []
     blockers: []
     commit: null
@@ -240,18 +240,18 @@ tasks:
   M1:
     lane: M
     description: Independent red-team audit
-    owner: null
-    branch: null
-    status: OPEN
+    owner: subagent-lane-M
+    branch: feat/M-redteam
+    status: CLAIMED
     evidence: []
     blockers: []
     commit: null
   N1:
     lane: N
     description: Reproducibility, figures and paper
-    owner: null
-    branch: null
-    status: OPEN
+    owner: subagent-lane-N
+    branch: feat/N-paper
+    status: CLAIMED
     evidence: []
     blockers: []
     commit: null
@@ -283,3 +283,30 @@ tasks:
     - SI Table 2 M=0.448 reproduced
     blockers:
     - 'MAC construction and estimator granularity unspecified in paper: interpreted (GF(2^l) a*M+k; per-block threshold default)'
+  Q1:
+    lane: Q
+    description: 'Cross-lane integration: B<->C cross-run, BB84 dedupe, entrypoints'
+    owner: subagent-lane-Q
+    branch: feat/Q-integration
+    status: CLAIMED
+    evidence: []
+    blockers: []
+    commit: null
+  X1:
+    lane: X
+    description: G+H on shared engine, matched-topology runs, Fig 6 data
+    owner: subagent-lane-GH
+    branch: feat/GH-integration
+    status: CLAIMED
+    evidence: []
+    blockers: []
+    commit: null
+  K2:
+    lane: K
+    description: Website + research platform (docs/design/WEBSITE_BRIEF.md)
+    owner: subagent-K-web-A
+    branch: feat/K-web
+    status: CLAIMED
+    evidence: []
+    blockers: []
+    commit: null
