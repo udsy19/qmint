@@ -306,7 +306,9 @@ tasks:
     description: Website + research platform (docs/design/WEBSITE_BRIEF.md)
     owner: subagent-K-web-A
     branch: feat/K-web
-    status: CLAIMED
-    evidence: []
+    status: IN_REVIEW
+    evidence:
+    - 'web-A merged 7a5d69e: 47 Mobbin refs, design system, Next 16 scaffold, FastAPI /api/v1 (11 endpoints), 22/22 e2e'
     blockers: []
     commit: null
+    notes: 'phase 2: KB landing, KC shell/research/docs, KD lab, KE benchmarks/certificates running; KF QA after'
