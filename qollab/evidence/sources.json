@@ -1,0 +1,102 @@
+{
+  "retrieved_utc": "2026-10-11T21:12:02Z",
+  "retrieved_by": "lane J worker (read-only HTTP GET / web fetch; no authentication, no job submission)",
+  "sources": [
+    {
+      "id": "ionq_backends_v0.4",
+      "url": "https://api.ionq.co/v0.4/backends",
+      "kind": "public unauthenticated metadata endpoint (HTTP 200, no Authorization header sent)",
+      "local_copy": "qollab/evidence/ionq_backends_v0.4_snapshot.json",
+      "sha256": "6e4a192bae5076a881509dcdce6a99c4de6acdf80f3c9c7f8919d479bf6f857d",
+      "facts": [
+        "qpu.forte-1: status available, 36 qubits, native gates gpi/gpi2/zz",
+        "qpu.forte-enterprise-1, qpu.forte-enterprise-3: status unavailable, 36 qubits",
+        "qpu.aria-1, qpu.aria-2, qpu.harmony: status retired",
+        "simulator: status available, 29 qubits, noise_models aria-1, aria-2, forte-1, forte-enterprise-1, ideal"
+      ]
+    },
+    {
+      "id": "ionq_create_job_v0.4",
+      "url": "https://docs.ionq.com/api-reference/v0.4/jobs/create-job",
+      "facts": [
+        "shots: default 100, minimum 1, maximum 1000000; ignored by ideal simulator backend",
+        "backend options: simulator, qpu.forte-1, qpu.forte-enterprise-1",
+        "debiasing requires at least 500 shots",
+        "Authorization header: 'apiKey <key>'",
+        "payload has a dry_run boolean (undocumented semantics on this page)"
+      ]
+    },
+    {
+      "id": "ionq_openqasm3_v0.4",
+      "url": "https://docs.ionq.com/api-reference/v0.4/openqasm3",
+      "facts": [
+        "Mid-circuit measurement 'is supported, but not on every target'; 'The simulator supports it'; unsupported targets fail preflight with UnsupportedFeature and consume no execution time",
+        "Dynamic circuit execution (loops/branches) is not supported on any IonQ target, including the simulator",
+        "Bit order of IonQ OpenQASM 3 results: 'q[0] is the leftmost character of the bitstring' (opposite of Qiskit counts keys)",
+        "single-qubit reset supported; whole-register reset not supported",
+        "each measurement needs its own classical bit"
+      ]
+    },
+    {
+      "id": "ionq_job_cost_guide",
+      "url": "https://docs.ionq.com/guides/job-cost-and-usage",
+      "facts": [
+        "cost estimated from 1Q and 2Q gate counts and shots; gates on N>=3 qubits count as 6(N-2) 2Q gates",
+        "per-circuit minimum; cost rounded up to the minimum",
+        "IonQ does not publish a rate card on this page: rates vary by access agreement; estimates are not binding",
+        "debiasing enabled by default for jobs with >= 500 shots",
+        "dry_run=True (qiskit-ionq >= 1.0.3) compiles but does not queue/execute/charge; /jobs/estimate and /jobs/{id}/cost endpoints require an API key"
+      ]
+    },
+    {
+      "id": "azure_quantum_pricing",
+      "url": "https://learn.microsoft.com/azure/quantum/pricing",
+      "page_updated_at": "2026-04-23T15:34:00Z",
+      "kind": "reseller channel price list (Azure Quantum), not IonQ-direct",
+      "facts": [
+        "AQT = m + 0.000220*(N1q*C) + 0.000975*(N2q*C) for Aria 1 (formula as printed; additive minimum)",
+        "Forte 1 / Forte Enterprise 1: USD 0.0001645 per 1-qubit-gate shot, USD 0.001121 per 2-qubit-gate shot; minimum per program USD 168.195 (error mitigation on, default) or USD 25.7899 (off)",
+        "Aria 1: USD 0.000220 / 1q-gate-shot, USD 0.000975 / 2q-gate-shot; min USD 97.50 (EM on) / 12.4166 (EM off)",
+        "IonQ simulator: free of charge (on Azure)"
+      ]
+    },
+    {
+      "id": "aws_braket_pricing",
+      "url": "https://aws.amazon.com/braket/pricing/",
+      "kind": "reseller channel price list (Amazon Braket), not IonQ-direct",
+      "facts": [
+        "IonQ Forte: USD 0.30 per task, USD 0.08 per shot",
+        "IonQ QPUs require a minimum of 2,500 shots per task when using error mitigation"
+      ]
+    },
+    {
+      "id": "qiskit_ionq_1.1.1_source",
+      "url": "https://github.com/qiskit-community/qiskit-ionq (installed wheel 1.1.1, Apache-2.0)",
+      "facts": [
+        "helpers.resolve_credentials reads QISKIT_IONQ_API_TOKEN / IONQ_API_KEY / IONQ_API_TOKEN from a .env file found by python-dotenv (searched upward from the qiskit_ionq package directory) BEFORE os.environ",
+        "IonQProvider() construction performs HTTP GET /backends/<name> (get_n_qubits) for each backend",
+        "IonQQPUBackend max_shots=10_000 client-side; IonQSimulatorBackend max_shots=1 for ideal noise model (returns probabilities)",
+        "circuits with mid-circuit measurement/reset are submitted as OpenQASM 3, single-circuit jobs only"
+      ]
+    },
+    {
+      "id": "qollab_creative_challenge",
+      "url": "https://qollab.xyz/creativechallenge",
+      "facts": [
+        "Qollab: 'a community of developers, designers, and creative technologists figuring out what quantum software looks like by actually making things and sharing every step in the open'",
+        "Project requirements: 'Use the Qiskit framework'; open source in a public repository; 'Listed on Qollab with runnable code examples'; public for >= 12 months",
+        "Funded teams: up to USD 5,000 and up to USD 50,000 IonQ compute credits (expire after 60 days); submissions closed 2026-04-07",
+        "Site is a Nuxt single-page app; sitemap lists /about, /forum, /projects, /login, /search, /terms; no public API, SDK or upload-format documentation found"
+      ]
+    },
+    {
+      "id": "ionq_qollab_news",
+      "url": "https://www.ionq.com/news/ionq-partners-with-qollabs-creative-challenge-advancing-creative-quantum-innovation",
+      "facts": [
+        "Qollab described as community-led, 'currently in its foundational stage'",
+        "claims a browser playground: 'Run real quantum code in their browser through our playground'; 'Share, fork, and remix quantum code'",
+        "no SDK, API, file format or backend names specified"
+      ]
+    }
+  ]
+}

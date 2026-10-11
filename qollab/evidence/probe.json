@@ -1,0 +1,135 @@
+{
+  "api_key_present": false,
+  "documented_limits": {
+    "cloud_simulator_requires_api_key": {
+      "source": "job creation requires 'Authorization: apiKey <key>' (https://docs.ionq.com/api-reference/v0.4/jobs/create-job)",
+      "value": true
+    },
+    "debiasing_min_shots": {
+      "source": "https://docs.ionq.com/api-reference/v0.4/jobs/create-job; default-on at >=500 shots per https://docs.ionq.com/guides/job-cost-and-usage",
+      "value": 500
+    },
+    "max_shots_per_job_api": {
+      "source": "https://docs.ionq.com/api-reference/v0.4/jobs/create-job (shots: min 1, max 1000000)",
+      "value": 1000000
+    },
+    "max_shots_qiskit_ionq_qpu_backend": {
+      "source": "qiskit-ionq 1.1.1 ionq_backend.IonQQPUBackend(max_shots=10_000)",
+      "value": 10000
+    },
+    "mid_circuit_measurement": {
+      "source": "https://docs.ionq.com/api-reference/v0.4/openqasm3",
+      "value": "simulator: supported; QPU: target-dependent (fails preflight with UnsupportedFeature, no execution charge); dynamic circuits (loops/branches): not supported on any target"
+    },
+    "qubits": {
+      "source": "https://api.ionq.co/v0.4/backends (snapshot qollab/evidence/ionq_backends_v0.4_snapshot.json)",
+      "value": {
+        "qpu.forte-1": 36,
+        "qpu.forte-enterprise-1": 36,
+        "simulator": 29
+      }
+    },
+    "result_bit_order_ionq_openqasm3": {
+      "source": "https://docs.ionq.com/api-reference/v0.4/openqasm3",
+      "value": "q[0] is the leftmost character of the bitstring"
+    }
+  },
+  "dotenv_files_qiskit_ionq_would_read": [],
+  "ionq_cloud_simulator": "SKIPPED",
+  "ionq_qpu": "SKIPPED",
+  "local_aer": true,
+  "provider_installed": true,
+  "public_backends": [
+    {
+      "backend": "qpu.harmony",
+      "noise_models": null,
+      "qubits": 11,
+      "status": "retired",
+      "supported_native_gates": [
+        "gpi",
+        "gpi2",
+        "ms"
+      ]
+    },
+    {
+      "backend": "qpu.aria-1",
+      "noise_models": null,
+      "qubits": 25,
+      "status": "retired",
+      "supported_native_gates": [
+        "gpi",
+        "gpi2",
+        "ms"
+      ]
+    },
+    {
+      "backend": "qpu.aria-2",
+      "noise_models": null,
+      "qubits": 25,
+      "status": "retired",
+      "supported_native_gates": [
+        "gpi",
+        "gpi2",
+        "ms"
+      ]
+    },
+    {
+      "backend": "qpu.forte-1",
+      "noise_models": null,
+      "qubits": 36,
+      "status": "available",
+      "supported_native_gates": [
+        "gpi",
+        "gpi2",
+        "zz"
+      ]
+    },
+    {
+      "backend": "qpu.forte-enterprise-1",
+      "noise_models": null,
+      "qubits": 36,
+      "status": "unavailable",
+      "supported_native_gates": [
+        "gpi",
+        "gpi2",
+        "zz"
+      ]
+    },
+    {
+      "backend": "qpu.forte-enterprise-3",
+      "noise_models": null,
+      "qubits": 36,
+      "status": "unavailable",
+      "supported_native_gates": [
+        "gpi",
+        "gpi2",
+        "zz"
+      ]
+    },
+    {
+      "backend": "simulator",
+      "noise_models": [
+        "aria-1",
+        "aria-2",
+        "forte-1",
+        "forte-enterprise-1",
+        "ideal"
+      ],
+      "qubits": 29,
+      "status": "available",
+      "supported_native_gates": [
+        "gpi",
+        "gpi2",
+        "zz"
+      ]
+    }
+  ],
+  "public_backends_source": "snapshot 2026-10-11T21:12:02Z",
+  "skip_reason": "no IonQ API key in environment",
+  "submission_enabled_in_this_build": false,
+  "versions": {
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ionq": "1.1.1"
+  }
+}

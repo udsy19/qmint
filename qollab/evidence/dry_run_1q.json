@@ -1,0 +1,73 @@
+{
+  "approval_required": {
+    "approval_token_matches_plan": false,
+    "approval_token_supplied": false,
+    "env_flag": "QMINT_ALLOW_PAID_HARDWARE=1",
+    "env_token": "QMINT_PAID_RUN_APPROVAL_TOKEN=<approval_token>",
+    "paid_hardware_flag_set": false
+  },
+  "approval_token": "qmint-approve-4570041512cb03cfe71e2743",
+  "circuit_sha256": "a81bf19355132a4f6f62d966cda9d4040ad2880c1d67ba6399955ac30a17102f",
+  "cost_estimates": {
+    "aws_braket_forte_usd": {
+      "billed_shots": 1000,
+      "source": "https://aws.amazon.com/braket/pricing/",
+      "total": 80.3
+    },
+    "azure_quantum_forte_1_usd": {
+      "formula_as_printed_additive_minimum": 25.9544,
+      "gate_shot_part": 0.1645,
+      "note": "Azure prints AQT = m + rates*gate-shots; IonQ's guide says cost is rounded up to the minimum. Both shown; the true invoice is set by the provider.",
+      "rounded_up_to_minimum_interpretation": 25.7899,
+      "source": "https://learn.microsoft.com/azure/quantum/pricing (page updated_at 2026-04-23)"
+    },
+    "ionq_direct_usd": {
+      "note": "not published; use POST /jobs/estimate or dry_run + GET /jobs/{id}/cost with an API key",
+      "source": "https://docs.ionq.com/guides/job-cost-and-usage",
+      "total": null
+    }
+  },
+  "error_mitigation": false,
+  "evidence_kind": "UNCERTIFIED",
+  "gate_counts_submitted": {
+    "measurements": 1,
+    "one_qubit": 1,
+    "two_qubit": 0
+  },
+  "gate_shots": {
+    "one_qubit": 1000,
+    "two_qubit": 0
+  },
+  "how_a_human_would_run_it": [
+    "1. Review this dry-run JSON (circuit QASM hash, backend, shots, cost estimates) yourself.",
+    "2. Obtain an IonQ API key from https://cloud.ionq.com and export it only in your own shell (export IONQ_API_KEY=...); never commit it or put it in a .env inside the repo tree.",
+    "3. Get a binding quote: submit with dry_run=True (qiskit-ionq >= 1.0.3) and read GET /jobs/{id}/cost, or POST /jobs/estimate (https://docs.ionq.com/guides/job-cost-and-usage).",
+    "4. export QMINT_ALLOW_PAID_HARDWARE=1 and QMINT_PAID_RUN_APPROVAL_TOKEN=<approval_token from this JSON>.",
+    "5. A lead-reviewed change must flip SUBMISSION_ENABLED_IN_THIS_BUILD and implement submission via qiskit_ionq.IonQProvider().get_backend('qpu.forte-1').run(qc, shots=...); record job id, backend, timestamps, shots, counts (bit order 'qiskit_clbit0_rightmost' via qiskit-ionq) and native gate counts in a BackendRunRecord with evidence_kind=QPU. Agents must never perform steps 2-5."
+  ],
+  "kind": "qmint.ionq.dry_run",
+  "n_qubits": 1,
+  "prepared_states": [
+    "1"
+  ],
+  "prices_retrieved_utc": "2026-10-11T21:12:02Z",
+  "shots": 1000,
+  "submission": {
+    "backend_is_simulator": null,
+    "bit_order": null,
+    "circuit_sha256": "a81bf19355132a4f6f62d966cda9d4040ad2880c1d67ba6399955ac30a17102f",
+    "completed_utc": null,
+    "counts": null,
+    "error": null,
+    "evidence_kind": "UNCERTIFIED",
+    "executed_backend": null,
+    "job_id": null,
+    "native_gate_counts": null,
+    "noise_model": null,
+    "reason": "no IonQ API key in environment",
+    "requested_backend": "qpu.forte-1",
+    "shots": null,
+    "status": "SKIPPED"
+  },
+  "target_backend": "qpu.forte-1"
+}
