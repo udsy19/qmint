@@ -1,0 +1,315 @@
+/*
+ * QMint design tokens — the single source of truth for colour, type, space, radius,
+ * elevation, motion and z-order. FROZEN after phase 1: changes go through the lead.
+ * Documented in docs/design/DESIGN_SYSTEM.md. Components use the Tailwind utilities that
+ * @theme generates from these (bg-surface, text-muted, border-border, ...) — never raw hex.
+ */
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: dark;
+
+  /* --- colour: neutrals (near-black, slightly cool) ------------------------------ */
+  --background: #08090b;
+  --surface: #0e0f12;
+  --surface-raised: #15161a;
+  --surface-overlay: #1b1c21;
+  --surface-hover: #1f2026;
+  --border: #23242a;
+  --border-strong: #34353d;
+  --hairline: rgb(255 255 255 / 0.055);
+
+  --foreground: #f4f4f5;
+  --muted: #9a9ba3; /* 7.2:1 on --background — body-secondary text */
+  --subtle: #80818a; /* 5.1:1 on background, 4.9:1 on surface — labels, captions, placeholders */
+
+  /* --- colour: accent (mint) — selected/active state + scientific highlight only ---- */
+  --accent: #b6f3d1;
+  --accent-strong: #8ee8b8;
+  --accent-muted: rgb(182 243 209 / 0.1);
+  --accent-foreground: #04110a;
+
+  /* --- colour: semantic (muted; always paired with text/shape, never colour alone) - */
+  --warn: #e6c27a;
+  --warn-muted: rgb(230 194 122 / 0.1);
+  --danger: #f0a3a3;
+  --danger-muted: rgb(240 163 163 / 0.1);
+  --info: #aec6ee;
+
+  /* --- data visualisation (sequential neutrals + one accent; see DESIGN_SYSTEM §Charts) */
+  --chart-1: #b6f3d1; /* primary series / quantum */
+  --chart-2: #aec6ee; /* comparison series / classical */
+  --chart-3: #e6c27a; /* bound / threshold lines */
+  --chart-4: #c9b8f0;
+  --chart-grid: #1c1d22;
+  --chart-axis: #80818a;
+
+  /* --- focus ---------------------------------------------------------------------- */
+  --ring: #b6f3d1;
+  --ring-offset: #08090b;
+
+  /* --- motion --------------------------------------------------------------------- */
+  --duration-instant: 80ms;
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 360ms;
+  --duration-deliberate: 640ms; /* instrument/visualisation transitions only */
+
+  /* --- layout --------------------------------------------------------------------- */
+  --header-h: 48px; /* app top bar */
+  --nav-h: 56px; /* marketing nav */
+  --sidebar-w: 240px;
+  --sidebar-w-collapsed: 48px;
+  --gutter: 16px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 24px;
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --gutter: 32px;
+  }
+}
+
+@theme inline {
+  /* colours → bg-*, text-*, border-*, ring-*, fill-*, stroke-* */
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-hairline: var(--hairline);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-muted: var(--accent-muted);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-warn: var(--warn);
+  --color-warn-muted: var(--warn-muted);
+  --color-danger: var(--danger);
+  --color-danger-muted: var(--danger-muted);
+  --color-info: var(--info);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-axis: var(--chart-axis);
+  --color-ring: var(--ring);
+
+  /* fonts — variables are injected by the geist package on <html> (app/layout.tsx) */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-pixel: var(--font-geist-pixel-square), var(--font-geist-mono), ui-monospace, monospace;
+  --font-pixel-grid: var(--font-geist-pixel-grid), var(--font-geist-mono), ui-monospace, monospace;
+
+  /* type scale: size / line-height / tracking / weight (see DESIGN_SYSTEM §Typography) */
+  --text-display-xl: 4.5rem;
+  --text-display-xl--line-height: 1;
+  --text-display-xl--letter-spacing: -0.045em;
+  --text-display-xl--font-weight: 560;
+  --text-display: 3.5rem;
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.04em;
+  --text-display--font-weight: 560;
+  --text-h1: 2.5rem;
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.032em;
+  --text-h1--font-weight: 560;
+  --text-h2: 1.75rem;
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.024em;
+  --text-h2--font-weight: 560;
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.35;
+  --text-h3--letter-spacing: -0.016em;
+  --text-h3--font-weight: 560;
+  --text-h4: 1rem;
+  --text-h4--line-height: 1.5;
+  --text-h4--letter-spacing: -0.008em;
+  --text-h4--font-weight: 560;
+  --text-body-lg: 1.0625rem;
+  --text-body-lg--line-height: 1.65;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.6;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.5;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.4;
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1.45;
+  --text-label--letter-spacing: 0.06em;
+  --text-label--font-weight: 500;
+
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+
+  /* elevation: borders first; shadow only for floating layers */
+  --shadow-overlay: 0 0 0 1px var(--border-strong), 0 12px 32px -8px rgb(0 0 0 / 0.6), 0 2px 6px rgb(0 0 0 / 0.4);
+  --shadow-raised: 0 0 0 1px var(--border), 0 1px 2px rgb(0 0 0 / 0.4);
+
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-emphasized: cubic-bezier(0.3, 0, 0, 1.2);
+
+  /* breakpoints (mobile-first): sm 640, md 768, lg 1024, xl 1280, 2xl 1536 (Tailwind defaults) */
+  --container-prose: 42.5rem; /* 680px — reading width */
+  --container-content: 67.5rem; /* 1080px — app pages */
+  --container-wide: 80rem; /* 1280px — marketing sections, dashboards */
+}
+
+/* z-order scale (utilities: z-sticky, z-header, ...) */
+@utility z-sticky {
+  z-index: 10;
+}
+@utility z-header {
+  z-index: 20;
+}
+@utility z-dropdown {
+  z-index: 30;
+}
+@utility z-overlay {
+  z-index: 40;
+}
+@utility z-modal {
+  z-index: 50;
+}
+@utility z-toast {
+  z-index: 60;
+}
+@utility z-tooltip {
+  z-index: 70;
+}
+
+/* tabular numerals for every aligned number */
+@utility tnum {
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+
+/* uppercase mono technical label (eyebrows, column heads, evidence labels) */
+@utility label-mono {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* layout containers with the responsive gutter */
+@utility container-prose {
+  width: 100%;
+  max-width: calc(var(--container-prose) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+@utility container-content {
+  width: 100%;
+  max-width: calc(var(--container-content) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+@utility container-wide {
+  width: 100%;
+  max-width: calc(var(--container-wide) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
+  html {
+    background: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    font-feature-settings: "ss01" 0;
+  }
+  ::selection {
+    background: var(--accent-muted);
+    color: var(--foreground);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--font-mono);
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  hr {
+    border-color: var(--border);
+  }
+}
+
+/* Reduced motion: transitions collapse to near-instant; no transforms/loops. Components must
+   still convey state changes without motion (text/icon change), see DESIGN_SYSTEM §Motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes qm-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+@keyframes qm-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes qm-pixel-blink {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
