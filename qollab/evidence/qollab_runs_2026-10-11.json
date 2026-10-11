@@ -1,0 +1,16 @@
+{
+  "project_url": "https://qollab.xyz/u/udsy/qmint-proof-carrying-quantum-m",
+  "entrypoint": "qollab/main.py",
+  "game": "W1",
+  "params": {"n_qubits": 3, "shots": 2000, "seed": 7},
+  "runs": [
+    {"backend": "Qollab built-in simulator (24q), basic_simulator", "evidence_kind": "SIMULATOR_IDEAL", "duration_s": 2.2,
+     "honest": {"rate": 1.0, "ci95": [0.9981, 1.0]}, "bruss_both_pass": {"rate": 0.3850, "ci95": [0.3639, 0.4065], "exact": 0.3867},
+     "mvw_both_pass": {"rate": 0.4135, "ci95": [0.3921, 0.4352], "exact": 0.4219}},
+    {"backend": "IonQ Forte 1 noise-model simulator (29q), ionq_simulator via Qollab (free)", "evidence_kind": "SIMULATOR_NOISY", "duration_s": 65,
+     "honest": {"rate": 0.9995, "ci95": [0.9972, 0.9999]}, "bruss_both_pass": {"rate": 0.2075, "ci95": [0.1903, 0.2258], "exact_ideal": 0.3867},
+     "mvw_both_pass": {"rate": 0.2530, "ci95": [0.2344, 0.2725], "exact_ideal": 0.4219}}
+  ],
+  "theorem_bound": {"value": 0.421875, "source": "Molina, Vidick & Watrous 2012, Thm 1", "evidence_kind": "PUBLISHED_THEOREM"},
+  "notes": "Values transcribed from the Qollab run console; shots re-prepare one secret note (bases XXX, bits 111). No QPU (credit) backend used."
+}

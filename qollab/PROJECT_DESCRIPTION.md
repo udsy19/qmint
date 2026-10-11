@@ -25,9 +25,9 @@ For each block the run prints the **measured** rate from the selected backend (w
 | Backend | n | Honest accepted | Phase-cov. both pass (exact) | MVW both pass (exact) | Bound (3/4)^n |
 |---|---|---|---|---|---|
 | Built-in simulator (ideal), 2000 shots, seed 7 | 3 | 1.0000 [0.9981, 1] | 0.3850 [0.3639, 0.4065] (0.3867) | 0.4135 [0.3921, 0.4352] (0.4219) | 0.4219 |
-| IonQ Forte 1 noise model, 2000 shots, seed 7 | 3 | IONQ_HONEST | IONQ_BRUSS | IONQ_MVW | 0.4219 |
+| IonQ Forte 1 noise-model simulator (free), 2000 shots, seed 7 | 3 | 0.9995 [0.9972, 0.9999] | 0.2075 [0.1903, 0.2258] (0.3867 ideal) | 0.2530 [0.2344, 0.2725] (0.4219 ideal) | 0.4219 |
 
-The optimal cloner sits exactly at the theorem bound on the ideal simulator, and nothing exceeds it. On IonQ's noise model, hardware-realistic noise lowers both honest acceptance and the counterfeiter's success, which is a reminder that an *exact-match* verifier is fragile under noise (one of our negative findings).
+On the ideal simulator the optimal cloner reaches the theorem bound (within shot noise) and nothing exceeds it. On IonQ's Forte 1 noise model the honest note, which needs single-qubit gates only, is still accepted 99.95% of the time. The cloners' entangling circuits, however, are degraded to roughly 60% of their ideal success. Under realistic gate noise the counterfeiter is hurt far more than the honest user. That is a property of this *circuit implementation*, not a security proof: the theorem bound is the only adversary guarantee, and in our full platform an exact-match verifier with many qubits becomes fragile once preparation/channel noise acts on the honest note itself.
 
 ## The problem it explores
 
