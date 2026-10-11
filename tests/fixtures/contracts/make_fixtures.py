@@ -49,8 +49,8 @@ FIX = {
             {"site_id": "B", "frame": "flat_local_approx", "x_m": 10000.0, "y_m": 0.0, "trust_domain": "bank", "clock_error_bound_ns": 1.0},
         ],
         "links": [
-            {"src": "A", "dst": "B", "propagation_lower_bound_ns": 33356.4, "latency_model": "lightcone", "latency_evidence": "MODELLED_LATENCY", "authenticated": True},
-            {"src": "B", "dst": "A", "propagation_lower_bound_ns": 33356.4, "latency_model": "lightcone", "latency_evidence": "MODELLED_LATENCY", "authenticated": True},
+            {"src": "A", "dst": "B", "propagation_lower_bound_ns": 33356.41, "latency_model": "lightcone", "latency_evidence": "MODELLED_LATENCY", "authenticated": True},
+            {"src": "B", "dst": "A", "propagation_lower_bound_ns": 33356.41, "latency_model": "lightcone", "latency_evidence": "MODELLED_LATENCY", "authenticated": True},
         ],
     },
     "manifest_fixture": {

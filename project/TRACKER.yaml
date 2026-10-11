@@ -27,8 +27,11 @@ gates:
     - 'D: independent exact-rational re-verification of SDP bounds; ideal W1/W1_CV/S1 log-space engine'
   G2:
     description: Published S-money state machine and causal tests
-    status: OPEN
-    evidence: []
+    status: IN_REVIEW
+    evidence:
+    - B2 Kent 2022 state machines + exact privacy
+    - X1 causal FTL check on all traces
+    - 'D: S1 theorem + S2 finite-size reproduced'
   G3:
     description: Real photonic data reproduction with provenance
     status: PASSED
@@ -38,8 +41,9 @@ gates:
     notes: Pending independent red-team (M) review; calibration holdout shows non-stationarity (D/A p=0.003)
   G4:
     description: Trust-matched classical comparison
-    status: OPEN
-    evidence: []
+    status: IN_REVIEW
+    evidence:
+    - 'X1 matched-topology runs: identical network/seed/choreography for S-money vs H0-H6; comparability_matrix QUALIFIED/INCOMPARABLE'
   G5:
     description: Independent certificate checking and optimizer benchmark
     status: OPEN
@@ -171,7 +175,7 @@ tasks:
     blockers: []
     commit: 0cdec21
     start_sha: ece05ef
-    notes: classical_race_fixtures.py to be replaced by lane H then deleted
+    notes: classical_race_fixtures.py replaced by H implementations and deleted in X1
   H1:
     lane: H
     description: Atomic ledger/escrow/PQC classical baselines
@@ -297,10 +301,15 @@ tasks:
     description: G+H on shared engine, matched-topology runs, Fig 6 data
     owner: subagent-lane-GH
     branch: feat/GH-integration
-    status: CLAIMED
-    evidence: []
+    status: MERGED
+    evidence:
+    - handoffs/GH-X1.json
+    - reports/classical_baseline_notes/matched_topology_results.csv
+    - figure6_trace_data.json
     blockers: []
-    commit: null
+    commit: 8cfc8de
+    notes: 'S-money equals H3 late-commit latency on all topologies; edge only vs remote online ledger (H1/H2/H4+H1): one RTT (27.66us Jinan).
+      Engine fix: per-actor causal chaining.'
   K2:
     lane: K
     description: Website + research platform (docs/design/WEBSITE_BRIEF.md)
@@ -312,3 +321,8 @@ tasks:
     blockers: []
     commit: null
     notes: 'phase 2: KB landing, KC shell/research/docs, KD lab, KE benchmarks/certificates running; KF QA after'
+qollab:
+  project_url: https://qollab.xyz/u/udsy/qmint-proof-carrying-quantum-m
+  version: v1.0 public default
+  runs: qollab/evidence/qollab_runs_2026-10-11.json
+  video: /Users/udsy/PycharmProjects/qmint-video/out/qmint-demo.mp4 (2:32, local; human uploads)
