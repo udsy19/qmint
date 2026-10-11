@@ -66,7 +66,7 @@ def unitary_completion(v):
             basis[:, k] = -basis[:, k]
     u = np.zeros((8, 8), dtype=complex)
     order = [0, 4, 1, 2, 3, 5, 6, 7]
-    for j, col in zip(order, range(8)):
+    for j, col in zip(order, range(8), strict=True):
         u[:, j] = basis[:, col]
     return u
 
@@ -184,7 +184,7 @@ def main(n_qubits: int = 3, shots: int = 2000, seed: int = 7) -> None:
     for key, c in counts.items():
         bitsstr = key.replace(" ", "")[::-1]  # clbit j at index j (Qiskit keys are little-endian)
         def ok(start):
-            return all(int(bitsstr[start + i]) == bits[i] for i in range(n))
+            return all(int(bitsstr[start + i]) == bits[i] for i in range(n))  # noqa: B023 (called immediately)
         total += c
         honest += c if ok(0) else 0
         bruss += c if (ok(n) and ok(2 * n)) else 0
