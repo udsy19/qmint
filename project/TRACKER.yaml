@@ -20,8 +20,10 @@ gates:
     - schemas/v1/SCHEMA_HASHES.json
   G1:
     description: Wiesner optimal-attack SDP and independent correctness
-    status: OPEN
-    evidence: []
+    status: IN_REVIEW
+    evidence:
+    - 'C: SDP n=1 primal/dual 0.75, certified dual bound'
+    - 'F: Qiskit/NumPy/QuTiP 3-way agreement; MVW channel circuit exactly 3/4'
   G2:
     description: Published S-money state machine and causal tests
     status: OPEN
@@ -89,11 +91,19 @@ tasks:
     description: Adversaries and 1->2 Choi SDP
     owner: subagent-lane-C
     branch: feat/C-attacks
-    status: CLAIMED
-    evidence: []
+    status: MERGED
+    evidence:
+    - handoffs/C-C1.json
+    - handoffs/C-C1-evidence.json
+    - audits/SDP_DERIVATION.md
+    - n=1 SDP 0.75 (SCS/Clarabel), certified 3/4<=OPT<=0.750000000003638
+    - n=2 9/16<=OPT<=0.562500000007276
+    - W1_CV n=1 certified ub 0.9267766955418
     blockers: []
-    commit: null
+    commit: 3434bea
     start_sha: ece05ef
+    notes: 'Correction to work order: basis-guess measure-resend wins (5/8)^n not (3/4)^n (checked by lead: 1/2 + 1/2*1/4). Certificate rounding
+      needs independent re-check by D/M.'
   D1:
     lane: D
     description: Bound engine and theorem predicates
