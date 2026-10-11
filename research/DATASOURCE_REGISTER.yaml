@@ -1,0 +1,173 @@
+# QMint DATA SOURCE + SOFTWARE REGISTER (lane A, task A1). Snapshot 2026-10-11.
+# access_status values:
+#   VERIFIED_API       metadata read from the provider's API on the snapshot date
+#   VERIFIED_LISTING   archive contents listed (zip central directory via HTTP range requests, no full download)
+#   VERIFIED_DOWNLOAD  file downloaded and hashed by lane A
+#   PARTIALLY_VERIFIED some fields from secondary pages or search snippets (see notes)
+#   NOT_VERIFIED       not checked
+# Licence fields record what each source declares. Lane A doesn't give legal advice; see LICENSE_AND_PATENT_RISKS.md.
+
+schema: qmint.research.datasource_register/v1
+snapshot_date: "2026-10-11"
+
+datasets:
+  - id: DS-SCH23-TIMETAGS-V1
+    title: "Data for Demonstration of quantum-digital payments"
+    doi: 10.5281/zenodo.7979319
+    url: https://zenodo.org/records/7979319
+    api_url: https://zenodo.org/api/records/7979319
+    concept_doi: 10.5281/zenodo.7979318
+    is_latest_version: false        # Zenodo relations.version.is_last == false
+    newer_version: DS-SCH23-TIMETAGS-V2
+    cited_by_paper: "P04 'Data availability' cites this exact DOI (v1)"
+    creators: [Peter Schiansky, Julia Kalb, Esther Sztatecsny, Marie-Christine Roehsner, Tobias Guggemos, Alessandro Trenti, Mathieu Bozzio, Philip Walther]
+    publication_date: "2023-05-28"
+    created_utc: "2023-05-28T15:46:28Z"
+    version_field: null             # Zenodo 'version' metadata is empty
+    license: CC-BY-4.0              # Zenodo metadata 'cc-by-4.0'; archive also contains LICENSE_CC_BY
+    access_right: open
+    related: "isSupplementTo 10.48550/arXiv.2305.14504"
+    files:
+      - key: Archive.zip
+        size_bytes: 153143236
+        checksum: "md5:fd708578a613b63f57c31f986a56bf94"   # Zenodo-provided; sha256 not provided by Zenodo
+        download_url: https://zenodo.org/api/records/7979319/files/Archive.zip/content
+    archive_contents: >-
+      linear/{ttp,client}_chunk00..10.tsv and diagonal/{ttp,client}_chunk00..10.tsv (44 TSV files,
+      367,315,945 bytes uncompressed in total), LICENSE_CC_BY (19,467 B), README (297 B). Zip CRC32s
+      were recorded by lane A (they match V2, see below).
+    format_declared: "'<uint8 c>\\t<double t>' ; c = timetagger channel, t = photon arrival time in ns"
+    channel_map_declared:
+      TTP: {2: H, 3: V, 4: "+", 5: "-"}
+      Client: {2: "H / +", 4: "V / -"}
+    content_declared: "Timetags that lead to coincidence count events in a 3ns window for Client and TTP, for linear (commitment to M0) and diagonal (M1) basis."
+    caveats:
+      - "Pre-filtered to coincidence-producing events (3 ns window). It's not the full raw stream, so singles-based loss can't be estimated from it."
+      - "The Client channel meaning (H/+ vs V/-) depends on which folder (linear/diagonal) the file is in."
+    access_status: VERIFIED_LISTING
+    evidence_kind_when_used: PHOTON_EXPERIMENT
+    owner_lane: E
+
+  - id: DS-SCH23-TIMETAGS-V2
+    title: "Data for Demonstration of quantum-digital payments"
+    doi: 10.5281/zenodo.7997998
+    url: https://zenodo.org/records/7997998
+    api_url: https://zenodo.org/api/records/7997998
+    concept_doi: 10.5281/zenodo.7979318
+    is_latest_version: true
+    created_utc: "2023-06-02T12:31:56Z"
+    publication_date: "2023-05-28"
+    license: CC-BY-4.0
+    access_right: open
+    files:
+      - key: Archive.zip
+        size_bytes: 290067249
+        checksum: "md5:544ed5cff8db0598b04dfecb6a5072be"
+        download_url: https://zenodo.org/api/records/7997998/files/Archive.zip/content
+    archive_contents: >-
+      Same 44 chunk TSVs as V1 (names, sizes and CRC32 identical, checked by lane A) plus
+      tagfile_example/SG.txt (517,432,935 B uncompressed, dated 2021-11-29) and tagfile_example/BG.txt
+      (41,888,421 B), README (440 B), LICENSE_CC_BY.
+    description_delta: "Adds: 'The files in folder \"tagfile_example\" are intended as input to the analysis scripts provided under DOI 10.5281/zenodo.7997961'."
+    caveats:
+      - "The paper cites V1. Reproductions that need the example raw tag files must use V2. Record which version was used."
+      - "The code README (DS-SCH23-CODE) says the example tag files are under 10.5281/zenodo.7979319, but they're only in V2 (7997998)."
+    access_status: VERIFIED_LISTING
+    evidence_kind_when_used: PHOTON_EXPERIMENT
+    owner_lane: E
+
+  - id: DS-SCH23-CODE
+    title: "Code for Demonstration of quantum-digital payments"
+    doi: 10.5281/zenodo.8020667
+    url: https://zenodo.org/records/8020667
+    api_url: https://zenodo.org/api/records/8020667
+    concept_doi: 10.5281/zenodo.7985330
+    is_latest_version: true
+    other_versions:
+      - {doi: 10.5281/zenodo.7997961, file: Archiv.zip, size_bytes: 18640, checksum: "md5:6af64e634c1bbe9585f9e3eb559e809e"}
+      - {doi: 10.5281/zenodo.7985331, file: Archiv.zip, size_bytes: 11758, checksum: "md5:23748334b9cab83749efb81a18570ab0"}
+    created_utc: "2023-06-09T12:02:23Z"
+    publication_date: "2023-05-30"
+    license_zenodo_metadata: CC-BY-4.0
+    license_in_archive: AGPL-3.0     # file LICENSE_AGPLv3 (GNU AGPL v3, 34,523 B)
+    license_conflict: true
+    files:
+      - key: Archiv.zip
+        size_bytes: 24642
+        checksum: "md5:efae565eeb2cd3d5c1bb49266800c482"
+        sha256_lane_a: e3f80ccb8d559df8fc14e3d1109402da569257fe3d593aa5b5fb61953363d714
+    archive_contents: [00_m_startboth.py, 01_a_prepdata2.py, 02_a_off_clean5hv_alt.py, 03_a_coinc1_bb84.py, drift_alt.py, find_start.py, LICENSE_AGPLv3, README]
+    findings:
+      - "Contains acquisition control, preprocessing, offset/drift correction and coincidence counting only. There is NO SDP / security-analysis / Chernoff code, so Fig.4 and SI Table 2 can't be reproduced from released code."
+      - "drift_alt.py imports find_start_alt, which isn't in the archive. README says to install from requirements.txt, which isn't in the archive either."
+      - "Timetagger control scripts (AIT TTM8000) were deliberately left out (copyrighted vendor scripts)."
+      - "Analysis expects TTM8000 text format (the tagfile_example files in DS-SCH23-TIMETAGS-V2)."
+    reuse_policy: "Don't copy code into QMint. Use it only as a read-only reference. Lane E should reimplement independently and cite the DOI. See LICENSE_AND_PATENT_RISKS.md R1."
+    access_status: VERIFIED_DOWNLOAD
+    owner_lane: E
+
+  - id: DS-RIPE-ATLAS
+    title: "RIPE Atlas public measurements (REST API)"
+    url: https://atlas.ripe.net/docs/apis/rest-api-reference/measurements
+    related_repo: https://github.com/RIPE-NCC/ripe-atlas-bigquery
+    license: "No open-data licence found. Governed by RIPE Atlas Service Terms and Conditions (v3.4 PDF linked from ripe.net). Commercial use of RIPE Atlas Data needs prior RIPE NCC permission. Default revocable permission requires acknowledging RIPE NCC / RIPE Atlas as the source (per atlas.ripe.net/docs/commercial-use, via search snippet)."
+    repo_license: "RIPE-NCC/ripe-atlas-bigquery: no LICENSE detected by GitHub API (spdx NONE); last push 2022-02-15"
+    caveats:
+      - "BigQuery access can incur charges. Prefer the free REST API (AGENT_RULES: no paid jobs)."
+      - "RTT isn't one-way delay. Keep MEASURED_LATENCY separate from MODELLED_LATENCY."
+      - "Terms are versioned and need re-acceptance. Read the current terms page directly before use (lane A only saw them via search)."
+    access_status: PARTIALLY_VERIFIED
+    evidence_kind_when_used: MEASURED_LATENCY
+    owner_lane: G
+
+  - id: DS-KLPR22-PUBLISHED-PARAMS
+    title: "Kent et al. 2022 published experimental parameters (aggregate, not raw)"
+    source: "P03 Results + Methods; see THEOREM_REGISTRY_SEED T-KLPR22-THM1.published_parameter_tuples"
+    license: CC-BY-4.0 (article)
+    raw_data_available: NOT_VERIFIED   # no data-availability deposit found on the article page
+    access_status: VERIFIED_DOWNLOAD
+    evidence_kind_when_used: PUBLISHED_AGGREGATE
+    owner_lane: D
+
+  - id: DS-JIANG24-PUBLISHED-PARAMS
+    title: "Jiang et al. 2024 published experimental parameters (aggregate, preprint)"
+    source: "P05 arXiv v2 Methods; see THEOREM_REGISTRY_SEED T-JIANG24-THM1.reported_values"
+    license: CC-BY-4.0 (arXiv)
+    raw_data_available: NOT_VERIFIED
+    access_status: VERIFIED_DOWNLOAD
+    evidence_kind_when_used: PUBLISHED_AGGREGATE
+    owner_lane: D
+
+software:
+  # spdx = GitHub API license.spdx_id on 2026-10-11 (NOASSERTION resolved by reading the LICENSE file)
+  - {id: SW-QISKIT, repo: https://github.com/Qiskit/qiskit, spdx: Apache-2.0, pinned: "qiskit==2.5.2 (requirements.lock)", access_status: VERIFIED_API, caution: "Little-endian bit order. C7 forbids implicit decoding."}
+  - {id: SW-QISKIT-AER, repo: https://github.com/Qiskit/qiskit-aer, spdx: Apache-2.0, pinned: "qiskit-aer==0.17.2", access_status: VERIFIED_API, caution: "Modelled noise isn't photonic security evidence."}
+  - {id: SW-QUTIP, repo: https://github.com/qutip/qutip, spdx: BSD-3-Clause, pinned: "qutip==5.3.1", access_status: VERIFIED_API}
+  - {id: SW-CVXPY, repo: https://github.com/cvxpy/cvxpy, spdx: Apache-2.0, pinned: "cvxpy==1.9.3", access_status: VERIFIED_API, caution: "Solver value isn't a proof. Report residuals."}
+  - {id: SW-SCS, repo: https://github.com/cvxgrp/scs, spdx: MIT, pinned: "scs==3.3.1", access_status: VERIFIED_API}
+  - {id: SW-CLARABEL, repo: https://github.com/oxfordcontrol/Clarabel.rs, spdx: Apache-2.0, pinned: "clarabel==0.11.1", access_status: VERIFIED_API, note: "Python wheel licence assumed same as Rust repo (NOT_VERIFIED)"}
+  - {id: SW-DILITHIUM-PY, repo: https://github.com/GiacomoPope/dilithium-py, spdx: "MIT (LICENSE file read; GitHub shows NOASSERTION)", pinned: "dilithium-py==1.4.0 (PyPI metadata licence MIT)", access_status: VERIFIED_API, caution: "Pure-Python educational implementation. Not constant-time, not for production. Fine for H4 baseline timing only with that caveat."}
+  - {id: SW-LIBOQS, repo: https://github.com/open-quantum-safe/liboqs, spdx: "MIT for liboqs in general; some bundled third-party subfolders carry other licences (LICENSE.txt)", pinned: "not installed", access_status: VERIFIED_API}
+  - {id: SW-LIBOQS-PY, repo: https://github.com/open-quantum-safe/liboqs-python, spdx: MIT, pinned: "not installed", access_status: VERIFIED_API}
+  - {id: SW-QISKIT-IONQ, repo: https://github.com/qiskit-community/qiskit-ionq, spdx: Apache-2.0, pinned: "not installed", access_status: VERIFIED_API, caution: "Hardware can incur cost. Needs approval."}
+  - {id: SW-SEQUENCE, repo: https://github.com/sequence-toolbox/SeQUeNCe, spdx: "custom UChicago Argonne licence (GitHub NOASSERTION; 'All Rights Reserved' header + terms in LICENSE)", pinned: "not installed", access_status: VERIFIED_API, caution: "Read the full licence before any redistribution or code reuse."}
+  - {id: SW-QUNETSIM, repo: https://github.com/tqsd/QuNetSim, spdx: MIT, pinned: "not installed", access_status: VERIFIED_API, note: "last push 2024-04-02 (maintenance risk)"}
+  - {id: SW-SIMQN, repo: https://github.com/QNLab-USTC/SimQN, spdx: GPL-3.0, pinned: "not installed", access_status: VERIFIED_API, caution: "Copyleft. Use loose coupling only (separate process). Don't import into Apache-2.0 qmint."}
+  - id: SW-QMONEY
+    repo: https://github.com/runeape-sats/qmoney
+    spdx: MIT
+    audited_commit: 017502ea815314af8f200648473c741534df1a8c
+    last_push_utc: "2026-07-17T22:18:38Z"
+    private_or_public_key: >-
+      PRIVATE-KEY. README (audited commit): 'The current repo does not yet implement true public-key
+      quantum money. It implements a quorum-verified, private-key quantum cash model with verify-and-remint
+      semantics.' The BB84-style note family has hidden per-qubit verification data held by a verifier
+      quorum, plus a classical public-key settlement/ledger layer. Its research-only
+      'pubkey_hidden_subspace' prototype is described by the README itself as publishing 'enough structure
+      to reconstruct an accepting note' and as 'not an unforgeability claim'. See also P09 cryptanalysis of
+      Aaronson-Christiano hidden subspaces.
+    access_status: VERIFIED_API
+    use: "Comparison/baseline reading only. QMint shouldn't describe QMoney or itself as public-key quantum cash."
+  - {id: SW-OPENQKDSECURITY, repo: https://github.com/Optical-Quantum-Communication-Theory/openQKDsecurity, spdx: MIT, pinned: "not installed (MATLAB)", access_status: VERIFIED_API, note: "Close prior art for certified numerical security + parameter optimisation (P19)."}
+  - {id: SW-NUMERICAL-QKD, repo: https://github.com/dbunandar/numerical_qkd, spdx: MIT, pinned: "not installed", access_status: VERIFIED_API, note: "Close prior art (P20); last push 2023-03-18."}
+  - {id: SW-OTM-BILLZ, repo: https://github.com/neverlocal/otm_billz, spdx: NOT_VERIFIED, access_status: NOT_VERIFIED, note: "Code accompanying P23; licence not checked."}
