@@ -24,6 +24,10 @@ case "$LANE" in
   KD) PAT='^(web/app/\(platform\)/lab/|web/components/lab/|qmint/api/routes/lab\.py|tests/unit/api/test_d_|web/lib/api/(openapi\.json|schema\.d\.ts|evidence-labels\.json)|handoffs/K-web-D)' ;;
   KE) PAT='^(web/app/\(platform\)/(benchmarks|certificates)/|web/components/(charts|certificates)/|qmint/api/routes/(benchmarks|certificates)\.py|tests/unit/api/test_e_|web/lib/api/(openapi\.json|schema\.d\.ts|evidence-labels\.json)|handoffs/K-web-E)' ;;
   KF) PAT='^(web/e2e/|docs/design/VISUAL_QA\.md|docs/design/screenshots/|web/components/route-stub\.tsx|handoffs/K-web-F)' ;;
+  FDE) PAT='^(qmint/proofs/|qmint/photonics/|datasets/manifests/|datasets/README\.md|tests/unit/(proofs|photonics)/|tests/adversarial/|proofs/|reports/data_working/|handoffs/FDE-)' ;;
+  FB) PAT='^(qmint/protocols/|tests/unit/protocols/|tests/adversarial/|handoffs/FB-)' ;;
+  FGH) PAT='^(qmint/networks/|qmint/classical/|tests/unit/(networks|classical)/|tests/integration/test_gh_|tests/adversarial/|reports/classical_baseline_notes/|handoffs/FGH-)' ;;
+  FLK) PAT='^(qmint/core/(records|manifest|lanes|pipeline)\.py|qmint/ui/|app/|qmint/api/|tests/unit/(ui|api)/|tests/integration/|tests/adversarial/|scripts/|web/lib/api/|handoffs/FLK-)' ;;
   M) PAT='^(audits/|tests/adversarial/|handoffs/M-)' ;;
   N) PAT='^(qmint/evaluation/|reports/(paper|figures_data|N_)|figures/|docs/paper/|tests/unit/evaluation/|handoffs/N-)' ;;
   *) echo "unknown lane"; exit 1 ;;
