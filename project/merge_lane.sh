@@ -19,6 +19,11 @@ case "$LANE" in
   L) PAT='^(qmint/core/(?!contracts\.py|serialization\.py|interfaces\.py)|qmint/cli\.py|scripts/|\.github/|tests/integration/|tests/contracts/(?!test_contracts\.py)|docs/REPRODUCIBILITY\.md|pyproject\.toml|handoffs/L-)' ;;
   X) PAT='^(qmint/networks/|qmint/classical/|tests/unit/networks/|tests/unit/classical/|tests/integration/test_gh_|reports/classical_baseline_notes/|handoffs/GH-)' ;;
   Q) PAT='^(qmint/protocols/|qmint/attacks/|qmint/quantum/|qmint/proofs/|qmint/photonics/entrypoints\.py|qmint/core/interfaces\.py|qmint/core/lanes\.py|tests/unit/(protocols|attacks|quantum|proofs|ionq)/|tests/integration/test_q_|tests/contracts/test_interfaces\.py|handoffs/Q-)' ;;
+  KB) PAT='^(web/app/\(marketing\)/|web/components/marketing/|web/public/brand/|handoffs/K-web-B)' ;;
+  KC) PAT='^(web/app/\(platform\)/(layout\.tsx|app/|research/|docs/)|web/components/(shell|research|docs)/|handoffs/K-web-C)' ;;
+  KD) PAT='^(web/app/\(platform\)/lab/|web/components/lab/|handoffs/K-web-D)' ;;
+  KE) PAT='^(web/app/\(platform\)/(benchmarks|certificates)/|web/components/(charts|certificates)/|handoffs/K-web-E)' ;;
+  KF) PAT='^(web/e2e/|docs/design/VISUAL_QA\.md|docs/design/screenshots/|web/components/route-stub\.tsx|handoffs/K-web-F)' ;;
   M) PAT='^(audits/|tests/adversarial/|handoffs/M-)' ;;
   N) PAT='^(qmint/evaluation/|reports/(paper|figures_data|N_)|figures/|docs/paper/|tests/unit/evaluation/|handoffs/N-)' ;;
   *) echo "unknown lane"; exit 1 ;;
