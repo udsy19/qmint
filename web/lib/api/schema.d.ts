@@ -45,7 +45,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Evidence */
+        /**
+         * Evidence
+         * @description Index of experiment records in the RecordStore registry, newest first (may be empty).
+         */
         get: operations["evidence_api_v1_evidence_get"];
         put?: never;
         post?: never;
@@ -62,7 +65,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Labels */
+        /**
+         * Labels
+         * @description Display labels for every EvidenceKind, CertificateStatus and API status.
+         */
         get: operations["labels_api_v1_evidence_labels_get"];
         put?: never;
         post?: never;
@@ -79,7 +85,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Games */
+        /**
+         * Games
+         * @description Security games W1..C1 with transcribed closed-form bounds and their theorem / proof-obligation anchors.
+         */
         get: operations["games_api_v1_games_get"];
         put?: never;
         post?: never;
@@ -96,7 +105,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Health */
+        /**
+         * Health
+         * @description Liveness probe.
+         */
         get: operations["health_api_v1_health_get"];
         put?: never;
         post?: never;
@@ -147,8 +159,31 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Meta */
+        /**
+         * Meta
+         * @description API and schema versions, git sha, lane package probe and the research-platform disclaimer.
+         */
         get: operations["meta_api_v1_meta_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/meta/tracker": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tracker
+         * @description Gate and task status read verbatim from project/TRACKER.yaml (lead-maintained).
+         */
+        get: operations["tracker_api_v1_meta_tracker_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -164,7 +199,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Protocols */
+        /**
+         * Protocols
+         * @description Registered protocol ids, their games, and whether a merged lane implements them.
+         */
         get: operations["protocols_api_v1_protocols_get"];
         put?: never;
         post?: never;
@@ -181,8 +219,31 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Sources */
+        /**
+         * Sources
+         * @description Research library index: papers, theorems, obligations, datasets, corrections, novelty audit.
+         */
         get: operations["sources_api_v1_research_sources_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/research/sources/{entry_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Source Entry
+         * @description One research entry with every field of its source record and related entries (404 if unknown).
+         */
+        get: operations["source_entry_api_v1_research_sources__entry_id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -535,6 +596,25 @@ export interface components {
              */
             method: string;
         };
+        /** EntryField */
+        EntryField: {
+            /**
+             * Items
+             * @default []
+             */
+            items: string[];
+            /** Key */
+            key: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "text" | "latex" | "list" | "code";
+            /** Label */
+            label: string;
+            /** Text */
+            text?: string | null;
+        };
         /** EvidenceData */
         EvidenceData: {
             /** Experiments Dir */
@@ -606,6 +686,11 @@ export interface components {
         GameId: "W1" | "W1_CV" | "W2" | "S1" | "S2" | "D1" | "A1" | "C1";
         /** GameInfo */
         GameInfo: {
+            /**
+             * Anchors
+             * @default []
+             */
+            anchors: components["schemas"]["TheoremAnchor"][];
             /** Assumptions */
             assumptions: string[];
             bound_evidence_kind: components["schemas"]["EvidenceKind"];
@@ -640,6 +725,28 @@ export interface components {
              * @enum {string}
              */
             status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
+        };
+        /** GateStatus */
+        GateStatus: {
+            /** Description */
+            description: string;
+            /** Evidence */
+            evidence: string[];
+            /** Gate Id */
+            gate_id: string;
+            /** Notes */
+            notes: string | null;
+            /** Status */
+            status: string;
+        };
+        /** GlossaryItem */
+        GlossaryItem: {
+            /** Definition */
+            definition: string;
+            /** Source File */
+            source_file: string;
+            /** Status */
+            status: string;
         };
         /** Health */
         Health: {
@@ -936,10 +1043,71 @@ export interface components {
         };
         /** ResearchData */
         ResearchData: {
-            /** Snapshot Note */
-            snapshot_note: string | null;
+            /** Files */
+            files: components["schemas"]["SourceFile"][];
+            /** Glossary */
+            glossary: components["schemas"]["GlossaryItem"][];
+            /** Snapshot Date */
+            snapshot_date: string | null;
             /** Sources */
-            sources: components["schemas"]["ResearchSource"][];
+            sources: components["schemas"]["ResearchEntry"][];
+        };
+        /** ResearchEntry */
+        ResearchEntry: {
+            /** Anchor */
+            anchor?: string | null;
+            /** Dois */
+            dois: string[];
+            /** Games */
+            games: string[];
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "paper" | "theorem" | "obligation" | "correction" | "novelty" | "dataset";
+            /** Related */
+            related: string[];
+            /** Source File */
+            source_file: string;
+            /** Status */
+            status: string;
+            /** Subtitle */
+            subtitle?: string | null;
+            /** Summary */
+            summary: string;
+            /** Title */
+            title: string;
+            /** Title Source */
+            title_source?: string | null;
+            /** Urls */
+            urls: string[];
+            /** Verification */
+            verification: string;
+            /** Year */
+            year?: string | null;
+        };
+        /** ResearchEntryDetail */
+        ResearchEntryDetail: {
+            entry: components["schemas"]["ResearchEntry"];
+            /** Fields */
+            fields: components["schemas"]["EntryField"][];
+            /** Related */
+            related: components["schemas"]["ResearchEntry"][];
+        };
+        /** ResearchEntryResponse */
+        ResearchEntryResponse: {
+            data: components["schemas"]["ResearchEntryDetail"];
+            evidence_kind: components["schemas"]["EvidenceKind"] | null;
+            provenance: components["schemas"]["ApiProvenance"];
+            /** Reason */
+            reason?: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
         };
         /** ResearchResponse */
         ResearchResponse: {
@@ -953,23 +1121,6 @@ export interface components {
              * @enum {string}
              */
             status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
-        };
-        /** ResearchSource */
-        ResearchSource: {
-            /** Citation */
-            citation: string;
-            /** Id */
-            id: string;
-            /** Kind */
-            kind: string;
-            /** Title */
-            title: string | null;
-            /** Urls */
-            urls: string[];
-            /** Verification */
-            verification: string;
-            /** Year */
-            year: string | null;
         };
         /** SecurityCertificate */
         SecurityCertificate: {
@@ -1020,6 +1171,15 @@ export interface components {
             targets?: components["schemas"]["Targets"];
             upper_bounds?: components["schemas"]["UpperBounds"];
         };
+        /** SourceFile */
+        SourceFile: {
+            /** Entries */
+            entries: number;
+            /** Path */
+            path: string;
+            /** Sha256 */
+            sha256: string | null;
+        };
         /**
          * StateKind
          * @enum {string}
@@ -1035,6 +1195,46 @@ export interface components {
             epsilon_rob?: number | null;
             /** Epsilon Unf */
             epsilon_unf?: number | null;
+        };
+        /** TaskStatus */
+        TaskStatus: {
+            /** Blockers */
+            blockers: string[];
+            /** Commit */
+            commit: string | null;
+            /** Description */
+            description: string;
+            /** Evidence */
+            evidence: string[];
+            /** Lane */
+            lane: string;
+            /** Notes */
+            notes: string | null;
+            /** Status */
+            status: string;
+            /** Task Id */
+            task_id: string;
+        };
+        /**
+         * TheoremAnchor
+         * @description A transcribed theorem (lane A) or proof obligation (lane D) that applies to exactly this game.
+         */
+        TheoremAnchor: {
+            /** Anchor */
+            anchor: string;
+            /** Formula */
+            formula: string | null;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "theorem" | "obligation";
+            /** Ref Id */
+            ref_id: string;
+            /** Source Url */
+            source_url: string | null;
+            /** Status */
+            status: string;
         };
         /**
          * TokenRecord
@@ -1074,6 +1274,34 @@ export interface components {
             state_kind: components["schemas"]["StateKind"];
             /** Token Id */
             token_id: string;
+        };
+        /** TrackerData */
+        TrackerData: {
+            /** Gates */
+            gates: components["schemas"]["GateStatus"][];
+            /** Project Phase */
+            project_phase: string | null;
+            /** Source File */
+            source_file: string;
+            /** Status Values */
+            status_values: string[];
+            /** Tasks */
+            tasks: components["schemas"]["TaskStatus"][];
+            /** Updated At Utc */
+            updated_at_utc: string | null;
+        };
+        /** TrackerResponse */
+        TrackerResponse: {
+            data: components["schemas"]["TrackerData"];
+            evidence_kind: components["schemas"]["EvidenceKind"] | null;
+            provenance: components["schemas"]["ApiProvenance"];
+            /** Reason */
+            reason?: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
         };
         /**
          * Unit
@@ -1347,6 +1575,26 @@ export interface operations {
             };
         };
     };
+    tracker_api_v1_meta_tracker_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrackerResponse"];
+                };
+            };
+        };
+    };
     protocols_api_v1_protocols_get: {
         parameters: {
             query?: never;
@@ -1383,6 +1631,73 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ResearchResponse"];
+                };
+            };
+            /** @description Request validation error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    source_entry_api_v1_research_sources__entry_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResearchEntryResponse"];
+                };
+            };
+            /** @description Unknown entry id */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Request validation error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
                 };
             };
         };

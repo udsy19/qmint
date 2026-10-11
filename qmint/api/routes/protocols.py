@@ -1,7 +1,10 @@
 """GET /protocols and /games: the frozen protocol registry and the security games.
 
 Bound formulas are transcribed from the frozen contract comments (``qmint/core/contracts.py``,
-``GameId``) and ``project/CONTRACTS.md``; lane D (proofs) has not yet re-verified them.
+``GameId``) and ``project/CONTRACTS.md``. Each game also carries its theorem anchors from lane A
+(``research/THEOREM_REGISTRY_SEED.yaml``) and its lane D proof obligation (``proofs/OBLIGATIONS.yaml``)
+with the status written there; ``tests/unit/api/test_c_routes.py`` checks the transcribed formulas
+against the lane D registry.
 """
 
 from __future__ import annotations
@@ -9,6 +12,7 @@ from __future__ import annotations
 import math
 from collections.abc import Callable
 from dataclasses import dataclass
+from typing import Literal
 
 from fastapi import APIRouter
 from pydantic import BaseModel, ConfigDict
@@ -17,6 +21,7 @@ from qmint.core.contracts import PROTOCOL_GAMES, QUANTUM_PROTOCOLS, EvidenceKind
 
 from ..common import lane_merged, provenance
 from ..schemas import Envelope
+from .research import obligations, theorem_seed
 
 TRANSCRIPTION_NOTE = "transcribed from frozen contract comments; lane D verification pending"
 
@@ -90,6 +95,18 @@ def bound_fn(game: GameId) -> Callable[[int], float] | None:
     return None if per is None else (lambda size: per**size)
 
 
+class TheoremAnchor(BaseModel):
+    """A transcribed theorem (lane A) or proof obligation (lane D) that applies to exactly this game."""
+
+    model_config = ConfigDict(extra="forbid")
+    ref_id: str
+    kind: Literal["theorem", "obligation"]
+    anchor: str
+    status: str
+    source_url: str | None
+    formula: str | None
+
+
 class GameInfo(BaseModel):
     model_config = ConfigDict(extra="forbid")
     game_id: GameId
@@ -103,6 +120,7 @@ class GameInfo(BaseModel):
     assumptions: list[str]
     protocols: list[str]
     note: str
+    anchors: list[TheoremAnchor] = []
 
 
 class ProtocolInfo(BaseModel):
@@ -123,6 +141,26 @@ class ProtocolsResponse(Envelope):
     data: list[ProtocolInfo]
 
 
+def game_anchors(g: GameId) -> list[TheoremAnchor]:
+    """Theorem-registry entries and proof obligations whose ``game`` is exactly ``g`` (no cross-game transfer)."""
+    out = [
+        TheoremAnchor(ref_id=t["theorem_id"], kind="theorem", anchor=str(t.get("anchor", "")), status=t["status"],
+                      source_url=t.get("source_url"),
+                      formula=str(t["bound_plain"]).split("#")[0].strip() if t.get("bound_plain") else None)
+        for t in theorem_seed()["theorems"]
+        if t.get("game") == g.value
+    ]
+    doc = obligations()
+    for c in doc["claims"]:
+        if c.get("game") != g.value:
+            continue
+        b = (c.get("bounds") or [{}])[0]
+        out.append(TheoremAnchor(ref_id=c["claim_id"], kind="obligation", anchor=str(b.get("anchor") or c["source_and_theorem"]),
+                                 status=c["status"], source_url=doc["sources"].get(c.get("source"), {}).get("url"),
+                                 formula=b.get("formula")))
+    return out
+
+
 def game_info(g: GameId) -> GameInfo:
     e = GAMES[g]
     return GameInfo(
@@ -137,6 +175,7 @@ def game_info(g: GameId) -> GameInfo:
         assumptions=list(e.assumptions),
         protocols=sorted(p for p, gs in PROTOCOL_GAMES.items() if g in gs),
         note=TRANSCRIPTION_NOTE if e.formula else "no closed-form bound assumed; null, never 0",
+        anchors=game_anchors(g),
     )
 
 
@@ -155,6 +194,7 @@ router = APIRouter(tags=["protocols"])
 
 @router.get("/games", response_model=GamesResponse)
 def games() -> GamesResponse:
+    """Security games W1..C1 with transcribed closed-form bounds and their theorem / proof-obligation anchors."""
     return GamesResponse(
         status="OK",
         evidence_kind=EvidenceKind.PUBLISHED_THEOREM,
@@ -165,6 +205,7 @@ def games() -> GamesResponse:
 
 @router.get("/protocols", response_model=ProtocolsResponse)
 def protocols() -> ProtocolsResponse:
+    """Registered protocol ids, their games, and whether a merged lane implements them."""
     b_merged, _ = lane_merged("B")
     h_merged, _ = lane_merged("H")
     out = []
