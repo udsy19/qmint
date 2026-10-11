@@ -53,11 +53,17 @@ tasks:
     description: Papers/proofs/novelty/license register
     owner: subagent-lane-A
     branch: feat/A-research
-    status: CLAIMED
-    evidence: []
-    blockers: []
-    commit: null
+    status: MERGED
+    evidence:
+    - handoffs/A-A1.json
+    - research/THEOREM_REGISTRY_SEED.yaml (15 entries)
+    - research/NOVELTY_HYPOTHESES.md
+    blockers:
+    - EP 23168897.9 status unverified
+    commit: 0efd308
     start_sha: ece05ef
+    notes: Zenodo 7997998 newer version; author code AGPL-3.0 (no copy); Schiansky main/SI inconsistencies (p_multi 6.76 vs 6.02%, N 4.2e6 vs
+      4482440)
   B1:
     lane: B
     description: Wiesner ideal protocol
