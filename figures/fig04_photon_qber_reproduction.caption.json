@@ -1,0 +1,56 @@
+{
+ "figure_id": "fig04",
+ "title": "Reproduction of the 2023 optical experiment (Zenodo 7979319)",
+ "status": "READY",
+ "caption": "Reproduction from real photon data: Schiansky et al., Nat. Commun. 14, 3849 (2023), doi:10.1038/s41467-023-39519-w; dataset Zenodo record 7979319 (doi:10.5281/zenodo.7979319), Archive.zip sha256 ef73667fa87786c52340c6f3eec7cf0ccc3eb64e8fb785bdf54349e6dc800130 (upstream md5:fd708578a613b63f57c31f986a56bf94). Orange squares: per-run error rate (errors/sifted coincidences) with Clopper-Pearson 95% intervals, which understate the spread because runs are overdispersed (X runs chi2/dof = 9.9). Dashed line and band: published value +/- quoted uncertainty (PUBLISHED_AGGREGATE). Thin orange line: this work's state-averaged estimator. Right: residual timing drift after alignment. Non-stationarity: the X-basis holdout runs 6-10 differ from calibration runs 0-5 (two-proportion p = 0.003). Run order is the archive chunk index (assumed acquisition order). Lane E manifest: schiansky2023-x07-reproduction.",
+ "evidence_kinds": [
+  "PHOTON_EXPERIMENT",
+  "PUBLISHED_AGGREGATE"
+ ],
+ "evidence_tags": [
+  "PHOTON-EXPERIMENT",
+  "PUBLISHED"
+ ],
+ "synthetic_content": false,
+ "legend": [
+  "[PUBLISHED] paper: 1.45 +/- 0.01 %",
+  "[PHOTON-EXPERIMENT] this work, state-averaged: 1.449 %",
+  "[PHOTON-EXPERIMENT] per-run errors/sifted, 95% CP (Zenodo 7979319 raw tags)",
+  "[PUBLISHED] paper: 3.28 +/- 0.01 %",
+  "[PHOTON-EXPERIMENT] this work, state-averaged: 3.279 %",
+  "[PHOTON-EXPERIMENT] per-run errors/sifted, 95% CP (Zenodo 7979319 raw tags)",
+  "[PHOTON-EXPERIMENT] H/V (Z basis) residual drift +/- 1 SE",
+  "[PHOTON-EXPERIMENT] D/A (X basis) residual drift +/- 1 SE"
+ ],
+ "manifest_id": "figure-fig04_photon_qber_reproduction",
+ "manifest_path": "figures/fig04_photon_qber_reproduction.manifest.json",
+ "manifest_sha256": "3d5bc211bf0d522e40a54be4ad882a5a86ad5e94a83da22d9da1f27ee288288e",
+ "inputs": [
+  {
+   "path": "reports/data_working/schiansky2023/per_run.csv",
+   "sha256": "eb8ee2c343ecfbdb3fbfd28b53fb0cf3153853aa96d00c20dd26fe8cfae0144e"
+  },
+  {
+   "path": "reports/data_working/schiansky2023/summary.json",
+   "sha256": "4ad824c5854651ffc776aad06b3aad8aeca0ce8b9df9e5683dc6061818e390fb"
+  },
+  {
+   "path": "reports/data_working/schiansky2023/manifest.json",
+   "sha256": "c14fbbf82333ec967ec33675c512f3756a0b6947a8365464699a201746916f36"
+  }
+ ],
+ "data_csv": "figures/fig04_photon_qber_reproduction.csv",
+ "outputs": [
+  "figures/fig04_photon_qber_reproduction.svg",
+  "figures/fig04_photon_qber_reproduction.png",
+  "figures/fig04_photon_qber_reproduction.csv"
+ ],
+ "sources": [
+  "https://zenodo.org/api/records/7979319",
+  "https://zenodo.org/api/records/8020667",
+  "https://www.nature.com/articles/s41467-023-39519-w",
+  "https://www.nature.com/articles/s41467-023-40866-x"
+ ],
+ "notes": [],
+ "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper --force"
+}

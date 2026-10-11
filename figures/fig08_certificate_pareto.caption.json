@@ -1,0 +1,29 @@
+{
+ "figure_id": "fig08",
+ "title": "Security-certificate Pareto frontier",
+ "status": "PENDING",
+ "caption": "PENDING: Security-certificate Pareto frontier. Awaiting lane I (compiler): needs CERTIFIED C5 certificates paired with C6 records (pairing convention to be agreed; renderer plots.fig8_pareto).",
+ "evidence_kinds": [
+  "UNCERTIFIED"
+ ],
+ "evidence_tags": [
+  "UNCERTIFIED"
+ ],
+ "synthetic_content": false,
+ "legend": [],
+ "manifest_id": "figure-fig08_certificate_pareto",
+ "manifest_path": "figures/fig08_certificate_pareto.manifest.json",
+ "manifest_sha256": "073673f8eadad789c5d53690d1cdc956b61473f298f34fbcad12d34eb70b2985",
+ "inputs": [],
+ "data_csv": "figures/fig08_certificate_pareto.csv",
+ "outputs": [
+  "figures/fig08_certificate_pareto.svg",
+  "figures/fig08_certificate_pareto.png",
+  "figures/fig08_certificate_pareto.csv"
+ ],
+ "sources": [],
+ "notes": [
+  "Awaiting lane I (compiler): needs CERTIFIED C5 certificates paired with C6 records (pairing convention to be agreed; renderer plots.fig8_pareto)."
+ ],
+ "generated_by": "python -m qmint.evaluation.make_figures --out figures --tables-out reports/paper --force"
+}
