@@ -55,7 +55,7 @@ def test_health(client: TestClient) -> None:
 
 def test_meta_lanes_detected(client: TestClient) -> None:
     lanes = {x["lane"]: x["merged"] for x in client.get("/api/v1/meta").json()["data"]["lanes"]}
-    assert lanes["F"] and lanes["G"] and lanes["L"] and lanes["J"]
+    assert lanes["A"] and lanes["F"] and lanes["G"] and lanes["L"] and lanes["J"]
     assert set(lanes) >= set("ABCDEFGHIJL")
 
 

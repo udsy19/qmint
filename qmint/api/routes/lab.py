@@ -136,13 +136,9 @@ async def _bounded(fn: Callable[[T, Deadline], R], req: T) -> R | JSONResponse:
 # Shared request / response building blocks
 # --------------------------------------------------------------------------- #
 
-LabMethod = Method | Literal["monte_carlo", "numerical_sdp"]
-
-
 class LabQuantity(Quantity):
-    """``Quantity`` plus methods ``monte_carlo`` (fresh notes) and ``numerical_sdp`` (proposed for schemas.Method)."""
-
-    method: LabMethod  # type: ignore[assignment]
+    """``Quantity`` under the OpenAPI name the lab web client already imports (``schemas.Method`` now
+    includes ``monte_carlo`` and ``numerical_sdp``, so no widening is needed)."""
 
 
 class LabNoise(BaseModel):
@@ -181,7 +177,7 @@ def _q(
     label: str,
     value: float | None,
     kind: EvidenceKind,
-    method: LabMethod,
+    method: Method,
     source: str,
     *,
     interval: ConfidenceInterval | None = None,

@@ -65,8 +65,30 @@ export interface paths {
         /**
          * Evidence
          * @description Index of experiment records in the RecordStore registry, newest first (may be empty).
+         *
+         *     Each record passes the provenance gate: unverifiable or fixture records are served as SYNTHETIC.
          */
         get: operations["evidence_api_v1_evidence_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/evidence/highlights": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Highlights
+         * @description Headline numbers (SDP bracket, reproduced QBER, matched-topology latency) with source files and evidence.
+         */
+        get: operations["highlights_api_v1_evidence_highlights_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1026,6 +1048,49 @@ export interface components {
             /** Ok */
             ok: boolean;
         };
+        /** Highlight */
+        Highlight: {
+            evidence_kind: components["schemas"]["EvidenceKind"];
+            /** Id */
+            id: string;
+            /** Note */
+            note?: string | null;
+            /** Quantities */
+            quantities: components["schemas"]["Quantity"][];
+            /** Sources */
+            sources: components["schemas"]["HighlightSource"][];
+            /** Title */
+            title: string;
+        };
+        /** HighlightSource */
+        HighlightSource: {
+            /** Field */
+            field: string;
+            /** Path */
+            path: string;
+            /** Sha256 */
+            sha256: string;
+        };
+        /** HighlightsData */
+        HighlightsData: {
+            /** Highlights */
+            highlights: components["schemas"]["Highlight"][];
+            /** Unavailable */
+            unavailable: components["schemas"]["Unavailable"][];
+        };
+        /** HighlightsResponse */
+        HighlightsResponse: {
+            data: components["schemas"]["HighlightsData"];
+            evidence_kind: components["schemas"]["EvidenceKind"] | null;
+            provenance: components["schemas"]["ApiProvenance"];
+            /** Reason */
+            reason?: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
+        };
         /**
          * Interval
          * @description Closed interval [lo, hi] with explicit unit and (optional) confidence semantics.
@@ -1086,7 +1151,8 @@ export interface components {
         };
         /**
          * LabQuantity
-         * @description ``Quantity`` plus methods ``monte_carlo`` (fresh notes) and ``numerical_sdp`` (proposed for schemas.Method).
+         * @description ``Quantity`` under the OpenAPI name the lab web client already imports (``schemas.Method`` now
+         *     includes ``monte_carlo`` and ``numerical_sdp``, so no widening is needed).
          */
         LabQuantity: {
             evidence_kind: components["schemas"]["EvidenceKind"];
@@ -1102,8 +1168,11 @@ export interface components {
              * @description log10(value), for values below float range
              */
             log10_value?: number | null;
-            /** Method */
-            method: ("closed_form" | "exact_enumeration" | "aer_sampling" | "event_simulation" | "published_value" | "measured_dataset" | "not_available") | ("monte_carlo" | "numerical_sdp");
+            /**
+             * Method
+             * @enum {string}
+             */
+            method: "closed_form" | "exact_enumeration" | "aer_sampling" | "monte_carlo" | "numerical_sdp" | "event_simulation" | "published_value" | "measured_dataset" | "not_available";
             /** Note */
             note?: string | null;
             /**
@@ -1473,7 +1542,7 @@ export interface components {
              * Method
              * @enum {string}
              */
-            method: "closed_form" | "exact_enumeration" | "aer_sampling" | "event_simulation" | "published_value" | "measured_dataset" | "not_available";
+            method: "closed_form" | "exact_enumeration" | "aer_sampling" | "monte_carlo" | "numerical_sdp" | "event_simulation" | "published_value" | "measured_dataset" | "not_available";
             /** Note */
             note?: string | null;
             /**
@@ -1508,13 +1577,23 @@ export interface components {
             contract: string;
             /** Created Utc */
             created_utc: string;
+            /** @description Evidence kind as served: the record's own kind only when provenance_verified, else SYNTHETIC */
             evidence_kind: components["schemas"]["EvidenceKind"];
             /** Flags */
             flags: string[];
             /** Payload Sha256 */
             payload_sha256: string;
+            /**
+             * Provenance Problems
+             * @description Why the record was downgraded to SYNTHETIC (empty if verified)
+             */
+            provenance_problems: string[];
+            /** Provenance Verified */
+            provenance_verified: boolean;
             /** Record Id */
             record_id: string;
+            /** @description Evidence kind the registry line claims */
+            recorded_evidence_kind: components["schemas"]["EvidenceKind"];
             /** Reproducibility */
             reproducibility: string;
         };
@@ -1967,6 +2046,13 @@ export interface components {
              */
             status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
         };
+        /** Unavailable */
+        Unavailable: {
+            /** Id */
+            id: string;
+            /** Reason */
+            reason: string;
+        };
         /** UncertaintyStep */
         UncertaintyStep: {
             /**
@@ -2125,6 +2211,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EvidenceResponse"];
+                };
+            };
+        };
+    };
+    highlights_api_v1_evidence_highlights_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HighlightsResponse"];
                 };
             };
         };

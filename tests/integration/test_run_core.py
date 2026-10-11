@@ -144,3 +144,30 @@ def test_realdata_preflight_rejects_fixtures(tmp_path):
     assert pipeline.realdata_preflight(cfg) == []
     real.write_bytes(b"tampered")
     assert any("MISMATCH" in p for p in pipeline.realdata_preflight(cfg))
+
+
+def test_realdata_preflight_accepts_yaml_manifest_and_ignores_descriptors(tmp_path):
+    import yaml
+
+    from qmint.core.contracts import EvidenceKind, EvidenceManifest, ManifestEntry
+    from qmint.core.serialization import file_sha256
+
+    root = tmp_path
+    real = root / "datasets" / "cache" / "real.bin"
+    real.parent.mkdir(parents=True)
+    real.write_bytes(b"photons")
+    mdir = root / "datasets" / "manifests"
+    mdir.mkdir(parents=True)
+    (mdir / "zenodo_descriptor.yaml").write_text("concept_recid: 1\nversions: []\n")
+    cfg = load_config(env={"QMINT_ROOT": str(root)})
+    problems = pipeline.realdata_preflight(cfg)
+    assert len(problems) == 1 and "1 dataset descriptor(s) without manifest_id ignored" in problems[0]
+    man = EvidenceManifest(
+        manifest_id="ok", created_utc="2026-01-01T00:00:00Z", command="fetch", git_sha="a" * 40,
+        evidence_kind=EvidenceKind.PHOTON_EXPERIMENT,
+        entries=[ManifestEntry(path_or_uri="datasets/cache/real.bin", sha256=file_sha256(real), role="input",
+                               original_or_derived="original")])
+    (mdir / "ok.yaml").write_text(yaml.safe_dump(man.model_dump(mode="json")))
+    assert pipeline.realdata_preflight(cfg) == []
+    real.write_bytes(b"tampered")
+    assert any("MISMATCH" in p for p in pipeline.realdata_preflight(cfg))

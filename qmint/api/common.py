@@ -17,9 +17,11 @@ from .schemas import ApiProvenance, ConfidenceInterval, NoiseIn
 API_VERSION = "1.0.0"
 
 # Lane -> package (or module) whose real content indicates the lane has been merged.
-# A placeholder package containing only ``__init__.py`` counts as NOT merged.
+# A placeholder package containing only ``__init__.py`` counts as NOT merged. Lanes that deliver
+# files rather than a Python package name a repo directory (trailing "/") and list in LANE_FILES
+# the files that must all exist.
 LANE_PACKAGES: dict[str, tuple[str, str]] = {
-    "A": ("qmint.research", "research / prior-art matrix"),
+    "A": ("research/", "research / prior-art matrix"),
     "B": ("qmint.protocols", "protocol simulations"),
     "C": ("qmint.attacks", "attack suites"),
     "D": ("qmint.proofs", "proofs / SDP bounds"),
@@ -34,9 +36,24 @@ LANE_PACKAGES: dict[str, tuple[str, str]] = {
 }
 
 
+LANE_FILES: dict[str, tuple[str, ...]] = {
+    "A": (
+        "research/PRIOR_ART_MATRIX.csv",
+        "research/THEOREM_REGISTRY_SEED.yaml",
+        "research/DATASOURCE_REGISTER.yaml",
+    ),
+}
+
+
 def lane_merged(lane: str) -> tuple[bool, str]:
-    """(merged?, detail) without importing the lane: module must exist and carry real code."""
+    """(merged?, detail) without importing the lane: module must exist and carry real code,
+    or, for a file-delivered lane, every registry file in ``LANE_FILES`` must exist."""
     pkg, _ = LANE_PACKAGES[lane]
+    if lane in LANE_FILES:
+        missing = [f for f in LANE_FILES[lane] if not (REPO_ROOT / f).is_file()]
+        if missing:
+            return False, f"missing {', '.join(missing)} (lane {lane} not merged)"
+        return True, ", ".join(LANE_FILES[lane])
     try:
         spec = importlib.util.find_spec(pkg)
     except ModuleNotFoundError:

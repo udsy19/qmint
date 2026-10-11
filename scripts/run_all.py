@@ -4,7 +4,8 @@
     python scripts/run_all.py --seed 42 [--out DIR] [--keep-going]
 
 Requires real public data already fetched and hash-verified under datasets/cache with
-EvidenceManifests in datasets/manifests (lane E, `qmint data fetch`). If anything is
+EvidenceManifests in datasets/manifests (canonical .json, or .yaml carrying manifest_id;
+lane E, `qmint data fetch`). If anything is
 missing, unverified or a fixture, the run is REFUSED (exit 2) -- fixtures are never
 silently substituted. Exit 1 if any stage fails or no real-data stage ran.
 """

@@ -202,16 +202,21 @@ _NOT_REAL = frozenset({EvidenceKind.SYNTHETIC, EvidenceKind.UNCERTIFIED, Evidenc
 def realdata_preflight(cfg: QMintConfig) -> list[str]:
     """Problems preventing a real-data run. Empty list = every declared dataset is present and verified.
 
-    Fixtures can never satisfy this: SYNTHETIC/simulated manifests and any input under
+    Manifests are EvidenceManifests as canonical JSON or as YAML carrying ``manifest_id``; other
+    YAML files there (dataset descriptors) are ignored. Fixtures can never satisfy this:
+    SYNTHETIC/simulated manifests and any input under
     ``tests/`` or a ``fixtures`` path are refused, and every input must be re-hashed OK
     from ``datasets/cache``.
     """
-    from qmint.core.manifest import load_manifest
+    from qmint.core.manifest import MANIFEST_SUFFIXES, is_evidence_manifest_file, load_manifest
 
     mdir = cfg.root / REALDATA_MANIFEST_DIR
-    paths = sorted(mdir.glob("*.json")) if mdir.is_dir() else []
+    files = sorted(p for p in mdir.iterdir() if p.suffix in MANIFEST_SUFFIXES) if mdir.is_dir() else []
+    paths = [p for p in files if is_evidence_manifest_file(p)]
     if not paths:
-        return [f"no real-data manifests in {REALDATA_MANIFEST_DIR}/ (lane E); fetch and verify datasets first"]
+        skipped = f" ({len(files)} dataset descriptor(s) without manifest_id ignored)" if files else ""
+        return [f"no real-data EvidenceManifests (.json or .yaml with manifest_id) in {REALDATA_MANIFEST_DIR}/"
+                f"{skipped} (lane E); fetch and verify datasets first"]
     cache = cfg.cache_dir.resolve()
     problems = []
     for mp in paths:

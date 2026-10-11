@@ -27,6 +27,8 @@ Method = Literal[
     "closed_form",  # transcribed / derived formula evaluated exactly
     "exact_enumeration",  # exact model value by enumerating outcomes / Kraus operators
     "aer_sampling",  # shot-sampled local Aer simulation (has a confidence interval)
+    "monte_carlo",  # sampled attack/acceptance trials (lower bound on worst-case attack success; has a CI)
+    "numerical_sdp",  # floating-point (or exactly re-certified) SDP solver output
     "event_simulation",  # lane-G discrete-event timing simulation
     "published_value",  # number quoted from a paper
     "measured_dataset",  # statistic of a committed real measurement dataset
