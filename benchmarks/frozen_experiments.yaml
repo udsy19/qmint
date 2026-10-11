@@ -1,0 +1,241 @@
+# QMint lane I -- PRE-REGISTERED compiler experiments X12 / X13 (master plan sections 4, 7 Lane I, 8).
+#
+# FROZEN. Written and committed BEFORE any optimisation was run. Later commits must not modify this
+# file: tests/unit/compiler/test_preregistration.py pins its SHA-256. Every number the experiment
+# runner uses (grids, targets, devices, tie-breaks, decision rule) is read from here.
+#
+# Evidence discipline: every device value below carries an evidence label. HYPOTHETICAL values are
+# stress inputs, not measurements. No 2023 (D1) calibration is ever used inside the 2022 (S2) proof
+# model, and no theorem is transferred across games.
+
+schema: qmint.benchmarks.frozen_experiments/v1
+lane: I
+experiments: [X12, X13]
+research_question: RQ3  # master plan section 8
+null_hypothesis: >-
+  At matched target epsilon and honest-failure constraints, the certificate compiler is not less
+  resource intensive (prepared pulses per token) than the published fixed recipe or naive analytic
+  sizing under the SAME published bound, discretisation and checker.
+
+# --------------------------------------------------------------------------------------------- #
+primary_metric:
+  name: N_prepared
+  definition: "number of prepared pulses/qubits/states per token (S2: pulses N; D1: states per committed bit N; W1: qubits n; S1: N)"
+  comparison: "paired ratio N_baseline / N_compiler on the identical scenario, targets and grid"
+  improvement_declared_iff:
+    - "every compiler certificate in the comparison is CERTIFIED by qmint.proofs.checker.IndependentProofChecker"
+    - "ratio N_naive / N_compiler >= 1.0593 (one N-grid step, 10^(1/40)) at the scenario"
+    - "the same holds for the interval (uncertainty) version of the scenario"
+    - "the scenario's game is certifiable (W1, W1_CV, S1, S2). D1 results are UNCERTIFIED by construction and never count"
+  g5_rule: >-
+    G5 passes with a POSITIVE result iff the improvement rule holds on at least one frozen S2 device
+    scenario at (epsilon_unf=1e-9, honest=1e-3, M=1) in BOTH point and interval versions; otherwise the
+    negative result is reported. All other cells are secondary/exploratory (no multiple-testing
+    correction is needed for the deterministic primary cell; secondary cells are labelled exploratory).
+secondary_metrics:
+  - issuance_seconds          # N / source_rate_hz (HYPOTHETICAL rate, MODELLED)
+  - honest_failure_bound      # S2: eps_rob + eps_cor (union bound); D1: eps_cor (1 - p_h)
+  - log10_eps_unf_achieved
+  - classical_bits_proxy      # MODELLED proxy, see resource_model
+  - expected_photons          # S2 only: mu * N
+  - engine_evaluations, wall_seconds, peak_memory_bytes (tracemalloc)
+  - checker_rejections        # emitted candidates refused by the independent checker (released must be CERTIFIED)
+
+# --------------------------------------------------------------------------------------------- #
+targets:
+  epsilon_unf: [1.0e-3, 1.0e-6, 1.0e-9, 1.0e-12]
+  honest_failure: [1.0e-2, 1.0e-3, 1.0e-6]
+  honest_split:
+    S2: "epsilon_rob = epsilon_cor = honest_failure / 2 (union bound on the two honest failure events)"
+    D1: "epsilon_cor = honest_failure (SI Eqs. 19-20 bound 1 - p_h)"
+    ideal: "no honest-failure target (ideal exact-verifier model; honest failure not modelled, reported null)"
+  primary_cell: {epsilon_unf: 1.0e-9, honest_failure: 1.0e-3, M: 1}
+  published_matched:
+    strict: "targets on every axis = the published recipe's own achieved bound on that axis (equal-or-stronger security)"
+    design: "epsilon_unf = the recipe's design target (S2: 1e-9; D1: 5.911e-45 = published p_d), honest = 1e-3"
+
+tie_break:  # applied identically by the exhaustive oracle and the compiler
+  - "1. minimum N"
+  - "2. minimum log10(honest_failure_bound)  (S2: log10(eps_rob + eps_cor); D1: log10 eps_cor)"
+  - "3. minimum log10(eps_unf)"
+  - "4. lexicographically smallest grid-index tuple (N index first)"
+
+optimality_labels:
+  exhaustive_oracle: "global_optimum_on_grid (exhaustive over the stated finite grid only)"
+  compiler: "best_found (exact on the grid only under the documented monotonicity conditions M1-M3; verified against the oracle on the small grids)"
+  naive_analytic: "heuristic"
+  published_fixed: "published"
+
+# --------------------------------------------------------------------------------------------- #
+# Grids. Threshold coordinates are RELATIVE to the worst-case device endpoint so that all four
+# selectors share one discretisation. "small" grids are index strides of the full axes; the
+# oracle-agreement experiment runs oracle AND compiler on the small grid.
+grids:
+  ideal:
+    N: {kind: integer_range, lo: 1, hi: 512}
+    small: {N_stride: 1}
+  S2:
+    N: {kind: geometric_int, formula: "round(10**(k/40))", k_lo: 120, k_hi: 400}           # 1e3 .. 1e10, 281 values
+    r_det: {formula: "gamma_det = r * P_det_lo ; r = 1 - 10**(-j/10)", j_lo: 5, j_hi: 30}    # 26 values, 0.684 .. 0.999
+    r_err: {formula: "gamma_err = r * E_hi ; r = 1 + 10**(-j/10)", j_lo: 1, j_hi: 30}        # 30 values, 1.794 .. 1.001
+    r_cor: {formula: "nu_cor = r * A_lo / 2 ; A_lo = P_det_lo (1 - 2 beta_PB_hi) ; r = 1 - 10**(-j/10)", j_lo: 1, j_hi: 30}
+    r_unf: {formula: "nu_unf = r * P_noqub_hi ; r = 1 + 10**(-j/10)", j_lo: 1, j_hi: 30}
+    small: {N_stride: 8, r_det_stride: 4, r_err_stride: 4, r_cor_stride: 4, r_unf_stride: 4}
+  D1:
+    N: {kind: geometric_int, formula: "round(10**(k/40))", k_lo: 80, k_hi: 400}            # 1e2 .. 1e10, 321 values
+    delta_d: {formula: "10**(-3 + i/40)", i_lo: 0, i_hi: 120}                               # 1e-3 .. 1
+    delta_h: {formula: "10**(-3 + i/40)", i_lo: 0, i_hi: 120}
+    small: {N_stride: 8, delta_d_stride: 6, delta_h_stride: 6}
+
+# --------------------------------------------------------------------------------------------- #
+resource_model:
+  source_rate_hz: {value: 1.0e8, evidence: HYPOTHETICAL, note: "nominal pulse rate; NOT taken from any paper; issuance_seconds = N / rate is MODELLED"}
+  classical_bits_proxy:
+    S2: "N + 2 * ceil(P_det_point * N)  (report bitmap + basis/outcome bits for expected detections; MODELLED proxy)"
+    D1: "N  (one cryptogram bit per state; MODELLED proxy)"
+    ideal: "2 n  (issuer secret basis+bit storage; MODELLED proxy)"
+  expected_photons: "S2 only: mu_point * N"
+
+# --------------------------------------------------------------------------------------------- #
+# Device descriptions (paper-faithful parameters only within lane D's finite_size domain).
+devices:
+  S2:
+    common:
+      P_det: {value: 0.019, evidence: PUBLISHED_AGGREGATE, anchor: "KLPR2022 Methods p.12"}
+      mu: {value: 0.09, evidence: PUBLISHED_AGGREGATE, anchor: "KLPR2022 Methods p.13; P_noqub = 1-(1+mu)e^-mu (Table 5 item 1)"}
+      reporting_strategy: {value: QT1, allowed: [QT1, QT2], anchor: "KLPR2022 Lemma 5 / Table 6 C-D"}
+      noise_source: hypothetical  # Fig. 5 points are improved hypothetical sources, not measurements
+    K22-EXP:   # the paper's own experimental tuple: expected OUTSIDE Theorem 1 (paper p.7)
+      theta_deg: 10.0
+      E: 0.058
+      beta_PB: 2.4e-3
+      beta_PS: 3.6e-3
+      evidence: PUBLISHED_AGGREGATE
+      anchor: "KLPR2022 Methods p.13 counts"
+      noise_source: published_kent_2022
+    K22-F5a: {theta_deg: 10.0, E: 0.058, beta: 6.0e-6, evidence: DIGITIZED_FIGURE, anchor: "KLPR2022 Fig. 5"}
+    K22-F5b: {theta_deg: 5.0, E: 0.03, beta: 2.3e-4, evidence: DIGITIZED_FIGURE, anchor: "KLPR2022 Fig. 5"}
+    K22-F5c: {theta_deg: 1.0e-6, E: 0.01, beta: 6.0e-4, evidence: DIGITIZED_FIGURE, anchor: "KLPR2022 Fig. 5 (theta -> 0)"}
+    K22-F5a-half: {theta_deg: 10.0, E: 0.058, beta: 3.0e-6, evidence: HYPOTHETICAL, note: "beta halved"}
+    K22-F5b-half: {theta_deg: 5.0, E: 0.03, beta: 1.15e-4, evidence: HYPOTHETICAL, note: "beta halved"}
+    K22-F5c-half: {theta_deg: 1.0e-6, E: 0.01, beta: 3.0e-4, evidence: HYPOTHETICAL, note: "beta halved"}
+    interval_stress:   # HYPOTHETICAL uncertainty box applied in the "interval" version of each device
+      evidence: HYPOTHETICAL
+      E_rel: 0.03          # ~ Clopper-Pearson scale of KLPR2022 E_tu counts (4725/80786)
+      beta_rel: 0.20
+      theta_abs_deg: 0.5   # lo clipped at 1e-6 deg
+      P_det_rel: 0.02      # measured 0.019 vs Eq. 17 theory 0.01863
+      mu_rel: 0.05         # P_noqub interval from mu interval (monotone increasing in mu)
+    privacy_check:
+      device: K22-F5a
+      beta_E: {value: 1.0e-3, evidence: HYPOTHETICAL}
+      epsilon_priv_targets: [1.0e-2, 1.0e-4]   # expected: feasible, infeasible (eps_priv = beta_E at M=1)
+  D1:
+    common:
+      merchants: 2
+      e_h_basis: X   # D/A basis: the paper's e_m uses the worse basis
+    D1-PUB-SI:
+      e_h: {value: 0.03278, evidence: PUBLISHED_AGGREGATE, anchor: "Schiansky 2023 SI Table 2"}
+      l_h: {value: 0.224, evidence: PUBLISHED_AGGREGATE}
+      p_m: {value: 0.0602, evidence: PUBLISHED_AGGREGATE, anchor: "SI Table 2 (main text 6.76%)"}
+      noise_source: published_schiansky_2023
+    D1-PUB-INT:
+      e_h: {lo: 0.0327, hi: 0.0329, evidence: PUBLISHED_AGGREGATE, anchor: "3.28 +/- 0.01 %"}
+      l_h: {lo: 0.209, hi: 0.239, evidence: PUBLISHED_AGGREGATE, anchor: "22.40 +/- 1.50 %"}
+      p_m: {lo: 0.0574, hi: 0.0688, evidence: PUBLISHED_AGGREGATE, anchor: "hull of SI 6.02+/-0.28 % and main 6.76+/-0.12 %"}
+      noise_source: published_schiansky_2023
+    D1-ZEN-IID:
+      e_h: {source: "reports/data_working/schiansky2023/per_run.csv", basis: X, runs: CALIBRATION_ONLY, method: clopper_pearson_pooled_95, evidence: PHOTON_EXPERIMENT}
+      l_h: {lo: 0.209, hi: 0.239, evidence: PUBLISHED_AGGREGATE}
+      p_m: {lo: 0.0574, hi: 0.0688, evidence: PUBLISHED_AGGREGATE}
+    D1-ZEN-DRIFT:
+      e_h: {source: "reports/data_working/schiansky2023/per_run.csv", basis: X, runs: CALIBRATION_ONLY, method: "hull(clopper_pearson_pooled_95, student_t_95_prediction_interval_for_a_new_run)", evidence: PHOTON_EXPERIMENT,
+            rationale: "lane E found run-level overdispersion chi2/dof ~ 10; a prediction interval for the next run is the drift-aware object"}
+      l_h: {lo: 0.209, hi: 0.239, evidence: PUBLISHED_AGGREGATE}
+      p_m: {lo: 0.0574, hi: 0.0688, evidence: PUBLISHED_AGGREGATE}
+
+# --------------------------------------------------------------------------------------------- #
+selectors:
+  published_fixed:
+    S2:
+      source: "KLPR2022 Methods p.12-13 / Fig. 5 procedure"
+      tuple: {N: 40000000, gamma_det: 0.018, nu_unf: 3.9e-3}
+      procedure: "nu_cor, gamma_err from the Fig. 5 rule: each correctness exponential = design_target/2 with design_target = 1e-9 (gamma_err nudged up 0.1 % as in lane D's example certificate)"
+      design_target: 1.0e-9
+      off_grid: true   # the published tuple is evaluated exactly as published
+    D1:
+      source: "Schiansky 2023 Fig. 4b / SI Table 2"
+      tuple: {N: 4200000, delta_d: 0.01, delta_h: 0.031}
+      design_target: 5.911e-45
+      off_grid: true
+    S2_JIANG24:
+      source: "Jiang et al. 2024 Methods Theorem 1 (arXiv 2408.13063)"
+      tuple: {N: 10048, gamma_err: 0.094, nu_unf: 0.037547677, nu_cor: 0.457643134}
+      expected: "REJECTED: theorem T-JIANG24-THM1 is not a registered game (S2_JIANG24 not in GameId); never scored under KLPR2022 S2"
+    W1: {expected: "NO_PUBLISHED_RECIPE (MVW2012 states a bound, not a deployment length)"}
+    S1: {expected: "NO_PUBLISHED_RECIPE"}
+  naive_analytic:
+    ideal: "N = smallest grid N with published bound <= target (binary search on monotone closed form)"
+    S2: >-
+      r_det fixed at the grid value nearest 0.018/0.019 (Kent's ratio); for each N the analysis variables follow
+      the Kent Fig. 5 'each exponential = target/2' rule: nu_unf from first unf term = eps_unf/2 (snapped UP to grid),
+      nu_cor from first cor term = eps_cor/2 (snapped DOWN), gamma_err from second cor term = eps_cor/2 (snapped UP);
+      binary search on the N grid; feasibility monotonicity of this rule is verified post hoc by a linear scan.
+    D1: "delta_d, delta_h fixed at the published values snapped to the nearest grid value; binary search on N"
+  exhaustive_oracle: "every tuple of the stated (small) grid scored through qmint.proofs.engine.ProofEngine; tie_break above"
+  compiler: >-
+    binary search on N (M1), per-N greedy threshold selection by M2/M3, exact tie-break enumeration at the
+    optimal N, evaluation cache keyed by canonical(game, axis, parameters, calibration, proof version),
+    interval device parameters passed to the engine which evaluates the worst endpoint
+  scoring: "ALL selectors score candidates only through qmint.proofs.engine.ProofEngine"
+  release: "every emitted certificate is re-validated by qmint.proofs.checker.IndependentProofChecker; only CERTIFIED ones are released"
+
+monotonicity_conditions:   # used for pruning; each is unit-tested numerically through the engine
+  M1: "for fixed thresholds every registered ln-bound is ln(c) + LSE_i(-N a_i) with a_i >= 0 independent of N, and every domain predicate is independent of N => feasibility is monotone in N (S2, D1, W1, S1)"
+  M2: "S2: eps_rob nondecreasing in gamma_det; eps_unf nonincreasing in gamma_det and its domain upward-closed in gamma_det; eps_cor (min over nu_cor) nonincreasing in gamma_err inside Eq.(4); eps_unf nondecreasing in gamma_err and its domain downward-closed in gamma_err"
+  M3: "D1: p_d nonincreasing in delta_d; 1-p_h bound nonincreasing in delta_h; the Eq.(23) admissible set is downward-closed in (delta_d, delta_h)"
+
+# --------------------------------------------------------------------------------------------- #
+scenario_matrix:
+  ideal:
+    games: [W1, S1]
+    epsilon_unf: from targets
+    selectors: [published_fixed, naive_analytic, exhaustive_oracle, compiler]
+  S2:
+    devices: [K22-F5a, K22-F5b, K22-F5c, K22-F5a-half, K22-F5b-half, K22-F5c-half]
+    uncertainty: [point, interval]
+    M: [1]
+    epsilon_unf: from targets
+    honest_failure: from targets
+    selectors: [published_fixed, naive_analytic, compiler]
+    sites_sweep: {M: [1, 2, 3], C: "L(L-1)/2 with L = 2^M (every pair spacelike: worst case)", at: primary_cell}
+    infeasible_expected: [K22-EXP]
+  S2_oracle_agreement:
+    devices: [K22-F5a, K22-F5b, K22-F5c]
+    uncertainty: [point, interval]
+    epsilon_unf: [1.0e-6, 1.0e-9]
+    honest_failure: [1.0e-3]
+    grid: small
+    selectors: [exhaustive_oracle, compiler]
+  D1:
+    devices: [D1-PUB-SI, D1-PUB-INT, D1-ZEN-IID, D1-ZEN-DRIFT]
+    epsilon_unf: from targets
+    honest_failure: from targets
+    selectors: [published_fixed, naive_analytic, compiler]
+    status: "UNCERTIFIED by construction (checker never certifies D1); reported separately, never on the certified Pareto front"
+  D1_oracle_agreement:
+    devices: [D1-PUB-SI, D1-ZEN-IID]
+    epsilon_unf: [1.0e-6, 1.0e-9]
+    honest_failure: [1.0e-3]
+    grid: small
+    selectors: [exhaustive_oracle, compiler]
+
+ablations:   # X13
+  A1_uncertainty: "S2 devices point vs interval: N_point, N_interval, and whether the point-selected configuration is still certified when re-scored under the interval box (safety loss)"
+  A2_drift: "D1 only (the only protocol with time-resolved public data): D1-ZEN-IID vs D1-ZEN-DRIFT; selection on calibration runs, then frozen; evaluated on holdout runs (benchmarks/holdouts.yaml)"
+  A2_S2: "NOT_APPLICABLE: no time-resolved S2 data; 2023 dispersion may not be transferred into the 2022 model"
+  A3_fixed_N_vs_joint: "S2 at the published N = 4e7: best achievable log10 eps_unf with thresholds optimised vs the published recipe; and N_naive (thresholds fixed by rule) vs N_compiler (joint)"
+  A4_sites: "S2 compiler N vs M in {1,2,3} at the primary cell"
+  A5_checker: "count of emitted certificates refused by the independent checker (must be 0 among released)"
+
+determinism: {seed: 0, note: "the computation is deterministic; seed recorded for the run manifest only"}

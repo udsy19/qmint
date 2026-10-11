@@ -1,0 +1,6 @@
+run,qber,cp95,inside_iid,inside_drift,D1-ZEN-IID_frozen_config_on_holdout,D1-ZEN-DRIFT_frozen_config_on_holdout
+6,0.03226627,"[0.03152532754728205, 0.033019792728903416]",False,True,targets met,NO_FROZEN_CONFIG (selection infeasible)
+7,0.03183374,"[0.03110053256244864, 0.032579446476724096]",False,True,targets met,NO_FROZEN_CONFIG (selection infeasible)
+8,0.03237528,"[0.03163753663453388, 0.03312545567837406]",False,True,targets met,NO_FROZEN_CONFIG (selection infeasible)
+9,0.03198471,"[0.031247762944321467, 0.03273422002075662]",False,True,targets met,NO_FROZEN_CONFIG (selection infeasible)
+10,0.03419023,"[0.03338774553491169, 0.03500660570676322]",False,True,INADMISSIBLE (SI Eq. 23 fails on holdout interval),NO_FROZEN_CONFIG (selection infeasible)

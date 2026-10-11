@@ -1,0 +1,5130 @@
+{
+ "g5": {
+  "checker_rejections_total": 3,
+  "per_device": [
+   {
+    "device": "K22-F5a",
+    "improvement_rule_holds": false,
+    "interval": {
+     "compiler_N": null,
+     "compiler_status": "INFEASIBLE",
+     "naive_N": null,
+     "naive_status": "INFEASIBLE",
+     "published_N": null,
+     "published_status": "INFEASIBLE",
+     "ratio_naive_over_compiler": null,
+     "ratio_published_over_compiler": null
+    },
+    "point": {
+     "compiler_N": 10592537,
+     "compiler_status": "FEASIBLE",
+     "naive_N": 18836491,
+     "naive_status": "FEASIBLE",
+     "published_N": 40000000,
+     "published_status": "FEASIBLE",
+     "ratio_naive_over_compiler": 1.778279462228926,
+     "ratio_published_over_compiler": 3.776243594900825
+    }
+   },
+   {
+    "device": "K22-F5b",
+    "improvement_rule_holds": false,
+    "interval": {
+     "compiler_N": null,
+     "compiler_status": "INFEASIBLE",
+     "naive_N": null,
+     "naive_status": "INFEASIBLE",
+     "published_N": null,
+     "published_status": "INFEASIBLE",
+     "ratio_naive_over_compiler": null,
+     "ratio_published_over_compiler": null
+    },
+    "point": {
+     "compiler_N": 8413951,
+     "compiler_status": "FEASIBLE",
+     "naive_N": 35481339,
+     "naive_status": "FEASIBLE",
+     "published_N": null,
+     "published_status": "INFEASIBLE",
+     "ratio_naive_over_compiler": 4.216965252115207,
+     "ratio_published_over_compiler": null
+    }
+   },
+   {
+    "device": "K22-F5c",
+    "improvement_rule_holds": false,
+    "interval": {
+     "compiler_N": null,
+     "compiler_status": "INFEASIBLE",
+     "naive_N": null,
+     "naive_status": "INFEASIBLE",
+     "published_N": null,
+     "published_status": "INFEASIBLE",
+     "ratio_naive_over_compiler": null,
+     "ratio_published_over_compiler": null
+    },
+    "point": {
+     "compiler_N": 6309573,
+     "compiler_status": "FEASIBLE",
+     "naive_N": 66834392,
+     "naive_status": "FEASIBLE",
+     "published_N": null,
+     "published_status": "INFEASIBLE",
+     "ratio_naive_over_compiler": 10.592538037043077,
+     "ratio_published_over_compiler": null
+    }
+   },
+   {
+    "device": "K22-F5a-half",
+    "improvement_rule_holds": true,
+    "interval": {
+     "compiler_N": 105925373,
+     "compiler_status": "FEASIBLE",
+     "naive_N": 749894209,
+     "naive_status": "FEASIBLE",
+     "published_N": null,
+     "published_status": "INFEASIBLE",
+     "ratio_naive_over_compiler": 7.079457808470497,
+     "ratio_published_over_compiler": null
+    },
+    "point": {
+     "compiler_N": 7079458,
+     "compiler_status": "FEASIBLE",
+     "naive_N": 7943282,
+     "naive_status": "FEASIBLE",
+     "published_N": 40000000,
+     "published_status": "FEASIBLE",
+     "ratio_naive_over_compiler": 1.1220183805031403,
+     "ratio_published_over_compiler": 5.650150053860055
+    }
+   },
+   {
+    "device": "K22-F5b-half",
+    "improvement_rule_holds": true,
+    "interval": {
+     "compiler_N": 1496236,
+     "compiler_status": "FEASIBLE",
+     "naive_N": 2371374,
+     "naive_status": "FEASIBLE",
+     "published_N": null,
+     "published_status": "INFEASIBLE",
+     "ratio_naive_over_compiler": 1.5848930248971418,
+     "ratio_published_over_compiler": null
+    },
+    "point": {
+     "compiler_N": 562341,
+     "compiler_status": "FEASIBLE",
+     "naive_N": 595662,
+     "naive_status": "FEASIBLE",
+     "published_N": 40000000,
+     "published_status": "FEASIBLE",
+     "ratio_naive_over_compiler": 1.0592540824873165,
+     "ratio_published_over_compiler": 71.13121753526775
+    }
+   },
+   {
+    "device": "K22-F5c-half",
+    "improvement_rule_holds": false,
+    "interval": {
+     "compiler_N": 421697,
+     "compiler_status": "FEASIBLE",
+     "naive_N": 473151,
+     "naive_status": "FEASIBLE",
+     "published_N": null,
+     "published_status": "INFEASIBLE",
+     "ratio_naive_over_compiler": 1.1220165189697817,
+     "ratio_published_over_compiler": null
+    },
+    "point": {
+     "compiler_N": 421697,
+     "compiler_status": "FEASIBLE",
+     "naive_N": 446684,
+     "naive_status": "FEASIBLE",
+     "published_N": 40000000,
+     "published_status": "FEASIBLE",
+     "ratio_naive_over_compiler": 1.0592534450090942,
+     "ratio_published_over_compiler": 94.85483652954609
+    }
+   }
+  ],
+  "primary_cell": {
+   "M": 1,
+   "epsilon_unf": 1e-09,
+   "honest_failure": 0.001
+  },
+  "released_certificates": 320,
+  "rule": "G5 passes with a POSITIVE result iff the improvement rule holds on at least one frozen S2 device scenario at (epsilon_unf=1e-9, honest=1e-3, M=1) in BOTH point and interval versions; otherwise the negative result is reported. All other cells are secondary/exploratory (no multiple-testing correction is needed for the deterministic primary cell; secondary cells are labelled exploratory).",
+  "verdict": "POSITIVE (pre-registered improvement rule met)"
+ },
+ "infeasibility_certificates": [
+  {
+   "axes": [
+    {
+     "axis": "epsilon_unf",
+     "best_log10_found": null,
+     "points_probed": 3584,
+     "points_with_bound": 0,
+     "reasons": {
+      "Eq.(7): need 0 < P_noqub < nu_unf < min{2 P_noqub, gamma_det(1 - gamma_err/lambda)}": 952,
+      "Eq.(7): need 0 < P_noqub < nu_unf < min{2 P_noqub, gamma_det(1 - gamma_err/lambda)}; Eq.(7): need beta_PS < (1/2)[exp((lambda/2)(1-delta/lambda)^2) - 1]; Theorem 1: need f(gamma_err, beta_PS, beta_PB, theta, nu_unf, g...": 88,
+      "Eq.(7): need 0 < P_noqub < nu_unf < min{2 P_noqub, gamma_det(1 - gamma_err/lambda)}; Theorem 1: need f(gamma_err, beta_PS, beta_PB, theta, nu_unf, gamma_det) > 0": 240,
+      "Eq.(7): need 0 < gamma_err < lambda = 0.0879369; Eq.(7): need 0 < gamma_err < lambda = 0.0929422": 448,
+      "Eq.(7): need beta_PS < (1/2)[exp((lambda/2)(1-delta/lambda)^2) - 1]; Theorem 1: need f(gamma_err, beta_PS, beta_PB, theta, nu_unf, gamma_det) > 0": 88,
+      "Theorem 1: need f(gamma_err, beta_PS, beta_PB, theta, nu_unf, gamma_det) > 0": 1768
+     },
+     "target": 1e-09
+    },
+    {
+     "axis": "epsilon_cor",
+     "best_log10_found": -280179.6110535195,
+     "points_probed": 3584,
+     "points_with_bound": 3584,
+     "reasons": {
+      "bound above target": 504
+     },
+     "target": 0.0005
+    },
+    {
+     "axis": "epsilon_rob",
+     "best_log10_found": -4043281.626519275,
+     "points_probed": 3584,
+     "points_with_bound": 3584,
+     "reasons": {},
+     "target": 0.0005
+    }
+   ],
+   "game_id": "S2",
+   "missing_assumptions": [],
+   "probed_at": {
+    "N": 10000000000,
+    "threshold_stride": 4
+   },
+   "protocol_id": "s_money_kent_2022_realistic",
+   "reason": "compiler: no feasible configuration at the largest grid N (see infeasibility certificate) | unmet axes at N=10000000000: ['epsilon_unf']",
+   "scenario_id": "S2/K22-F5a/interval/M1/unf1e-09/h0.001",
+   "status": "INFEASIBLE",
+   "targets": {
+    "epsilon_cor": 0.0005,
+    "epsilon_priv": null,
+    "epsilon_rob": 0.0005,
+    "epsilon_unf": 1e-09
+   }
+  },
+  {
+   "axes": [
+    {
+     "axis": "epsilon_unf",
+     "best_log10_found": null,
+     "points_probed": 3584,
+     "points_with_bound": 0,
+     "reasons": {
+      "Eq.(7): need beta_PS < (1/2)[exp((lambda/2)(1-delta/lambda)^2) - 1]; Theorem 1: need f(gamma_err, beta_PS, beta_PB, theta, nu_unf, gamma_det) > 0": 8,
+      "Theorem 1: need f(gamma_err, beta_PS, beta_PB, theta, nu_unf, gamma_det) > 0": 3576
+     },
+     "target": 1e-09
+    },
+    {
+     "axis": "epsilon_cor",
+     "best_log10_found": -144842.57809944425,
+     "points_probed": 3584,
+     "points_with_bound": 3584,
+     "reasons": {
+      "bound above target": 896
+     },
+     "target": 0.0005
+    },
+    {
+     "axis": "epsilon_rob",
+     "best_log10_found": -4043281.626519275,
+     "points_probed": 3584,
+     "points_with_bound": 3584,
+     "reasons": {},
+     "target": 0.0005
+    }
+   ],
+   "game_id": "S2",
+   "missing_assumptions": [],
+   "probed_at": {
+    "N": 10000000000,
+    "threshold_stride": 4
+   },
+   "protocol_id": "s_money_kent_2022_realistic",
+   "reason": "compiler: no feasible configuration at the largest grid N (see infeasibility certificate) | unmet axes at N=10000000000: ['epsilon_unf']",
+   "scenario_id": "S2/K22-F5b/interval/M1/unf1e-09/h0.001",
+   "status": "INFEASIBLE",
+   "targets": {
+    "epsilon_cor": 0.0005,
+    "epsilon_priv": null,
+    "epsilon_rob": 0.0005,
+    "epsilon_unf": 1e-09
+   }
+  },
+  {
+   "axes": [
+    {
+     "axis": "epsilon_unf",
+     "best_log10_found": null,
+     "points_probed": 3584,
+     "points_with_bound": 0,
+     "reasons": {
+      "Theorem 1: need f(gamma_err, beta_PS, beta_PB, theta, nu_unf, gamma_det) > 0": 3584
+     },
+     "target": 1e-09
+    },
+    {
+     "axis": "epsilon_cor",
+     "best_log10_found": -50708.19617948256,
+     "points_probed": 3584,
+     "points_with_bound": 3584,
+     "reasons": {
+      "bound above target": 952
+     },
+     "target": 0.0005
+    },
+    {
+     "axis": "epsilon_rob",
+     "best_log10_found": -4043281.626519275,
+     "points_probed": 3584,
+     "points_with_bound": 3584,
+     "reasons": {},
+     "target": 0.0005
+    }
+   ],
+   "game_id": "S2",
+   "missing_assumptions": [],
+   "probed_at": {
+    "N": 10000000000,
+    "threshold_stride": 4
+   },
+   "protocol_id": "s_money_kent_2022_realistic",
+   "reason": "compiler: no feasible configuration at the largest grid N (see infeasibility certificate) | unmet axes at N=10000000000: ['epsilon_unf']",
+   "scenario_id": "S2/K22-F5c/interval/M1/unf1e-09/h0.001",
+   "status": "INFEASIBLE",
+   "targets": {
+    "epsilon_cor": 0.0005,
+    "epsilon_priv": null,
+    "epsilon_rob": 0.0005,
+    "epsilon_unf": 1e-09
+   }
+  },
+  {
+   "axes": [
+    {
+     "axis": "epsilon_unf",
+     "best_log10_found": -63.96863314344957,
+     "points_probed": 1,
+     "points_with_bound": 1,
+     "reasons": {},
+     "target": 1e-09
+    },
+    {
+     "axis": "epsilon_priv",
+     "best_log10_found": null,
+     "points_probed": 1,
+     "points_with_bound": 0,
+     "reasons": {
+      "P-W1 bounds epsilon_unf only; no theorem for epsilon_priv (privacy is never reported as 0)": 1
+     },
+     "target": 0.01
+    }
+   ],
+   "game_id": "W1",
+   "missing_assumptions": [],
+   "probed_at": {
+    "N": 512,
+    "threshold_stride": 4
+   },
+   "protocol_id": "wiesner_ideal",
+   "reason": "epsilon_priv: no applicable bound meets the target | unmet axes at N=512: ['epsilon_priv']",
+   "scenario_id": "W1/unf1e-09/priv0.01",
+   "status": "INFEASIBLE",
+   "targets": {
+    "epsilon_cor": null,
+    "epsilon_priv": 0.01,
+    "epsilon_rob": null,
+    "epsilon_unf": 1e-09
+   }
+  },
+  {
+   "axes": [
+    {
+     "axis": "epsilon_unf",
+     "best_log10_found": -4192289.6345359464,
+     "points_probed": 961,
+     "points_with_bound": 349,
+     "reasons": {
+      "SI Eq.(23): need (1/2)(1-p_m/2)(1-delta_d) >= M(e_h,l_h)(1+delta_h)": 612
+     },
+     "target": 1e-09
+    },
+    {
+     "axis": "epsilon_cor",
+     "best_log10_found": -4090551.875140783,
+     "points_probed": 961,
+     "points_with_bound": 349,
+     "reasons": {
+      "SI Eq.(23): need (1/2)(1-p_m/2)(1-delta_d) >= M(e_h,l_h)(1+delta_h)": 612
+     },
+     "target": 0.001
+    },
+    {
+     "axis": "epsilon_priv",
+     "best_log10_found": null,
+     "points_probed": 961,
+     "points_with_bound": 0,
+     "reasons": {
+      "no published theorem for D1/epsilon_priv (privacy is never reported as 0)": 961
+     },
+     "target": 0.01
+    }
+   ],
+   "game_id": "D1",
+   "missing_assumptions": [],
+   "probed_at": {
+    "N": 10000000000,
+    "threshold_stride": 4
+   },
+   "protocol_id": "schiansky_payment_2023",
+   "reason": "epsilon_priv: no D1 theorem for this axis (never reported as 0) | unmet axes at N=10000000000: ['epsilon_priv']",
+   "scenario_id": "D1/priv",
+   "status": "OUT_OF_MODEL",
+   "targets": {
+    "epsilon_cor": 0.001,
+    "epsilon_priv": 0.01,
+    "epsilon_rob": null,
+    "epsilon_unf": 1e-09
+   }
+  },
+  {
+   "axes": [
+    {
+     "axis": "epsilon_unf",
+     "best_log10_found": -46683.966921321975,
+     "points_probed": 3584,
+     "points_with_bound": 1528,
+     "reasons": {
+      "Eq.(7): need 0 < P_noqub < nu_unf < min{2 P_noqub, gamma_det(1 - gamma_err/lambda)}": 680,
+      "Eq.(7): need 0 < gamma_err < lambda = 0.090424": 448,
+      "Eq.(7): need beta_PS < (1/2)[exp((lambda/2)(1-delta/lambda)^2) - 1]; Theorem 1: need f(gamma_err, beta_PS, beta_PB, theta, nu_unf, gamma_det) > 0": 72,
+      "Theorem 1: need f(gamma_err, beta_PS, beta_PB, theta, nu_unf, gamma_det) > 0": 856,
+      "bound above target": 240
+     },
+     "target": 1e-09
+    },
+    {
+     "axis": "epsilon_cor",
+     "best_log10_found": -277571.1150131456,
+     "points_probed": 3584,
+     "points_with_bound": 3584,
+     "reasons": {
+      "bound above target": 504
+     },
+     "target": 0.0005
+    },
+    {
+     "axis": "epsilon_rob",
+     "best_log10_found": -4125797.5780808935,
+     "points_probed": 3584,
+     "points_with_bound": 3584,
+     "reasons": {},
+     "target": 0.0005
+    },
+    {
+     "axis": "epsilon_priv",
+     "best_log10_found": -2.9999999999999996,
+     "points_probed": 3584,
+     "points_with_bound": 3584,
+     "reasons": {
+      "bound above target": 3584
+     },
+     "target": 0.0001
+    }
+   ],
+   "game_id": "S2",
+   "missing_assumptions": [],
+   "probed_at": {
+    "N": 10000000000,
+    "threshold_stride": 4
+   },
+   "protocol_id": "s_money_kent_2022_realistic",
+   "reason": "epsilon_priv: Lemma 4 bound (beta_E, fixed by the device) exceeds the target | unmet axes at N=10000000000: ['epsilon_priv']",
+   "scenario_id": "S2/K22-F5a/point/M1/unf1e-09/h0.001/priv0.0001",
+   "status": "INFEASIBLE",
+   "targets": {
+    "epsilon_cor": 0.0005,
+    "epsilon_priv": 0.0001,
+    "epsilon_rob": 0.0005,
+    "epsilon_unf": 1e-09
+   }
+  },
+  {
+   "axes": [
+    {
+     "axis": "epsilon_unf",
+     "best_log10_found": null,
+     "points_probed": 3584,
+     "points_with_bound": 0,
+     "reasons": {
+      "ASSUMPTION_MISSING:table6_E_no_side_channels": 3584,
+      "P-S2/unf preconditions not met": 3584
+     },
+     "target": 1e-09
+    },
+    {
+     "axis": "epsilon_cor",
+     "best_log10_found": null,
+     "points_probed": 3584,
+     "points_with_bound": 0,
+     "reasons": {
+      "ASSUMPTION_MISSING:table6_E_no_side_channels": 3584,
+      "P-S2/cor preconditions not met": 3584
+     },
+     "target": 0.0005
+    },
+    {
+     "axis": "epsilon_rob",
+     "best_log10_found": null,
+     "points_probed": 3584,
+     "points_with_bound": 0,
+     "reasons": {
+      "ASSUMPTION_MISSING:table6_E_no_side_channels": 3584,
+      "P-S2/rob preconditions not met": 3584
+     },
+     "target": 0.0005
+    }
+   ],
+   "game_id": "S2",
+   "missing_assumptions": [
+    "ASSUMPTION_MISSING:table6_E_no_side_channels"
+   ],
+   "probed_at": {
+    "N": 10000000000,
+    "threshold_stride": 4
+   },
+   "protocol_id": "s_money_kent_2022_realistic",
+   "reason": "no feasible configuration at the largest grid N (see infeasibility certificate) | unmet axes at N=10000000000: ['epsilon_unf', 'epsilon_cor', 'epsilon_rob']",
+   "scenario_id": "S2/missing-decl",
+   "status": "OUT_OF_MODEL",
+   "targets": {
+    "epsilon_cor": 0.0005,
+    "epsilon_priv": null,
+    "epsilon_rob": 0.0005,
+    "epsilon_unf": 1e-09
+   }
+  },
+  {
+   "axes": [
+    {
+     "axis": "epsilon_unf",
+     "best_log10_found": null,
+     "points_probed": 3584,
+     "points_with_bound": 0,
+     "reasons": {
+      "Eq.(7): need 0 < P_noqub < nu_unf < min{2 P_noqub, gamma_det(1 - gamma_err/lambda)}": 680,
+      "Eq.(7): need 0 < gamma_err < lambda = 0.0904217": 448,
+      "Eq.(7): need beta_PS < (1/2)[exp((lambda/2)(1-delta/lambda)^2) - 1]; Theorem 1: need f(gamma_err, beta_PS, beta_PB, theta, nu_unf, gamma_det) > 0": 2456
+     },
+     "target": 1e-09
+    },
+    {
+     "axis": "epsilon_cor",
+     "best_log10_found": -276242.0885661452,
+     "points_probed": 3584,
+     "points_with_bound": 3584,
+     "reasons": {
+      "bound above target": 504
+     },
+     "target": 0.0005
+    },
+    {
+     "axis": "epsilon_rob",
+     "best_log10_found": -4125797.5780808935,
+     "points_probed": 3584,
+     "points_with_bound": 3584,
+     "reasons": {},
+     "target": 0.0005
+    }
+   ],
+   "game_id": "S2",
+   "missing_assumptions": [],
+   "probed_at": {
+    "N": 10000000000,
+    "threshold_stride": 4
+   },
+   "protocol_id": "s_money_kent_2022_realistic",
+   "reason": "no feasible configuration at the largest grid N (see infeasibility certificate) | unmet axes at N=10000000000: ['epsilon_unf']",
+   "scenario_id": "S2/K22-EXP/point/M1/unf1e-09/h0.001",
+   "status": "INFEASIBLE",
+   "targets": {
+    "epsilon_cor": 0.0005,
+    "epsilon_priv": null,
+    "epsilon_rob": 0.0005,
+    "epsilon_unf": 1e-09
+   }
+  },
+  {
+   "axes": [
+    {
+     "axis": "epsilon_unf",
+     "best_log10_found": null,
+     "points_probed": 961,
+     "points_with_bound": 0,
+     "reasons": {
+      "SI Eq.(23): need (1/2)(1-p_m/2)(1-delta_d) >= M(e_h,l_h)(1+delta_h)": 961
+     },
+     "target": 1e-09
+    },
+    {
+     "axis": "epsilon_cor",
+     "best_log10_found": null,
+     "points_probed": 961,
+     "points_with_bound": 0,
+     "reasons": {
+      "SI Eq.(23): need (1/2)(1-p_m/2)(1-delta_d) >= M(e_h,l_h)(1+delta_h)": 961
+     },
+     "target": 0.001
+    }
+   ],
+   "game_id": "D1",
+   "missing_assumptions": [],
+   "probed_at": {
+    "N": 10000000000,
+    "threshold_stride": 4
+   },
+   "protocol_id": "schiansky_payment_2023",
+   "reason": "compiler: SI Eq. (23) not satisfiable on the grid: (1/2)(1-p_m/2)(1-delta_d) < M(e_h,l_h)(1+delta_h) | unmet axes at N=10000000000: ['epsilon_unf', 'epsilon_cor']",
+   "scenario_id": "D1/D1-ZEN-DRIFT/unf1e-09/h0.001",
+   "status": "INFEASIBLE",
+   "targets": {
+    "epsilon_cor": 0.001,
+    "epsilon_priv": null,
+    "epsilon_rob": null,
+    "epsilon_unf": 1e-09
+   }
+  }
+ ],
+ "meta": {
+  "evidence_legend": {
+   "bounds": "PUBLISHED_THEOREM (W1/S1/S2, re-derived by lane D checker) | PUBLISHED_AGGREGATE (D1: never certified)",
+   "devices": "DIGITIZED_FIGURE (Kent Fig.5 points) | HYPOTHETICAL (half-beta devices, interval boxes) | PHOTON_EXPERIMENT (Zenodo QBER) | PUBLISHED_AGGREGATE",
+   "resources": "MODELLED: issuance = N / 1e8 Hz (HYPOTHETICAL rate); classical bits = proxy",
+   "runtime_memory": "measured on this machine (wall clock, tracemalloc peak)"
+  },
+  "experiments": [
+   "X12",
+   "X13"
+  ],
+  "frozen_experiments_sha256": "dc306b78bb14add47e98e89c63fdb4eec4d29133fe3b379ef4e1f4c6df44faa9",
+  "holdouts_sha256": "c60f8f7089ed6a9a97ef55a9f108de00fa7e7d2ee7078e952e904e377d1e48da",
+  "lane": "I",
+  "matched_target_slack_dex": 1e-06,
+  "preregistration_commit": "0268feed3b37bc0c6f6b544ccfc6eb882f134e91",
+  "proof_version": {
+   "assumption_check.py_sha256": "e12ebd7c4b6c31abb6bbdd5b25438696d24533cc628d1ae28e6864dd200e98e8",
+   "engine": "qmint.proofs.engine/v1",
+   "engine.py_sha256": "28169e888477f7407a78f85a6fe7b3d20647d3ed2ccdc6c52267193e0905cd99",
+   "finite_size.py_sha256": "ca3b11a9cc71d00bd2c334bcdd7a7c62575dfc93bab14c97c2548bb4a9729f30",
+   "ideal_bounds.py_sha256": "3ad90f55f507942fc12966c3c73501bf7d1fd0ceddaccc3ae6d3f2f9cf8048b9",
+   "obligations_sha256": "7ac9e4532f50832ac6c7eb3ab33e1cb9096980aeb088dc5292eaedd2a24cf6f0",
+   "registry.py_sha256": "9693ce56213d70dd5c985f5b35a08aa389a55315b55f2b6d21477a6b59532f06",
+   "results.py_sha256": "96c952d2970b7c5b8d3eed6e3483a5dbc7b9a9ea0fd960ae25e09eb035512426"
+  },
+  "runtime_seconds": 181.41,
+  "section_seconds": {
+   "d1_matrix": 14.3,
+   "x12_ideal": 0.13,
+   "x12_oracle_agreement": 129.82,
+   "x12_published_matched": 1.13,
+   "x12_rejections": 0.85,
+   "x12_s2": 28.77,
+   "x13_drift_holdout": 0.06,
+   "x13_fixed_n": 0.07,
+   "x13_sites": 6.16,
+   "x13_uncertainty": 0.11
+  },
+  "software_revision": "ad36dbbf7ec271c9860bf1c085b22f585fff89da"
+ },
+ "x12": {
+  "ideal": [
+   {
+    "M": 1,
+    "N": 25,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 11,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 50,
+    "closed_form_n_min": 25,
+    "decisions": "{\"n\": 25}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 0.001,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "W1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 2.5e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -3.1234684152074985,
+    "note": "rule feasibility monotone in N on grid: True",
+    "optimality": "heuristic",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "W1/unf0.001",
+    "selector": "naive_analytic",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.008343
+   },
+   {
+    "M": 1,
+    "N": 25,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 0,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 50,
+    "closed_form_n_min": 25,
+    "decisions": "{\"n\": 25}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 0.001,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "W1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 2.5e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -3.1234684152074985,
+    "note": "",
+    "optimality": "global_optimum_on_grid",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "W1/unf0.001",
+    "selector": "exhaustive_oracle",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.004825
+   },
+   {
+    "M": 1,
+    "N": 25,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 1,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 50,
+    "closed_form_n_min": 25,
+    "decisions": "{\"n\": 25}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 10,
+    "eps_priv_target": null,
+    "eps_unf_target": 0.001,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "W1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 2.5e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -3.1234684152074985,
+    "note": "",
+    "optimality": "best_found",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "W1/unf0.001",
+    "selector": "compiler",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.000171
+   },
+   {
+    "M": 1,
+    "N": 49,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 11,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 98,
+    "closed_form_n_min": 49,
+    "decisions": "{\"n\": 49}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-06,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "W1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 4.9e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -6.121998093806697,
+    "note": "rule feasibility monotone in N on grid: True",
+    "optimality": "heuristic",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "W1/unf1e-06",
+    "selector": "naive_analytic",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.008725
+   },
+   {
+    "M": 1,
+    "N": 49,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 0,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 98,
+    "closed_form_n_min": 49,
+    "decisions": "{\"n\": 49}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-06,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "W1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 4.9e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -6.121998093806697,
+    "note": "",
+    "optimality": "global_optimum_on_grid",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "W1/unf1e-06",
+    "selector": "exhaustive_oracle",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.00485
+   },
+   {
+    "M": 1,
+    "N": 49,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 1,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 98,
+    "closed_form_n_min": 49,
+    "decisions": "{\"n\": 49}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 10,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-06,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "W1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 4.9e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -6.121998093806697,
+    "note": "",
+    "optimality": "best_found",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "W1/unf1e-06",
+    "selector": "compiler",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.00017
+   },
+   {
+    "M": 1,
+    "N": 73,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 11,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 146,
+    "closed_form_n_min": 73,
+    "decisions": "{\"n\": 73}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-09,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "W1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 7.3e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -9.120527772405897,
+    "note": "rule feasibility monotone in N on grid: True",
+    "optimality": "heuristic",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "W1/unf1e-09",
+    "selector": "naive_analytic",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.008472
+   },
+   {
+    "M": 1,
+    "N": 73,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 0,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 146,
+    "closed_form_n_min": 73,
+    "decisions": "{\"n\": 73}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-09,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "W1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 7.3e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -9.120527772405897,
+    "note": "",
+    "optimality": "global_optimum_on_grid",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "W1/unf1e-09",
+    "selector": "exhaustive_oracle",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.004752
+   },
+   {
+    "M": 1,
+    "N": 73,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 1,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 146,
+    "closed_form_n_min": 73,
+    "decisions": "{\"n\": 73}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 10,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-09,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "W1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 7.3e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -9.120527772405897,
+    "note": "",
+    "optimality": "best_found",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "W1/unf1e-09",
+    "selector": "compiler",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.000172
+   },
+   {
+    "M": 1,
+    "N": 97,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 11,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 194,
+    "closed_form_n_min": 97,
+    "decisions": "{\"n\": 97}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-12,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "W1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 9.7e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -12.119057451005094,
+    "note": "rule feasibility monotone in N on grid: True",
+    "optimality": "heuristic",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "W1/unf1e-12",
+    "selector": "naive_analytic",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.008373
+   },
+   {
+    "M": 1,
+    "N": 97,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 0,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 194,
+    "closed_form_n_min": 97,
+    "decisions": "{\"n\": 97}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-12,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "W1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 9.7e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -12.119057451005094,
+    "note": "",
+    "optimality": "global_optimum_on_grid",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "W1/unf1e-12",
+    "selector": "exhaustive_oracle",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.004769
+   },
+   {
+    "M": 1,
+    "N": 97,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 1,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 194,
+    "closed_form_n_min": 97,
+    "decisions": "{\"n\": 97}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 10,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-12,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "W1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 9.7e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -12.119057451005094,
+    "note": "",
+    "optimality": "best_found",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "W1/unf1e-12",
+    "selector": "compiler",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.000165
+   },
+   {
+    "M": 1,
+    "N": 44,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 11,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 88,
+    "closed_form_n_min": 44,
+    "decisions": "{\"N\": 44}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 0.001,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "S1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 4.4e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -3.0258495589567844,
+    "note": "rule feasibility monotone in N on grid: True",
+    "optimality": "heuristic",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "S1/unf0.001",
+    "selector": "naive_analytic",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.008745
+   },
+   {
+    "M": 1,
+    "N": 44,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 0,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 88,
+    "closed_form_n_min": 44,
+    "decisions": "{\"N\": 44}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 0.001,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "S1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 4.4e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -3.0258495589567844,
+    "note": "",
+    "optimality": "global_optimum_on_grid",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "S1/unf0.001",
+    "selector": "exhaustive_oracle",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.005039
+   },
+   {
+    "M": 1,
+    "N": 44,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 1,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 88,
+    "closed_form_n_min": 44,
+    "decisions": "{\"N\": 44}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 10,
+    "eps_priv_target": null,
+    "eps_unf_target": 0.001,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "S1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 4.4e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -3.0258495589567844,
+    "note": "",
+    "optimality": "best_found",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "S1/unf0.001",
+    "selector": "compiler",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.000164
+   },
+   {
+    "M": 1,
+    "N": 88,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 11,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 176,
+    "closed_form_n_min": 88,
+    "decisions": "{\"N\": 88}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-06,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "S1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 8.8e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -6.051699117913569,
+    "note": "rule feasibility monotone in N on grid: True",
+    "optimality": "heuristic",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "S1/unf1e-06",
+    "selector": "naive_analytic",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.008681
+   },
+   {
+    "M": 1,
+    "N": 88,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 0,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 176,
+    "closed_form_n_min": 88,
+    "decisions": "{\"N\": 88}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-06,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "S1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 8.8e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -6.051699117913569,
+    "note": "",
+    "optimality": "global_optimum_on_grid",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "S1/unf1e-06",
+    "selector": "exhaustive_oracle",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.004711
+   },
+   {
+    "M": 1,
+    "N": 88,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 1,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 176,
+    "closed_form_n_min": 88,
+    "decisions": "{\"N\": 88}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 10,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-06,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "S1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 8.8e-07,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -6.051699117913569,
+    "note": "",
+    "optimality": "best_found",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "S1/unf1e-06",
+    "selector": "compiler",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.000212
+   },
+   {
+    "M": 1,
+    "N": 131,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 11,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 262,
+    "closed_form_n_min": 131,
+    "decisions": "{\"N\": 131}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-09,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "S1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 1.31e-06,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -9.008779368712243,
+    "note": "rule feasibility monotone in N on grid: True",
+    "optimality": "heuristic",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "S1/unf1e-09",
+    "selector": "naive_analytic",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.00849
+   },
+   {
+    "M": 1,
+    "N": 131,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 0,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 262,
+    "closed_form_n_min": 131,
+    "decisions": "{\"N\": 131}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-09,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "S1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 1.31e-06,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -9.008779368712243,
+    "note": "",
+    "optimality": "global_optimum_on_grid",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "S1/unf1e-09",
+    "selector": "exhaustive_oracle",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.004842
+   },
+   {
+    "M": 1,
+    "N": 131,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 1,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 262,
+    "closed_form_n_min": 131,
+    "decisions": "{\"N\": 131}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 10,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-09,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "S1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 1.31e-06,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -9.008779368712243,
+    "note": "",
+    "optimality": "best_found",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "S1/unf1e-09",
+    "selector": "compiler",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.000176
+   },
+   {
+    "M": 1,
+    "N": 175,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 11,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 350,
+    "closed_form_n_min": 175,
+    "decisions": "{\"N\": 175}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-12,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "S1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 1.75e-06,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -12.03462892766903,
+    "note": "rule feasibility monotone in N on grid: True",
+    "optimality": "heuristic",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "S1/unf1e-12",
+    "selector": "naive_analytic",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.008879
+   },
+   {
+    "M": 1,
+    "N": 175,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 0,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 350,
+    "closed_form_n_min": 175,
+    "decisions": "{\"N\": 175}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 512,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-12,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "S1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 1.75e-06,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -12.03462892766903,
+    "note": "",
+    "optimality": "global_optimum_on_grid",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "S1/unf1e-12",
+    "selector": "exhaustive_oracle",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.004843
+   },
+   {
+    "M": 1,
+    "N": 175,
+    "agrees_with_closed_form": true,
+    "bound_evidence_kind": "PUBLISHED_THEOREM",
+    "cache_hits": 1,
+    "certificate_status": "CERTIFIED",
+    "checker_reason": null,
+    "classical_bits": 350,
+    "closed_form_n_min": 175,
+    "decisions": "{\"N\": 175}",
+    "device": "ideal",
+    "device_evidence": "IDEAL_MODEL",
+    "engine_calls": 10,
+    "eps_priv_target": null,
+    "eps_unf_target": 1e-12,
+    "expected_photons": null,
+    "experiment": "X12-ideal",
+    "family": "ideal",
+    "game": "S1",
+    "honest_failure_log10": null,
+    "honest_target": null,
+    "issuance_seconds": 1.75e-06,
+    "log10_eps_cor": null,
+    "log10_eps_priv": null,
+    "log10_eps_rob": null,
+    "log10_eps_unf": -12.03462892766903,
+    "note": "",
+    "optimality": "best_found",
+    "released": true,
+    "resource_evidence": "MODELLED (HYPOTHETICAL source rate / proxy bit model)",
+    "scenario_id": "S1/unf1e-12",
+    "selector": "compiler",
+    "status": "FEASIBLE",
+    "uncertainty": "none",
+    "wall_seconds": 0.000162
+   }
+  ],
+  "oracle_agreement": [
+   {
+    "compiler_N": 39810717,
+    "compiler_engine_calls": 353,
+    "compiler_idx": [
+     23,
+     3,
+     4,
+     4,
+     5
+    ],
+    "compiler_peak_bytes": 164729,
+    "compiler_seconds": 0.0116,
+    "compiler_status": "FEASIBLE",
+    "grid_points": 129024,
+    "identical": true,
+    "oracle_N": 39810717,
+    "oracle_engine_calls": 387072,
+    "oracle_idx": [
+     23,
+     3,
+     4,
+     4,
+     5
+    ],
+    "oracle_peak_bytes": 1049385,
+    "oracle_seconds": 6.4885,
+    "oracle_status": "FEASIBLE",
+    "scenario_id": "S2/K22-F5a/point/M1/unf1e-06/h0.001"
+   },
+   {
+    "compiler_N": 39810717,
+    "compiler_engine_calls": 354,
+    "compiler_idx": [
+     23,
+     3,
+     4,
+     4,
+     5
+    ],
+    "compiler_peak_bytes": null,
+    "compiler_seconds": 0.0114,
+    "compiler_status": "FEASIBLE",
+    "grid_points": 129024,
+    "identical": true,
+    "oracle_N": 39810717,
+    "oracle_engine_calls": 387072,
+    "oracle_idx": [
+     23,
+     3,
+     4,
+     4,
+     5
+    ],
+    "oracle_peak_bytes": null,
+    "oracle_seconds": 6.4321,
+    "oracle_status": "FEASIBLE",
+    "scenario_id": "S2/K22-F5a/point/M1/unf1e-09/h0.001"
+   },
+   {
+    "compiler_N": null,
+    "compiler_engine_calls": 28,
+    "compiler_idx": null,
+    "compiler_peak_bytes": null,
+    "compiler_seconds": 0.0014,
+    "compiler_status": "INFEASIBLE",
+    "grid_points": 129024,
+    "identical": true,
+    "oracle_N": null,
+    "oracle_engine_calls": 387072,
+    "oracle_idx": null,
+    "oracle_peak_bytes": null,
+    "oracle_seconds": 9.65,
+    "oracle_status": "INFEASIBLE",
+    "scenario_id": "S2/K22-F5a/interval/M1/unf1e-06/h0.001"
+   },
+   {
+    "compiler_N": null,
+    "compiler_engine_calls": 28,
+    "compiler_idx": null,
+    "compiler_peak_bytes": null,
+    "compiler_seconds": 0.0015,
+    "compiler_status": "INFEASIBLE",
+    "grid_points": 129024,
+    "identical": true,
+    "oracle_N": null,
+    "oracle_engine_calls": 387072,
+    "oracle_idx": null,
+    "oracle_peak_bytes": null,
+    "oracle_seconds": 9.8792,
+    "oracle_status": "INFEASIBLE",
+    "scenario_id": "S2/K22-F5a/interval/M1/unf1e-09/h0.001"
+   },
+   {
+    "compiler_N": 15848932,
+    "compiler_engine_calls": 323,
+    "compiler_idx": [
+     21,
+     4,
+     5,
+     4,
+     4
+    ],
+    "compiler_peak_bytes": null,
+    "compiler_seconds": 0.0108,
+    "compiler_status": "FEASIBLE",
+    "grid_points": 129024,
+    "identical": true,
+    "oracle_N": 15848932,
+    "oracle_engine_calls": 387072,
+    "oracle_idx": [
+     21,
+     4,
+     5,
+     4,
+     4
+    ],
+    "oracle_peak_bytes": null,
+    "oracle_seconds": 6.6514,
+    "oracle_status": "FEASIBLE",
+    "scenario_id": "S2/K22-F5b/point/M1/unf1e-06/h0.001"
+   },
+   {
+    "compiler_N": 15848932,
+    "compiler_engine_calls": 323,
+    "compiler_idx": [
+     21,
+     4,
+     5,
+     4,
+     4
+    ],
+    "compiler_peak_bytes": null,
+    "compiler_seconds": 0.011,
+    "compiler_status": "FEASIBLE",
+    "grid_points": 129024,
+    "identical": true,
+    "oracle_N": 15848932,
+    "oracle_engine_calls": 387072,
+    "oracle_idx": [
+     21,
+     4,
+     5,
+     4,
+     4
+    ],
+    "oracle_peak_bytes": null,
+    "oracle_seconds": 6.6364,
+    "oracle_status": "FEASIBLE",
+    "scenario_id": "S2/K22-F5b/point/M1/unf1e-09/h0.001"
+   },
+   {
+    "compiler_N": null,
+    "compiler_engine_calls": 27,
+    "compiler_idx": null,
+    "compiler_peak_bytes": null,
+    "compiler_seconds": 0.0016,
+    "compiler_status": "INFEASIBLE",
+    "grid_points": 129024,
+    "identical": true,
+    "oracle_N": null,
+    "oracle_engine_calls": 387072,
+    "oracle_idx": null,
+    "oracle_peak_bytes": null,
+    "oracle_seconds": 10.2594,
+    "oracle_status": "INFEASIBLE",
+    "scenario_id": "S2/K22-F5b/interval/M1/unf1e-06/h0.001"
+   },
+   {
+    "compiler_N": null,
+    "compiler_engine_calls": 27,
+    "compiler_idx": null,
+    "compiler_peak_bytes": null,
+    "compiler_seconds": 0.0015,
+    "compiler_status": "INFEASIBLE",
+    "grid_points": 129024,
+    "identical": true,
+    "oracle_N": null,
+    "oracle_engine_calls": 387072,
+    "oracle_idx": null,
+    "oracle_peak_bytes": null,
+    "oracle_seconds": 10.0741,
+    "oracle_status": "INFEASIBLE",
+    "scenario_id": "S2/K22-F5b/interval/M1/unf1e-09/h0.001"
+   },
+   {
+    "compiler_N": 15848932,
+    "compiler_engine_calls": 296,
+    "compiler_idx": [
+     21,
+     4,
+     6,
+     3,
+     4
+    ],
+    "compiler_peak_bytes": null,
+    "compiler_seconds": 0.011,
+    "compiler_status": "FEASIBLE",
+    "grid_points": 129024,
+    "identical": true,
+    "oracle_N": 15848932,
+    "oracle_engine_calls": 387072,
+    "oracle_idx": [
+     21,
+     4,
+     6,
+     3,
+     4
+    ],
+    "oracle_peak_bytes": null,
+    "oracle_seconds": 6.7801,
+    "oracle_status": "FEASIBLE",
+    "scenario_id": "S2/K22-F5c/point/M1/unf1e-06/h0.001"
+   },
+   {
+    "compiler_N": 15848932,
+    "compiler_engine_calls": 296,
+    "compiler_idx": [
+     21,
+     4,
+     6,
+     3,
+     4
+    ],
+    "compiler_peak_bytes": null,
+    "compiler_seconds": 0.0111,
+    "compiler_status": "FEASIBLE",
+    "grid_points": 129024,
+    "identical": true,
+    "oracle_N": 15848932,
+    "oracle_engine_calls": 387072,
+    "oracle_idx": [
+     21,
+     4,
+     6,
+     3,
+     4
+    ],
+    "oracle_peak_bytes": null,
+    "oracle_seconds": 6.9152,
+    "oracle_status": "FEASIBLE",
+    "scenario_id": "S2/K22-F5c/point/M1/unf1e-09/h0.001"
+   },
+   {
+    "compiler_N": null,
+    "compiler_engine_calls": 28,
+    "compiler_idx": null,
+    "compiler_peak_bytes": null,
+    "compiler_seconds": 0.0016,
+    "compiler_status": "INFEASIBLE",
+    "grid_points": 129024,
+    "identical": true,
+    "oracle_N": null,
+    "oracle_engine_calls": 387072,
+    "oracle_idx": null,
+    "oracle_peak_bytes": null,
+    "oracle_seconds": 10.2117,
+    "oracle_status": "INFEASIBLE",
+    "scenario_id": "S2/K22-F5c/interval/M1/unf1e-06/h0.001"
+   },
+   {
+    "compiler_N": null,
+    "compiler_engine_calls": 28,
+    "compiler_idx": null,
+    "compiler_peak_bytes": null,
+    "compiler_seconds": 0.0017,
+    "compiler_status": "INFEASIBLE",
+    "grid_points": 129024,
+    "identical": true,
+    "oracle_N": null,
+    "oracle_engine_calls": 387072,
+    "oracle_idx": null,
+    "oracle_peak_bytes": null,
+    "oracle_seconds": 10.1164,
+    "oracle_status": "INFEASIBLE",
+    "scenario_id": "S2/K22-F5c/interval/M1/unf1e-09/h0.001"
+   },
+   {
+    "compiler_N": 63096,
+    "compiler_engine_calls": 389,
+    "compiler_idx": [
+     14,
+     10,
+     11
+    ],
+    "compiler_peak_bytes": 205813,
+    "compiler_seconds": 0.0113,
+    "compiler_status": "FEASIBLE",
+    "grid_points": 18081,
+    "identical": true,
+    "oracle_N": 63096,
+    "oracle_engine_calls": 36162,
+    "oracle_idx": [
+     14,
+     10,
+     11
+    ],
+    "oracle_peak_bytes": 540358,
+    "oracle_seconds": 0.5538,
+    "oracle_status": "FEASIBLE",
+    "scenario_id": "D1/D1-PUB-SI/unf1e-06/h0.001"
+   },
+   {
+    "compiler_N": 63096,
+    "compiler_engine_calls": 389,
+    "compiler_idx": [
+     14,
+     11,
+     10
+    ],
+    "compiler_peak_bytes": null,
+    "compiler_seconds": 0.0112,
+    "compiler_status": "FEASIBLE",
+    "grid_points": 18081,
+    "identical": true,
+    "oracle_N": 63096,
+    "oracle_engine_calls": 36162,
+    "oracle_idx": [
+     14,
+     11,
+     10
+    ],
+    "oracle_peak_bytes": null,
+    "oracle_seconds": 0.5537,
+    "oracle_status": "FEASIBLE",
+    "scenario_id": "D1/D1-PUB-SI/unf1e-09/h0.001"
+   },
+   {
+    "compiler_N": 398107,
+    "compiler_engine_calls": 247,
+    "compiler_idx": [
+     18,
+     8,
+     7
+    ],
+    "compiler_peak_bytes": null,
+    "compiler_seconds": 0.0138,
+    "compiler_status": "FEASIBLE",
+    "grid_points": 18081,
+    "identical": true,
+    "oracle_N": 398107,
+    "oracle_engine_calls": 36162,
+    "oracle_idx": [
+     18,
+     8,
+     7
+    ],
+    "oracle_peak_bytes": null,
+    "oracle_seconds": 0.7699,
+    "oracle_status": "FEASIBLE",
+    "scenario_id": "D1/D1-ZEN-IID/unf1e-06/h0.001"
+   },
+   {
+    "compiler_N": 398107,
+    "compiler_engine_calls": 246,
+    "compiler_idx": [
+     18,
+     8,
+     7
+    ],
+    "compiler_peak_bytes": null,
+    "compiler_seconds": 0.0131,
+    "compiler_status": "FEASIBLE",
+    "grid_points": 18081,
+    "identical": true,
+    "oracle_N": 398107,
+    "oracle_engine_calls": 36162,
+    "oracle_idx": [
+     18,
+     8,
+     7
+    ],
+    "oracle_peak_bytes": null,
+    "oracle_seconds": 0.7779,
+    "oracle_status": "FEASIBLE",
+    "scenario_id": "D1/D1-ZEN-IID/unf1e-09/h0.001"
+   }
+  ],
+  "published_matched": [
+   {
+    "caveat": "published eps_rob is below float range; matched only to 1e-300 (weaker than published on eps_rob)",
+    "compiler_N": 33496544,
+    "compiler_released": true,
+    "compiler_status": "FEASIBLE",
+    "mode": "strict",
+    "published_N": 40000000,
+    "published_released": true,
+    "ratio_published_over_compiler": 1.1941530445648363,
+    "rob_target_capped_at_1e-300": true,
+    "scenario": "S2/K22-F5a/point/M1/strict-matched"
+   },
+   {
+    "mode": "strict",
+    "published": "NO_APPLICABLE_BOUND_AT_DEVICE",
+    "published_logs": {
+     "epsilon_rob": -179.31557340881835
+    },
+    "scenario": "S2/K22-F5a/interval/M1/unf1e-09/h0.001"
+   },
+   {
+    "mode": "strict",
+    "published": "NO_APPLICABLE_BOUND_AT_DEVICE",
+    "published_logs": {
+     "epsilon_cor": -9.113262023453617,
+     "epsilon_rob": -457.1520862139502
+    },
+    "scenario": "S2/K22-F5b/point/M1/unf1e-09/h0.001"
+   },
+   {
+    "mode": "strict",
+    "published": "NO_APPLICABLE_BOUND_AT_DEVICE",
+    "published_logs": {
+     "epsilon_rob": -179.31557340881835
+    },
+    "scenario": "S2/K22-F5b/interval/M1/unf1e-09/h0.001"
+   },
+   {
+    "mode": "strict",
+    "published": "NO_APPLICABLE_BOUND_AT_DEVICE",
+    "published_logs": {
+     "epsilon_cor": -9.073289896111913,
+     "epsilon_rob": -457.1520862139502
+    },
+    "scenario": "S2/K22-F5c/point/M1/unf1e-09/h0.001"
+   },
+   {
+    "mode": "strict",
+    "published": "NO_APPLICABLE_BOUND_AT_DEVICE",
+    "published_logs": {
+     "epsilon_rob": -179.31557340881835
+    },
+    "scenario": "S2/K22-F5c/interval/M1/unf1e-09/h0.001"
+   },
+   {
+    "caveat": "published eps_rob is below float range; matched only to 1e-300 (weaker than published on eps_rob)",
+    "compiler_N": 18836491,
+    "compiler_released": true,
+    "compiler_status": "FEASIBLE",
+    "mode": "strict",
+    "published_N": 40000000,
+    "published_released": true,
+    "ratio_published_over_compiler": 2.123537765075247,
+    "rob_target_capped_at_1e-300": true,
+    "scenario": "S2/K22-F5a-half/point/M1/strict-matched"
+   },
+   {
+    "mode": "strict",
+    "published": "NO_APPLICABLE_BOUND_AT_DEVICE",
+    "published_logs": {
+     "epsilon_rob": -179.31557340881835
+    },
+    "scenario": "S2/K22-F5a-half/interval/M1/unf1e-09/h0.001"
+   },
+   {
+    "caveat": "published eps_rob is below float range; matched only to 1e-300 (weaker than published on eps_rob)",
+    "compiler_N": 2985383,
+    "compiler_released": true,
+    "compiler_status": "FEASIBLE",
+    "mode": "strict",
+    "published_N": 40000000,
+    "published_released": true,
+    "ratio_published_over_compiler": 13.398615855988997,
+    "rob_target_capped_at_1e-300": true,
+    "scenario": "S2/K22-F5b-half/point/M1/strict-matched"
+   },
+   {
+    "mode": "strict",
+    "published": "NO_APPLICABLE_BOUND_AT_DEVICE",
+    "published_logs": {
+     "epsilon_rob": -179.31557340881835
+    },
+    "scenario": "S2/K22-F5b-half/interval/M1/unf1e-09/h0.001"
+   },
+   {
+    "caveat": "published eps_rob is below float range; matched only to 1e-300 (weaker than published on eps_rob)",
+    "compiler_N": 1188502,
+    "compiler_released": true,
+    "compiler_status": "FEASIBLE",
+    "mode": "strict",
+    "published_N": 40000000,
+    "published_released": true,
+    "ratio_published_over_compiler": 33.65581210633217,
+    "rob_target_capped_at_1e-300": true,
+    "scenario": "S2/K22-F5c-half/point/M1/strict-matched"
+   },
+   {
+    "mode": "strict",
+    "published": "NO_APPLICABLE_BOUND_AT_DEVICE",
+    "published_logs": {
+     "epsilon_rob": -179.31557340881835
+    },
+    "scenario": "S2/K22-F5c-half/interval/M1/unf1e-09/h0.001"
+   },
+   {
+    "certification": "UNCERTIFIED by construction (D1)",
+    "compiler_N": 1188502,
+    "compiler_status": "FEASIBLE",
+    "mode": "strict",
+    "published_N": 4200000,
+    "published_status": "FEASIBLE",
+    "ratio_published_over_compiler": 3.5338602711648783,
+    "scenario": "D1/D1-PUB-SI/strict-matched"
+   },
+   {
+    "certification": "UNCERTIFIED by construction (D1)",
+    "compiler_N": 133352,
+    "compiler_status": "FEASIBLE",
+    "mode": "design",
+    "published_N": 4200000,
+    "published_status": "INFEASIBLE",
+    "ratio_published_over_compiler": null,
+    "scenario": "D1/D1-PUB-SI/design-matched"
+   }
+  ],
+  "rejections_and_infeasibility": [
+   {
+    "case": "game W2",
+    "outcome": "REJECTED",
+    "reason": "game W2: no published theorem / certified bound registered (lane D); the compiler refuses it"
+   },
+   {
+    "case": "game A1",
+    "outcome": "REJECTED",
+    "reason": "game A1: no published theorem / certified bound registered (lane D); the compiler refuses it"
+   },
+   {
+    "case": "game C1",
+    "outcome": "REJECTED",
+    "reason": "game C1: no published theorem / certified bound registered (lane D); the compiler refuses it"
+   },
+   {
+    "case": "S2 reporting strategy 'report_with_basis'",
+    "outcome": "REJECTED",
+    "reason": "reporting strategy 'report_with_basis' unsupported: only ['QT1', 'QT2'] satisfy KLPR2022 Table 6 C/D (Lemma 5)"
+   },
+   {
+    "case": "W1 with noise parameter E",
+    "outcome": "REJECTED",
+    "reason": "ideal: parameters ['E'] are not part of the W1 theorem"
+   },
+   {
+    "case": "S2 with Schiansky 2023 calibration",
+    "outcome": "REJECTED",
+    "reason": "calibration family 'schiansky_2023' cannot be used in the S2 proof model (needs 'kent_2022'; no cross-protocol calibration transfer)"
+   },
+   {
+    "case": "D1 with three merchants",
+    "outcome": "REJECTED",
+    "reason": "D1 analysis covers exactly two merchants (SI Note 3A)"
+   },
+   {
+    "case": "Jiang 2024 published tuple (S2_JIANG24)",
+    "outcome": "REJECTED",
+    "reason": "REJECTED: theorem T-JIANG24-THM1 is not a registered game (S2_JIANG24 not in GameId); never scored under KLPR2022 S2"
+   },
+   {
+    "axes": {
+     "epsilon_priv": [
+      "P-W1 bounds epsilon_unf only; no theorem for epsilon_priv (privacy is never reported as 0)"
+     ],
+     "epsilon_unf": []
+    },
+    "case": "W1 with privacy target 1e-2",
+    "missing_assumptions": [],
+    "outcome": "INFEASIBLE",
+    "reason": "epsilon_priv: no applicable bound meets the target | unmet axes at N=512: ['epsilon_priv']"
+   },
+   {
+    "axes": {
+     "epsilon_cor": [
+      "SI Eq.(23): need (1/2)(1-p_m/2)(1-delta_d) >= M(e_h,l_h)(1+delta_h)"
+     ],
+     "epsilon_priv": [
+      "no published theorem for D1/epsilon_priv (privacy is never reported as 0)"
+     ],
+     "epsilon_unf": [
+      "SI Eq.(23): need (1/2)(1-p_m/2)(1-delta_d) >= M(e_h,l_h)(1+delta_h)"
+     ]
+    },
+    "case": "D1 with privacy target 1e-2",
+    "missing_assumptions": [],
+    "outcome": "OUT_OF_MODEL",
+    "reason": "epsilon_priv: no D1 theorem for this axis (never reported as 0) | unmet axes at N=10000000000: ['epsilon_priv']"
+   },
+   {
+    "N": 10592537,
+    "case": "S2 K22-F5a privacy target 0.01 (beta_E=0.001, HYPOTHETICAL)",
+    "certificate_status": "CERTIFIED",
+    "outcome": "FEASIBLE",
+    "reason": "all bounds re-derived independently (qmint.proofs.checker/decimal-v1) and every target met"
+   },
+   {
+    "axes": {
+     "epsilon_cor": [
+      "bound above target"
+     ],
+     "epsilon_priv": [
+      "bound above target"
+     ],
+     "epsilon_rob": [],
+     "epsilon_unf": [
+      "Eq.(7): need 0 < P_noqub < nu_unf < min{2 P_noqub, gamma_det(1 - gamma_err/lambda)}",
+      "Eq.(7): need 0 < gamma_err < lambda = 0.090424"
+     ]
+    },
+    "case": "S2 K22-F5a privacy target 0.0001 (beta_E=0.001, HYPOTHETICAL)",
+    "missing_assumptions": [],
+    "outcome": "INFEASIBLE",
+    "reason": "epsilon_priv: Lemma 4 bound (beta_E, fixed by the device) exceeds the target | unmet axes at N=10000000000: ['epsilon_priv']"
+   },
+   {
+    "axes": {
+     "epsilon_cor": [
+      "ASSUMPTION_MISSING:table6_E_no_side_channels",
+      "P-S2/cor preconditions not met"
+     ],
+     "epsilon_rob": [
+      "ASSUMPTION_MISSING:table6_E_no_side_channels",
+      "P-S2/rob preconditions not met"
+     ],
+     "epsilon_unf": [
+      "ASSUMPTION_MISSING:table6_E_no_side_channels",
+      "P-S2/unf preconditions not met"
+     ]
+    },
+    "case": "S2 missing declaration table6_E_no_side_channels",
+    "missing_assumptions": [
+     "ASSUMPTION_MISSING:table6_E_no_side_channels"
+    ],
+    "outcome": "OUT_OF_MODEL",
+    "reason": "no feasible configuration at the largest grid N (see infeasibility certificate) | unmet axes at N=10000000000: ['epsilon_unf', 'epsilon_cor', 'epsilon_rob']"
+   },
+   {
+    "axes": {
+     "epsilon_cor": [
+      "bound above target"
+     ],
+     "epsilon_rob": [],
+     "epsilon_unf": [
+      "Eq.(7): need 0 < P_noqub < nu_unf < min{2 P_noqub, gamma_det(1 - gamma_err/lambda)}",
+      "Eq.(7): need 0 < gamma_err < lambda = 0.0904217"
+     ]
+    },
+    "case": "S2 K22-EXP (paper's experimental tuple)",
+    "missing_assumptions": [],
+    "outcome": "INFEASIBLE",
+    "reason": "no feasible configuration at the largest grid N (see infeasibility certificate) | unmet axes at N=10000000000: ['epsilon_unf']"
+   }
+  ]
+ },
+ "x13": {
+  "checker": {
+   "checker_rejections": 3,
+   "released": 320,
+   "uncertified_by_construction_D1": 71
+  },
+  "drift_holdout": {
+   "calibration_intervals": {
+    "drift": {
+     "hi": 0.03770142071698751,
+     "lo": 0.028941545949679154,
+     "point": 0.033186626515327,
+     "unit": "fraction"
+    },
+    "iid": {
+     "hi": 0.03350464380148565,
+     "lo": 0.03287080926245333,
+     "point": 0.033186626515327,
+     "unit": "fraction"
+    }
+   },
+   "coverage_drift": 1.0,
+   "coverage_iid": 0.0,
+   "frozen_selection_sha256": "965dcd2ceaeaf7edbf675b8f0a4014501e78594ca7532fbd251d37a6951c0fd8",
+   "holdout_runs": [
+    {
+     "D1-ZEN-DRIFT_frozen_config_on_holdout": "NO_FROZEN_CONFIG (selection infeasible)",
+     "D1-ZEN-IID_frozen_config_on_holdout": "targets met",
+     "cp95": [
+      0.03152532754728205,
+      0.033019792728903416
+     ],
+     "inside_drift": true,
+     "inside_iid": false,
+     "qber": 0.03226627,
+     "run": 6
+    },
+    {
+     "D1-ZEN-DRIFT_frozen_config_on_holdout": "NO_FROZEN_CONFIG (selection infeasible)",
+     "D1-ZEN-IID_frozen_config_on_holdout": "targets met",
+     "cp95": [
+      0.03110053256244864,
+      0.032579446476724096
+     ],
+     "inside_drift": true,
+     "inside_iid": false,
+     "qber": 0.03183374,
+     "run": 7
+    },
+    {
+     "D1-ZEN-DRIFT_frozen_config_on_holdout": "NO_FROZEN_CONFIG (selection infeasible)",
+     "D1-ZEN-IID_frozen_config_on_holdout": "targets met",
+     "cp95": [
+      0.03163753663453388,
+      0.03312545567837406
+     ],
+     "inside_drift": true,
+     "inside_iid": false,
+     "qber": 0.03237528,
+     "run": 8
+    },
+    {
+     "D1-ZEN-DRIFT_frozen_config_on_holdout": "NO_FROZEN_CONFIG (selection infeasible)",
+     "D1-ZEN-IID_frozen_config_on_holdout": "targets met",
+     "cp95": [
+      0.031247762944321467,
+      0.03273422002075662
+     ],
+     "inside_drift": true,
+     "inside_iid": false,
+     "qber": 0.03198471,
+     "run": 9
+    },
+    {
+     "D1-ZEN-DRIFT_frozen_config_on_holdout": "NO_FROZEN_CONFIG (selection infeasible)",
+     "D1-ZEN-IID_frozen_config_on_holdout": "INADMISSIBLE (SI Eq. 23 fails on holdout interval)",
+     "cp95": [
+      0.03338774553491169,
+      0.03500660570676322
+     ],
+     "inside_drift": true,
+     "inside_iid": false,
+     "qber": 0.03419023,
+     "run": 10
+    }
+   ],
+   "selections_primary_cell": {
+    "D1-ZEN-DRIFT|1e-09|0.001": {
+     "N": null,
+     "decisions": null,
+     "status": "INFEASIBLE"
+    },
+    "D1-ZEN-IID|1e-09|0.001": {
+     "N": 281838,
+     "decisions": {
+      "N": 281838,
+      "delta_d": 0.01778279410038923,
+      "delta_h": 0.01333521432163324
+     },
+     "status": "FEASIBLE"
+    }
+   }
+  },
+  "fixed_n_vs_joint": [
+   {
+    "N_joint (compiler)": 10592537,
+    "N_thresholds_fixed_by_rule (naive)": 18836491,
+    "device": "K22-F5a",
+    "published_log10_eps_unf_at_4e7": -10.964356077297891,
+    "thresholds_optimised_log10_eps_unf_at_4e7": -87.94648890975378,
+    "uncertainty": "point"
+   },
+   {
+    "N_joint (compiler)": null,
+    "N_thresholds_fixed_by_rule (naive)": null,
+    "device": "K22-F5a",
+    "published_log10_eps_unf_at_4e7": null,
+    "thresholds_optimised_log10_eps_unf_at_4e7": null,
+    "uncertainty": "interval"
+   },
+   {
+    "N_joint (compiler)": 8413951,
+    "N_thresholds_fixed_by_rule (naive)": 35481339,
+    "device": "K22-F5b",
+    "published_log10_eps_unf_at_4e7": null,
+    "thresholds_optimised_log10_eps_unf_at_4e7": -220.911592856742,
+    "uncertainty": "point"
+   },
+   {
+    "N_joint (compiler)": null,
+    "N_thresholds_fixed_by_rule (naive)": null,
+    "device": "K22-F5b",
+    "published_log10_eps_unf_at_4e7": null,
+    "thresholds_optimised_log10_eps_unf_at_4e7": null,
+    "uncertainty": "interval"
+   },
+   {
+    "N_joint (compiler)": 6309573,
+    "N_thresholds_fixed_by_rule (naive)": 66834392,
+    "device": "K22-F5c",
+    "published_log10_eps_unf_at_4e7": null,
+    "thresholds_optimised_log10_eps_unf_at_4e7": -350.121279654391,
+    "uncertainty": "point"
+   },
+   {
+    "N_joint (compiler)": null,
+    "N_thresholds_fixed_by_rule (naive)": null,
+    "device": "K22-F5c",
+    "published_log10_eps_unf_at_4e7": null,
+    "thresholds_optimised_log10_eps_unf_at_4e7": null,
+    "uncertainty": "interval"
+   },
+   {
+    "N_joint (compiler)": 7079458,
+    "N_thresholds_fixed_by_rule (naive)": 7943282,
+    "device": "K22-F5a-half",
+    "published_log10_eps_unf_at_4e7": -10.964356077297891,
+    "thresholds_optimised_log10_eps_unf_at_4e7": -149.73705604732504,
+    "uncertainty": "point"
+   },
+   {
+    "N_joint (compiler)": 105925373,
+    "N_thresholds_fixed_by_rule (naive)": 749894209,
+    "device": "K22-F5a-half",
+    "published_log10_eps_unf_at_4e7": null,
+    "thresholds_optimised_log10_eps_unf_at_4e7": null,
+    "uncertainty": "interval"
+   },
+   {
+    "N_joint (compiler)": 562341,
+    "N_thresholds_fixed_by_rule (naive)": 595662,
+    "device": "K22-F5b-half",
+    "published_log10_eps_unf_at_4e7": -10.964356077297891,
+    "thresholds_optimised_log10_eps_unf_at_4e7": -2310.373533268346,
+    "uncertainty": "point"
+   },
+   {
+    "N_joint (compiler)": 1496236,
+    "N_thresholds_fixed_by_rule (naive)": 2371374,
+    "device": "K22-F5b-half",
+    "published_log10_eps_unf_at_4e7": null,
+    "thresholds_optimised_log10_eps_unf_at_4e7": -1084.1615192191348,
+    "uncertainty": "interval"
+   },
+   {
+    "N_joint (compiler)": 421697,
+    "N_thresholds_fixed_by_rule (naive)": 446684,
+    "device": "K22-F5c-half",
+    "published_log10_eps_unf_at_4e7": -10.964356077297891,
+    "thresholds_optimised_log10_eps_unf_at_4e7": -5549.048326600178,
+    "uncertainty": "point"
+   },
+   {
+    "N_joint (compiler)": 421697,
+    "N_thresholds_fixed_by_rule (naive)": 473151,
+    "device": "K22-F5c-half",
+    "published_log10_eps_unf_at_4e7": null,
+    "thresholds_optimised_log10_eps_unf_at_4e7": -3430.9923556317976,
+    "uncertainty": "interval"
+   }
+  ],
+  "sites": [
+   {
+    "C": 1,
+    "M": 1,
+    "N": 10592537,
+    "device": "K22-F5a",
+    "presentation_points": 2,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 6,
+    "M": 2,
+    "N": 11885022,
+    "device": "K22-F5a",
+    "presentation_points": 4,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 28,
+    "M": 3,
+    "N": 12589254,
+    "device": "K22-F5a",
+    "presentation_points": 8,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 1,
+    "M": 1,
+    "N": null,
+    "device": "K22-F5a",
+    "presentation_points": 2,
+    "released": false,
+    "status": "INFEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 6,
+    "M": 2,
+    "N": null,
+    "device": "K22-F5a",
+    "presentation_points": 4,
+    "released": false,
+    "status": "INFEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 28,
+    "M": 3,
+    "N": null,
+    "device": "K22-F5a",
+    "presentation_points": 8,
+    "released": false,
+    "status": "INFEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 1,
+    "M": 1,
+    "N": 8413951,
+    "device": "K22-F5b",
+    "presentation_points": 2,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 6,
+    "M": 2,
+    "N": 9440609,
+    "device": "K22-F5b",
+    "presentation_points": 4,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 28,
+    "M": 3,
+    "N": 10000000,
+    "device": "K22-F5b",
+    "presentation_points": 8,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 1,
+    "M": 1,
+    "N": null,
+    "device": "K22-F5b",
+    "presentation_points": 2,
+    "released": false,
+    "status": "INFEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 6,
+    "M": 2,
+    "N": null,
+    "device": "K22-F5b",
+    "presentation_points": 4,
+    "released": false,
+    "status": "INFEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 28,
+    "M": 3,
+    "N": null,
+    "device": "K22-F5b",
+    "presentation_points": 8,
+    "released": false,
+    "status": "INFEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 1,
+    "M": 1,
+    "N": 6309573,
+    "device": "K22-F5c",
+    "presentation_points": 2,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 6,
+    "M": 2,
+    "N": 7079458,
+    "device": "K22-F5c",
+    "presentation_points": 4,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 28,
+    "M": 3,
+    "N": 7079458,
+    "device": "K22-F5c",
+    "presentation_points": 8,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 1,
+    "M": 1,
+    "N": null,
+    "device": "K22-F5c",
+    "presentation_points": 2,
+    "released": false,
+    "status": "INFEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 6,
+    "M": 2,
+    "N": null,
+    "device": "K22-F5c",
+    "presentation_points": 4,
+    "released": false,
+    "status": "INFEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 28,
+    "M": 3,
+    "N": null,
+    "device": "K22-F5c",
+    "presentation_points": 8,
+    "released": false,
+    "status": "INFEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 1,
+    "M": 1,
+    "N": 7079458,
+    "device": "K22-F5a-half",
+    "presentation_points": 2,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 6,
+    "M": 2,
+    "N": 7498942,
+    "device": "K22-F5a-half",
+    "presentation_points": 4,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 28,
+    "M": 3,
+    "N": 7943282,
+    "device": "K22-F5a-half",
+    "presentation_points": 8,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 1,
+    "M": 1,
+    "N": 105925373,
+    "device": "K22-F5a-half",
+    "presentation_points": 2,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 6,
+    "M": 2,
+    "N": 118850223,
+    "device": "K22-F5a-half",
+    "presentation_points": 4,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 28,
+    "M": 3,
+    "N": 118850223,
+    "device": "K22-F5a-half",
+    "presentation_points": 8,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 1,
+    "M": 1,
+    "N": 562341,
+    "device": "K22-F5b-half",
+    "presentation_points": 2,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 6,
+    "M": 2,
+    "N": 595662,
+    "device": "K22-F5b-half",
+    "presentation_points": 4,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 28,
+    "M": 3,
+    "N": 630957,
+    "device": "K22-F5b-half",
+    "presentation_points": 8,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 1,
+    "M": 1,
+    "N": 1496236,
+    "device": "K22-F5b-half",
+    "presentation_points": 2,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 6,
+    "M": 2,
+    "N": 1678804,
+    "device": "K22-F5b-half",
+    "presentation_points": 4,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 28,
+    "M": 3,
+    "N": 1778279,
+    "device": "K22-F5b-half",
+    "presentation_points": 8,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 1,
+    "M": 1,
+    "N": 421697,
+    "device": "K22-F5c-half",
+    "presentation_points": 2,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 6,
+    "M": 2,
+    "N": 473151,
+    "device": "K22-F5c-half",
+    "presentation_points": 4,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 28,
+    "M": 3,
+    "N": 501187,
+    "device": "K22-F5c-half",
+    "presentation_points": 8,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "point"
+   },
+   {
+    "C": 1,
+    "M": 1,
+    "N": 421697,
+    "device": "K22-F5c-half",
+    "presentation_points": 2,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 6,
+    "M": 2,
+    "N": 473151,
+    "device": "K22-F5c-half",
+    "presentation_points": 4,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "interval"
+   },
+   {
+    "C": 28,
+    "M": 3,
+    "N": 473151,
+    "device": "K22-F5c-half",
+    "presentation_points": 8,
+    "released": true,
+    "status": "FEASIBLE",
+    "uncertainty": "interval"
+   }
+  ],
+  "uncertainty": [
+   {
+    "N_interval": null,
+    "N_point": 7498942,
+    "device": "K22-F5a",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 10000000,
+    "device": "K22-F5a",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 9440609,
+    "device": "K22-F5a",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 11885022,
+    "device": "K22-F5a",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 13335214,
+    "device": "K22-F5a",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 21134890,
+    "device": "K22-F5a",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 7498942,
+    "device": "K22-F5a",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 13335214,
+    "device": "K22-F5a",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 10592537,
+    "device": "K22-F5a",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 18836491,
+    "device": "K22-F5a",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 18836491,
+    "device": "K22-F5a",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 21134890,
+    "device": "K22-F5a",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 9440609,
+    "device": "K22-F5a",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 13335214,
+    "device": "K22-F5a",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 10592537,
+    "device": "K22-F5a",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 18836491,
+    "device": "K22-F5a",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 21134890,
+    "device": "K22-F5a",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 28183829,
+    "device": "K22-F5a",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 11885022,
+    "device": "K22-F5a",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 14125375,
+    "device": "K22-F5a",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5a",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 13335214,
+    "device": "K22-F5a",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 18836491,
+    "device": "K22-F5a",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5a",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 21134890,
+    "device": "K22-F5a",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 33496544,
+    "device": "K22-F5a",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5a",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 5956621,
+    "device": "K22-F5b",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 26607251,
+    "device": "K22-F5b",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5b",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 8413951,
+    "device": "K22-F5b",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 35481339,
+    "device": "K22-F5b",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5b",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 15848932,
+    "device": "K22-F5b",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 63095734,
+    "device": "K22-F5b",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5b",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 5956621,
+    "device": "K22-F5b",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 26607251,
+    "device": "K22-F5b",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5b",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 8413951,
+    "device": "K22-F5b",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 35481339,
+    "device": "K22-F5b",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5b",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 15848932,
+    "device": "K22-F5b",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 66834392,
+    "device": "K22-F5b",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5b",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 8413951,
+    "device": "K22-F5b",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 26607251,
+    "device": "K22-F5b",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5b",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 8413951,
+    "device": "K22-F5b",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 35481339,
+    "device": "K22-F5b",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5b",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 15848932,
+    "device": "K22-F5b",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 66834392,
+    "device": "K22-F5b",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5b",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 8912509,
+    "device": "K22-F5b",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 31622777,
+    "device": "K22-F5b",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5b",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 11220185,
+    "device": "K22-F5b",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 35481339,
+    "device": "K22-F5b",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5b",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 15848932,
+    "device": "K22-F5b",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 66834392,
+    "device": "K22-F5b",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5b",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 3548134,
+    "device": "K22-F5c",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 50118723,
+    "device": "K22-F5c",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5c",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 3981072,
+    "device": "K22-F5c",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 63095734,
+    "device": "K22-F5c",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5c",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 7498942,
+    "device": "K22-F5c",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 79432823,
+    "device": "K22-F5c",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5c",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 4466836,
+    "device": "K22-F5c",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 50118723,
+    "device": "K22-F5c",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5c",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 5308844,
+    "device": "K22-F5c",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 66834392,
+    "device": "K22-F5c",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5c",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 7498942,
+    "device": "K22-F5c",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 118850223,
+    "device": "K22-F5c",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5c",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 4466836,
+    "device": "K22-F5c",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 50118723,
+    "device": "K22-F5c",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5c",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 6309573,
+    "device": "K22-F5c",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 66834392,
+    "device": "K22-F5c",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5c",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 10000000,
+    "device": "K22-F5c",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 125892541,
+    "device": "K22-F5c",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5c",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 5011872,
+    "device": "K22-F5c",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 59566214,
+    "device": "K22-F5c",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5c",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 6309573,
+    "device": "K22-F5c",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 66834392,
+    "device": "K22-F5c",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5c",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": null,
+    "N_point": 10000000,
+    "device": "K22-F5c",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": null,
+    "N_point": 125892541,
+    "device": "K22-F5c",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5c",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 74989421,
+    "N_point": 3548134,
+    "device": "K22-F5a-half",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 530884444,
+    "N_point": 5308844,
+    "device": "K22-F5a-half",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a-half",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 84139514,
+    "N_point": 4466836,
+    "device": "K22-F5a-half",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 749894209,
+    "N_point": 6683439,
+    "device": "K22-F5a-half",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a-half",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 125892541,
+    "N_point": 8413951,
+    "device": "K22-F5a-half",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 1333521432,
+    "N_point": 8912509,
+    "device": "K22-F5a-half",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a-half",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 74989421,
+    "N_point": 4731513,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 530884444,
+    "N_point": 5308844,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 105925373,
+    "N_point": 6683439,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 749894209,
+    "N_point": 7498942,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 158489319,
+    "N_point": 8413951,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 1333521432,
+    "N_point": 12589254,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 74989421,
+    "N_point": 5308844,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 530884444,
+    "N_point": 7943282,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 105925373,
+    "N_point": 7079458,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 749894209,
+    "N_point": 7943282,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 199526231,
+    "N_point": 10000000,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 1333521432,
+    "N_point": 13335214,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 79432823,
+    "N_point": 6683439,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 562341325,
+    "N_point": 8413951,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 105925373,
+    "N_point": 7079458,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 749894209,
+    "N_point": 10592537,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 199526231,
+    "N_point": 13335214,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 1333521432,
+    "N_point": 13335214,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5a-half",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 944061,
+    "N_point": 354813,
+    "device": "K22-F5b-half",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 1059254,
+    "N_point": 398107,
+    "device": "K22-F5b-half",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5b-half",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 1333521,
+    "N_point": 398107,
+    "device": "K22-F5b-half",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 1496236,
+    "N_point": 398107,
+    "device": "K22-F5b-half",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5b-half",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 2238721,
+    "N_point": 668344,
+    "device": "K22-F5b-half",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 2660725,
+    "N_point": 707946,
+    "device": "K22-F5b-half",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5b-half",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 1000000,
+    "N_point": 398107,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 1678804,
+    "N_point": 446684,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 1333521,
+    "N_point": 562341,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 1678804,
+    "N_point": 595662,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 2511886,
+    "N_point": 749894,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 2660725,
+    "N_point": 749894,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 1496236,
+    "N_point": 530884,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 1678804,
+    "N_point": 595662,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 1496236,
+    "N_point": 562341,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 2371374,
+    "N_point": 595662,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 2511886,
+    "N_point": 1059254,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 2660725,
+    "N_point": 1122018,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 1496236,
+    "N_point": 630957,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 1778279,
+    "N_point": 668344,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 1995262,
+    "N_point": 707946,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 2371374,
+    "N_point": 794328,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 2511886,
+    "N_point": 1059254,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 3349654,
+    "N_point": 1122018,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5b-half",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 298538,
+    "N_point": 298538,
+    "device": "K22-F5c-half",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 334965,
+    "N_point": 334965,
+    "device": "K22-F5c-half",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5c-half",
+    "eps_unf": 0.001,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 421697,
+    "N_point": 421697,
+    "device": "K22-F5c-half",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 473151,
+    "N_point": 446684,
+    "device": "K22-F5c-half",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5c-half",
+    "eps_unf": 0.001,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 794328,
+    "N_point": 794328,
+    "device": "K22-F5c-half",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 841395,
+    "N_point": 841395,
+    "device": "K22-F5c-half",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5c-half",
+    "eps_unf": 0.001,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 298538,
+    "N_point": 298538,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 334965,
+    "N_point": 334965,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-06,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 421697,
+    "N_point": 421697,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 473151,
+    "N_point": 446684,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-06,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 794328,
+    "N_point": 794328,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 841395,
+    "N_point": 841395,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-06,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 298538,
+    "N_point": 298538,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 334965,
+    "N_point": 334965,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-09,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 421697,
+    "N_point": 421697,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 473151,
+    "N_point": 446684,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-09,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 794328,
+    "N_point": 794328,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 841395,
+    "N_point": 841395,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": 40000000,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-09,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 354813,
+    "N_point": 298538,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 354813,
+    "N_point": 334965,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-12,
+    "honest": 0.01,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 421697,
+    "N_point": 421697,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 473151,
+    "N_point": 446684,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-12,
+    "honest": 0.001,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   },
+   {
+    "N_interval": 794328,
+    "N_point": 794328,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "compiler"
+   },
+   {
+    "N_interval": 841395,
+    "N_point": 841395,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "FEASIBLE",
+    "point_selection_under_interval": "NOT certified under interval (point selection unsafe under uncertainty)",
+    "point_status": "FEASIBLE",
+    "selector": "naive_analytic"
+   },
+   {
+    "N_interval": null,
+    "N_point": null,
+    "device": "K22-F5c-half",
+    "eps_unf": 1e-12,
+    "honest": 1e-06,
+    "interval_status": "INFEASIBLE",
+    "point_selection_under_interval": null,
+    "point_status": "INFEASIBLE",
+    "selector": "published_fixed"
+   }
+  ]
+ }
+}
