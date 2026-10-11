@@ -141,11 +141,16 @@ tasks:
     description: Atomic ledger/escrow/PQC classical baselines
     owner: subagent-lane-H
     branch: feat/H-classical
-    status: CLAIMED
-    evidence: []
+    status: MERGED
+    evidence:
+    - handoffs/H-H1.json
+    - reports/classical_baseline_notes/comparability_matrix.csv
+    - 23 BenchmarkRecords
     blockers: []
-    commit: null
+    commit: b181049
     start_sha: ece05ef
+    notes: 'Finding: S1 needs pre-presentation bank relay of c=b xor z (Kent 2022 Table I steps 7-9); H3 private late-commit (ideal OT) matches
+      latency/privacy; S1 edge reduces to IT vs computational security. Integration: host H nodes on G engine; delete G classical_race_fixtures.'
   I1:
     lane: I
     description: Resource-optimized security certificate compiler
