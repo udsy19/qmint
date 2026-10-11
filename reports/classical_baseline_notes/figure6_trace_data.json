@@ -1,0 +1,6759 @@
+{
+ "b": 1,
+ "c_m_per_ns": 0.299792458,
+ "cases": {
+  "paper_jinan_2.766km_fibre": {
+   "input_latency_evidence": "PUBLISHED_AGGREGATE",
+   "lightcone_ns": 1420.9830455441274,
+   "network_id": "paper-jiang2024-jinan-2.766km-fibre",
+   "panels": {
+    "H1_race": {
+     "adversarial_double_spend_attempt": true,
+     "events": [
+      {
+       "actor": "alice",
+       "event_id": "e000000",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000001",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000001",
+       "parents": [
+        "e000000"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000002",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000002",
+       "parents": [
+        "e000000",
+        "e000001"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000003",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000001",
+       "parents": [
+        "e000001"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000004",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000002",
+       "parents": [
+        "e000002"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000005",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000003"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000006",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000003",
+       "parents": [
+        "e000003",
+        "e000005"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000007",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000004"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000008",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000004",
+       "parents": [
+        "e000004",
+        "e000007"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@L1",
+       "event_id": "e000009",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000003",
+       "parents": [
+        "e000006"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "t@L0",
+       "event_id": "e000010",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000004",
+       "parents": [
+        "e000008"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@L1",
+       "event_id": "e000011",
+       "kind": "message_send",
+       "label": "SpendRequest",
+       "message_id": "m000007",
+       "parents": [
+        "e000009"
+       ],
+       "site_id": "L1",
+       "t_ns": 15337.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "t@L0",
+       "event_id": "e000012",
+       "kind": "message_send",
+       "label": "SpendRequest",
+       "message_id": "m000008",
+       "parents": [
+        "e000010"
+       ],
+       "site_id": "L0",
+       "t_ns": 15337.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000013",
+       "kind": "message_receive",
+       "label": "SpendRequest",
+       "message_id": "m000008",
+       "parents": [
+        "e000012"
+       ],
+       "site_id": "L0",
+       "t_ns": 15337.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000014",
+       "kind": "message_send",
+       "label": "SpendResponse",
+       "message_id": "m000009",
+       "parents": [
+        "e000013"
+       ],
+       "site_id": "L0",
+       "t_ns": 16844.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000015",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013",
+        "e000014"
+       ],
+       "site_id": "L0",
+       "t_ns": 16844.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000016",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013",
+        "e000015"
+       ],
+       "site_id": "L0",
+       "t_ns": 16844.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@L0",
+       "event_id": "e000017",
+       "kind": "message_receive",
+       "label": "SpendResponse",
+       "message_id": "m000009",
+       "parents": [
+        "e000014",
+        "e000012"
+       ],
+       "site_id": "L0",
+       "t_ns": 16844.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@L0",
+       "event_id": "e000018",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000017"
+       ],
+       "site_id": "L0",
+       "t_ns": 18351.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000019",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000018",
+        "e000008"
+       ],
+       "site_id": "L0",
+       "t_ns": 18351.0,
+       "x_m": 0.0
+      },
+      {
+       "accepted": true,
+       "actor": "cust@L0",
+       "decision": "ACCEPT",
+       "event_id": "e000020",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000019"
+       ],
+       "site_id": "L0",
+       "t_ns": 18351.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000021",
+       "kind": "message_receive",
+       "label": "SpendRequest",
+       "message_id": "m000007",
+       "parents": [
+        "e000011",
+        "e000016"
+       ],
+       "site_id": "L0",
+       "t_ns": 29167.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000022",
+       "kind": "message_send",
+       "label": "SpendResponse",
+       "message_id": "m000011",
+       "parents": [
+        "e000021"
+       ],
+       "site_id": "L0",
+       "t_ns": 30674.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@L1",
+       "event_id": "e000023",
+       "kind": "message_receive",
+       "label": "SpendResponse",
+       "message_id": "m000011",
+       "parents": [
+        "e000022",
+        "e000011"
+       ],
+       "site_id": "L1",
+       "t_ns": 44504.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "t@L1",
+       "event_id": "e000024",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000012",
+       "parents": [
+        "e000023"
+       ],
+       "site_id": "L1",
+       "t_ns": 46011.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000025",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000012",
+       "parents": [
+        "e000024",
+        "e000006"
+       ],
+       "site_id": "L1",
+       "t_ns": 46011.0,
+       "x_m": 426.0
+      },
+      {
+       "accepted": false,
+       "actor": "cust@L1",
+       "decision": "REJECT_DOUBLE_SPEND",
+       "event_id": "e000026",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025"
+       ],
+       "site_id": "L1",
+       "t_ns": 46011.0,
+       "x_m": 426.0
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "L0",
+       "label": "go",
+       "message_id": "m000001",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 0.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "go",
+       "message_id": "m000002",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 13830.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "Present",
+       "message_id": "m000003",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 13830.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "Present",
+       "message_id": "m000004",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 13830.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "SpendRequest",
+       "message_id": "m000008",
+       "t_recv_ns": 15337.0,
+       "t_send_ns": 15337.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "SpendResponse",
+       "message_id": "m000009",
+       "t_recv_ns": 16844.0,
+       "t_send_ns": 16844.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "Result",
+       "message_id": "m000010",
+       "t_recv_ns": 18351.0,
+       "t_send_ns": 18351.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "SpendRequest",
+       "message_id": "m000007",
+       "t_recv_ns": 29167.0,
+       "t_send_ns": 15337.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "SpendResponse",
+       "message_id": "m000011",
+       "t_recv_ns": 44504.0,
+       "t_send_ns": 30674.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L1",
+       "label": "Result",
+       "message_id": "m000012",
+       "t_recv_ns": 46011.0,
+       "t_send_ns": 46011.0,
+       "to_site": "L1"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": null,
+      "classical_bytes": 1325,
+      "commit_at_Lb_before_presentation": null,
+      "honest_decision": "REJECT_DOUBLE_SPEND",
+      "issuer_aware_ns": 16844.0,
+      "local_validation_ns": null,
+      "pre_presentation_commit_ns": null,
+      "settlement_ns": 16844.0,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "H1",
+     "protocol_id": "classical_h1_online_ledger",
+     "trace_id": "gh-H1-paper_jinan_2.766km_fibre-b1-jiang_dTproc_1507ns-seed0-race",
+     "variant": "coordinator"
+    },
+    "H3_late_commit": {
+     "adversarial_double_spend_attempt": false,
+     "events": [
+      {
+       "actor": "alice",
+       "event_id": "e000005",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000006",
+       "kind": "message_send",
+       "label": "Commit",
+       "message_id": "m000003",
+       "parents": [
+        "e000005"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000007",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000005",
+        "e000006"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000008",
+       "kind": "message_receive",
+       "label": "Commit",
+       "message_id": "m000003",
+       "parents": [
+        "e000006",
+        "e000002"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000009",
+       "kind": "message_send",
+       "label": "Activate",
+       "message_id": "m000005",
+       "parents": [
+        "e000008"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000010",
+       "kind": "message_send",
+       "label": "Activate",
+       "message_id": "m000006",
+       "parents": [
+        "e000008",
+        "e000009"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@L0",
+       "event_id": "e000011",
+       "kind": "message_receive",
+       "label": "Activate",
+       "message_id": "m000005",
+       "parents": [
+        "e000009",
+        "e000003"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000012",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000007",
+       "parents": [
+        "e000005",
+        "e000007"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000013",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000007"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "e@L1",
+       "event_id": "e000014",
+       "kind": "message_receive",
+       "label": "Activate",
+       "message_id": "m000006",
+       "parents": [
+        "e000010",
+        "e000004"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000015",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000007",
+       "parents": [
+        "e000012"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000016",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000017",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000008",
+       "parents": [
+        "e000013",
+        "e000016"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000018",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000015"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@L1",
+       "event_id": "e000019",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000008",
+       "parents": [
+        "e000017",
+        "e000014"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000020",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000018"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@L1",
+       "event_id": "e000021",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000019"
+       ],
+       "site_id": "L1",
+       "t_ns": 15337.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000022",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000021",
+        "e000017"
+       ],
+       "site_id": "L1",
+       "t_ns": 15337.0,
+       "x_m": 426.0
+      },
+      {
+       "accepted": true,
+       "actor": "cust@L1",
+       "decision": "ACCEPT",
+       "event_id": "e000023",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000022"
+       ],
+       "site_id": "L1",
+       "t_ns": 15337.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000024",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000022",
+        "e000023"
+       ],
+       "site_id": "L1",
+       "t_ns": 15337.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000025",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000024",
+        "e000020"
+       ],
+       "site_id": "L0",
+       "t_ns": 29167.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000026",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025"
+       ],
+       "site_id": "L0",
+       "t_ns": 29167.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000027",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025",
+        "e000026"
+       ],
+       "site_id": "L0",
+       "t_ns": 29167.0,
+       "x_m": 0.0
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "L0",
+       "label": "Commit",
+       "message_id": "m000003",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "Activate",
+       "message_id": "m000005",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "go",
+       "message_id": "m000004",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 0.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "Activate",
+       "message_id": "m000006",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 0.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "go",
+       "message_id": "m000007",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 13830.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "Present",
+       "message_id": "m000008",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 13830.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "outcome",
+       "message_id": "m000009",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 13830.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "Result",
+       "message_id": "m000010",
+       "t_recv_ns": 15337.0,
+       "t_send_ns": 15337.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L1",
+       "label": "outcome",
+       "message_id": "m000011",
+       "t_recv_ns": 29167.0,
+       "t_send_ns": 15337.0,
+       "to_site": "L0"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": 15337.0,
+      "classical_bytes": 738,
+      "commit_at_Lb_before_presentation": true,
+      "honest_decision": "ACCEPT",
+      "issuer_aware_ns": 29167.0,
+      "local_validation_ns": 1507.0,
+      "pre_presentation_commit_ns": 13830.0,
+      "settlement_ns": 29167.0,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "H3_late_commit_disclosed",
+     "protocol_id": "classical_h3_preallocated_escrow",
+     "trace_id": "gh-H3_late_commit_disclosed-paper_jinan_2.766km_fibre-b1-jiang_dTproc_1507ns-seed0",
+     "variant": "late_commit_disclosed"
+    },
+    "H3_late_commit_ot": {
+     "adversarial_double_spend_attempt": false,
+     "events": [
+      {
+       "actor": "alice",
+       "event_id": "e000005",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000006",
+       "kind": "message_send",
+       "label": "CommitC",
+       "message_id": "m000003",
+       "parents": [
+        "e000005"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000007",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000005",
+        "e000006"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000008",
+       "kind": "message_receive",
+       "label": "CommitC",
+       "message_id": "m000003",
+       "parents": [
+        "e000006",
+        "e000002"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000009",
+       "kind": "message_send",
+       "label": "RelayC",
+       "message_id": "m000005",
+       "parents": [
+        "e000008"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000010",
+       "kind": "message_send",
+       "label": "RelayC",
+       "message_id": "m000006",
+       "parents": [
+        "e000008",
+        "e000009"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@L0",
+       "event_id": "e000011",
+       "kind": "message_receive",
+       "label": "RelayC",
+       "message_id": "m000005",
+       "parents": [
+        "e000009",
+        "e000003"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000012",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000007",
+       "parents": [
+        "e000005",
+        "e000007"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000013",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000007"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "e@L1",
+       "event_id": "e000014",
+       "kind": "message_receive",
+       "label": "RelayC",
+       "message_id": "m000006",
+       "parents": [
+        "e000010",
+        "e000004"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000015",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000007",
+       "parents": [
+        "e000012"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000016",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000017",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000008",
+       "parents": [
+        "e000013",
+        "e000016"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000018",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000015"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@L1",
+       "event_id": "e000019",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000008",
+       "parents": [
+        "e000017",
+        "e000014"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000020",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000018"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@L1",
+       "event_id": "e000021",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000019"
+       ],
+       "site_id": "L1",
+       "t_ns": 15337.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000022",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000021",
+        "e000017"
+       ],
+       "site_id": "L1",
+       "t_ns": 15337.0,
+       "x_m": 426.0
+      },
+      {
+       "accepted": true,
+       "actor": "cust@L1",
+       "decision": "ACCEPT",
+       "event_id": "e000023",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000022"
+       ],
+       "site_id": "L1",
+       "t_ns": 15337.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000024",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000022",
+        "e000023"
+       ],
+       "site_id": "L1",
+       "t_ns": 15337.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000025",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000024",
+        "e000020"
+       ],
+       "site_id": "L0",
+       "t_ns": 29167.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000026",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025"
+       ],
+       "site_id": "L0",
+       "t_ns": 29167.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000027",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025",
+        "e000026"
+       ],
+       "site_id": "L0",
+       "t_ns": 29167.0,
+       "x_m": 0.0
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "L0",
+       "label": "CommitC",
+       "message_id": "m000003",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "RelayC",
+       "message_id": "m000005",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "go",
+       "message_id": "m000004",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 0.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "RelayC",
+       "message_id": "m000006",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 0.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "go",
+       "message_id": "m000007",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 13830.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "Present",
+       "message_id": "m000008",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 13830.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "outcome",
+       "message_id": "m000009",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 13830.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "Result",
+       "message_id": "m000010",
+       "t_recv_ns": 15337.0,
+       "t_send_ns": 15337.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L1",
+       "label": "outcome",
+       "message_id": "m000011",
+       "t_recv_ns": 29167.0,
+       "t_send_ns": 15337.0,
+       "to_site": "L0"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": 15337.0,
+      "classical_bytes": 1071,
+      "commit_at_Lb_before_presentation": true,
+      "honest_decision": "ACCEPT",
+      "issuer_aware_ns": 29167.0,
+      "local_validation_ns": 1507.0,
+      "pre_presentation_commit_ns": 13830.0,
+      "settlement_ns": 29167.0,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "H3_late_commit_ot_private",
+     "protocol_id": "classical_h3_preallocated_escrow",
+     "trace_id": "gh-H3_late_commit_ot_private-paper_jinan_2.766km_fibre-b1-jiang_dTproc_1507ns-seed0",
+     "variant": "late_commit_ot_private"
+    },
+    "S1": {
+     "adversarial_double_spend_attempt": false,
+     "events": [
+      {
+       "actor": "A0",
+       "event_id": "e000004",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000000"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "A0",
+       "event_id": "e000005",
+       "kind": "message_send",
+       "label": "branch",
+       "message_id": "m000003",
+       "parents": [
+        "e000004"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "A0",
+       "event_id": "e000006",
+       "kind": "message_send",
+       "label": "commitment",
+       "message_id": "m000004",
+       "parents": [
+        "e000004",
+        "e000005"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000007",
+       "kind": "message_receive",
+       "label": "commitment",
+       "message_id": "m000004",
+       "parents": [
+        "e000006",
+        "e000002"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000008",
+       "kind": "message_send",
+       "label": "commitment",
+       "message_id": "m000005",
+       "parents": [
+        "e000007"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "A1",
+       "event_id": "e000009",
+       "kind": "message_receive",
+       "label": "branch",
+       "message_id": "m000003",
+       "parents": [
+        "e000005"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000010",
+       "kind": "message_receive",
+       "label": "commitment",
+       "message_id": "m000005",
+       "parents": [
+        "e000008",
+        "e000003"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "A0",
+       "event_id": "e000011",
+       "kind": "message_send",
+       "label": "present",
+       "message_id": "m000006",
+       "parents": [
+        "e000004",
+        "e000006"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "A1",
+       "event_id": "e000012",
+       "kind": "message_send",
+       "label": "present",
+       "message_id": "m000007",
+       "parents": [
+        "e000009"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000013",
+       "kind": "message_receive",
+       "label": "present",
+       "message_id": "m000006",
+       "parents": [
+        "e000011",
+        "e000008"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000014",
+       "kind": "message_receive",
+       "label": "present",
+       "message_id": "m000007",
+       "parents": [
+        "e000012",
+        "e000010"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000015",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013"
+       ],
+       "site_id": "L0",
+       "t_ns": 13830.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000016",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000014"
+       ],
+       "site_id": "L1",
+       "t_ns": 13830.0,
+       "x_m": 426.0
+      },
+      {
+       "accepted": false,
+       "actor": "B0",
+       "decision": null,
+       "event_id": "e000017",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013",
+        "e000015"
+       ],
+       "site_id": "L0",
+       "t_ns": 15337.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000018",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000008",
+       "parents": [
+        "e000013",
+        "e000017"
+       ],
+       "site_id": "L0",
+       "t_ns": 15337.0,
+       "x_m": 0.0
+      },
+      {
+       "accepted": true,
+       "actor": "B1",
+       "decision": null,
+       "event_id": "e000019",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000014",
+        "e000016"
+       ],
+       "site_id": "L1",
+       "t_ns": 15337.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000020",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000014",
+        "e000019"
+       ],
+       "site_id": "L1",
+       "t_ns": 15337.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000021",
+       "kind": "buyer_receipt",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000014",
+        "e000020"
+       ],
+       "site_id": "L1",
+       "t_ns": 15337.0,
+       "x_m": 426.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000022",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000008",
+       "parents": [
+        "e000018"
+       ],
+       "site_id": "L0",
+       "t_ns": 15337.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000023",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000020",
+        "e000022"
+       ],
+       "site_id": "L0",
+       "t_ns": 29167.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000024",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000023"
+       ],
+       "site_id": "L0",
+       "t_ns": 29167.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000025",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000023",
+        "e000024"
+       ],
+       "site_id": "L0",
+       "t_ns": 29167.0,
+       "x_m": 0.0
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "L0",
+       "label": "commitment",
+       "message_id": "m000004",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "branch",
+       "message_id": "m000003",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 0.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "commitment",
+       "message_id": "m000005",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 0.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "present",
+       "message_id": "m000006",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 13830.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "present",
+       "message_id": "m000007",
+       "t_recv_ns": 13830.0,
+       "t_send_ns": 13830.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "outcome",
+       "message_id": "m000008",
+       "t_recv_ns": 15337.0,
+       "t_send_ns": 15337.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "outcome",
+       "message_id": "m000009",
+       "t_recv_ns": 29167.0,
+       "t_send_ns": 15337.0,
+       "to_site": "L0"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": 15337.0,
+      "classical_bytes": null,
+      "commit_at_Lb_before_presentation": true,
+      "honest_decision": "ACCEPT",
+      "issuer_aware_ns": 29167.0,
+      "local_validation_ns": 1507.0,
+      "pre_presentation_commit_ns": 13830.0,
+      "settlement_ns": 29167.0,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "S1_s_money",
+     "protocol_id": "s_money_kent_2022_ideal_2site",
+     "trace_id": "smoney-paper-jiang2024-jinan-2.766km-fibre-b1-seed0",
+     "variant": "kent2022_table1_event_model_g"
+    }
+   },
+   "sites": {
+    "L0": {
+     "role": "L0: issuer/HQ/ledger, Alice's choice",
+     "x_m": 0.0
+    },
+    "L1": {
+     "role": "L1",
+     "x_m": 426.0
+    }
+   },
+   "topology_source": "paper"
+  },
+  "paper_yiyuan_mazhan_60.54km_fibre": {
+   "input_latency_evidence": "PUBLISHED_AGGREGATE",
+   "lightcone_ns": 172119.07312224642,
+   "network_id": "paper-jiang2024-yiyuan-mazhan-60.54km-fibre",
+   "panels": {
+    "H1_race": {
+     "adversarial_double_spend_attempt": true,
+     "events": [
+      {
+       "actor": "alice",
+       "event_id": "e000000",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000001",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000001",
+       "parents": [
+        "e000000"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000002",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000002",
+       "parents": [
+        "e000000",
+        "e000001"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@Mazhan",
+       "event_id": "e000003",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000001",
+       "parents": [
+        "e000001"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "cust@Yiyuan",
+       "event_id": "e000004",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000002",
+       "parents": [
+        "e000002"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@Mazhan",
+       "event_id": "e000005",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000003"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "cust@Mazhan",
+       "event_id": "e000006",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000003",
+       "parents": [
+        "e000003",
+        "e000005"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "cust@Yiyuan",
+       "event_id": "e000007",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000004"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@Yiyuan",
+       "event_id": "e000008",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000004",
+       "parents": [
+        "e000004",
+        "e000007"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@Mazhan",
+       "event_id": "e000009",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000003",
+       "parents": [
+        "e000006"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "t@Yiyuan",
+       "event_id": "e000010",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000004",
+       "parents": [
+        "e000008"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@Mazhan",
+       "event_id": "e000011",
+       "kind": "message_send",
+       "label": "SpendRequest",
+       "message_id": "m000007",
+       "parents": [
+        "e000009"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 304207.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "t@Yiyuan",
+       "event_id": "e000012",
+       "kind": "message_send",
+       "label": "SpendRequest",
+       "message_id": "m000008",
+       "parents": [
+        "e000010"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 304207.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000013",
+       "kind": "message_receive",
+       "label": "SpendRequest",
+       "message_id": "m000008",
+       "parents": [
+        "e000012"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 304207.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000014",
+       "kind": "message_send",
+       "label": "SpendResponse",
+       "message_id": "m000009",
+       "parents": [
+        "e000013"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 305714.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000015",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013",
+        "e000014"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 305714.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000016",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013",
+        "e000015"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 305714.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@Yiyuan",
+       "event_id": "e000017",
+       "kind": "message_receive",
+       "label": "SpendResponse",
+       "message_id": "m000009",
+       "parents": [
+        "e000014",
+        "e000012"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 305714.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@Yiyuan",
+       "event_id": "e000018",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000017"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 307221.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@Yiyuan",
+       "event_id": "e000019",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000018",
+        "e000008"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 307221.0,
+       "x_m": 0.0
+      },
+      {
+       "accepted": true,
+       "actor": "cust@Yiyuan",
+       "decision": "ACCEPT",
+       "event_id": "e000020",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000019"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 307221.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000021",
+       "kind": "message_receive",
+       "label": "SpendRequest",
+       "message_id": "m000007",
+       "parents": [
+        "e000011",
+        "e000016"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 606907.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000022",
+       "kind": "message_send",
+       "label": "SpendResponse",
+       "message_id": "m000011",
+       "parents": [
+        "e000021"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 608414.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@Mazhan",
+       "event_id": "e000023",
+       "kind": "message_receive",
+       "label": "SpendResponse",
+       "message_id": "m000011",
+       "parents": [
+        "e000022",
+        "e000011"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 911114.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "t@Mazhan",
+       "event_id": "e000024",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000012",
+       "parents": [
+        "e000023"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 912621.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "cust@Mazhan",
+       "event_id": "e000025",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000012",
+       "parents": [
+        "e000024",
+        "e000006"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 912621.0,
+       "x_m": 51600.0
+      },
+      {
+       "accepted": false,
+       "actor": "cust@Mazhan",
+       "decision": "REJECT_DOUBLE_SPEND",
+       "event_id": "e000026",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 912621.0,
+       "x_m": 51600.0
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "Yiyuan",
+       "label": "go",
+       "message_id": "m000001",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 0.0,
+       "to_site": "Mazhan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "go",
+       "message_id": "m000002",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 302700.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Mazhan",
+       "label": "Present",
+       "message_id": "m000003",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 302700.0,
+       "to_site": "Mazhan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "Present",
+       "message_id": "m000004",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 302700.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "SpendRequest",
+       "message_id": "m000008",
+       "t_recv_ns": 304207.0,
+       "t_send_ns": 304207.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "SpendResponse",
+       "message_id": "m000009",
+       "t_recv_ns": 305714.0,
+       "t_send_ns": 305714.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "Result",
+       "message_id": "m000010",
+       "t_recv_ns": 307221.0,
+       "t_send_ns": 307221.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Mazhan",
+       "label": "SpendRequest",
+       "message_id": "m000007",
+       "t_recv_ns": 606907.0,
+       "t_send_ns": 304207.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "SpendResponse",
+       "message_id": "m000011",
+       "t_recv_ns": 911114.0,
+       "t_send_ns": 608414.0,
+       "to_site": "Mazhan"
+      },
+      {
+       "from_site": "Mazhan",
+       "label": "Result",
+       "message_id": "m000012",
+       "t_recv_ns": 912621.0,
+       "t_send_ns": 912621.0,
+       "to_site": "Mazhan"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": null,
+      "classical_bytes": 1383,
+      "commit_at_Lb_before_presentation": null,
+      "honest_decision": "REJECT_DOUBLE_SPEND",
+      "issuer_aware_ns": 305714.0,
+      "local_validation_ns": null,
+      "pre_presentation_commit_ns": null,
+      "settlement_ns": 305714.0,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "H1",
+     "protocol_id": "classical_h1_online_ledger",
+     "trace_id": "gh-H1-paper_yiyuan_mazhan_60.54km_fibre-b1-jiang_dTproc_1507ns-seed0-race",
+     "variant": "coordinator"
+    },
+    "H3_late_commit": {
+     "adversarial_double_spend_attempt": false,
+     "events": [
+      {
+       "actor": "alice",
+       "event_id": "e000005",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000006",
+       "kind": "message_send",
+       "label": "Commit",
+       "message_id": "m000003",
+       "parents": [
+        "e000005"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000007",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000005",
+        "e000006"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000008",
+       "kind": "message_receive",
+       "label": "Commit",
+       "message_id": "m000003",
+       "parents": [
+        "e000006",
+        "e000002"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000009",
+       "kind": "message_send",
+       "label": "Activate",
+       "message_id": "m000005",
+       "parents": [
+        "e000008"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000010",
+       "kind": "message_send",
+       "label": "Activate",
+       "message_id": "m000006",
+       "parents": [
+        "e000008",
+        "e000009"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@Yiyuan",
+       "event_id": "e000011",
+       "kind": "message_receive",
+       "label": "Activate",
+       "message_id": "m000005",
+       "parents": [
+        "e000009",
+        "e000003"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000012",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000007",
+       "parents": [
+        "e000005",
+        "e000007"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@Mazhan",
+       "event_id": "e000013",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000007"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "e@Mazhan",
+       "event_id": "e000014",
+       "kind": "message_receive",
+       "label": "Activate",
+       "message_id": "m000006",
+       "parents": [
+        "e000010",
+        "e000004"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "cust@Yiyuan",
+       "event_id": "e000015",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000007",
+       "parents": [
+        "e000012"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@Mazhan",
+       "event_id": "e000016",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "cust@Mazhan",
+       "event_id": "e000017",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000008",
+       "parents": [
+        "e000013",
+        "e000016"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "cust@Yiyuan",
+       "event_id": "e000018",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000015"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@Mazhan",
+       "event_id": "e000019",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000008",
+       "parents": [
+        "e000017",
+        "e000014"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000020",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000018"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@Mazhan",
+       "event_id": "e000021",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000019"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 304207.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "cust@Mazhan",
+       "event_id": "e000022",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000021",
+        "e000017"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 304207.0,
+       "x_m": 51600.0
+      },
+      {
+       "accepted": true,
+       "actor": "cust@Mazhan",
+       "decision": "ACCEPT",
+       "event_id": "e000023",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000022"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 304207.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "cust@Mazhan",
+       "event_id": "e000024",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000022",
+        "e000023"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 304207.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000025",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000024",
+        "e000020"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 606907.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000026",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 606907.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000027",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025",
+        "e000026"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 606907.0,
+       "x_m": 0.0
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "Yiyuan",
+       "label": "Commit",
+       "message_id": "m000003",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "Activate",
+       "message_id": "m000005",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "go",
+       "message_id": "m000004",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 0.0,
+       "to_site": "Mazhan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "Activate",
+       "message_id": "m000006",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 0.0,
+       "to_site": "Mazhan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "go",
+       "message_id": "m000007",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 302700.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Mazhan",
+       "label": "Present",
+       "message_id": "m000008",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 302700.0,
+       "to_site": "Mazhan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "outcome",
+       "message_id": "m000009",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 302700.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Mazhan",
+       "label": "Result",
+       "message_id": "m000010",
+       "t_recv_ns": 304207.0,
+       "t_send_ns": 304207.0,
+       "to_site": "Mazhan"
+      },
+      {
+       "from_site": "Mazhan",
+       "label": "outcome",
+       "message_id": "m000011",
+       "t_recv_ns": 606907.0,
+       "t_send_ns": 304207.0,
+       "to_site": "Yiyuan"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": 304207.0,
+      "classical_bytes": 781,
+      "commit_at_Lb_before_presentation": true,
+      "honest_decision": "ACCEPT",
+      "issuer_aware_ns": 606907.0,
+      "local_validation_ns": 1507.0,
+      "pre_presentation_commit_ns": 302700.0,
+      "settlement_ns": 606907.0,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "H3_late_commit_disclosed",
+     "protocol_id": "classical_h3_preallocated_escrow",
+     "trace_id": "gh-H3_late_commit_disclosed-paper_yiyuan_mazhan_60.54km_fibre-b1-jiang_dTproc_1507ns-seed0",
+     "variant": "late_commit_disclosed"
+    },
+    "H3_late_commit_ot": {
+     "adversarial_double_spend_attempt": false,
+     "events": [
+      {
+       "actor": "alice",
+       "event_id": "e000005",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000006",
+       "kind": "message_send",
+       "label": "CommitC",
+       "message_id": "m000003",
+       "parents": [
+        "e000005"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000007",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000005",
+        "e000006"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000008",
+       "kind": "message_receive",
+       "label": "CommitC",
+       "message_id": "m000003",
+       "parents": [
+        "e000006",
+        "e000002"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000009",
+       "kind": "message_send",
+       "label": "RelayC",
+       "message_id": "m000005",
+       "parents": [
+        "e000008"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000010",
+       "kind": "message_send",
+       "label": "RelayC",
+       "message_id": "m000006",
+       "parents": [
+        "e000008",
+        "e000009"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@Yiyuan",
+       "event_id": "e000011",
+       "kind": "message_receive",
+       "label": "RelayC",
+       "message_id": "m000005",
+       "parents": [
+        "e000009",
+        "e000003"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000012",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000007",
+       "parents": [
+        "e000005",
+        "e000007"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@Mazhan",
+       "event_id": "e000013",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000007"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "e@Mazhan",
+       "event_id": "e000014",
+       "kind": "message_receive",
+       "label": "RelayC",
+       "message_id": "m000006",
+       "parents": [
+        "e000010",
+        "e000004"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "cust@Yiyuan",
+       "event_id": "e000015",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000007",
+       "parents": [
+        "e000012"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@Mazhan",
+       "event_id": "e000016",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "cust@Mazhan",
+       "event_id": "e000017",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000008",
+       "parents": [
+        "e000013",
+        "e000016"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "cust@Yiyuan",
+       "event_id": "e000018",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000015"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@Mazhan",
+       "event_id": "e000019",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000008",
+       "parents": [
+        "e000017",
+        "e000014"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000020",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000018"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@Mazhan",
+       "event_id": "e000021",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000019"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 304207.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "cust@Mazhan",
+       "event_id": "e000022",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000021",
+        "e000017"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 304207.0,
+       "x_m": 51600.0
+      },
+      {
+       "accepted": true,
+       "actor": "cust@Mazhan",
+       "decision": "ACCEPT",
+       "event_id": "e000023",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000022"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 304207.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "cust@Mazhan",
+       "event_id": "e000024",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000022",
+        "e000023"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 304207.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000025",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000024",
+        "e000020"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 606907.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000026",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 606907.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000027",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025",
+        "e000026"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 606907.0,
+       "x_m": 0.0
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "Yiyuan",
+       "label": "CommitC",
+       "message_id": "m000003",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "RelayC",
+       "message_id": "m000005",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "go",
+       "message_id": "m000004",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 0.0,
+       "to_site": "Mazhan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "RelayC",
+       "message_id": "m000006",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 0.0,
+       "to_site": "Mazhan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "go",
+       "message_id": "m000007",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 302700.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Mazhan",
+       "label": "Present",
+       "message_id": "m000008",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 302700.0,
+       "to_site": "Mazhan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "outcome",
+       "message_id": "m000009",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 302700.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Mazhan",
+       "label": "Result",
+       "message_id": "m000010",
+       "t_recv_ns": 304207.0,
+       "t_send_ns": 304207.0,
+       "to_site": "Mazhan"
+      },
+      {
+       "from_site": "Mazhan",
+       "label": "outcome",
+       "message_id": "m000011",
+       "t_recv_ns": 606907.0,
+       "t_send_ns": 304207.0,
+       "to_site": "Yiyuan"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": 304207.0,
+      "classical_bytes": 1102,
+      "commit_at_Lb_before_presentation": true,
+      "honest_decision": "ACCEPT",
+      "issuer_aware_ns": 606907.0,
+      "local_validation_ns": 1507.0,
+      "pre_presentation_commit_ns": 302700.0,
+      "settlement_ns": 606907.0,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "H3_late_commit_ot_private",
+     "protocol_id": "classical_h3_preallocated_escrow",
+     "trace_id": "gh-H3_late_commit_ot_private-paper_yiyuan_mazhan_60.54km_fibre-b1-jiang_dTproc_1507ns-seed0",
+     "variant": "late_commit_ot_private"
+    },
+    "S1": {
+     "adversarial_double_spend_attempt": false,
+     "events": [
+      {
+       "actor": "A0",
+       "event_id": "e000004",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000000"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "A0",
+       "event_id": "e000005",
+       "kind": "message_send",
+       "label": "branch",
+       "message_id": "m000003",
+       "parents": [
+        "e000004"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "A0",
+       "event_id": "e000006",
+       "kind": "message_send",
+       "label": "commitment",
+       "message_id": "m000004",
+       "parents": [
+        "e000004",
+        "e000005"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000007",
+       "kind": "message_receive",
+       "label": "commitment",
+       "message_id": "m000004",
+       "parents": [
+        "e000006",
+        "e000002"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000008",
+       "kind": "message_send",
+       "label": "commitment",
+       "message_id": "m000005",
+       "parents": [
+        "e000007"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "A1",
+       "event_id": "e000009",
+       "kind": "message_receive",
+       "label": "branch",
+       "message_id": "m000003",
+       "parents": [
+        "e000005"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000010",
+       "kind": "message_receive",
+       "label": "commitment",
+       "message_id": "m000005",
+       "parents": [
+        "e000008",
+        "e000003"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "A0",
+       "event_id": "e000011",
+       "kind": "message_send",
+       "label": "present",
+       "message_id": "m000006",
+       "parents": [
+        "e000004",
+        "e000006"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "A1",
+       "event_id": "e000012",
+       "kind": "message_send",
+       "label": "present",
+       "message_id": "m000007",
+       "parents": [
+        "e000009"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000013",
+       "kind": "message_receive",
+       "label": "present",
+       "message_id": "m000006",
+       "parents": [
+        "e000011",
+        "e000008"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000014",
+       "kind": "message_receive",
+       "label": "present",
+       "message_id": "m000007",
+       "parents": [
+        "e000012",
+        "e000010"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000015",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 302700.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000016",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000014"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 302700.0,
+       "x_m": 51600.0
+      },
+      {
+       "accepted": false,
+       "actor": "B0",
+       "decision": null,
+       "event_id": "e000017",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013",
+        "e000015"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 304207.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000018",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000008",
+       "parents": [
+        "e000013",
+        "e000017"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 304207.0,
+       "x_m": 0.0
+      },
+      {
+       "accepted": true,
+       "actor": "B1",
+       "decision": null,
+       "event_id": "e000019",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000014",
+        "e000016"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 304207.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000020",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000014",
+        "e000019"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 304207.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000021",
+       "kind": "buyer_receipt",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000014",
+        "e000020"
+       ],
+       "site_id": "Mazhan",
+       "t_ns": 304207.0,
+       "x_m": 51600.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000022",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000008",
+       "parents": [
+        "e000018"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 304207.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000023",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000020",
+        "e000022"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 606907.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000024",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000023"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 606907.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000025",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000023",
+        "e000024"
+       ],
+       "site_id": "Yiyuan",
+       "t_ns": 606907.0,
+       "x_m": 0.0
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "Yiyuan",
+       "label": "commitment",
+       "message_id": "m000004",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "branch",
+       "message_id": "m000003",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 0.0,
+       "to_site": "Mazhan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "commitment",
+       "message_id": "m000005",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 0.0,
+       "to_site": "Mazhan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "present",
+       "message_id": "m000006",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 302700.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Mazhan",
+       "label": "present",
+       "message_id": "m000007",
+       "t_recv_ns": 302700.0,
+       "t_send_ns": 302700.0,
+       "to_site": "Mazhan"
+      },
+      {
+       "from_site": "Yiyuan",
+       "label": "outcome",
+       "message_id": "m000008",
+       "t_recv_ns": 304207.0,
+       "t_send_ns": 304207.0,
+       "to_site": "Yiyuan"
+      },
+      {
+       "from_site": "Mazhan",
+       "label": "outcome",
+       "message_id": "m000009",
+       "t_recv_ns": 606907.0,
+       "t_send_ns": 304207.0,
+       "to_site": "Yiyuan"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": 304207.0,
+      "classical_bytes": null,
+      "commit_at_Lb_before_presentation": true,
+      "honest_decision": "ACCEPT",
+      "issuer_aware_ns": 606907.0,
+      "local_validation_ns": 1507.0,
+      "pre_presentation_commit_ns": 302700.0,
+      "settlement_ns": 606907.0,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "S1_s_money",
+     "protocol_id": "s_money_kent_2022_ideal_2site",
+     "trace_id": "smoney-paper-jiang2024-yiyuan-mazhan-60.54km-fibre-b1-seed0",
+     "variant": "kent2022_table1_event_model_g"
+    }
+   },
+   "sites": {
+    "Mazhan": {
+     "role": "L1",
+     "x_m": 51600.0
+    },
+    "Yiyuan": {
+     "role": "L0: issuer/HQ/ledger, Alice's choice",
+     "x_m": 0.0
+    }
+   },
+   "topology_source": "paper"
+  },
+  "ripe_helsinki_tampere": {
+   "input_latency_evidence": "MEASURED_LATENCY (RIPE RTT/2)",
+   "lightcone_ns": 517413.8543335968,
+   "network_id": "ripe-prb6330-prb6251",
+   "panels": {
+    "H1_race": {
+     "adversarial_double_spend_attempt": true,
+     "events": [
+      {
+       "actor": "alice",
+       "event_id": "e000000",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000001",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000001",
+       "parents": [
+        "e000000"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@prb6251",
+       "event_id": "e000002",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000001",
+       "parents": [
+        "e000001"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2069374.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "cust@prb6251",
+       "event_id": "e000003",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000002"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2069374.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "cust@prb6251",
+       "event_id": "e000004",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000002",
+       "parents": [
+        "e000002",
+        "e000003"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2069374.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "t@prb6251",
+       "event_id": "e000005",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000002",
+       "parents": [
+        "e000004"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2069374.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "t@prb6251",
+       "event_id": "e000006",
+       "kind": "message_send",
+       "label": "SpendRequest",
+       "message_id": "m000004",
+       "parents": [
+        "e000005"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2070881.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000007",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000005",
+       "parents": [
+        "e000000",
+        "e000001"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@prb6330",
+       "event_id": "e000008",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000005",
+       "parents": [
+        "e000007"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@prb6330",
+       "event_id": "e000009",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000008"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@prb6330",
+       "event_id": "e000010",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000006",
+       "parents": [
+        "e000008",
+        "e000009"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@prb6330",
+       "event_id": "e000011",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000006",
+       "parents": [
+        "e000010"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@prb6330",
+       "event_id": "e000012",
+       "kind": "message_send",
+       "label": "SpendRequest",
+       "message_id": "m000008",
+       "parents": [
+        "e000011"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2386333.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000013",
+       "kind": "message_receive",
+       "label": "SpendRequest",
+       "message_id": "m000008",
+       "parents": [
+        "e000012"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2386333.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000014",
+       "kind": "message_send",
+       "label": "SpendResponse",
+       "message_id": "m000009",
+       "parents": [
+        "e000013"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2387840.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000015",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013",
+        "e000014"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2387840.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000016",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013",
+        "e000015"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2387840.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@prb6330",
+       "event_id": "e000017",
+       "kind": "message_receive",
+       "label": "SpendResponse",
+       "message_id": "m000009",
+       "parents": [
+        "e000014",
+        "e000012"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2387840.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@prb6330",
+       "event_id": "e000018",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000017"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2389347.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@prb6330",
+       "event_id": "e000019",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000018",
+        "e000010"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2389347.0,
+       "x_m": 0.0
+      },
+      {
+       "accepted": true,
+       "actor": "cust@prb6330",
+       "decision": "ACCEPT",
+       "event_id": "e000020",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000019"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2389347.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000021",
+       "kind": "message_receive",
+       "label": "SpendRequest",
+       "message_id": "m000004",
+       "parents": [
+        "e000006",
+        "e000016"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 4283171.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000022",
+       "kind": "message_send",
+       "label": "SpendResponse",
+       "message_id": "m000011",
+       "parents": [
+        "e000021"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 4284678.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@prb6251",
+       "event_id": "e000023",
+       "kind": "message_receive",
+       "label": "SpendResponse",
+       "message_id": "m000011",
+       "parents": [
+        "e000022",
+        "e000006"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 6669504.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "t@prb6251",
+       "event_id": "e000024",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000012",
+       "parents": [
+        "e000023"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 6671011.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "cust@prb6251",
+       "event_id": "e000025",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000012",
+       "parents": [
+        "e000024",
+        "e000004"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 6671011.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "accepted": false,
+       "actor": "cust@prb6251",
+       "decision": "REJECT_DOUBLE_SPEND",
+       "event_id": "e000026",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 6671011.0,
+       "x_m": 155116.77119392296
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "prb6330",
+       "label": "go",
+       "message_id": "m000001",
+       "t_recv_ns": 2069374.5,
+       "t_send_ns": 0.0,
+       "to_site": "prb6251"
+      },
+      {
+       "from_site": "prb6251",
+       "label": "Present",
+       "message_id": "m000002",
+       "t_recv_ns": 2069374.5,
+       "t_send_ns": 2069374.5,
+       "to_site": "prb6251"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "go",
+       "message_id": "m000005",
+       "t_recv_ns": 2384826.0,
+       "t_send_ns": 2384826.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "Present",
+       "message_id": "m000006",
+       "t_recv_ns": 2384826.0,
+       "t_send_ns": 2384826.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "SpendRequest",
+       "message_id": "m000008",
+       "t_recv_ns": 2386333.0,
+       "t_send_ns": 2386333.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "SpendResponse",
+       "message_id": "m000009",
+       "t_recv_ns": 2387840.0,
+       "t_send_ns": 2387840.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "Result",
+       "message_id": "m000010",
+       "t_recv_ns": 2389347.0,
+       "t_send_ns": 2389347.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6251",
+       "label": "SpendRequest",
+       "message_id": "m000004",
+       "t_recv_ns": 4283171.0,
+       "t_send_ns": 2070881.5,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "SpendResponse",
+       "message_id": "m000011",
+       "t_recv_ns": 6669504.0,
+       "t_send_ns": 4284678.0,
+       "to_site": "prb6251"
+      },
+      {
+       "from_site": "prb6251",
+       "label": "Result",
+       "message_id": "m000012",
+       "t_recv_ns": 6671011.0,
+       "t_send_ns": 6671011.0,
+       "to_site": "prb6251"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": null,
+      "classical_bytes": 1391,
+      "commit_at_Lb_before_presentation": null,
+      "honest_decision": "REJECT_DOUBLE_SPEND",
+      "issuer_aware_ns": 2387840.0,
+      "local_validation_ns": null,
+      "pre_presentation_commit_ns": null,
+      "settlement_ns": 2387840.0,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "H1",
+     "protocol_id": "classical_h1_online_ledger",
+     "trace_id": "gh-H1-ripe_helsinki_tampere-b1-jiang_dTproc_1507ns-seed0-race",
+     "variant": "coordinator"
+    },
+    "H3_late_commit": {
+     "adversarial_double_spend_attempt": false,
+     "events": [
+      {
+       "actor": "alice",
+       "event_id": "e000004",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000005",
+       "kind": "message_send",
+       "label": "Commit",
+       "message_id": "m000003",
+       "parents": [
+        "e000004"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000006",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000004",
+        "e000005"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000007",
+       "kind": "message_receive",
+       "label": "Commit",
+       "message_id": "m000003",
+       "parents": [
+        "e000005",
+        "e000002"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000008",
+       "kind": "message_send",
+       "label": "Activate",
+       "message_id": "m000005",
+       "parents": [
+        "e000007"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000009",
+       "kind": "message_send",
+       "label": "Activate",
+       "message_id": "m000006",
+       "parents": [
+        "e000007",
+        "e000008"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@prb6330",
+       "event_id": "e000010",
+       "kind": "message_receive",
+       "label": "Activate",
+       "message_id": "m000005",
+       "parents": [
+        "e000008",
+        "e000003"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@prb6251",
+       "event_id": "e000011",
+       "kind": "message_receive",
+       "label": "Provision",
+       "message_id": "m000002",
+       "parents": [
+        "e000002"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 1069374.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "cust@prb6251",
+       "event_id": "e000012",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000006"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 1834355.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "cust@prb6251",
+       "event_id": "e000013",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000012"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 1834355.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "cust@prb6251",
+       "event_id": "e000014",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000007",
+       "parents": [
+        "e000012",
+        "e000013"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 1834355.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "e@prb6251",
+       "event_id": "e000015",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000007",
+       "parents": [
+        "e000014",
+        "e000011"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 1834355.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000016",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000008",
+       "parents": [
+        "e000004",
+        "e000006"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@prb6251",
+       "event_id": "e000017",
+       "kind": "message_receive",
+       "label": "Activate",
+       "message_id": "m000006",
+       "parents": [
+        "e000009",
+        "e000015"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2384826.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "cust@prb6330",
+       "event_id": "e000018",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000008",
+       "parents": [
+        "e000016"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@prb6330",
+       "event_id": "e000019",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000018"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000020",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000019"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@prb6251",
+       "event_id": "e000021",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000017"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2386333.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "cust@prb6251",
+       "event_id": "e000022",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000021",
+        "e000014"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2386333.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "accepted": true,
+       "actor": "cust@prb6251",
+       "decision": "ACCEPT",
+       "event_id": "e000023",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000022"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2386333.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "cust@prb6251",
+       "event_id": "e000024",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000022",
+        "e000023"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2386333.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000025",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000024",
+        "e000020"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 4339338.5,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000026",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 4339338.5,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000027",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025",
+        "e000026"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 4339338.5,
+       "x_m": 0.0
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "prb6330",
+       "label": "Commit",
+       "message_id": "m000003",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "Activate",
+       "message_id": "m000005",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "go",
+       "message_id": "m000004",
+       "t_recv_ns": 1834355.5,
+       "t_send_ns": 0.0,
+       "to_site": "prb6251"
+      },
+      {
+       "from_site": "prb6251",
+       "label": "Present",
+       "message_id": "m000007",
+       "t_recv_ns": 1834355.5,
+       "t_send_ns": 1834355.5,
+       "to_site": "prb6251"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "Activate",
+       "message_id": "m000006",
+       "t_recv_ns": 2384826.0,
+       "t_send_ns": 0.0,
+       "to_site": "prb6251"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "go",
+       "message_id": "m000008",
+       "t_recv_ns": 2384826.0,
+       "t_send_ns": 2384826.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "outcome",
+       "message_id": "m000009",
+       "t_recv_ns": 2384826.0,
+       "t_send_ns": 2384826.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6251",
+       "label": "Result",
+       "message_id": "m000010",
+       "t_recv_ns": 2386333.0,
+       "t_send_ns": 2386333.0,
+       "to_site": "prb6251"
+      },
+      {
+       "from_site": "prb6251",
+       "label": "outcome",
+       "message_id": "m000011",
+       "t_recv_ns": 4339338.5,
+       "t_send_ns": 2386333.0,
+       "to_site": "prb6330"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": 2386333.0,
+      "classical_bytes": 793,
+      "commit_at_Lb_before_presentation": false,
+      "honest_decision": "ACCEPT",
+      "issuer_aware_ns": 4339338.5,
+      "local_validation_ns": 1507.0,
+      "pre_presentation_commit_ns": 2384826.0,
+      "settlement_ns": 4339338.5,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "H3_late_commit_disclosed",
+     "protocol_id": "classical_h3_preallocated_escrow",
+     "trace_id": "gh-H3_late_commit_disclosed-ripe_helsinki_tampere-b1-jiang_dTproc_1507ns-seed0",
+     "variant": "late_commit_disclosed"
+    },
+    "H3_late_commit_ot": {
+     "adversarial_double_spend_attempt": false,
+     "events": [
+      {
+       "actor": "alice",
+       "event_id": "e000004",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000005",
+       "kind": "message_send",
+       "label": "CommitC",
+       "message_id": "m000003",
+       "parents": [
+        "e000004"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000006",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000004",
+        "e000005"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000007",
+       "kind": "message_receive",
+       "label": "CommitC",
+       "message_id": "m000003",
+       "parents": [
+        "e000005",
+        "e000002"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000008",
+       "kind": "message_send",
+       "label": "RelayC",
+       "message_id": "m000005",
+       "parents": [
+        "e000007"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000009",
+       "kind": "message_send",
+       "label": "RelayC",
+       "message_id": "m000006",
+       "parents": [
+        "e000007",
+        "e000008"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@prb6330",
+       "event_id": "e000010",
+       "kind": "message_receive",
+       "label": "RelayC",
+       "message_id": "m000005",
+       "parents": [
+        "e000008",
+        "e000003"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@prb6251",
+       "event_id": "e000011",
+       "kind": "message_receive",
+       "label": "Provision",
+       "message_id": "m000002",
+       "parents": [
+        "e000002"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 1069374.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "cust@prb6251",
+       "event_id": "e000012",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000006"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 1834355.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "cust@prb6251",
+       "event_id": "e000013",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000012"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 1834355.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "cust@prb6251",
+       "event_id": "e000014",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000007",
+       "parents": [
+        "e000012",
+        "e000013"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 1834355.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "e@prb6251",
+       "event_id": "e000015",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000007",
+       "parents": [
+        "e000014",
+        "e000011"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 1834355.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000016",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000008",
+       "parents": [
+        "e000004",
+        "e000006"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@prb6251",
+       "event_id": "e000017",
+       "kind": "message_receive",
+       "label": "RelayC",
+       "message_id": "m000006",
+       "parents": [
+        "e000009",
+        "e000015"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2384826.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "cust@prb6330",
+       "event_id": "e000018",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000008",
+       "parents": [
+        "e000016"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@prb6330",
+       "event_id": "e000019",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000018"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000020",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000019"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@prb6251",
+       "event_id": "e000021",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000017"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2386333.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "cust@prb6251",
+       "event_id": "e000022",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000021",
+        "e000014"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2386333.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "accepted": true,
+       "actor": "cust@prb6251",
+       "decision": "ACCEPT",
+       "event_id": "e000023",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000022"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2386333.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "cust@prb6251",
+       "event_id": "e000024",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000022",
+        "e000023"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2386333.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000025",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000024",
+        "e000020"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 4339338.5,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000026",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 4339338.5,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000027",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025",
+        "e000026"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 4339338.5,
+       "x_m": 0.0
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "prb6330",
+       "label": "CommitC",
+       "message_id": "m000003",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "RelayC",
+       "message_id": "m000005",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "go",
+       "message_id": "m000004",
+       "t_recv_ns": 1834355.5,
+       "t_send_ns": 0.0,
+       "to_site": "prb6251"
+      },
+      {
+       "from_site": "prb6251",
+       "label": "Present",
+       "message_id": "m000007",
+       "t_recv_ns": 1834355.5,
+       "t_send_ns": 1834355.5,
+       "to_site": "prb6251"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "RelayC",
+       "message_id": "m000006",
+       "t_recv_ns": 2384826.0,
+       "t_send_ns": 0.0,
+       "to_site": "prb6251"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "go",
+       "message_id": "m000008",
+       "t_recv_ns": 2384826.0,
+       "t_send_ns": 2384826.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "outcome",
+       "message_id": "m000009",
+       "t_recv_ns": 2384826.0,
+       "t_send_ns": 2384826.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6251",
+       "label": "Result",
+       "message_id": "m000010",
+       "t_recv_ns": 2386333.0,
+       "t_send_ns": 2386333.0,
+       "to_site": "prb6251"
+      },
+      {
+       "from_site": "prb6251",
+       "label": "outcome",
+       "message_id": "m000011",
+       "t_recv_ns": 4339338.5,
+       "t_send_ns": 2386333.0,
+       "to_site": "prb6330"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": 2386333.0,
+      "classical_bytes": 1111,
+      "commit_at_Lb_before_presentation": false,
+      "honest_decision": "ACCEPT",
+      "issuer_aware_ns": 4339338.5,
+      "local_validation_ns": 1507.0,
+      "pre_presentation_commit_ns": 2384826.0,
+      "settlement_ns": 4339338.5,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "H3_late_commit_ot_private",
+     "protocol_id": "classical_h3_preallocated_escrow",
+     "trace_id": "gh-H3_late_commit_ot_private-ripe_helsinki_tampere-b1-jiang_dTproc_1507ns-seed0",
+     "variant": "late_commit_ot_private"
+    },
+    "S1": {
+     "adversarial_double_spend_attempt": false,
+     "events": [
+      {
+       "actor": "A0",
+       "event_id": "e000003",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000000"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "A0",
+       "event_id": "e000004",
+       "kind": "message_send",
+       "label": "branch",
+       "message_id": "m000003",
+       "parents": [
+        "e000003"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "A0",
+       "event_id": "e000005",
+       "kind": "message_send",
+       "label": "commitment",
+       "message_id": "m000004",
+       "parents": [
+        "e000003",
+        "e000004"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000006",
+       "kind": "message_receive",
+       "label": "commitment",
+       "message_id": "m000004",
+       "parents": [
+        "e000005",
+        "e000002"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000007",
+       "kind": "message_send",
+       "label": "commitment",
+       "message_id": "m000005",
+       "parents": [
+        "e000006"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000008",
+       "kind": "message_receive",
+       "label": "secret_record",
+       "message_id": "m000001",
+       "parents": [
+        "e000002"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 1069374.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "A1",
+       "event_id": "e000009",
+       "kind": "message_receive",
+       "label": "branch",
+       "message_id": "m000003",
+       "parents": [
+        "e000004"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 1834355.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "A1",
+       "event_id": "e000010",
+       "kind": "message_send",
+       "label": "present",
+       "message_id": "m000006",
+       "parents": [
+        "e000009"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 1834355.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000011",
+       "kind": "message_receive",
+       "label": "present",
+       "message_id": "m000006",
+       "parents": [
+        "e000010",
+        "e000008"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 1834355.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000012",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000011"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 1834355.5,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000013",
+       "kind": "message_receive",
+       "label": "commitment",
+       "message_id": "m000005",
+       "parents": [
+        "e000007",
+        "e000012"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2384826.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "A0",
+       "event_id": "e000014",
+       "kind": "message_send",
+       "label": "present",
+       "message_id": "m000007",
+       "parents": [
+        "e000003",
+        "e000005"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000015",
+       "kind": "message_receive",
+       "label": "present",
+       "message_id": "m000007",
+       "parents": [
+        "e000014",
+        "e000007"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000016",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000015"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2384826.0,
+       "x_m": 0.0
+      },
+      {
+       "accepted": true,
+       "actor": "B1",
+       "decision": null,
+       "event_id": "e000017",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2386333.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000018",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000008",
+       "parents": [
+        "e000013",
+        "e000017"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2386333.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000019",
+       "kind": "buyer_receipt",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013",
+        "e000018"
+       ],
+       "site_id": "prb6251",
+       "t_ns": 2386333.0,
+       "x_m": 155116.77119392296
+      },
+      {
+       "accepted": false,
+       "actor": "B0",
+       "decision": null,
+       "event_id": "e000020",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000015",
+        "e000016"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2386333.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000021",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000015",
+        "e000020"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2386333.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000022",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000021"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 2386333.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000023",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000008",
+       "parents": [
+        "e000018",
+        "e000022"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 4339338.5,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000024",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000023"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 4339338.5,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000025",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000023",
+        "e000024"
+       ],
+       "site_id": "prb6330",
+       "t_ns": 4339338.5,
+       "x_m": 0.0
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "prb6330",
+       "label": "commitment",
+       "message_id": "m000004",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "branch",
+       "message_id": "m000003",
+       "t_recv_ns": 1834355.5,
+       "t_send_ns": 0.0,
+       "to_site": "prb6251"
+      },
+      {
+       "from_site": "prb6251",
+       "label": "present",
+       "message_id": "m000006",
+       "t_recv_ns": 1834355.5,
+       "t_send_ns": 1834355.5,
+       "to_site": "prb6251"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "commitment",
+       "message_id": "m000005",
+       "t_recv_ns": 2384826.0,
+       "t_send_ns": 0.0,
+       "to_site": "prb6251"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "present",
+       "message_id": "m000007",
+       "t_recv_ns": 2384826.0,
+       "t_send_ns": 2384826.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6330",
+       "label": "outcome",
+       "message_id": "m000009",
+       "t_recv_ns": 2386333.0,
+       "t_send_ns": 2386333.0,
+       "to_site": "prb6330"
+      },
+      {
+       "from_site": "prb6251",
+       "label": "outcome",
+       "message_id": "m000008",
+       "t_recv_ns": 4339338.5,
+       "t_send_ns": 2386333.0,
+       "to_site": "prb6330"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": 2386333.0,
+      "classical_bytes": null,
+      "commit_at_Lb_before_presentation": false,
+      "honest_decision": "ACCEPT",
+      "issuer_aware_ns": 4339338.5,
+      "local_validation_ns": 1507.0,
+      "pre_presentation_commit_ns": 2384826.0,
+      "settlement_ns": 4339338.5,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "S1_s_money",
+     "protocol_id": "s_money_kent_2022_ideal_2site",
+     "trace_id": "smoney-ripe-prb6330-prb6251-b1-seed0",
+     "variant": "kent2022_table1_event_model_g"
+    }
+   },
+   "sites": {
+    "prb6251": {
+     "role": "L1",
+     "x_m": 155116.77119392296
+    },
+    "prb6330": {
+     "role": "L0: issuer/HQ/ledger, Alice's choice",
+     "x_m": 0.0
+    }
+   },
+   "topology_source": "measured_ripe"
+  },
+  "synthetic_100km": {
+   "input_latency_evidence": "SYNTHETIC",
+   "lightcone_ns": 333564.095198152,
+   "network_id": "synthetic-2site-100km",
+   "panels": {
+    "H1_race": {
+     "adversarial_double_spend_attempt": true,
+     "events": [
+      {
+       "actor": "alice",
+       "event_id": "e000000",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000001",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000001",
+       "parents": [
+        "e000000"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000002",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000002",
+       "parents": [
+        "e000000",
+        "e000001"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000003",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000001",
+       "parents": [
+        "e000001"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000004",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000002",
+       "parents": [
+        "e000002"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000005",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000003"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000006",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000003",
+       "parents": [
+        "e000003",
+        "e000005"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000007",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000004"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000008",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000004",
+       "parents": [
+        "e000004",
+        "e000007"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@L1",
+       "event_id": "e000009",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000003",
+       "parents": [
+        "e000006"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "t@L0",
+       "event_id": "e000010",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000004",
+       "parents": [
+        "e000008"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@L1",
+       "event_id": "e000011",
+       "kind": "message_send",
+       "label": "SpendRequest",
+       "message_id": "m000007",
+       "parents": [
+        "e000009"
+       ],
+       "site_id": "L1",
+       "t_ns": 501853.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "t@L0",
+       "event_id": "e000012",
+       "kind": "message_send",
+       "label": "SpendRequest",
+       "message_id": "m000008",
+       "parents": [
+        "e000010"
+       ],
+       "site_id": "L0",
+       "t_ns": 501853.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000013",
+       "kind": "message_receive",
+       "label": "SpendRequest",
+       "message_id": "m000008",
+       "parents": [
+        "e000012"
+       ],
+       "site_id": "L0",
+       "t_ns": 501853.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000014",
+       "kind": "message_send",
+       "label": "SpendResponse",
+       "message_id": "m000009",
+       "parents": [
+        "e000013"
+       ],
+       "site_id": "L0",
+       "t_ns": 503360.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000015",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013",
+        "e000014"
+       ],
+       "site_id": "L0",
+       "t_ns": 503360.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000016",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013",
+        "e000015"
+       ],
+       "site_id": "L0",
+       "t_ns": 503360.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@L0",
+       "event_id": "e000017",
+       "kind": "message_receive",
+       "label": "SpendResponse",
+       "message_id": "m000009",
+       "parents": [
+        "e000014",
+        "e000012"
+       ],
+       "site_id": "L0",
+       "t_ns": 503360.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@L0",
+       "event_id": "e000018",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000017"
+       ],
+       "site_id": "L0",
+       "t_ns": 504867.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000019",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000018",
+        "e000008"
+       ],
+       "site_id": "L0",
+       "t_ns": 504867.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "accepted": true,
+       "actor": "cust@L0",
+       "decision": "ACCEPT",
+       "event_id": "e000020",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000019"
+       ],
+       "site_id": "L0",
+       "t_ns": 504867.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000021",
+       "kind": "message_receive",
+       "label": "SpendRequest",
+       "message_id": "m000007",
+       "parents": [
+        "e000011",
+        "e000016"
+       ],
+       "site_id": "L0",
+       "t_ns": 1002199.2855944559,
+       "x_m": 0.0
+      },
+      {
+       "actor": "coord",
+       "event_id": "e000022",
+       "kind": "message_send",
+       "label": "SpendResponse",
+       "message_id": "m000011",
+       "parents": [
+        "e000021"
+       ],
+       "site_id": "L0",
+       "t_ns": 1003706.2855944559,
+       "x_m": 0.0
+      },
+      {
+       "actor": "t@L1",
+       "event_id": "e000023",
+       "kind": "message_receive",
+       "label": "SpendResponse",
+       "message_id": "m000011",
+       "parents": [
+        "e000022",
+        "e000011"
+       ],
+       "site_id": "L1",
+       "t_ns": 1504052.4283916838,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "t@L1",
+       "event_id": "e000024",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000012",
+       "parents": [
+        "e000023"
+       ],
+       "site_id": "L1",
+       "t_ns": 1505559.4283916838,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000025",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000012",
+       "parents": [
+        "e000024",
+        "e000006"
+       ],
+       "site_id": "L1",
+       "t_ns": 1505559.4283916838,
+       "x_m": 100000.0
+      },
+      {
+       "accepted": false,
+       "actor": "cust@L1",
+       "decision": "REJECT_DOUBLE_SPEND",
+       "event_id": "e000026",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025"
+       ],
+       "site_id": "L1",
+       "t_ns": 1505559.4283916838,
+       "x_m": 100000.0
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "L0",
+       "label": "go",
+       "message_id": "m000001",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 0.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "go",
+       "message_id": "m000002",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 500346.14279722795,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "Present",
+       "message_id": "m000003",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 500346.14279722795,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "Present",
+       "message_id": "m000004",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 500346.14279722795,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "SpendRequest",
+       "message_id": "m000008",
+       "t_recv_ns": 501853.14279722795,
+       "t_send_ns": 501853.14279722795,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "SpendResponse",
+       "message_id": "m000009",
+       "t_recv_ns": 503360.14279722795,
+       "t_send_ns": 503360.14279722795,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "Result",
+       "message_id": "m000010",
+       "t_recv_ns": 504867.14279722795,
+       "t_send_ns": 504867.14279722795,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "SpendRequest",
+       "message_id": "m000007",
+       "t_recv_ns": 1002199.2855944559,
+       "t_send_ns": 501853.14279722795,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "SpendResponse",
+       "message_id": "m000011",
+       "t_recv_ns": 1504052.4283916838,
+       "t_send_ns": 1003706.2855944559,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L1",
+       "label": "Result",
+       "message_id": "m000012",
+       "t_recv_ns": 1505559.4283916838,
+       "t_send_ns": 1505559.4283916838,
+       "to_site": "L1"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": null,
+      "classical_bytes": 1325,
+      "commit_at_Lb_before_presentation": null,
+      "honest_decision": "REJECT_DOUBLE_SPEND",
+      "issuer_aware_ns": 503360.14279722795,
+      "local_validation_ns": null,
+      "pre_presentation_commit_ns": null,
+      "settlement_ns": 503360.14279722795,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "H1",
+     "protocol_id": "classical_h1_online_ledger",
+     "trace_id": "gh-H1-synthetic_100km-b1-jiang_dTproc_1507ns-seed0-race",
+     "variant": "coordinator"
+    },
+    "H3_late_commit": {
+     "adversarial_double_spend_attempt": false,
+     "events": [
+      {
+       "actor": "alice",
+       "event_id": "e000005",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000006",
+       "kind": "message_send",
+       "label": "Commit",
+       "message_id": "m000003",
+       "parents": [
+        "e000005"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000007",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000005",
+        "e000006"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000008",
+       "kind": "message_receive",
+       "label": "Commit",
+       "message_id": "m000003",
+       "parents": [
+        "e000006",
+        "e000002"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000009",
+       "kind": "message_send",
+       "label": "Activate",
+       "message_id": "m000005",
+       "parents": [
+        "e000008"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000010",
+       "kind": "message_send",
+       "label": "Activate",
+       "message_id": "m000006",
+       "parents": [
+        "e000008",
+        "e000009"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@L0",
+       "event_id": "e000011",
+       "kind": "message_receive",
+       "label": "Activate",
+       "message_id": "m000005",
+       "parents": [
+        "e000009",
+        "e000003"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000012",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000007",
+       "parents": [
+        "e000005",
+        "e000007"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000013",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000007"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "e@L1",
+       "event_id": "e000014",
+       "kind": "message_receive",
+       "label": "Activate",
+       "message_id": "m000006",
+       "parents": [
+        "e000010",
+        "e000004"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000015",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000007",
+       "parents": [
+        "e000012"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000016",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000017",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000008",
+       "parents": [
+        "e000013",
+        "e000016"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000018",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000015"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@L1",
+       "event_id": "e000019",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000008",
+       "parents": [
+        "e000017",
+        "e000014"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000020",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000018"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@L1",
+       "event_id": "e000021",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000019"
+       ],
+       "site_id": "L1",
+       "t_ns": 501853.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000022",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000021",
+        "e000017"
+       ],
+       "site_id": "L1",
+       "t_ns": 501853.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "accepted": true,
+       "actor": "cust@L1",
+       "decision": "ACCEPT",
+       "event_id": "e000023",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000022"
+       ],
+       "site_id": "L1",
+       "t_ns": 501853.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000024",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000022",
+        "e000023"
+       ],
+       "site_id": "L1",
+       "t_ns": 501853.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000025",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000024",
+        "e000020"
+       ],
+       "site_id": "L0",
+       "t_ns": 1002199.2855944559,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000026",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025"
+       ],
+       "site_id": "L0",
+       "t_ns": 1002199.2855944559,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000027",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025",
+        "e000026"
+       ],
+       "site_id": "L0",
+       "t_ns": 1002199.2855944559,
+       "x_m": 0.0
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "L0",
+       "label": "Commit",
+       "message_id": "m000003",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "Activate",
+       "message_id": "m000005",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "go",
+       "message_id": "m000004",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 0.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "Activate",
+       "message_id": "m000006",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 0.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "go",
+       "message_id": "m000007",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 500346.14279722795,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "Present",
+       "message_id": "m000008",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 500346.14279722795,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "outcome",
+       "message_id": "m000009",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 500346.14279722795,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "Result",
+       "message_id": "m000010",
+       "t_recv_ns": 501853.14279722795,
+       "t_send_ns": 501853.14279722795,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L1",
+       "label": "outcome",
+       "message_id": "m000011",
+       "t_recv_ns": 1002199.2855944559,
+       "t_send_ns": 501853.14279722795,
+       "to_site": "L0"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": 501853.14279722795,
+      "classical_bytes": 738,
+      "commit_at_Lb_before_presentation": true,
+      "honest_decision": "ACCEPT",
+      "issuer_aware_ns": 1002199.2855944559,
+      "local_validation_ns": 1507.0,
+      "pre_presentation_commit_ns": 500346.14279722795,
+      "settlement_ns": 1002199.2855944559,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "H3_late_commit_disclosed",
+     "protocol_id": "classical_h3_preallocated_escrow",
+     "trace_id": "gh-H3_late_commit_disclosed-synthetic_100km-b1-jiang_dTproc_1507ns-seed0",
+     "variant": "late_commit_disclosed"
+    },
+    "H3_late_commit_ot": {
+     "adversarial_double_spend_attempt": false,
+     "events": [
+      {
+       "actor": "alice",
+       "event_id": "e000005",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000006",
+       "kind": "message_send",
+       "label": "CommitC",
+       "message_id": "m000003",
+       "parents": [
+        "e000005"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000007",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000005",
+        "e000006"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000008",
+       "kind": "message_receive",
+       "label": "CommitC",
+       "message_id": "m000003",
+       "parents": [
+        "e000006",
+        "e000002"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000009",
+       "kind": "message_send",
+       "label": "RelayC",
+       "message_id": "m000005",
+       "parents": [
+        "e000008"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "issuer",
+       "event_id": "e000010",
+       "kind": "message_send",
+       "label": "RelayC",
+       "message_id": "m000006",
+       "parents": [
+        "e000008",
+        "e000009"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@L0",
+       "event_id": "e000011",
+       "kind": "message_receive",
+       "label": "RelayC",
+       "message_id": "m000005",
+       "parents": [
+        "e000009",
+        "e000003"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "alice",
+       "event_id": "e000012",
+       "kind": "message_send",
+       "label": "go",
+       "message_id": "m000007",
+       "parents": [
+        "e000005",
+        "e000007"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000013",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000004",
+       "parents": [
+        "e000007"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "e@L1",
+       "event_id": "e000014",
+       "kind": "message_receive",
+       "label": "RelayC",
+       "message_id": "m000006",
+       "parents": [
+        "e000010",
+        "e000004"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000015",
+       "kind": "message_receive",
+       "label": "go",
+       "message_id": "m000007",
+       "parents": [
+        "e000012"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000016",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000017",
+       "kind": "message_send",
+       "label": "Present",
+       "message_id": "m000008",
+       "parents": [
+        "e000013",
+        "e000016"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "cust@L0",
+       "event_id": "e000018",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000015"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@L1",
+       "event_id": "e000019",
+       "kind": "message_receive",
+       "label": "Present",
+       "message_id": "m000008",
+       "parents": [
+        "e000017",
+        "e000014"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000020",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000018"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "e@L1",
+       "event_id": "e000021",
+       "kind": "message_send",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000019"
+       ],
+       "site_id": "L1",
+       "t_ns": 501853.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000022",
+       "kind": "message_receive",
+       "label": "Result",
+       "message_id": "m000010",
+       "parents": [
+        "e000021",
+        "e000017"
+       ],
+       "site_id": "L1",
+       "t_ns": 501853.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "accepted": true,
+       "actor": "cust@L1",
+       "decision": "ACCEPT",
+       "event_id": "e000023",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000022"
+       ],
+       "site_id": "L1",
+       "t_ns": 501853.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "cust@L1",
+       "event_id": "e000024",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000022",
+        "e000023"
+       ],
+       "site_id": "L1",
+       "t_ns": 501853.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000025",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000011",
+       "parents": [
+        "e000024",
+        "e000020"
+       ],
+       "site_id": "L0",
+       "t_ns": 1002199.2855944559,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000026",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025"
+       ],
+       "site_id": "L0",
+       "t_ns": 1002199.2855944559,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000027",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000025",
+        "e000026"
+       ],
+       "site_id": "L0",
+       "t_ns": 1002199.2855944559,
+       "x_m": 0.0
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "L0",
+       "label": "CommitC",
+       "message_id": "m000003",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "RelayC",
+       "message_id": "m000005",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "go",
+       "message_id": "m000004",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 0.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "RelayC",
+       "message_id": "m000006",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 0.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "go",
+       "message_id": "m000007",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 500346.14279722795,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "Present",
+       "message_id": "m000008",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 500346.14279722795,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "outcome",
+       "message_id": "m000009",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 500346.14279722795,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "Result",
+       "message_id": "m000010",
+       "t_recv_ns": 501853.14279722795,
+       "t_send_ns": 501853.14279722795,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L1",
+       "label": "outcome",
+       "message_id": "m000011",
+       "t_recv_ns": 1002199.2855944559,
+       "t_send_ns": 501853.14279722795,
+       "to_site": "L0"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": 501853.14279722795,
+      "classical_bytes": 1071,
+      "commit_at_Lb_before_presentation": true,
+      "honest_decision": "ACCEPT",
+      "issuer_aware_ns": 1002199.2855944559,
+      "local_validation_ns": 1507.0,
+      "pre_presentation_commit_ns": 500346.14279722795,
+      "settlement_ns": 1002199.2855944559,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "H3_late_commit_ot_private",
+     "protocol_id": "classical_h3_preallocated_escrow",
+     "trace_id": "gh-H3_late_commit_ot_private-synthetic_100km-b1-jiang_dTproc_1507ns-seed0",
+     "variant": "late_commit_ot_private"
+    },
+    "S1": {
+     "adversarial_double_spend_attempt": false,
+     "events": [
+      {
+       "actor": "A0",
+       "event_id": "e000004",
+       "kind": "branch_choice",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000000"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "A0",
+       "event_id": "e000005",
+       "kind": "message_send",
+       "label": "branch",
+       "message_id": "m000003",
+       "parents": [
+        "e000004"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "A0",
+       "event_id": "e000006",
+       "kind": "message_send",
+       "label": "commitment",
+       "message_id": "m000004",
+       "parents": [
+        "e000004",
+        "e000005"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000007",
+       "kind": "message_receive",
+       "label": "commitment",
+       "message_id": "m000004",
+       "parents": [
+        "e000006",
+        "e000002"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000008",
+       "kind": "message_send",
+       "label": "commitment",
+       "message_id": "m000005",
+       "parents": [
+        "e000007"
+       ],
+       "site_id": "L0",
+       "t_ns": 0.0,
+       "x_m": 0.0
+      },
+      {
+       "actor": "A1",
+       "event_id": "e000009",
+       "kind": "message_receive",
+       "label": "branch",
+       "message_id": "m000003",
+       "parents": [
+        "e000005"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000010",
+       "kind": "message_receive",
+       "label": "commitment",
+       "message_id": "m000005",
+       "parents": [
+        "e000008",
+        "e000003"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "A0",
+       "event_id": "e000011",
+       "kind": "message_send",
+       "label": "present",
+       "message_id": "m000006",
+       "parents": [
+        "e000004",
+        "e000006"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "A1",
+       "event_id": "e000012",
+       "kind": "message_send",
+       "label": "present",
+       "message_id": "m000007",
+       "parents": [
+        "e000009"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000013",
+       "kind": "message_receive",
+       "label": "present",
+       "message_id": "m000006",
+       "parents": [
+        "e000011",
+        "e000008"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000014",
+       "kind": "message_receive",
+       "label": "present",
+       "message_id": "m000007",
+       "parents": [
+        "e000012",
+        "e000010"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000015",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013"
+       ],
+       "site_id": "L0",
+       "t_ns": 500346.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000016",
+       "kind": "local_validation_start",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000014"
+       ],
+       "site_id": "L1",
+       "t_ns": 500346.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "accepted": false,
+       "actor": "B0",
+       "decision": null,
+       "event_id": "e000017",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000013",
+        "e000015"
+       ],
+       "site_id": "L0",
+       "t_ns": 501853.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "B0",
+       "event_id": "e000018",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000008",
+       "parents": [
+        "e000013",
+        "e000017"
+       ],
+       "site_id": "L0",
+       "t_ns": 501853.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "accepted": true,
+       "actor": "B1",
+       "decision": null,
+       "event_id": "e000019",
+       "kind": "verification_result_available_local",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000014",
+        "e000016"
+       ],
+       "site_id": "L1",
+       "t_ns": 501853.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000020",
+       "kind": "message_send",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000014",
+        "e000019"
+       ],
+       "site_id": "L1",
+       "t_ns": 501853.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "B1",
+       "event_id": "e000021",
+       "kind": "buyer_receipt",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000014",
+        "e000020"
+       ],
+       "site_id": "L1",
+       "t_ns": 501853.14279722795,
+       "x_m": 100000.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000022",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000008",
+       "parents": [
+        "e000018"
+       ],
+       "site_id": "L0",
+       "t_ns": 501853.14279722795,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000023",
+       "kind": "message_receive",
+       "label": "outcome",
+       "message_id": "m000009",
+       "parents": [
+        "e000020",
+        "e000022"
+       ],
+       "site_id": "L0",
+       "t_ns": 1002199.2855944559,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000024",
+       "kind": "issuer_aware_of_spend",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000023"
+       ],
+       "site_id": "L0",
+       "t_ns": 1002199.2855944559,
+       "x_m": 0.0
+      },
+      {
+       "actor": "HQ",
+       "event_id": "e000025",
+       "kind": "bank_settlement_final",
+       "label": "",
+       "message_id": null,
+       "parents": [
+        "e000023",
+        "e000024"
+       ],
+       "site_id": "L0",
+       "t_ns": 1002199.2855944559,
+       "x_m": 0.0
+      }
+     ],
+     "message_edges": [
+      {
+       "from_site": "L0",
+       "label": "commitment",
+       "message_id": "m000004",
+       "t_recv_ns": 0.0,
+       "t_send_ns": 0.0,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L0",
+       "label": "branch",
+       "message_id": "m000003",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 0.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "commitment",
+       "message_id": "m000005",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 0.0,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "present",
+       "message_id": "m000006",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 500346.14279722795,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "present",
+       "message_id": "m000007",
+       "t_recv_ns": 500346.14279722795,
+       "t_send_ns": 500346.14279722795,
+       "to_site": "L1"
+      },
+      {
+       "from_site": "L0",
+       "label": "outcome",
+       "message_id": "m000008",
+       "t_recv_ns": 501853.14279722795,
+       "t_send_ns": 501853.14279722795,
+       "to_site": "L0"
+      },
+      {
+       "from_site": "L1",
+       "label": "outcome",
+       "message_id": "m000009",
+       "t_recv_ns": 1002199.2855944559,
+       "t_send_ns": 501853.14279722795,
+       "to_site": "L0"
+      }
+     ],
+     "metrics": {
+      "accepted_sites": 1,
+      "choice_to_local_accept_ns": 501853.14279722795,
+      "classical_bytes": null,
+      "commit_at_Lb_before_presentation": true,
+      "honest_decision": "ACCEPT",
+      "issuer_aware_ns": 1002199.2855944559,
+      "local_validation_ns": 1507.0,
+      "pre_presentation_commit_ns": 500346.14279722795,
+      "settlement_ns": 1002199.2855944559,
+      "sync_cross_site_msgs_after_presentation": 0
+     },
+     "protocol": "S1_s_money",
+     "protocol_id": "s_money_kent_2022_ideal_2site",
+     "trace_id": "smoney-synthetic-2site-100km-b1-seed0",
+     "variant": "kent2022_table1_event_model_g"
+    }
+   },
+   "sites": {
+    "L0": {
+     "role": "L0: issuer/HQ/ledger, Alice's choice",
+     "x_m": 0.0
+    },
+    "L1": {
+     "role": "L1",
+     "x_m": 100000.0
+    }
+   },
+   "topology_source": "synthetic"
+  }
+ },
+ "description": "Figure 6 data: x = distance from L0 along the site axis, t = time since branch_choice. Message edges join message_send -> message_receive. The light cone is |dx| = c dt.",
+ "evidence_kind": "MODELLED_LATENCY",
+ "proc_model": "jiang_dTproc_1507ns"
+}

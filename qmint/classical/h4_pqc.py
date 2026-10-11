@@ -128,6 +128,10 @@ class SignedTerminal:
     def processing_ns(self) -> float:
         return self.inner.processing_ns
 
+    @property
+    def retry_timeout_ns(self) -> float:
+        return self.inner.retry_timeout_ns
+
     def handle(self, msg: Message, now_ns: float) -> list[Message]:
         if msg.kind == "Present":
             wire = msg.payload["token"]

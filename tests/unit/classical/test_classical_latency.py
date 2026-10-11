@@ -1,42 +1,31 @@
-import math
-
 import pytest
 
-from qmint.classical.common import Message, deliver, path_delay_ns
+from qmint.classical.common import Message
+from qmint.classical.engine_adapter import Injection, run_hosted
 from qmint.classical.h0_bearer import BearerVerifier
+from qmint.networks.causality import assert_causal, link_lower_bound_ns, network_violations
 
 
-def test_direct_link_delay_matches_fixture(net2):
-    assert path_delay_ns(net2, "A", "B") == pytest.approx(33356.4)
-    assert path_delay_ns(net2, "A", "A") == 0.0
+def test_lightcone_builder_is_physical_and_engine_accepted(net2, net3):
+    assert link_lower_bound_ns(net3, "A", "B") == pytest.approx(100_000 / 0.299792458, rel=1e-9)
+    assert link_lower_bound_ns(net3, "A", "H") == pytest.approx(link_lower_bound_ns(net3, "A", "B") / 2, rel=1e-9)
+    assert link_lower_bound_ns(net2, "A", "A") == 0.0
+    assert network_violations(net2) == [] and network_violations(net3) == []
 
 
-def test_lightcone_builder_is_physical(net3):
-    # 100 km / c = 333564.095 ns
-    assert path_delay_ns(net3, "A", "B") == pytest.approx(100_000 / 0.299792458, rel=1e-6)
-    assert path_delay_ns(net3, "A", "H") == pytest.approx(path_delay_ns(net3, "A", "B") / 2, rel=1e-6)
-
-
-def test_partition_makes_unreachable_and_reroutes(net3):
-    assert math.isinf(path_delay_ns(net3, "A", "B", down_links=[("A", "B"), ("A", "H")]))
-    # with only the direct link down, the A->H->B path is used (same length on a line)
-    assert path_delay_ns(net3, "A", "B", down_links=[("A", "B")]) == pytest.approx(
-        path_delay_ns(net3, "A", "H") + path_delay_ns(net3, "H", "B"))
-
-
-def test_unknown_site_rejected(net2):
-    with pytest.raises(ValueError):
-        path_delay_ns(net2, "A", "Z")
-
-
-def test_deliver_adds_propagation_and_processing_and_never_precedes_lightcone(net2):
+def test_engine_delivery_adds_propagation_and_processing(net2):
     v = BearerVerifier("v@B", "B", frozenset({"s"}), processing_ns=7.0)
-    src = BearerVerifier("v@A", "A", frozenset(), processing_ns=0.0)
-    outs, arrival = deliver(net2, {"v@B": v, "v@A": src}, Message("Present", "v@A", "v@B", {"serial": "s"}), 100.0)
-    assert arrival == pytest.approx(100.0 + 33356.4)
-    (_, t_send), = outs
-    assert t_send == pytest.approx(arrival + 7.0)
-    assert arrival - 100.0 >= path_delay_ns(net2, "A", "B")
+    # a customer at site A presents to the verifier at B: one cross-site hop, then 7 ns processing
+    run = run_hosted(net2, [v], [Injection(100.0, Message("Present", "cust", "v@B", {"serial": "s"}), site="A")],
+                     token_id="s")
+    recv = run.result.first("message_receive", site_id="B")
+    assert recv.time_ns == pytest.approx(100.0 + link_lower_bound_ns(net2, "A", "B"))
+    (res,) = run.result.of_kind("verification_result_available_local")
+    # result travels back to the customer at A
+    assert res.time_ns == pytest.approx(recv.time_ns + 7.0 + link_lower_bound_ns(net2, "B", "A"))
+    assert res.detail["decision"] == "ACCEPT" and res.site_id == "A"
+    trace = run.result.to_transaction_trace("t", "s", "classical_h0_bearer", "none", False)
+    assert_causal(trace, net2)
 
 
 def test_message_size_is_canonical():

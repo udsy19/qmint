@@ -1,8 +1,9 @@
 import pytest
 
 from qmint.classical import scenarios as S
-from qmint.classical.common import Message, path_delay_ns
+from qmint.classical.common import Message
 from qmint.classical.h3_escrow import EscrowIssuer, EscrowSiteVerifier, OTWallet
+from qmint.networks.causality import link_lower_bound_ns
 
 SITES = {"A": "eA", "B": "eB", "C": "eC"}
 
@@ -66,4 +67,4 @@ def test_scenarios_local_acceptance_and_commit_latency(net3):
     assert ot.double_spends_successful == 0 and ot.spending_flexibility == "late_choice_any_site"
     assert ot.extra["issuer_learned_site"] is None
     assert ot.extra["stage_ii_commit_to_activation_ns"] == pytest.approx(
-        path_delay_ns(net3, "A", "H") + S.COORD_PROC_NS + path_delay_ns(net3, "H", "B"))
+        link_lower_bound_ns(net3, "A", "H") + S.COORD_PROC_NS + link_lower_bound_ns(net3, "H", "B"))

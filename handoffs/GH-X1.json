@@ -1,0 +1,153 @@
+{
+ "lane": "GH",
+ "task": "X1",
+ "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+ "branch": "feat/GH-integration",
+ "starting_commit_sha": "6d83940",
+ "code_commit_sha": "82b43a76aa5afd3bb2473e8fc3745881aacf8df3",
+ "reports_commit_sha": "35ff2887378d2f3f372d002b00e41bee4bbe17e1",
+ "final_commit_sha": "see git log (handoff commit follows the reports commit)",
+ "changed_paths": [
+  "M\tqmint/classical/common.py",
+  "A\tqmint/classical/engine_adapter.py",
+  "M\tqmint/classical/h3_escrow.py",
+  "M\tqmint/classical/h4_pqc.py",
+  "M\tqmint/classical/h6_ecash.py",
+  "A\tqmint/classical/matched_topology.py",
+  "M\tqmint/classical/run_baselines.py",
+  "M\tqmint/classical/scenarios.py",
+  "D\tqmint/networks/classical_race_fixtures.py",
+  "M\tqmint/networks/simulator.py",
+  "M\treports/classical_baseline_notes/README.md",
+  "M\treports/classical_baseline_notes/benchmark_records.jsonl",
+  "A\treports/classical_baseline_notes/figure6_trace_data.json",
+  "A\treports/classical_baseline_notes/matched_topology_records.jsonl",
+  "A\treports/classical_baseline_notes/matched_topology_results.csv",
+  "A\treports/classical_baseline_notes/matched_topology_traces.jsonl",
+  "M\treports/classical_baseline_notes/pqc_timings.json",
+  "A\ttests/integration/test_gh_engine_race.py",
+  "A\ttests/integration/test_gh_matched.py",
+  "M\ttests/unit/classical/conftest.py",
+  "M\ttests/unit/classical/test_classical_h1.py",
+  "M\ttests/unit/classical/test_classical_h2.py",
+  "M\ttests/unit/classical/test_classical_h3.py",
+  "M\ttests/unit/classical/test_classical_latency.py",
+  "M\ttests/unit/networks/test_networks_engine.py",
+  "D\ttests/unit/networks/test_networks_race.py",
+  "handoffs/GH-X1.json",
+  "handoffs/GH-X1.md"
+ ],
+ "commands_run": [
+  "$PY -m pytest tests -q -m 'not network and not realdata'",
+  "$PY -m ruff check qmint tests",
+  "$PY -m qmint.classical.run_baselines --pqc-reps 5",
+  "$PY -m qmint.classical.matched_topology",
+  "curl -sL https://arxiv.org/pdf/2104.11717v4 (sha256 d55a5fba12910ca569b6b09b4e5920ee6853c4c024a3e2fb2c41046fb55c7dd3); pdftotext; Table I read"
+ ],
+ "test_exit_codes": {
+  "full_suite_not_network_not_realdata": 0,
+  "passed": 399,
+  "deselected": 1,
+  "lane_paths_plus_contracts": "131 passed",
+  "ruff": 0
+ },
+ "evidence_files": [
+  "reports/classical_baseline_notes/matched_topology_results.csv",
+  "reports/classical_baseline_notes/matched_topology_records.jsonl",
+  "reports/classical_baseline_notes/matched_topology_traces.jsonl",
+  "reports/classical_baseline_notes/figure6_trace_data.json",
+  "reports/classical_baseline_notes/benchmark_records.jsonl",
+  "reports/classical_baseline_notes/README.md"
+ ],
+ "assumptions_verified": [
+  "Kent et al. arXiv:2104.11717v4 Table I (PDF p.5), IQT1 steps 7-9: A computes c = b XOR z and sends it to B; B sends c to B_i for i in {0,1}; B_i computes d~_i in the causal past of Q_i; caption: steps 1-8 lie in the intersection of the causal pasts of the presentation points. Fig.1 caption (p.4): message c may go to B0 or B1 and is relayed B -> B0, B1.",
+  "G's s_money_sites already TIMED the relay correctly (A0 -> B0 at L0, B0 forwards c to B1; B_b validates only once c and x are both present). No timing correction needed. Reproduces Jiang 2024 15.337 us (Jinan) and 304.207 us (Yiyuan-Mazhan).",
+  "Jinan zero-processing H1 local validation = 27.66 us = Jiang's published classical 2L/c_fibre reference (SI Table S2)."
+ ],
+ "corrections_found": [
+  "G engine trace DAG (qmint/networks/simulator.py): effects were parented ONLY on their trigger, with no per-actor process order. So in S-money, B_b's verification_result_available_local was NOT a causal descendant of the relayed c (Kent Table I steps 8-9) whenever c arrived no later than the token, and the trace did not show the Stage-II dependency. Fixed by adding each actor's previous event as an extra causal parent (Lamport happens-before; the trigger stays first). All G tests still pass; the round-trip detector's results are unchanged.",
+  "Frozen fixture tests/fixtures/contracts/network_two_site.json (NOT edited: not owned) declares 33356.4 ns for 10 km. The light cone is 33356.4095 ns, so the link is 0.0095 ns superluminal and G's engine refuses it. Lane-H tests now use an exact light-cone net2. Proposal: change the fixture to 33356.41 (round up).",
+  "H's lightcone_network rounded link bounds to 3 decimals, sometimes BELOW the light cone, which G's engine rejects. It now uses G's lightcone_links (exact). This removes the duplicate builder logic.",
+  "H's old direct-call H3 late-commit scenario decided a t=0 presentation as if Activate/RelayC had already arrived, which was time-inconsistent. On the engine the verifier holds the presentation until the Stage-II message lands, and local latency is measured from the later of the two. Published numbers are unchanged (stage_ii 83356.41 / 383564.10 ns)."
+ ],
+ "performance_numbers_with_sources": {
+  "evidence_kind": "MODELLED_LATENCY (RIPE: MEASURED_LATENCY link inputs, RTT/2)",
+  "choice_to_local_accept_us_b1_jiang_proc": {
+   "S1": {
+    "jinan": 15.34,
+    "yiyuan_mazhan": 304.21,
+    "10km": 51.54,
+    "100km": 501.85,
+    "1000km": 5004.97,
+    "ripe_median20": 1979.62
+   },
+   "H3_late_commit_disclosed_and_ot": {
+    "jinan": 15.34,
+    "yiyuan_mazhan": 304.21,
+    "10km": 51.54,
+    "100km": 501.85,
+    "1000km": 5004.97,
+    "ripe_median20": 1979.62
+   },
+   "H0": {
+    "jinan": 15.34,
+    "ripe_median20": 1928.67
+   },
+   "H1_and_H4+H1": {
+    "jinan": 46.01,
+    "yiyuan_mazhan": 912.62,
+    "10km": 154.62,
+    "100km": 1505.56,
+    "1000km": 15014.91,
+    "ripe_median20": 6022.74
+   },
+   "H2": {
+    "jinan": 49.02,
+    "yiyuan_mazhan": 915.64,
+    "ripe_median20": 6083.53
+   },
+   "H5_H6": {
+    "jinan": 16.84,
+    "yiyuan_mazhan": 305.71
+   }
+  },
+  "pre_presentation_commit_us": {
+   "S1_and_H3_late": {
+    "jinan": 13.83,
+    "yiyuan_mazhan": 302.7
+   }
+  },
+  "settlement_us_jinan": {
+   "S1": 29.17,
+   "H0_H3_H4+H3": 29.17,
+   "H1_H4+H1": 30.67,
+   "H2": 33.69,
+   "H5_H6": 30.67
+  },
+  "double_spend_race_accepted_sites_100km": {
+   "H0": 2,
+   "H6": 2,
+   "others": 1,
+   "S1": "not simulated (symbolic validity)"
+  }
+ },
+ "blockers": [],
+ "known_limitations": [
+  "S-money security is not simulated (G's model treats validity as symbolic). S1 latency rows are timing only; no epsilon is claimed.",
+  "Matched processing: every classical node step costs p (1.507 us or 0). H1 pays p at the terminal twice plus at the coordinator; relays (S-money B0, H3 issuer) cost 0. The zero_processing rows isolate pure communication.",
+  "H2 on two sites places 2 of 3 replicas at L0, so the quorum is local to L0 (best case). No leader election.",
+  "H3 preassigned and H4+H3 bind the site at issuance to the later b. That is the best case: they actually lose late choice.",
+  "RIPE: per-message delays are resampled per seed and the rng stream differs by protocol message count, so medians over 20 seeds are compared rather than paired samples.",
+  "H6 classical_bytes in benchmark_records now include the deposit message (old H number excluded it). Other byte counts move by a few bytes.",
+  "project/TRACKER.yaml still mentions classical_race_fixtures (not an owned path)."
+ ],
+ "interfaces_changed": [
+  "qmint/networks/simulator.py: SimEvent.causal_parent_ids now = (trigger, previous event of the same actor). No contract change.",
+  "qmint/classical/common.py: removed deliver() and path_delay_ns(); use qmint.networks.causality.link_lower_bound_ns and the engine.",
+  "New qmint/classical/engine_adapter.py (NodeActor, PresentationPoint, run_hosted, wire_bytes). The timer hook needs no engine change: G's SetTimer redelivers to on_message and the adapter calls node.on_timeout.",
+  "EscrowSiteVerifier.hold_until_active (default False keeps old behaviour); SignedTerminal.retry_timeout_ns; CFNMerchant accepts DepositResult.",
+  "PROPOSAL: fix network_two_site.json rounding (33356.41).",
+  "PROPOSAL (v2, H's): BenchmarkRecord field for stage_ii_commit_seconds. It is still carried in configuration (pre_presentation_commit_ns)."
+ ],
+ "whether_paid_jobs_run": false
+}
