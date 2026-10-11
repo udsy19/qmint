@@ -1,6 +1,6 @@
 {
- "command": "python -m qmint.photonics.schiansky2023",
- "created_utc": "2026-10-11T21:27:44Z",
+ "command": "python -m qmint.photonics.schiansky2023 --out reports/data_working/schiansky2023",
+ "created_utc": "2026-10-11T22:27:09Z",
  "entries": [
   {
    "original_or_derived": "original",
@@ -20,14 +20,14 @@
    "original_or_derived": "derived",
    "path_or_uri": "reports/data_working/schiansky2023/summary.json",
    "role": "output",
-   "sha256": "4ad824c5854651ffc776aad06b3aad8aeca0ce8b9df9e5683dc6061818e390fb",
+   "sha256": "4f342f1a6897d0590628c339e04aaade2e2beca8e6055512c411161b34110995",
    "upstream_checksum": null
   },
   {
    "original_or_derived": "derived",
    "path_or_uri": "reports/data_working/schiansky2023/calibration_records.json",
    "role": "output",
-   "sha256": "36fde5085eec6014deef4732e5a60ea3ef683a6a0ed9ade00b39129e5ee89246",
+   "sha256": "818e9ee016c2035e0beca5ae541c9dc241a744c4f5655340a28e4c534e98cc6c",
    "upstream_checksum": null
   },
   {
@@ -57,9 +57,9 @@
   "python": "3.12.11"
  },
  "evidence_kind": "PHOTON_EXPERIMENT",
- "git_sha": "3a3e742d46da214fd5477303cc7f9092d9f984d0",
+ "git_sha": "02aeab190025e51992cca0736f86dc731c1abee2",
  "manifest_id": "schiansky2023-x07-reproduction",
- "retrieved_utc": "2026-10-11T21:27:44Z",
+ "retrieved_utc": "2026-10-11T22:27:09Z",
  "schema_version": "1.0.0",
  "seeds": [
   0

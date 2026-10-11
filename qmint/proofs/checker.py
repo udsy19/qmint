@@ -10,7 +10,9 @@ shared input is the YAML registry *data* (claim ids and required declarations).
 A certificate is returned ``CERTIFIED`` only if
   * its game has a certifiable published theorem (W1, W1_CV, S1, S2) or it is a
     CERTIFIED_NUMERIC SDP certificate with complete residual accounting;
-  * proof reference, evidence hashes, declared assumptions and ``assumptions_met`` are in order;
+  * proof reference (exact match, never a prefix), evidence hashes, declared assumptions and
+    ``assumptions_met`` are in order, and an ideal game (W1, W1_CV, S1) carries no parameter outside
+    its allowlist -- on BOTH the published-theorem and the CERTIFIED_NUMERIC SDP path;
   * every reported bound re-derives within tolerance and is never smaller than the re-derived
     value (no optimistic parameters or inward rounding); reported bounds may exceed the re-derived
     value by at most ``OUTWARD_SLACK_DEX`` (conservative rounding), anything larger is a mismatch
@@ -36,7 +38,7 @@ from typing import Any
 
 from qmint.core.contracts import CertificateStatus, EvidenceKind, GameId, SecurityCertificate
 from qmint.proofs import sdp_exact
-from qmint.proofs.registry import Registry, default_registry
+from qmint.proofs.registry import Claim, Registry, default_registry
 
 PREC = 60
 ABS_TOL_DEX = Decimal("1e-9")  # allowed float noise in a reported log10 bound
@@ -100,32 +102,43 @@ def _ln_sum_exp(a: Decimal, b: Decimal) -> Decimal:
 # --------------------------------------------------------------------------- #
 
 
-def _positive_int(p: Mapping[str, Any], *names: str) -> int:
-    for nm in names:
-        v = p.get(nm)
-        if v is not None:
-            if isinstance(v, bool) or not isinstance(v, int) or v < 1:
-                raise _Refuse(f"{nm} must be a positive integer")
-            return v
-    raise _Refuse(f"missing length parameter {names}")
+def _positive_int(p: Mapping[str, Any], name: str) -> int:
+    v = p.get(name)
+    if v is None:
+        raise _Refuse(f"missing length parameter {name}")
+    if isinstance(v, bool) or not isinstance(v, int) or v < 1:
+        raise _Refuse(f"{name} must be a positive integer")
+    return v
+
+
+# Per-game ALLOWLIST of request parameters for the ideal theorems (M-D1). Kept here, independently
+# of the evaluator's registry-derived list: anything else (noise, loss, thresholds, QBER, detector
+# parameters under any spelling) means the request is not the ideal game and is refused.
+_IDEAL_PARAMS = {"W1": frozenset({"n"}), "W1_CV": frozenset({"n"}), "S1": frozenset({"N", "M"})}
+_IDEAL_CONTROL = frozenset({"declared_assumptions", "verifier", "verification_oracle_queries"})
+
+
+def _ideal_gate(game: str, p: Mapping[str, Any], extra: frozenset[str] = frozenset()) -> None:
+    """Raise ``_Refuse`` unless ``p`` is a pure ideal-game request (shared by both checker paths)."""
+    stray = sorted(k for k in p if k not in _IDEAL_PARAMS[game] | _IDEAL_CONTROL | extra)
+    if stray:
+        raise _Refuse(f"ideal {game} theorem but parameters outside its allowlist: {', '.join(stray)}")
+    if p.get("verifier", "exact") != "exact" or p.get("verification_oracle_queries", 0) not in (0, None):
+        raise _Refuse("ideal theorem requires exact verifier and no oracle access")
+    if game == "S1" and p.get("M", 1) != 1:
+        raise _Refuse("S1 bound is two-site only")
 
 
 def _ideal(game: str, axis: str, p: Mapping[str, Any]) -> Decimal:
     if axis != "epsilon_unf":
         raise _Refuse(f"no theorem for {game}/{axis}")
-    for k in ("error_threshold", "gamma_err", "loss_tolerance", "loss_threshold", "E", "P_noqub"):
-        if p.get(k) not in (None, 0, 0.0):
-            raise _Refuse(f"ideal theorem but noise/loss parameter {k} present")
-    if p.get("verifier", "exact") != "exact" or p.get("verification_oracle_queries", 0) not in (0, None):
-        raise _Refuse("ideal theorem requires exact verifier and no oracle access")
+    _ideal_gate(game, p)
     root2 = Decimal(2).sqrt()
     if game == "W1":
-        return _positive_int(p, "n", "N") * (Decimal(3) / 4).ln()
+        return _positive_int(p, "n") * (Decimal(3) / 4).ln()
     if game == "W1_CV":
-        return _positive_int(p, "n", "N") * ((6 + root2) / 8).ln()  # 3/4 + sqrt2/8
-    if p.get("M", 1) != 1:
-        raise _Refuse("S1 bound is two-site only")
-    return _positive_int(p, "N", "n") * ((2 + root2) / 4).ln()  # 1/2 + 1/(2 sqrt2)
+        return _positive_int(p, "n") * ((6 + root2) / 8).ln()  # 3/4 + sqrt2/8
+    return _positive_int(p, "N") * ((2 + root2) / 4).ln()  # 1/2 + 1/(2 sqrt2)
 
 
 def _kent_point(axis: str, q: Mapping[str, Decimal], m: int, c: int | None) -> Decimal:
@@ -235,6 +248,9 @@ def _derive(game: str, axis: str, p: Mapping[str, Any]) -> Decimal:
 # re-verified in exact arithmetic by qmint.proofs.sdp_exact with an independently built G.
 _SDP_FIELDS = ("solver", "n", "dual_objective", "delta_shift", "certified_bound")
 _SDP_GAMES = {"W1": "wiesner_ideal", "W1_CV": "wiesner_ideal"}
+# Registry obligation for the SDP support (P-W2, audits/SDP_DERIVATION.md); an SDP certificate must cite
+# exactly this or its own game's claim (P-W1 / P-W1CV), never another game's theorem (M-D2).
+_SDP_DERIVATION_REF = "P-W2/sdp"
 
 
 class IndependentProofChecker:
@@ -272,15 +288,27 @@ class IndependentProofChecker:
         if game not in _CERTIFIABLE:
             return [f"no published theorem registered for game {game}"]
         claim = self._registry.claim(_CLAIM_OF_GAME[game])
+        r = self._model_gates(cert, claim, {claim.claim_id, *(b.bound_id for b in claim.bounds)})
+        for axis in AXES:
+            r += self._check_axis(cert, game, axis)
+        return r
+
+    def _model_gates(self, cert: SecurityCertificate, claim: Claim, refs: set[str],
+                     extra_params: frozenset[str] = frozenset()) -> list[str]:
+        """Gates shared by the published and the SDP path (M-D2): exact proof reference (M-D3),
+        the claim's required declarations, and for ideal games the parameter allowlist (M-D1)."""
         r = []
-        if not cert.proof_reference or not cert.proof_reference.startswith(claim.claim_id):
-            r.append(f"proof_reference must cite {claim.claim_id}, got {cert.proof_reference!r}")
+        if cert.proof_reference not in refs:
+            r.append(f"proof_reference must be exactly one of {sorted(refs)}, got {cert.proof_reference!r}")
         declared = set(cert.parameters.get("declared_assumptions") or [])
         missing = [d for d in claim.required_declarations if d not in declared]
         if missing:
             r.append("undeclared theorem hypotheses: " + ", ".join(missing))
-        for axis in AXES:
-            r += self._check_axis(cert, game, axis)
+        if cert.game_id.value in _IDEAL_PARAMS:
+            try:
+                _ideal_gate(cert.game_id.value, cert.parameters, extra_params)
+            except _Refuse as e:
+                r.append(str(e))
         return r
 
     def _check_axis(self, cert: SecurityCertificate, game: str, axis: str) -> list[str]:
@@ -336,7 +364,10 @@ class IndependentProofChecker:
         n = sdp["n"]
         if isinstance(n, bool) or not isinstance(n, int) or n < 1 or (game == "W1_CV" and n != 1):
             return [f"SDP certificate n={n!r} unsupported for exact re-verification of {game}"]
-        r: list[str] = []
+        claim = self._registry.claim(_CLAIM_OF_GAME[game])
+        r = self._model_gates(cert, claim, {claim.claim_id, _SDP_DERIVATION_REF}, frozenset({"sdp_certificate"}))
+        if cert.parameters.get("n") != n:
+            r.append(f"parameters.n={cert.parameters.get('n')!r} must equal sdp_certificate.n={n}")
         try:
             dual, delta, cb = Fraction(str(sdp["dual_objective"])), Fraction(str(sdp["delta_shift"])), Fraction(str(sdp["certified_bound"]))
             exact = Fraction(str(sdp["certified_bound_exact"])) if sdp.get("certified_bound_exact") is not None else None
@@ -381,8 +412,6 @@ class IndependentProofChecker:
                 r.append(f"{axis}: reported bound must be >= certified_bound {float(cb)}")
             if target is not None and cb > Fraction(str(target)):
                 r.append(f"{axis}: certified_bound {float(cb)} exceeds target {target}")
-        if not cert.proof_reference:
-            r.append("proof_reference required (SDP derivation document)")
         return r
 
     def _verdict(self, cert: SecurityCertificate, reasons: list[str]) -> SecurityCertificate:

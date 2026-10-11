@@ -143,7 +143,7 @@ claims:
       - "Bob (the bank) follows the scheme honestly; Bob's agents communicate over secure authenticated channels; Alice is arbitrary (unforgeability quantifies over dishonest Alice)."
     required_declarations: [ideal_no_loss_no_error, two_presentation_points, honest_bank_secure_agent_channels, uniform_bb84_states_and_bases]
     finite_n_or_asymptotic: "exact upper bound for every finite N >= 1"
-    parameters: {N: "number of transmitted qubits, integer >= 1"}
+    parameters: {N: "number of transmitted qubits, integer >= 1", M: "presentation-point pairs; the ideal bound is stated for M = 1 only (optional, default 1)"}
     quantifier_over_adversaries: "for every (unbounded quantum) strategy of dishonest Alice, P[Bob accepts at both presentation points] <= eps_unf"
     mathematical_bound: "(1/2 + 1/(2 sqrt 2))^N"
     numerical_method: "log-space"

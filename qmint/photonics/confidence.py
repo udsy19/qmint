@@ -84,3 +84,16 @@ def two_proportion_z(k1: int, n1: int, k2: int, n2: int) -> tuple[float, float]:
     se = np.sqrt(p * (1 - p) * (1 / n1 + 1 / n2))
     z = (k1 / n1 - k2 / n2) / se if se > 0 else 0.0
     return float(z), float(2 * stats.norm.sf(abs(z)))
+
+
+def welch_t(a: np.ndarray, b: np.ndarray) -> tuple[float | None, float | None]:
+    """Two-sided Welch t-test on per-run rates (the run is the unit when runs are overdispersed).
+
+    Returns (t, p_value), or (None, None) when either group has fewer than 2 runs or no variance
+    (undefined -- never reported as 'no difference').
+    """
+    a, b = np.asarray(a, np.float64), np.asarray(b, np.float64)
+    if a.size < 2 or b.size < 2 or (np.var(a) == 0 and np.var(b) == 0):
+        return None, None
+    res = stats.ttest_ind(a, b, equal_var=False)
+    return float(res.statistic), float(res.pvalue)

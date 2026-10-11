@@ -24,12 +24,20 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from qmint.core.contracts import CalibrationRecord, EvidenceKind, Interval
+from qmint.photonics.zenodo import registered_datasets
 from qmint.proofs.registry import Claim
+
+# Calibration admission floors (M-D4). A 1-sigma interval (0.68) or a handful of events cannot carry a
+# certificate; PUBLISHED_AGGREGATE records have no events of their own and are exempt from the count.
+MIN_CONFIDENCE_LEVEL = 0.95
+MIN_CALIBRATION_EVENTS = 1000
 
 # Where a noisy-game parameter tuple may come from. Anything else is an unknown noise source.
 KNOWN_NOISE_SOURCES = frozenset({"calibration", "published_kent_2022", "published_schiansky_2023", "hypothetical"})
 
 # CalibrationRecord interval field -> (game, parameter, transform). Loss l maps to P_det = 1 - l.
+# ``basis_bias_interval`` is a BIAS |p_basis - 1/2| in [0, 1/2) (lane E emits it so since FDE-1), i.e.
+# exactly Kent's beta_PB; it is never a basis fraction (~0.5). check_calibration refuses hi >= 1/2.
 _CALIBRATION_MAP: dict[str, dict[str, tuple[str, bool]]] = {
     "S2": {
         "qber_interval": ("E", False),
@@ -71,13 +79,21 @@ def check_declarations(claim: Claim, params: Mapping[str, Any]) -> AssumptionRep
     return AssumptionReport(checked, failed)
 
 
-def check_noise_free(params: Mapping[str, Any], calibration: CalibrationRecord | None) -> AssumptionReport:
-    """Ideal games (W1, W1_CV, S1) require an exact verifier on a noise-free, loss-free channel."""
-    failed = []
-    for key in ("error_threshold", "gamma_err", "loss_tolerance", "loss_threshold", "E", "P_noqub"):
-        v = params.get(key)
-        if v not in (None, 0, 0.0):
-            failed.append(f"OUT_OF_MODEL:ideal_theorem_requires_{key}_absent_or_zero")
+# Keys an ideal-game request may carry besides the claim's own registered parameters
+# (``Claim.parameters`` in proofs/OBLIGATIONS.yaml). Everything else is refused: ALLOWLIST, not a
+# denylist of noise spellings (M-D1: "threshold", "noise", "qber", "P_det", "e_h", ... all passed a
+# denylist). ``verifier`` / ``verification_oracle_queries`` are accepted only at their ideal values.
+IDEAL_CONTROL_KEYS = frozenset({"declared_assumptions", "verifier", "verification_oracle_queries"})
+
+
+def check_noise_free(claim: Claim, params: Mapping[str, Any], calibration: CalibrationRecord | None) -> AssumptionReport:
+    """Ideal games (W1, W1_CV, S1): exact verifier, noise-free, loss-free channel, no oracle.
+
+    Any parameter outside ``claim.parameters`` + :data:`IDEAL_CONTROL_KEYS` is OUT_OF_MODEL,
+    whatever its value (a zero-valued ``error_threshold`` is still not a parameter of the theorem).
+    """
+    allowed = set(claim.parameters) | IDEAL_CONTROL_KEYS
+    failed = [f"OUT_OF_MODEL:{claim.claim_id}_parameter_not_in_allowlist:{k}" for k in sorted(params) if k not in allowed]
     if params.get("verifier", "exact") != "exact":
         failed.append("OUT_OF_MODEL:ideal_theorem_requires_exact_verifier")
     if params.get("verification_oracle_queries", 0) not in (0, None):
@@ -87,26 +103,47 @@ def check_noise_free(params: Mapping[str, Any], calibration: CalibrationRecord |
             iv = getattr(calibration, name)
             if iv is not None and iv.hi > 0:
                 failed.append(f"OUT_OF_MODEL:calibration_{name}_nonzero_use_noisy_game")
-    return AssumptionReport(("ideal_noise_free_exact_verifier",) if not failed else (), tuple(failed))
+    return AssumptionReport(("ideal_parameter_allowlist_exact_verifier",) if not failed else (), tuple(failed))
 
 
 def check_calibration(claim: Claim, calibration: CalibrationRecord | None, params: Mapping[str, Any]) -> AssumptionReport:
-    """Noise source must be known: a matching-family calibration or a declared provenance."""
+    """Noise source must be known: a matching-family, provenance-checked calibration or a declared provenance.
+
+    A calibration is accepted only if (M-D4):
+      * its ``experiment_family`` is one the theorem accepts;
+      * its origin is PHOTON_EXPERIMENT or PUBLISHED_AGGREGATE;
+      * ``confidence_level`` >= :data:`MIN_CONFIDENCE_LEVEL`;
+      * any cited ``dataset_sha256`` (mandatory for PHOTON_EXPERIMENT) is a registered dataset
+        (``datasets/manifests/*.yaml``) whose registered family equals ``experiment_family``;
+      * a PHOTON_EXPERIMENT record rests on >= :data:`MIN_CALIBRATION_EVENTS` events.
+    """
     if calibration is None:
         src = params.get("noise_source")
         if src not in KNOWN_NOISE_SOURCES:
             return AssumptionReport(failed=(f"ASSUMPTION_MISSING:noise_source(got {src!r})",))
         return AssumptionReport(checked=(f"noise_source={src}",))
     failed = []
-    if calibration.experiment_family not in claim.calibration_families:
-        failed.append(
-            f"CALIBRATION_FAMILY_MISMATCH:{calibration.experiment_family!r} not in {claim.calibration_families}"
-        )
+    fam = calibration.experiment_family
+    if fam not in claim.calibration_families:
+        failed.append(f"CALIBRATION_FAMILY_MISMATCH:{fam!r} not in {claim.calibration_families}")
     if calibration.data_origin not in (EvidenceKind.PHOTON_EXPERIMENT, EvidenceKind.PUBLISHED_AGGREGATE):
         failed.append(f"CALIBRATION_ORIGIN_NOT_EXPERIMENTAL:{calibration.data_origin.value}")
     if not calibration.independence_assumptions:
         failed.append("ASSUMPTION_MISSING:independence_assumptions")
-    checked = () if failed else (f"calibration_family={calibration.experiment_family}",)
+    if calibration.confidence_level < MIN_CONFIDENCE_LEVEL:
+        failed.append(f"CALIBRATION_CONFIDENCE_BELOW_FLOOR:{calibration.confidence_level}<{MIN_CONFIDENCE_LEVEL}")
+    if calibration.dataset_sha256 is not None:
+        registered = registered_datasets().get(calibration.dataset_sha256)
+        if registered is None:
+            failed.append(f"CALIBRATION_DATASET_UNREGISTERED:{calibration.dataset_sha256}")
+        elif registered != fam:
+            failed.append(f"CALIBRATION_DATASET_FAMILY_MISMATCH:dataset registered as {registered!r}, record claims {fam!r}")
+    bb = calibration.basis_bias_interval
+    if bb is not None and not (0.0 <= bb.lo and bb.hi < 0.5):
+        failed.append(f"CALIBRATION_BASIS_BIAS_NOT_A_BIAS:[{bb.lo}, {bb.hi}] not within [0, 1/2)")
+    if calibration.data_origin == EvidenceKind.PHOTON_EXPERIMENT and calibration.n_events < MIN_CALIBRATION_EVENTS:
+        failed.append(f"CALIBRATION_TOO_FEW_EVENTS:{calibration.n_events}<{MIN_CALIBRATION_EVENTS}")
+    checked = () if failed else (f"calibration_family={fam}",)
     return AssumptionReport(checked, tuple(failed))
 
 

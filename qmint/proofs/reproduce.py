@@ -64,6 +64,15 @@ def kent_fig5_beta_max(theta_deg: float, e: float, p_noqub: float) -> dict[str, 
     return tuple_for(lo)
 
 
+def digitized_agrees(ours: float | None, paper: float, rel: float) -> bool:
+    """Two-sided a-priori band for a value read off a published figure (M-D5).
+
+    beta_max is the PERMISSIVE direction (a larger admissible bias is a weaker requirement), so an
+    overestimate must fail exactly like an underestimate: |ours / paper - 1| <= rel.
+    """
+    return ours is not None and paper > 0 and abs(ours / paper - 1) <= rel
+
+
 def _row(quantity: str, anchor: str, paper: Any, ours: Any, agrees: bool, kind: str) -> dict[str, Any]:
     return {"quantity": quantity, "anchor": anchor, "paper_value": paper, "qmint_value": ours,
             "agrees": agrees, "evidence_kind": kind}
@@ -103,7 +112,7 @@ def reproduce() -> dict[str, Any]:
         best = kent_fig5_beta_max(theta, e, pnq)
         ours = best["beta_PB"] if best else None
         rows.append(_row(f"Fig.5 beta_max theta={theta}deg E={e}", "KLPR2022 Fig. 5 / Methods p.12", paper, ours,
-                         ours is not None and ours >= paper * (1 - rel), "DIGITIZED_FIGURE"))
+                         digitized_agrees(ours, paper, rel), "DIGITIZED_FIGURE"))
     # The experimental tuple (theta <= 10 deg) admits NO gamma_err in (E, lambda) satisfying Theorem 1.
     exp_ok = any(
         not fs.kent_unf_domain(dict(N=k["N"], P_noqub=pnq, nu_unf=k["nu_unf"], gamma_err=0.058 + i * 1e-4,

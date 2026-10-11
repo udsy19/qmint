@@ -128,6 +128,25 @@ def test_noise_or_oracle_makes_ideal_bound_inapplicable(bad, decl):
     assert r.failed_assumptions and all(f.startswith("OUT_OF_MODEL") for f in r.failed_assumptions)
 
 
+@pytest.mark.parametrize("game", list(IDEAL_BASES))
+@pytest.mark.parametrize("extra", [{"threshold": 5}, {"noise": {"p": 0.05}}, {"qber": 0.03}, {"gamma_det": 0.018},
+                                   {"P_det": 0.019}, {"e_h": 0.0145}, {"l_h": 0.22}, {"error_threshold": 0},
+                                   {"loss": 0.0}, {"foo": None}])
+def test_ideal_parameter_allowlist(game, extra, decl):
+    """M-D1: any key outside the per-game allowlist (W1/W1_CV: n; S1: N, M) is OUT_OF_MODEL, whatever its value."""
+    r = IdealBoundEvaluator().evaluate(_req(game, 64, decl, **extra))
+    assert r.value is None and r.log10_value is None
+    assert any("parameter_not_in_allowlist" in f for f in r.failed_assumptions), r.failed_assumptions
+    assert all(f.startswith("OUT_OF_MODEL") for f in r.failed_assumptions)
+
+
+@pytest.mark.parametrize(("game", "wrong"), [(GameId.W1, "N"), (GameId.W1_CV, "N"), (GameId.S1, "n")])
+def test_length_key_is_game_specific(game, wrong, decl):
+    req = BoundRequest(protocol_id=PROTO[game], game_id=game, axis="epsilon_unf",
+                       parameters={wrong: 64, "declared_assumptions": decl(CLAIM[game])})
+    assert IdealBoundEvaluator().evaluate(req).value is None
+
+
 def test_noisy_calibration_blocks_ideal_bound(decl):
     cal = CalibrationRecord(
         calibration_id="c", device_id="d", experiment_family="kent_2022", data_origin=EvidenceKind.PUBLISHED_AGGREGATE,

@@ -56,12 +56,16 @@
     "calibration_runs": "0-5",
     "holdout_inside_calibration_cp": 0.0,
     "holdout_runs": "6-10",
-    "p_value": 0.003385574016297258,
+    "interpretation": "overdispersed / heterogeneous across runs (chi2/dof ~ 10, single outlier runs); no evidence of monotone drift (run-level Welch test of contiguous halves); intervals widened by run/block bootstrap",
+    "p_value": 0.3342323424332512,
+    "pooled_iid_p_value": 0.003385574016297258,
+    "pooled_iid_z": 2.9303711176965,
     "qber_calibration": 0.033186626515327,
     "qber_calibration_cp_hi": 0.03350464380148565,
     "qber_calibration_cp_lo": 0.03287080926245333,
     "qber_holdout": 0.03249504156069402,
-    "z": 2.9303711176965
+    "test": "welch_t_per_run_rates",
+    "welch_t": 1.0248735875243633
    },
    "ttp_z_frac": 0.4979122819262889,
    "ttp_z_frac_boot_runs": [
@@ -129,12 +133,16 @@
     "calibration_runs": "0-5",
     "holdout_inside_calibration_cp": 0.0,
     "holdout_runs": "6-10",
-    "p_value": 0.0916690712700009,
+    "interpretation": "overdispersed / heterogeneous across runs (chi2/dof ~ 10, single outlier runs); no evidence of monotone drift (run-level Welch test of contiguous halves); intervals widened by run/block bootstrap",
+    "p_value": 0.5869380388307232,
+    "pooled_iid_p_value": 0.0916690712700009,
+    "pooled_iid_z": -1.6866583180006298,
     "qber_calibration": 0.01417890438681904,
     "qber_calibration_cp_hi": 0.014391613242306263,
     "qber_calibration_cp_lo": 0.013968536039436853,
     "qber_holdout": 0.014451383605084028,
-    "z": -1.6866583180006298
+    "test": "welch_t_per_run_rates",
+    "welch_t": -0.5847625765354351
    },
    "ttp_z_frac": 0.4969356550129853,
    "ttp_z_frac_boot_runs": [

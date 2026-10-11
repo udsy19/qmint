@@ -1,9 +1,9 @@
 [
  {
   "basis_bias_interval": {
-   "hi": 0.4980342408472289,
-   "lo": 0.49583112229724713,
-   "point": 0.4969356550129853,
+   "hi": 0.004168877702752871,
+   "lo": 0.001965759152771085,
+   "point": 0.003064344987014689,
    "unit": "fraction"
   },
   "calibration_id": "schiansky2023-zenodo7979319-Z-v1",
@@ -21,7 +21,7 @@
    "clopper_pearson assumes iid trials; bootstrap assumes exchangeable 1-s blocks / runs",
    "times are relative per run (each run starts near zero); time_start/end span runs"
   ],
-  "interval_method": "hull(clopper_pearson pooled, time_block_bootstrap 1s blocks, run_bootstrap 11 runs [B=4000 seed=0 percentile], paper state-averaged estimator +/-1.96 SE); point = pooled errors/sifted; qber denominator = basis-matched (sifted) coincidences; basis_bias = fraction of coincidences with TTP passive basis Z",
+  "interval_method": "hull(clopper_pearson pooled, time_block_bootstrap 1s blocks, run_bootstrap 11 runs [B=4000 seed=0 percentile], paper state-averaged estimator +/-1.96 SE); point = pooled errors/sifted; qber denominator = basis-matched (sifted) coincidences; basis_bias = |p_Z - 1/2| with p_Z = fraction of coincidences with TTP passive basis Z (interval = image of the p_Z hull); runs are overdispersed (chi2/dof ~ 10), hence the bootstrap hull",
   "loss_interval": null,
   "multiphoton_interval": null,
   "n_events": 4394577,
@@ -37,9 +37,9 @@
  },
  {
   "basis_bias_interval": {
-   "hi": 0.501198490282842,
-   "lo": 0.49501547326386386,
-   "point": 0.4979122819262889,
+   "hi": 0.004984526736136141,
+   "lo": 0.0,
+   "point": 0.002087718073711109,
    "unit": "fraction"
   },
   "calibration_id": "schiansky2023-zenodo7979319-X-v1",
@@ -57,7 +57,7 @@
    "clopper_pearson assumes iid trials; bootstrap assumes exchangeable 1-s blocks / runs",
    "times are relative per run (each run starts near zero); time_start/end span runs"
   ],
-  "interval_method": "hull(clopper_pearson pooled, time_block_bootstrap 1s blocks, run_bootstrap 11 runs [B=4000 seed=0 percentile], paper state-averaged estimator +/-1.96 SE); point = pooled errors/sifted; qber denominator = basis-matched (sifted) coincidences; basis_bias = fraction of coincidences with TTP passive basis Z",
+  "interval_method": "hull(clopper_pearson pooled, time_block_bootstrap 1s blocks, run_bootstrap 11 runs [B=4000 seed=0 percentile], paper state-averaged estimator +/-1.96 SE); point = pooled errors/sifted; qber denominator = basis-matched (sifted) coincidences; basis_bias = |p_Z - 1/2| with p_Z = fraction of coincidences with TTP passive basis Z (interval = image of the p_Z hull); runs are overdispersed (chi2/dof ~ 10), hence the bootstrap hull",
   "loss_interval": null,
   "multiphoton_interval": null,
   "n_events": 4570301,

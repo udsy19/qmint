@@ -6,7 +6,6 @@ import zipfile
 
 import numpy as np
 import pytest
-from photonics_synth import standard_archive, synth_pairs, tsv_bytes
 
 from qmint.photonics.parser import (
     TTM8000_TICK_NS,
@@ -20,6 +19,7 @@ from qmint.photonics.parser import (
     read_tsv_member,
     to_photon_events,
 )
+from qmint.photonics.synthetic import standard_archive, synth_pairs, tsv_bytes
 
 SHA = "a" * 64
 
