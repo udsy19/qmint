@@ -4,7 +4,7 @@ Conventions (C7, documented once here and used everywhere in ``qmint.attacks``):
 
 * Single-qubit computational basis: index 0 = |0>, index 1 = |1>.
 * BB84 labels follow ``qmint.core.contracts.BB84_STATE_OF``:
-  (Z,0)=|0>, (Z,1)=|1>, (X,0)=|+>, (X,1)=|->.
+  (Z,0)=|0>, (Z,1)=|1>, (X,0)=|+>, (X,1)=|->; kets come from ``qmint.quantum.bb84``.
 * Multi-system kets use ``np.kron(a, b)``: the FIRST factor is the most significant
   (big-endian) index. No Qiskit little-endian decoding is used anywhere in this package.
 * Choi operator of a map Phi: L(C^din) -> L(C^dout) is
@@ -21,27 +21,16 @@ from collections.abc import Iterable, Sequence
 
 import numpy as np
 
-from qmint.core.contracts import BB84_STATE_OF, Basis
-
-_S2 = 1.0 / np.sqrt(2.0)
-_KET_OF_LABEL = {
-    "0": np.array([1.0, 0.0], dtype=complex),
-    "1": np.array([0.0, 1.0], dtype=complex),
-    "+": np.array([_S2, _S2], dtype=complex),
-    "-": np.array([_S2, -_S2], dtype=complex),
-}
+from qmint.core.contracts import BB84State
+from qmint.quantum.bb84 import STATE_VECTORS
 
 #: The four BB84 labels in a fixed order; Wiesner samples them uniformly.
-BB84_LABELS: tuple[str, ...] = ("0", "1", "+", "-")
-
-
-def bb84_ket(basis: Basis, bit: int) -> np.ndarray:
-    """Ket for (basis, bit) via the frozen C7 mapping."""
-    return _KET_OF_LABEL[BB84_STATE_OF[(Basis(basis), int(bit))].value].copy()
+BB84_LABELS: tuple[str, ...] = tuple(s.value for s in BB84State)
 
 
 def ket(label: str) -> np.ndarray:
-    return _KET_OF_LABEL[label].copy()
+    """BB84 ket by C7 label ('0', '1', '+', '-'); canonical table in ``qmint.quantum.bb84``."""
+    return STATE_VECTORS[BB84State(label)].copy()
 
 
 def proj(v: np.ndarray) -> np.ndarray:

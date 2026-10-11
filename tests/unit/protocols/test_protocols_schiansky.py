@@ -23,13 +23,13 @@ def system(ell=4, N=8, rule=None, seed=1, merchants=(3, 5, 9)):
 # ----------------------------------------------------------------- paper vectors
 def test_step2_example_vector_from_paper():
     """(b, B) = (0101, 0011) -> |+>|->|0>|1> (P04 main text, step 2)."""
-    from qmint.protocols.register import bb84_ket
+    from qmint.quantum.bb84 import state_vector
 
     b, B = (0, 1, 0, 1), (0, 0, 1, 1)
     sq = 1 / math.sqrt(2)
     expect = [[sq, sq], [sq, -sq], [1, 0], [0, 1]]
     for bj, Bj, v in zip(b, B, expect, strict=True):
-        assert np.allclose(bb84_ket(S.BASIS_OF_BIT[Bj], bj), v)
+        assert np.allclose(state_vector(S.BASIS_OF_BIT[Bj], bj), v)
 
 
 def test_published_aggregates_reproduced():
@@ -122,7 +122,8 @@ def test_unknown_merchant_refused_by_client():
 
 def test_quantum_channel_substitution_detected():
     """CH1 attacker swaps |P> for fresh random BB84 states: the TTP rejects."""
-    from qmint.protocols.register import FactorizedRegister, RegisterHandle, bb84_ket
+    from qmint.protocols.register import FactorizedRegister, RegisterHandle
+    from qmint.quantum.bb84 import state_vector
 
     sysm = system(ell=4, N=16)
     sysm.open_account("c", 0.0)
@@ -130,7 +131,7 @@ def test_quantum_channel_substitution_detected():
     rng = np.random.default_rng(0)
     reg = FactorizedRegister()
     kets = [
-        bb84_ket(Basis.Z if rng.integers(2) else Basis.X, int(rng.integers(2))) for _ in range(h.n_qubits())
+        state_vector(Basis.Z if rng.integers(2) else Basis.X, int(rng.integers(2))) for _ in range(h.n_qubits())
     ]
     fake = RegisterHandle(reg, reg.add_product_state([np.outer(v, v.conj()) for v in kets]), h.record)
     kappa = sysm.client_pay("c", fake, 5, 2.0)
@@ -257,9 +258,9 @@ def test_cryptogram_law_independent_of_merchant():
     for m_bit in (0, 1):
         p0 = 0.0
         for b, B in itertools.product((0, 1), repeat=2):
-            from qmint.protocols.register import bb84_ket
+            from qmint.quantum.bb84 import state_vector
 
-            v = bb84_ket(S.BASIS_OF_BIT[B], b)
+            v = state_vector(S.BASIS_OF_BIT[B], b)
             p0 += 0.25 * np.real(v.conj() @ bb84_projector(S.BASIS_OF_BIT[m_bit], 0) @ v)
         assert p0 == pytest.approx(0.5)
 

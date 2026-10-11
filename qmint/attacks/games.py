@@ -36,7 +36,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from qmint.attacks.linalg import apply_kraus, bb84_ket, kron_all, proj
+from qmint.attacks.linalg import apply_kraus, kron_all, proj
 from qmint.core.contracts import (
     Basis,
     GameId,
@@ -45,35 +45,31 @@ from qmint.core.contracts import (
     TokenRecord,
     check_protocol_game,
 )
+from qmint.proofs.ideal_bounds import IDEAL_BASES, UnsupportedGameError
+from qmint.proofs.registry import default_registry
+from qmint.quantum.bb84 import state_vector
 
 # --------------------------------------------------------------------------- #
 # Game-ID guard for theorem values (published bounds are game-specific)
 # --------------------------------------------------------------------------- #
 
-#: MVW 2012 (arXiv:1202.4010v1) Theorem 1 (p.2) / Sec. 3.2 (p.7-8) / Sec. 3.4 (p.9-10).
-W1_BASE = 0.75
-#: MVW 2012 Theorem 2 (p.3) / Lemma 5 (p.14) with d=2, c=1/2.
-W1_CV_BASE = 0.75 + math.sqrt(2) / 8
-MVW_SOURCE = "Molina, Vidick, Watrous 2012, arXiv:1202.4010v1"
-
-
-class GameMismatchError(ValueError):
-    """A theorem was requested for a game it was not proven for."""
+#: Citation of the MVW 2012 source, from lane D's theorem registry (proofs/OBLIGATIONS.yaml).
+MVW_SOURCE = default_registry().sources["MVW2012"].citation
+_MVW_GAMES = (GameId.W1, GameId.W1_CV)
 
 
 def theorem_upper_bound(game_id: GameId | str, n: int) -> float:
-    """Published optimal success for exactly W1 or W1_CV; anything else raises.
+    """Published optimal success for exactly W1 or W1_CV (MVW 2012 Thms 1-2); anything else raises.
 
-    W2/S1/S2/D1/A1/C1 have no bound here: we never transfer the W1 theorem across games.
+    Per-qubit bases come from ``qmint.proofs.ideal_bounds.IDEAL_BASES`` (lane D). W2/S1/S2/D1/A1/C1
+    have no MVW bound here: we never transfer the W1 theorem across games.
     """
     g = GameId(game_id)
     if n < 1:
         raise ValueError("n must be >= 1")
-    if g == GameId.W1:
-        return W1_BASE**n
-    if g == GameId.W1_CV:
-        return W1_CV_BASE**n
-    raise GameMismatchError(f"no MVW theorem applies to game {g.value}; bound is UNKNOWN (None), not 0")
+    if g not in _MVW_GAMES:
+        raise UnsupportedGameError(f"no MVW theorem applies to game {g.value}; bound is UNKNOWN (None), not 0")
+    return IDEAL_BASES[g][0] ** n
 
 
 # --------------------------------------------------------------------------- #
@@ -227,14 +223,14 @@ class W1Challenger:
             ownership_context="lane_C_attack_lab",
             backend_provenance="SIMULATOR_IDEAL:qmint.attacks.games",
         )
-        positions = [proj(bb84_ket(b, x)) for b, x in zip(bases, bits, strict=True)]
+        positions = [proj(state_vector(b, x)) for b, x in zip(bases, bits, strict=True)]
         return NoteRegister(record, positions, 1)
 
     # -- verification ------------------------------------------------------ #
 
     def _secret_projector(self, token_id: str, i: int) -> np.ndarray:
         s = self._secrets[token_id]
-        return proj(bb84_ket(s.bases[i], s.bits[i]))
+        return proj(state_vector(s.bases[i], s.bits[i]))
 
     def _measure_position(self, cand: Candidate, i: int) -> bool:
         reg = cand.register

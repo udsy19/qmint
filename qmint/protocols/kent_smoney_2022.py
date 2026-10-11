@@ -51,7 +51,8 @@ from qmint.core.contracts import (
     TransactionTrace,
 )
 from qmint.protocols.common import EventLog, SecretHolder
-from qmint.protocols.register import FactorizedRegister, RegisterHandle, bb84_ket, bb84_projector
+from qmint.protocols.register import FactorizedRegister, RegisterHandle, bb84_projector
+from qmint.quantum.bb84 import state_vector
 
 PAPER_URL = "https://doi.org/10.1038/s41534-022-00524-4"
 
@@ -236,7 +237,7 @@ class KentSMoneySession(SecretHolder):
         issue = self.log.event("B", "issue", t_ns, scheme=self.scheme.value, N=n)
         reg = FactorizedRegister()
         qs = reg.add_product_state(
-            [np.outer(v, v.conj()) for v in (bb84_ket(b, x) for b, x in zip(bases, t, strict=True))]
+            [np.outer(v, v.conj()) for v in (state_vector(b, x) for b, x in zip(bases, t, strict=True))]
         )
         self.log.event("A", "quantum_exchange", t_ns if t_recv_ns is None else t_recv_ns, [issue], N=n)
         record = TokenRecord(

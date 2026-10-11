@@ -23,9 +23,9 @@ from qmint.protocols.register import (
     ConsumedTokenError,
     FactorizedRegister,
     RegisterError,
-    bb84_ket,
     bb84_projector,
 )
+from qmint.quantum.bb84 import state_vector
 
 SQ2 = 1 / math.sqrt(2)
 
@@ -55,16 +55,16 @@ def kraus_keep_and_blank():
 
 # --------------------------------------------------------------------------- C7 ordering
 def test_state_ordering_c7():
-    assert np.allclose(bb84_ket(Basis.Z, 0), [1, 0])
-    assert np.allclose(bb84_ket(Basis.Z, 1), [0, 1])
-    assert np.allclose(bb84_ket(Basis.X, 0), [SQ2, SQ2])
-    assert np.allclose(bb84_ket(Basis.X, 1), [SQ2, -SQ2])
+    assert np.allclose(state_vector(Basis.Z, 0), [1, 0])
+    assert np.allclose(state_vector(Basis.Z, 1), [0, 1])
+    assert np.allclose(state_vector(Basis.X, 0), [SQ2, SQ2])
+    assert np.allclose(state_vector(Basis.X, 1), [SQ2, -SQ2])
 
 
 @pytest.mark.parametrize("basis", [Basis.Z, Basis.X])
 def test_same_basis_outcomes_orthogonal_and_deterministic(basis):
     for bit in (0, 1):
-        rho = _dm(bb84_ket(basis, bit))
+        rho = _dm(state_vector(basis, bit))
         assert np.isclose(np.trace(bb84_projector(basis, bit) @ rho).real, 1.0)
         assert np.isclose(np.trace(bb84_projector(basis, 1 - bit) @ rho).real, 0.0)
 
@@ -72,11 +72,11 @@ def test_same_basis_outcomes_orthogonal_and_deterministic(basis):
 def test_wrong_basis_is_fifty_fifty_exact_and_sampled():
     for prep, meas in ((Basis.Z, Basis.X), (Basis.X, Basis.Z)):
         for bit in (0, 1):
-            p = np.trace(bb84_projector(meas, 0) @ _dm(bb84_ket(prep, bit))).real
+            p = np.trace(bb84_projector(meas, 0) @ _dm(state_vector(prep, bit))).real
             assert np.isclose(p, 0.5)
     rng = np.random.default_rng(7)
     reg = FactorizedRegister()
-    qs = reg.add_product_state([_dm(bb84_ket(Basis.Z, 0))] * 4000)
+    qs = reg.add_product_state([_dm(state_vector(Basis.Z, 0))] * 4000)
     ones = sum(reg.measure(q, bb84_projector(Basis.X, 0), rng) for q in qs)
     ci = binomtest(ones, 4000).proportion_ci(confidence_level=0.999, method="exact")
     assert ci.low <= 0.5 <= ci.high

@@ -68,11 +68,15 @@ def validate_note(bases: Sequence[Basis], bits: Sequence[int]) -> None:
             raise ValueError("bits must be 0/1")
 
 
-def state_label(basis: Basis, bit: int) -> BB84State:
-    return BB84_STATE_OF[(basis, int(bit))]
+def state_label(basis: Basis | str, bit: int) -> BB84State:
+    """C7 label of (basis, bit); ``basis`` may be a ``Basis`` or its string value."""
+    return BB84_STATE_OF[(Basis(basis), int(bit))]
 
 
-def state_vector(basis: Basis, bit: int) -> np.ndarray:
+def state_vector(basis: Basis | str, bit: int) -> np.ndarray:
+    """State vector (computational basis) for a (basis, bit) pair via the frozen C7 mapping.
+
+    Canonical BB84 ket for every package (protocols, attacks, quantum); returns a copy."""
     return STATE_VECTORS[state_label(basis, bit)].copy()
 
 

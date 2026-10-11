@@ -8,6 +8,10 @@ owning lane's package; consumers depend on these Protocols, not on each other.
   AttackSimulator     -- lane C implements; never consumed by the compiler as a bound.
   Challenger          -- lane B implements per protocol; owns IssuerSecret; adversary
                          receives only `TokenHandle` capabilities, never secrets.
+  ChannelTokenHandle  -- TokenHandle plus the physical holder capabilities (apply a CPTP map
+                         and split into candidates; measure one qubit). Lane B's
+                         ``RegisterHandle`` implements it; attacks code against it.
+  PairChallenger      -- Challenger plus ``verify_pair`` for two-candidate games (W1/W2).
   CalibrationProvider -- lane E implements; returns CalibrationRecord with intervals.
 """
 
@@ -59,6 +63,22 @@ class TokenHandle(Protocol):
 
 
 @runtime_checkable
+class ChannelTokenHandle(TokenHandle, Protocol):
+    """``TokenHandle`` with the physical operations a holder can perform (proposal B-B1).
+
+    A sub-Protocol, so every existing ``TokenHandle`` implementer stays conformant."""
+
+    def split(self, kraus: Sequence[Any], *, joint: bool = False, copies: int = 2) -> tuple[Any, ...]:
+        """Apply a CPTP map (Kraus list) and return ``copies`` candidate handles; consumes self.
+        ``joint=False``: the same 2 -> 2^copies map acts on every qubit independently."""
+        ...
+
+    def measure(self, position: int, projector0: Any, rng: Any) -> int:
+        """Two-outcome projective measurement {P, I-P} of one qubit (0 for P); destroys it."""
+        ...
+
+
+@runtime_checkable
 class Challenger(Protocol):
     protocol_id: str
 
@@ -66,6 +86,15 @@ class Challenger(Protocol):
 
     def verify(self, candidate: Any) -> bool:
         """Verify a candidate against the hidden IssuerSecret held only by the challenger."""
+        ...
+
+
+@runtime_checkable
+class PairChallenger(Challenger, Protocol):
+    """``Challenger`` for two-candidate counterfeiting games (W1/W1_CV/W2), proposal B-B1."""
+
+    def verify_pair(self, c1: Any, c2: Any) -> tuple[bool, bool]:
+        """Verify both candidates independently against the same hidden secret."""
         ...
 
 
