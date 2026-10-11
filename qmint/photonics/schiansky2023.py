@@ -35,6 +35,7 @@ from qmint.photonics.zenodo import data_cache_dir
 
 DATASET_RECORD = 7979319
 ARCHIVE_UPSTREAM_MD5 = "md5:fd708578a613b63f57c31f986a56bf94"
+ARCHIVE_BIN_NS_RAW = 3.0
 ARCHIVE_URL = "https://zenodo.org/api/records/7979319/files/Archive.zip/content"
 SERIES = {Basis.Z: "#2a78d6", Basis.X: "#eb6834"}  # dataviz reference categorical slots 1, 2
 
@@ -134,7 +135,71 @@ def _figure(runs: list[RunResult], summaries: dict, path: Path) -> None:
     plt.close(fig)
 
 
-def run(archive: Path, out: Path, *, verify_upstream: bool = True) -> dict:
+RAW_RECORD = 7997998
+RAW_UPSTREAM_MD5 = "md5:544ed5cff8db0598b04dfecb6a5072be"
+RAW_URL = "https://zenodo.org/api/records/7997998/files/Archive.zip/content"
+
+
+def default_raw_archive() -> Path:
+    return data_cache_dir() / f"zenodo_{RAW_RECORD}" / "Archive.zip"
+
+
+def raw_crosscheck(raw_archive: Path, archive: Path) -> dict:
+    """Independent offset/drift/coincidence pipeline on the raw TTM8000 example (v2 record),
+    compared pair-by-pair with the authors' archived ``linear/chunk00`` coincidences."""
+    from qmint.photonics.channels import SCHIANSKY_2023_V1 as M
+    from qmint.photonics.coincidences import align_streams, match_bins, match_window
+    from qmint.photonics.parser import TagBlock, iter_ttm8000_member, open_archive, read_tsv_member
+
+    zr = open_archive(raw_archive)
+    sg = TagBlock.concat(iter_ttm8000_member(zr, "tagfile_example/SG.txt")).ok()  # TTP
+    bg = TagBlock.concat(iter_ttm8000_member(zr, "tagfile_example/BG.txt")).ok()  # Client
+    al = align_streams(sg.t_ns, bg.t_ns)
+    tb = al.to_a_frame(bg.t_ns)
+    m3 = match_bins(sg.t_ns, tb, ARCHIVE_BIN_NS_RAW)
+    acc = match_bins(sg.t_ns, tb + 200.0, ARCHIVE_BIN_NS_RAW)  # accidental estimate: 200 ns shifted bins
+    mw = match_window(sg.t_ns, tb, 1.5)
+    is_z, tbit = M.ttp_arrays(sg.channel[m3.ia])
+    cbit = M.client_bits(bg.channel[m3.ib])
+    n_z, e_z = int(is_z.sum()), int((is_z & (cbit == tbit)).sum())
+    n_x, e_x = int((~is_z).sum()), int((~is_z & (cbit == tbit)).sum())
+    # pair-level comparison with archived linear/chunk00 (times there are SG - SG[0])
+    za = open_archive(archive)
+    at = read_tsv_member(za, "linear/ttp_chunk00.tsv").ok()
+    rel = sg.t_ns - sg.t_ns[0]
+    i = np.clip(np.searchsorted(rel, at.t_ns), 1, rel.size - 1)
+    j = np.where(np.abs(rel[i] - at.t_ns) < np.abs(rel[i - 1] - at.t_ns), i, i - 1)
+    tdiff = np.abs(rel[j] - at.t_ns)
+    overlap = int(np.intersect1d(j, m3.ia).size)
+    dt_by_client = {int(c): float(np.median(m3.dt[bg.channel[m3.ib] == c])) for c in sorted(M.client_channels)}
+    return {
+        "raw_files": {"SG.txt(TTP)": len(sg), "BG.txt(Client)": len(bg)},
+        "tick_ns_from_authors_script": 0.0823045,
+        "coarse_offset_ns": al.coarse_offset_ns,
+        "offset_ns_at_ref": al.offset_ns,
+        "drift_ns_per_s": al.slope * 1e9,
+        "drift_fit_residual_std_ns": al.residual_std_ns,
+        "drift_blocks_used": al.n_blocks_used,
+        "pairs_bin3ns": len(m3),
+        "pairs_window_pm1p5ns": len(mw),
+        "multi_occupancy_excluded": {"ttp": m3.n_multi_a, "client": m3.n_multi_b},
+        "accidentals_bin3ns_shift200ns": len(acc),
+        "accidental_fraction_estimate": len(acc) / len(m3),
+        "median_dt_ns_by_client_channel": dt_by_client,
+        "if_client_basis_Z": {"sifted": n_z, "errors": e_z, "qber": e_z / n_z},
+        "if_client_basis_X": {"sifted": n_x, "errors": e_x, "qber": e_x / n_x},
+        "identified_as": "archived linear/chunk00 (raw source): archived TTP times = SG - SG[0]",
+        "archived_chunk00_ttp_to_raw_max_abs_diff_ns": float(tdiff.max()),
+        "archived_chunk00_channel_agreement": float(np.mean(sg.channel[j] == at.channel)),
+        "archived_pairs": int(at.t_ns.size),
+        "independent_pairs_overlapping_archived": overlap,
+        "overlap_fraction_of_archived": overlap / at.t_ns.size,
+        "note": "authors additionally shift the client V channel by a fitted inter-detector delay and keep a "
+                "random event in multi-occupied client bins; we do neither (deterministic), so pair sets differ.",
+    }
+
+
+def run(archive: Path, out: Path, *, verify_upstream: bool = True, raw_archive: Path | None = None) -> dict:
     from qmint.photonics.zenodo import verify_upstream_checksum
 
     if verify_upstream:
@@ -182,6 +247,10 @@ def run(archive: Path, out: Path, *, verify_upstream: bool = True) -> dict:
                                         "singles rates / accidental-coincidence rate", "absolute run times"],
         "published_aggregates": PUBLISHED_2023,
     }
+    if raw_archive is not None:
+        if verify_upstream:
+            verify_upstream_checksum(raw_archive, RAW_UPSTREAM_MD5)
+        summary["raw_crosscheck"] = raw_crosscheck(raw_archive, archive)
     files = {
         "summary.json": json.dumps(json.loads(canonical_json(summary)), indent=1, sort_keys=True) + "\n",
         "calibration_records.json": json.dumps(
@@ -199,6 +268,9 @@ def run(archive: Path, out: Path, *, verify_upstream: bool = True) -> dict:
     now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     entries = [ManifestEntry(path_or_uri=ARCHIVE_URL, sha256=sha, role="input", original_or_derived="original",
                              upstream_checksum=ARCHIVE_UPSTREAM_MD5)]
+    if raw_archive is not None:
+        entries.append(ManifestEntry(path_or_uri=RAW_URL, sha256=file_sha256(raw_archive), role="input",
+                                     original_or_derived="original", upstream_checksum=RAW_UPSTREAM_MD5))
     for name in ("summary.json", "calibration_records.json", "per_run.csv", "qber_per_run.png"):
         entries.append(ManifestEntry(path_or_uri=str(out / name), sha256=file_sha256(out / name), role="output",
                                      original_or_derived="derived"))
@@ -228,13 +300,19 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--archive", type=Path, default=None)
     ap.add_argument("--out", type=Path, default=Path("reports/data_working/schiansky2023"))
+    ap.add_argument("--raw-archive", type=Path, default=None, help="v2 archive with tagfile_example")
+    ap.add_argument("--no-raw", action="store_true", help="skip the raw-tag cross-check")
     a = ap.parse_args(argv)
     archive = a.archive or default_archive()
     if not archive.exists():
         print(f"BLOCKED: archive not found at {archive}; download with qmint.photonics.zenodo", file=sys.stderr)
         return 2
-    s = run(archive, a.out)
-    print(json.dumps(s["reproduction"], indent=1))
+    raw = None if a.no_raw else (a.raw_archive or default_raw_archive())
+    if raw is not None and not raw.exists():
+        print(f"raw cross-check skipped: {raw} missing", file=sys.stderr)
+        raw = None
+    s = run(archive, a.out, raw_archive=raw)
+    print(json.dumps({"reproduction": s["reproduction"], "raw_crosscheck": s.get("raw_crosscheck")}, indent=1))
     return 0
 
 

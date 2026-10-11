@@ -1,0 +1,40 @@
+# Code manifest: "Code for Demonstration of quantum-digital payments" (authors' analysis scripts)
+# Retrieved 2026-10-11 via the public Zenodo REST API. Read for methodology ONLY; no code copied into QMint.
+concept_recid: 7985330
+paper_cites: 10.5281/zenodo.8020667 (latest version)
+versions:
+  - record_id: 7985331
+    version_index: 0
+    files:
+      - {key: Archiv.zip, size_bytes: 11758, upstream_checksum: "md5:23748334b9cab83749efb81a18570ab0",
+         sha256: 596944b2b3fee82424276c3d5adbe7d849bf13c791bd7e6fab97aa60f019fb77}
+    license_metadata: cc-by-4.0
+    license_file_in_archive: none
+  - record_id: 7997961
+    version_index: 1
+    files:
+      - {key: Archiv.zip, size_bytes: 18640, upstream_checksum: "md5:6af64e634c1bbe9585f9e3eb559e809e",
+         sha256: 0ee4a0e04a68985de3a5dbbb5fa71eac21c8f16defca3027f171a4e2f13075e4}
+    license_metadata: cc-by-4.0
+    license_file_in_archive: "LICENSE_CC_BY (CC BY 3.0 Unported text)"
+  - record_id: 8020667
+    version_index: 2
+    is_latest: true
+    files:
+      - {key: Archiv.zip, size_bytes: 24642, upstream_checksum: "md5:efae565eeb2cd3d5c1bb49266800c482",
+         sha256: e3f80ccb8d559df8fc14e3d1109402da569257fe3d593aa5b5fb61953363d714}
+    license_metadata: cc-by-4.0
+    license_file_in_archive: "LICENSE_AGPLv3 (GNU AGPL v3) -- CONFLICTS with metadata"
+contents: [00_m_startboth.py (instrument control), 01_a_prepdata2.py, 02_a_off_clean5hv_alt.py,
+           03_a_coinc1_bb84.py, drift_alt.py, find_start.py, README]
+qmint_policy: >-
+  License conflict (metadata CC-BY-4.0 vs shipped AGPL-3.0) => treat as AGPL-3.0; QMint (Apache-2.0)
+  copies NO code. qmint.photonics is an independent reconstruction informed by reading these scripts.
+findings_from_reading:
+  - "01: reads TTM8000 text cols 1 (channel) and 3 (tick); ns = (tick - tick[0]) * 82.3045/1000."
+  - "02: coarse start via shutter histogram, offset search at 100/10/1 ns bins, separate H/V client-channel delay, linear drift fit over 10-ms slices."
+  - "03: coincidence = np.around(t/coincidence_time) equality; double clicks: TTP-side multi-bins dropped, client-side one kept at random (np.random, unseeded)."
+  - "03: per-TTP-outcome probabilities P = counter/count (e.g. P_C0_V = counter24/count2); this per-state estimator, averaged, reproduces the paper's 1.45% / 3.28%."
+  - "03 hard-codes coincidence_time = 1 for the shared table and bob channels 1/6, whereas the archive uses a 3-ns rule and client channels 2/4: the published script is not the exact configuration that produced the archive."
+  - "drift_alt.py imports find_start_alt, absent from every version; requirements.txt referenced by README is absent: pipeline not runnable as published."
+  - "No SDP / security-region code is included (paper Fig. 4 not reproducible from this record)."

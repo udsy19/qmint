@@ -228,3 +228,78 @@ def estimate_drift(matches: Matches, ta: np.ndarray, block_ns: float, min_pairs:
     se = float(np.sqrt(s2 / np.sum((x - x.mean()) ** 2)))
     intercept = float(coef[1] - coef[0] * x.mean())
     return DriftEstimate(float(coef[0]), se, intercept, x, y, np.asarray(ns))
+
+
+@dataclass(frozen=True)
+class Alignment:
+    """Linear clock model ``tb ~= ta + offset_ns + slope * (ta - t_ref_ns)``."""
+
+    offset_ns: float  # at t_ref_ns
+    slope: float  # dimensionless; * 1e9 = ns/s
+    t_ref_ns: float
+    coarse_offset_ns: float
+    block_t_ns: np.ndarray
+    block_offset_ns: np.ndarray
+    residual_std_ns: float
+    n_blocks_used: int
+
+    def to_a_frame(self, tb: np.ndarray) -> np.ndarray:
+        """Map B times into A's clock frame (inverse of the linear model)."""
+        return (np.asarray(tb, np.float64) - self.offset_ns + self.slope * self.t_ref_ns) / (1.0 + self.slope)
+
+
+def align_streams(
+    ta: np.ndarray,
+    tb: np.ndarray,
+    *,
+    max_lag_ns: float = 30e9,
+    coarse_bin_ns: float = 1e6,
+    block_every_ns: float = 1e9,
+    slice_ns: float = 2e7,
+    search_ns: float = 2e4,
+    min_peak_to_background: float = 10.0,
+) -> Alignment:
+    """Coarse (singles-rate cross-correlation) -> per-block coincidence peak -> linear drift fit.
+
+    Independent of, but structurally similar to, the authors' 02_a_off_clean5hv_alt.py
+    (coarse/fine offset search then linear drift). Blocks whose peak is not at least
+    ``min_peak_to_background`` x the flat background (e.g. while a shutter opens) are
+    dropped -- they would otherwise dominate the fit.
+    """
+    ta = np.asarray(ta, np.float64)
+    tb = np.asarray(tb, np.float64)
+    coarse = coarse_offset_by_rate(ta, tb, coarse_bin_ns, max_lag_ns)
+    xs, ys = [], []
+    start = np.ceil(ta[0] / block_every_ns) * block_every_ns
+    for s0 in np.arange(start, ta[-1] - slice_ns, block_every_ns):
+        m = (ta >= s0) & (ta < s0 + slice_ns)
+        if m.sum() < 10:
+            continue
+        guess = ys[-1] if ys else None
+        if guess is None:  # first lock: search +/- 1.5 coarse bins on a short (2 ms) slice
+            m0 = (ta >= s0) & (ta < s0 + 2e6)
+            if m0.sum() < 10:
+                continue
+            try:
+                e00 = estimate_offset(ta[m0], tb, coarse - 1.5 * coarse_bin_ns, coarse + 1.5 * coarse_bin_ns, 10.0)
+            except ValueError:
+                continue
+            if e00.peak_counts < min_peak_to_background * max(e00.background_per_bin, 1.0):
+                continue
+            guess = e00.offset_ns
+        try:
+            e0 = estimate_offset(ta[m], tb, guess - search_ns, guess + search_ns, 5.0)
+        except ValueError:
+            continue
+        if e0.peak_counts < min_peak_to_background * max(e0.background_per_bin, 1.0):
+            continue
+        e = estimate_offset(ta[m], tb, e0.offset_ns - 20.0, e0.offset_ns + 20.0, 0.25)
+        xs.append(s0 + slice_ns / 2)
+        ys.append(e.offset_ns)
+    if len(xs) < 3:
+        raise ValueError("fewer than 3 blocks with a significant coincidence peak")
+    x, y = np.asarray(xs), np.asarray(ys)
+    t_ref = float(x[0])
+    k, b = np.polyfit(x - t_ref, y, 1)
+    resid = y - (k * (x - t_ref) + b)
+    return Alignment(float(b), float(k), t_ref, coarse, x, y, float(np.std(resid)), int(x.size))

@@ -130,8 +130,8 @@ def _classify(
     back = tc < prev_t
     status[idx[dup]] = DUPLICATE
     status[idx[back & ~dup]] = OUT_OF_RANGE
-    # NOTE: comparison is with the immediately preceding ok-classified line (single pass,
-    # deterministic). Archives inspected so far contain zero such records.
+    # NOTE: each record is compared with the immediately preceding line that decoded and has
+    # an allowed channel (single deterministic pass). The real archives contain zero such records.
     return int(cc[-1]), float(tc[-1])
 
 
