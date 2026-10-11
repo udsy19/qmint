@@ -142,7 +142,7 @@ def _default_serial(rng: np.random.Generator) -> str:
 @dataclass
 class RedemptionResult:
     accepted: bool
-    reason: Literal["accepted", "rejected", "replay", "unknown_serial"]
+    reason: Literal["accepted", "rejected", "replay", "unknown_serial", "serial_mismatch"]
     reminted: RegisterHandle | None = None
 
 
@@ -177,6 +177,7 @@ class WiesnerChallenger(SecretHolder):
         self._remint = remint
         self._secrets: dict[str, IssuerSecret] = {}  # token_id -> secret (bank-private)
         self._ledger: dict[str, Literal["fresh", "spent"]] = {}  # serial -> status
+        self._serial_of: dict[str, str] = {}  # token_id -> the serial it was minted under (M-B3)
         self._issue_counter = 0
 
     def __repr__(self) -> str:
@@ -196,6 +197,7 @@ class WiesnerChallenger(SecretHolder):
             token_id=token_id, protocol_id=self.protocol_id, bases=bases, bits=bits
         )
         self._ledger[serial] = "fresh"
+        self._serial_of[token_id] = serial
         self._issue_counter += 1
         state_kind = {
             WiesnerMode.SYMBOLIC: StateKind.SYMBOLIC_RECORD,
@@ -348,6 +350,11 @@ class WiesnerChallenger(SecretHolder):
         touching the presented state. A first presentation is verified (consuming the
         state) and the serial is marked spent either way. On acceptance the bank optionally
         remints a fresh note of the same size with a new serial.
+
+        Serial binding (M-B3): the bank verifies against the secret of ``record.token_id`` and
+        spends ``public_metadata['serial']``, so the two must be the pair it minted together.
+        A note presented under another note's serial is rejected as ``serial_mismatch``
+        without measuring it and without spending that serial.
         """
         serial = str(handle.record.public_metadata.get("serial"))
         status = self._ledger.get(serial)
@@ -355,6 +362,8 @@ class WiesnerChallenger(SecretHolder):
             return RedemptionResult(False, "unknown_serial")
         if status == "spent":
             return RedemptionResult(False, "replay")
+        if self._serial_of.get(handle.record.token_id) != serial:
+            return RedemptionResult(False, "serial_mismatch")
         ok = self.verify(handle)
         self._ledger[serial] = "spent"
         handle.record.freshness = "spent"

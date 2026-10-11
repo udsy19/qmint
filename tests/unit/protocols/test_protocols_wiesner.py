@@ -1,6 +1,7 @@
 """Lane B / B1: Wiesner reference implementation tests (deterministic seeds)."""
 
 import copy
+import io
 import math
 import pickle
 
@@ -248,6 +249,80 @@ def test_wallet_handle_carries_no_secret():
     assert set(note.record.public_metadata) == {"serial"}
 
 
+# ------------------------------------------- no-cloning at the API boundary (M-B1/M-B2)
+def test_handle_refuses_every_copy_path():
+    """M-B1: copy, deepcopy, pickle (any protocol) and reduce hooks are refused."""
+    from qmint.protocols.common import CapabilityBoundaryError
+
+    ch = W.WiesnerChallenger(seed=3)
+    note = ch.mint(4, 5)
+    for dup in (copy.copy, copy.deepcopy, lambda h: pickle.loads(pickle.dumps(h))):
+        with pytest.raises(CapabilityBoundaryError):
+            dup(note)
+    for proto in range(pickle.HIGHEST_PROTOCOL + 1):
+        with pytest.raises(CapabilityBoundaryError):
+            pickle.dumps(note, protocol=proto)
+    with pytest.raises(CapabilityBoundaryError):
+        note.__reduce__()
+    with pytest.raises(CapabilityBoundaryError):
+        copy.deepcopy([note])  # nested in a container
+    assert ch.verify(note)  # the refused attempts did not disturb the note
+
+
+def _rebuild_handle(d):
+    from qmint.protocols.register import RegisterHandle
+
+    h = object.__new__(RegisterHandle)
+    h.__dict__.update(d)
+    return h
+
+
+def test_rebuilt_handle_is_unbound():
+    """M-B1: a handle rebuilt around the copy hooks (copyreg reducer, __new__ + __dict__) is inert."""
+    import copyreg
+
+    from qmint.protocols.common import CapabilityBoundaryError
+    from qmint.protocols.register import RegisterHandle
+
+    ch = W.WiesnerChallenger(seed=3)
+    note = ch.mint(4, 5)
+    twin = object.__new__(RegisterHandle)
+    twin.__dict__.update(vars(note))
+    for op in (twin.n_qubits, lambda: twin.split([np.eye(2, dtype=complex)], copies=1)):
+        with pytest.raises(CapabilityBoundaryError):
+            op()
+    with pytest.raises(CapabilityBoundaryError):
+        ch.verify(twin)
+    assert "unbound" in repr(twin)
+
+    class _Pickler(pickle.Pickler):
+        dispatch_table = copyreg.dispatch_table.copy()
+
+    _Pickler.dispatch_table[RegisterHandle] = lambda h: (_rebuild_handle, (dict(vars(h)),))
+    buf = io.BytesIO()
+    _Pickler(buf).dump(note)
+    clone = pickle.loads(buf.getvalue())
+    with pytest.raises(CapabilityBoundaryError):
+        ch.pair_acceptance_probability(note, clone)
+    assert ch.acceptance_probability(note) == pytest.approx(1.0, abs=1e-12)
+
+
+def test_public_record_copy_is_classical_and_harmless():
+    """Copying the public TokenRecord (model_copy) copies a serial, not the quantum state."""
+    ch = W.WiesnerChallenger(seed=3)
+    note = ch.mint(4, 5)
+    rec = note.record.model_copy(deep=True)
+    assert rec == note.record and not hasattr(rec, "split")
+
+
+def test_wallet_handle_holds_no_register():
+    """M-B2: the handle's own attributes hold the public record, a flag and an opaque key."""
+    ch = W.WiesnerChallenger(seed=3)
+    note = ch.mint(4, 5)
+    assert set(vars(note)) == {"_cap_key", "record", "consumed"}
+    assert not any(isinstance(o, (FactorizedRegister, np.ndarray)) for o in _walk(note))
+
+
 def test_challenger_cannot_be_copied_or_serialized():
     ch = W.WiesnerChallenger()
     ch.mint(4, 1)
@@ -325,6 +400,19 @@ def test_rejected_presentation_also_spends_serial():
     second = ch.redeem(b)
     assert second.reason == "replay" and not second.accepted
     assert first.reason in ("accepted", "rejected")
+
+
+def test_redeem_binds_serial_to_token_and_does_not_burn_victim():
+    """M-B3: a note presented under another note's serial is refused unmeasured; nothing is spent."""
+    ch = W.WiesnerChallenger(seed=2)
+    mine, victim = ch.mint(4, 1), ch.mint(4, 2)
+    v_serial = victim.record.public_metadata["serial"]
+    m_serial = mine.record.public_metadata["serial"]
+    mine.record = mine.record.model_copy(update={"public_metadata": {"serial": v_serial}})
+    res = ch.redeem(mine)
+    assert (res.accepted, res.reason) == (False, "serial_mismatch") and not mine.consumed
+    assert ch.serial_status(v_serial) == "fresh" and ch.serial_status(m_serial) == "fresh"
+    assert ch.redeem(victim).accepted
 
 
 def test_unknown_serial_rejected():

@@ -13,9 +13,10 @@ Conventions (C7):
     (big-endian, ``kron(q0, q1, ...)``). No Qiskit little-endian decoding anywhere.
 
 Simulator caveat (master plan section 6, "separate truth levels"): a simulator necessarily
-holds classical matrices. Deep-copying a handle is a simulator artefact, NOT cloning. The
-information boundary is enforced at the API level: handles never reference an
-``IssuerSecret``; only challengers hold secrets.
+holds classical matrices. The information boundary is enforced at the API level: handles
+never reference an ``IssuerSecret`` (only challengers hold secrets), hold no amplitudes
+themselves, and refuse ``copy``/``deepcopy``/``pickle`` (M-B1/M-B2). That is an API-boundary
+rule of this simulator, not a physical no-cloning guarantee.
 """
 
 from __future__ import annotations
@@ -27,6 +28,7 @@ import numpy as np
 from scipy.signal import convolve
 
 from qmint.core.contracts import Basis, TokenRecord
+from qmint.protocols.common import CapabilityBoundaryError, NonCopyable, PrivateVault
 from qmint.quantum.bb84 import state_vector
 
 KRAUS_TOL = 1e-9
@@ -277,21 +279,53 @@ class FactorizedRegister:
         return dist
 
 
-class RegisterHandle:
+@dataclass
+class _Capability:
+    register: FactorizedRegister | None
+    qubits: list[int]
+
+
+#: Simulator-side registry of handle capabilities (M-B2): handles hold an opaque key only.
+_CAPABILITIES = PrivateVault("simulated register")
+
+
+class RegisterHandle(NonCopyable):
     """Opaque capability to qubits in a simulated register (implements ``TokenHandle``).
 
     Exposes only what a physical holder could do: count qubits, apply a CPTP map,
     measure. It carries the public ``TokenRecord`` and never an ``IssuerSecret``.
+
+    No-cloning at the API boundary (M-B1, M-B2). The handle object holds the public record,
+    a ``consumed`` flag and an opaque key; the register and qubit ids live in a
+    simulator-side ``PrivateVault`` bound to this one object. ``copy``, ``deepcopy`` and
+    ``pickle`` are refused, and any object rebuilt by another route (``copyreg``,
+    ``__new__`` + ``__dict__``) is unbound and can do nothing. This is enforcement of the
+    simulator's API, not physics: in-process introspection of private members or of the
+    vault is still possible in Python and is OUT_OF_MODEL for every game.
     """
 
+    _copy_what = "a quantum register capability (no-cloning)"
+
     def __init__(self, register: FactorizedRegister | None, qubits: list[int], record: TokenRecord) -> None:
-        self._register = register
-        self._qubits = list(qubits)
+        self._cap_key = _CAPABILITIES.bind(self, _Capability(register, list(qubits)))
         self.record = record
         self.consumed = False
 
     def __repr__(self) -> str:
-        return f"RegisterHandle(token_id={self.record.token_id!r}, n={len(self._qubits)}, consumed={self.consumed})"
+        try:
+            n: int | str = self.n_qubits()
+        except CapabilityBoundaryError:
+            n = "unbound"
+        return f"RegisterHandle(token_id={self.record.token_id!r}, n={n}, consumed={self.consumed})"
+
+    # Challenger/analysis-side accessors (simulator internals; never part of the holder API).
+    @property
+    def _register(self) -> FactorizedRegister | None:
+        return _CAPABILITIES.get(self, self.__dict__.get("_cap_key")).register
+
+    @property
+    def _qubits(self) -> list[int]:
+        return _CAPABILITIES.get(self, self.__dict__.get("_cap_key")).qubits
 
     def n_qubits(self) -> int:
         return self.record.n_prepared if self._register is None else len(self._qubits)

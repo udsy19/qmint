@@ -189,6 +189,78 @@ def test_secrets_stay_on_bobs_side():
     assert set(alice.__dict__) >= {"x"} and not hasattr(alice, "_secret")
 
 
+def test_alice_facing_session_holds_no_bob_state():
+    """M-B2: Bob's IssuerSecret / t,u live in the Bob-side vault, not in the session's attributes."""
+    from qmint.core.contracts import IssuerSecret
+    from qmint.protocols.common import CapabilityBoundaryError
+
+    s, _, _ = honest(K.KentScheme.IQT1, 8, 0, 4)
+
+    def walk(o, seen):
+        if id(o) in seen:
+            return
+        seen.add(id(o))
+        yield o
+        if isinstance(o, dict):
+            for v in [*o.keys(), *o.values()]:
+                yield from walk(v, seen)
+        elif isinstance(o, (list, tuple, set)):
+            for v in o:
+                yield from walk(v, seen)
+        elif hasattr(o, "__dict__"):
+            for v in vars(o).values():
+                yield from walk(v, seen)
+
+    objs = list(walk(s, set()))
+    assert not any(isinstance(o, (IssuerSecret, K._BobSide, np.random.Generator)) for o in objs)
+    t = s._bank().secret.bits
+    assert not any(isinstance(o, tuple) and list(o) == list(t) and len(t) > 1 for o in objs[1:] if o is not s)
+    twin = object.__new__(K.KentSMoneySession)
+    twin.__dict__.update(vars(s))
+    with pytest.raises(CapabilityBoundaryError):
+        twin.present(1, (0,) * 8, 1e9)
+
+
+def _present_both(network=None, enforce=False, t1=0.0):
+    s = K.KentSMoneySession(params(K.KentScheme.IQT2, 4), seed=5, network=network, enforce_spacelike=enforce)
+    s.bank_send_quantum(-5000.0)
+    s.bank_distribute(-4000.0)
+    s.alice_send_c(0, -3000.0)
+    s.bank_forward_c(-2000.0)
+    s.present(0, (0,) * 4, 0.0)
+    s.present(1, (0,) * 4, t1)
+    return s
+
+
+def _net(dist_m):
+    from qmint.core.contracts import Site, SpacetimeNetwork, TopologySource
+
+    sites = [Site(site_id=q, frame="test", x_m=x, y_m=0.0, trust_domain="bob", clock_error_bound_ns=1.0)
+             for q, x in (("P", 0.0), ("Q0", -dist_m / 2), ("Q1", dist_m / 2))]
+    return SpacetimeNetwork(network_id="m-b4", topology_source=TopologySource.SYNTHETIC, sites=sites)
+
+
+def test_s1_status_declares_spacelike_precondition():
+    """M-B4: without declared geometry, or with timelike presentations, S1 does not apply."""
+    s = K.KentSMoneySession(params(K.KentScheme.IQT2, 4), seed=5)
+    assert s.s1_presentation_status() == "INCOMPLETE"
+    assert _present_both().s1_presentation_status() == "OUT_OF_MODEL"  # no network declared
+    assert _present_both(_net(300.0), t1=10.0).s1_presentation_status() == "IN_MODEL"  # lc ~ 1000.7 ns
+    assert _present_both(_net(300.0), t1=5000.0).s1_presentation_status() == "OUT_OF_MODEL"
+    assert _present_both(_net(300.0), t1=999.5).s1_presentation_status() == "OUT_OF_MODEL"  # clock error
+
+
+def test_enforce_spacelike_refuses_second_presentation_before_validation():
+    with pytest.raises(K.SpacelikeViolation):
+        _present_both(_net(300.0), enforce=True, t1=5000.0)
+    s = _present_both(_net(300.0), enforce=True, t1=10.0)
+    assert set(s.outcomes) == {0, 1}
+    with pytest.raises(ValueError):
+        K.KentSMoneySession(params(K.KentScheme.IQT2, 4), seed=5, enforce_spacelike=True)
+    with pytest.raises(ValueError):
+        K.KentSMoneySession(params(K.KentScheme.IQT2, 4), seed=5, network=_net(1.0), sites={"B1": "Q9"})
+
+
 # ----------------------------------------------------- realistic acceptance rules
 def _exact_qt_honest_acceptance(N, p_det, E, gdet, gerr):
     """Pr[no abort and accept] for the simulated honest channel: n~Bin(N,p_det),
@@ -243,7 +315,7 @@ def test_realistic_threshold_boundary_is_inclusive():
     s.bank_distribute(2.0)
     s.alice_send_c(0 ^ z, 3.0)  # b = 0
     s.bank_forward_c(4.0)
-    sec = s._secret.reveal_for_testing_only()
+    sec = s._bank().secret.reveal_for_testing_only()
     delta = [k for k in range(N) if sec["extra"]["u"][k] == z]
     allowed = math.floor(len(delta) * gerr)
     x_bad = list(x)

@@ -35,7 +35,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any
+from typing import Any, Literal
 
 import numpy as np
 
@@ -45,12 +45,14 @@ from qmint.core.contracts import (
     GameId,
     IssuerSecret,
     ProtocolSpec,
+    SpacetimeNetwork,
     StateKind,
     TokenRecord,
     TraceEvent,
     TransactionTrace,
 )
-from qmint.protocols.common import EventLog, SecretHolder
+from qmint.networks.causality import is_spacelike
+from qmint.protocols.common import EventLog, PrivateVault, SecretHolder
 from qmint.protocols.register import FactorizedRegister, RegisterHandle, bb84_projector
 from qmint.quantum.bb84 import state_vector
 
@@ -153,12 +155,35 @@ def _bits(v: Sequence[int], n: int, name: str) -> tuple[int, ...]:
     return out
 
 
+class SpacelikeViolation(ProtocolOrderError):
+    """The two presentations are not certainly spacelike separated (S1 precondition, M-B4)."""
+
+
 @dataclass
 class ValidationOutcome:
     site: int
     accepted: bool
     delta_size: int
     errors: int
+
+
+@dataclass
+class _BobSide(SecretHolder):
+    """Bob's party state (B, B0, B1): his RNG, the ``IssuerSecret`` and each agent's memory.
+
+    Lives in the simulator-side ``_BOB_SIDE`` vault, never in the Alice-facing session's
+    object graph (M-B2).
+    """
+
+    rng: np.random.Generator
+    secret: IssuerSecret | None = None
+    mem: dict[str, dict[str, Any]] = field(default_factory=lambda: {r: {} for r in BOB_ROLES})
+
+
+_BOB_SIDE = PrivateVault("Bob-side party state")
+
+#: S1 applicability of a double presentation (``KentSMoneySession.s1_presentation_status``).
+S1Status = Literal["INCOMPLETE", "IN_MODEL", "OUT_OF_MODEL"]
 
 
 class KentSMoneySession(SecretHolder):
@@ -168,6 +193,20 @@ class KentSMoneySession(SecretHolder):
     returns her quantum register; ``alice_report_detections``, ``alice_send_d``,
     ``alice_send_c`` and ``present`` deliver her classical messages. Bob-side steps
     ``bank_distribute`` and ``bank_forward_c`` are driven by the caller with times.
+
+    Party split (M-B2): this object is what Alice's code holds. Bob's secret strings and
+    agent memories live in a separate ``_BobSide`` object in a simulator-side vault keyed by
+    an opaque id bound to this session; the session's own attributes hold none of them.
+    Reaching them through private members (``_bob``) is in-process introspection,
+    OUT_OF_MODEL for S1/S2 (an API boundary of the simulator, not a physical one).
+
+    Spacelike precondition (M-B4): P03 Lemma 1 / game S1 concern presentations at Q0 and Q1
+    that are spacelike separated. The caller supplies times; pass ``network`` (a C4
+    ``SpacetimeNetwork`` containing the Q0/Q1 sites) to have it checked with
+    ``qmint.networks.causality.is_spacelike``. ``s1_presentation_status`` labels a double
+    presentation OUT_OF_MODEL when spacelike separation is not established (including when no
+    network was given); ``enforce_spacelike=True`` makes the second ``present`` raise
+    ``SpacelikeViolation`` instead, before Bob validates.
     """
 
     def __init__(
@@ -177,16 +216,25 @@ class KentSMoneySession(SecretHolder):
         seed: int,
         token_id: str = "kent-token-0",
         sites: Mapping[str, str] | None = None,
+        network: SpacetimeNetwork | None = None,
+        enforce_spacelike: bool = False,
     ) -> None:
+        if enforce_spacelike and network is None:
+            raise ValueError("enforce_spacelike needs a SpacetimeNetwork with the presentation sites")
         self.params = params
         self.scheme = KentScheme(params.scheme)
         self.protocol_id = params.protocol_id
         self.token_id = token_id
-        self._rng = np.random.default_rng(seed)
         self.sites = {**DEFAULT_SITES, **(sites or {})}
+        if network is not None:
+            missing = {self.sites[r] for r in ("B0", "B1")} - {st.site_id for st in network.sites}
+            if missing:
+                raise ValueError(f"network lacks presentation site(s) {sorted(missing)}")
+        self.network = network
+        self.enforce_spacelike = enforce_spacelike
         self.log = EventLog(self.sites)
-        self._bob: dict[str, dict[str, Any]] = {r: {} for r in BOB_ROLES}
-        self._secret: IssuerSecret | None = None
+        self._bob_key = _BOB_SIDE.bind(self, _BobSide(np.random.default_rng(seed)))
+        self._presentation_events: dict[int, TraceEvent] = {}
         self.bob_received: list[tuple[float, str, str, Any]] = []  # (time, Bob role, item, value)
         self.aborted = False
         self.outcomes: dict[int, ValidationOutcome] = {}
@@ -194,6 +242,15 @@ class KentSMoneySession(SecretHolder):
 
     def __repr__(self) -> str:
         return f"KentSMoneySession(scheme={self.scheme.value}, N={self.params.N}, events={len(self.events)})"
+
+    # ------------------------------------------------------------- Bob's side
+    def _bank(self) -> _BobSide:
+        return _BOB_SIDE.get(self, self.__dict__.get("_bob_key"))
+
+    @property
+    def _bob(self) -> dict[str, dict[str, Any]]:
+        """Bob's agents' memories (simulator internal; never part of Alice's API)."""
+        return self._bank().mem
 
     # ------------------------------------------------------------------ events
     @property
@@ -225,13 +282,14 @@ class KentSMoneySession(SecretHolder):
     # --------------------------------------------------------- stage I (quantum)
     def bank_send_quantum(self, t_ns: float, t_recv_ns: float | None = None) -> RegisterHandle:
         """Step 1: B prepares |phi_{t_k u_k}> uniformly from BB84 and sends them, labelled, to A."""
-        if self._secret is not None:
+        bank = self._bank()
+        if bank.secret is not None:
             raise ProtocolOrderError("quantum stage already run")
         n = self.params.N
-        t = [int(x) for x in self._rng.integers(0, 2, size=n)]
-        u = [int(x) for x in self._rng.integers(0, 2, size=n)]
+        t = [int(x) for x in bank.rng.integers(0, 2, size=n)]
+        u = [int(x) for x in bank.rng.integers(0, 2, size=n)]
         bases = [Basis.Z if x == 0 else Basis.X for x in u]  # u=0 computational, u=1 Hadamard
-        self._secret = IssuerSecret(
+        bank.secret = IssuerSecret(
             token_id=self.token_id, protocol_id=self.protocol_id, bases=bases, bits=t, extra={"u": u}
         )
         issue = self.log.event("B", "issue", t_ns, scheme=self.scheme.value, N=n)
@@ -286,7 +344,7 @@ class KentSMoneySession(SecretHolder):
         return len(g)
 
     def _need(self, role: str, have: str | None, absent: str | None = None) -> None:
-        if self._secret is None:
+        if self._bank().secret is None:
             raise ProtocolOrderError("quantum stage not run")
         if self.aborted:
             raise ProtocolOrderError("Bob aborted")
@@ -310,8 +368,9 @@ class KentSMoneySession(SecretHolder):
             self._need("B", "d")
         else:
             self._need("B", "g" if not self.scheme.ideal else None)
-        assert self._secret is not None
-        t, u = list(self._secret.bits), list(self._secret.extra["u"])
+        secret = self._bank().secret
+        assert secret is not None
+        t, u = list(secret.bits), list(secret.extra["u"])
         if self.scheme.ideal:
             private = {"t": tuple(t), "u": tuple(u)}
         else:  # Table 2 step 7: r_j = t_k, s_j = u_k with j = g(k)
@@ -363,7 +422,20 @@ class KentSMoneySession(SecretHolder):
         self._need(bi, "dtilde")
         n = self._n_reported()
         xb = _bits(x, n, "x")
+        if self.enforce_spacelike and 1 - i in self._presentation_events:
+            probe = TraceEvent(
+                event_id="spacelike-probe",
+                site_id=self.sites[bi],
+                kind="message_receive",
+                time_ns=float(t_ns),
+            )
+            if not self._spacelike(self._presentation_events[1 - i], probe):
+                raise SpacelikeViolation(
+                    f"presentation at Q{i} (t={t_ns}) is not certainly spacelike to the one at Q{1 - i}: "
+                    "outside game S1 (P03 Lemma 1)"
+                )
         self._msg(ai, bi, "x", xb, t_ns, t_ns)
+        self._presentation_events[i] = self.events[-1]
         if self._reveal_time is None:
             self._reveal_time = t_ns
         self.log.event(bi, "privacy_reveal", t_ns, revealed="presentation point b", b=i)
@@ -389,6 +461,25 @@ class KentSMoneySession(SecretHolder):
         return tuple(
             (role, item, val) for (t, role, item, val) in self.bob_received if t < cut and item != "x"
         )
+
+    def _spacelike(self, e1: TraceEvent, e2: TraceEvent) -> bool:
+        assert self.network is not None
+        return is_spacelike(e1, e2, self.network)
+
+    def s1_presentation_status(self) -> S1Status:
+        """Whether the double presentation is inside game S1's spacelike precondition (M-B4).
+
+        ``INCOMPLETE``: fewer than two presentations. ``IN_MODEL``: a network was declared and
+        the two presentation events are certainly spacelike (clock error bounds included).
+        ``OUT_OF_MODEL``: otherwise -- in particular when no network was declared, since
+        caller-supplied times alone do not establish spacelike separation.
+        """
+        if len(self._presentation_events) < 2:
+            return "INCOMPLETE"
+        if self.network is None:
+            return "OUT_OF_MODEL"
+        ok = self._spacelike(self._presentation_events[0], self._presentation_events[1])
+        return "IN_MODEL" if ok else "OUT_OF_MODEL"
 
     def double_presentation_accepted(self) -> bool:
         return all(self.outcomes.get(i, ValidationOutcome(i, False, 0, 0)).accepted for i in (0, 1))
