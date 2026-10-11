@@ -20,11 +20,12 @@ gates:
     - schemas/v1/SCHEMA_HASHES.json
   G1:
     description: Wiesner optimal-attack SDP and independent correctness
-    status: IN_REVIEW
+    status: PASSED
     evidence:
     - 'C: SDP n=1 primal/dual 0.75, certified dual bound'
     - 'F: Qiskit/NumPy/QuTiP 3-way agreement; MVW channel circuit exactly 3/4'
     - 'D: independent exact-rational re-verification of SDP bounds; ideal W1/W1_CV/S1 log-space engine'
+    - 'Q: lane C attacks vs lane B Wiesner through interfaces agree with closed forms (max 1.4e-15); secret boundary copy/deepcopy/pickle refused'
   G2:
     description: Published S-money state machine and causal tests
     status: IN_REVIEW
@@ -255,10 +256,13 @@ tasks:
     description: Reproducibility, figures and paper
     owner: subagent-lane-N
     branch: feat/N-paper
-    status: CLAIMED
-    evidence: []
+    status: IN_REVIEW
+    evidence:
+    - figures 2,3,4,5,10 built from evidence with manifests
+    - reports/paper tables 1,4,5
     blockers: []
-    commit: null
+    commit: 36911be
+    notes: phase 1 merged; figs 6-9 pending records; manuscript phase pending M review
   O1:
     lane: O
     description: Optional 2025 anonymous tokens
@@ -292,10 +296,12 @@ tasks:
     description: 'Cross-lane integration: B<->C cross-run, BB84 dedupe, entrypoints'
     owner: subagent-lane-Q
     branch: feat/Q-integration
-    status: CLAIMED
-    evidence: []
+    status: MERGED
+    evidence:
+    - handoffs/Q-Q1.json
+    - 'handoffs/Q-G1_evidence.json: 21-row B<->C cross-run max |diff| 1.4e-15'
     blockers: []
-    commit: null
+    commit: 63df38e
   X1:
     lane: X
     description: G+H on shared engine, matched-topology runs, Fig 6 data
