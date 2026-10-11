@@ -1,0 +1,17 @@
+# QMint lane I -- baseline matrix for X12/X13 (which selector runs on which scenario family).
+# Pre-registered together with frozen_experiments.yaml (same commit). Definitions live there.
+
+schema: qmint.benchmarks.baseline_matrix/v1
+lane: I
+columns: [published_fixed, naive_analytic, exhaustive_oracle, compiler]
+rows:
+  W1:        {published_fixed: NO_PUBLISHED_RECIPE, naive_analytic: run, exhaustive_oracle: run_full_grid, compiler: run}
+  S1:        {published_fixed: NO_PUBLISHED_RECIPE, naive_analytic: run, exhaustive_oracle: run_full_grid, compiler: run}
+  S2:        {published_fixed: "KLPR2022 N=4e7 tuple", naive_analytic: run, exhaustive_oracle: run_small_grid_only, compiler: run}
+  S2_JIANG24: {published_fixed: REJECTED_UNREGISTERED_GAME, naive_analytic: not_run, exhaustive_oracle: not_run, compiler: not_run}
+  K22-EXP:   {published_fixed: run_expect_infeasible, naive_analytic: run_expect_infeasible, exhaustive_oracle: not_run, compiler: run_expect_infeasibility_certificate}
+  D1:        {published_fixed: "Schiansky N=4.2e6, delta_d=0.01, delta_h=0.031", naive_analytic: run, exhaustive_oracle: run_small_grid_only, compiler: run, certification: NEVER (lane D checker)}
+  W2:        {all: REJECTED_NO_THEOREM}
+  A1:        {all: REJECTED_NO_THEOREM}
+  C1:        {all: REJECTED_NO_THEOREM}
+discretisation: "naive, oracle and compiler share the grids of frozen_experiments.yaml; published tuples are evaluated exactly as published (off-grid by definition)"

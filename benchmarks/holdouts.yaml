@@ -1,0 +1,35 @@
+# QMint lane I -- PRE-REGISTERED holdout definition. FROZEN (SHA-256 pinned by
+# tests/unit/compiler/test_preregistration.py). Committed before any optimisation was run.
+
+schema: qmint.benchmarks.holdouts/v1
+lane: I
+
+holdouts:
+  - holdout_id: H-SCH23-RUNS-6-10
+    dataset: "Zenodo 7979319 (Schiansky et al. 2023), lane E per-run table"
+    source_file: reports/data_working/schiansky2023/per_run.csv
+    source_sha256_at_registration: eb8ee2c343ecfbdb3fbfd28b53fb0cf3153853aa96d00c20dd26fe8cfae0144e
+    split_column: chunk
+    calibration_rows: "chunk in 0..5 (both bases)"
+    holdout_rows: "chunk in 6..10 (both bases)"
+    split_rule: "time-ordered split by run index (lane E: runs assumed in acquisition order); identical to lane E's calibration/holdout split"
+    used_for: [D1-ZEN-IID, D1-ZEN-DRIFT]
+    access_rule: >-
+      qmint.compiler code reads holdout rows ONLY through the holdout guard, which refuses unless a frozen
+      selection file exists whose SHA-256 is recorded first. The selection (N, delta_d, delta_h per target)
+      is computed from calibration rows only.
+    evaluation_after_freeze:
+      - "coverage: does each holdout run's X-basis QBER point lie inside the IID / drift-aware calibration interval?"
+      - "validity: is the frozen configuration still admissible (SI Eq. 23) and within targets when e_h is the holdout run's Clopper-Pearson 95 % interval (l_h, p_m unchanged)?"
+    disclosure: >-
+      HONEST DISCLOSURE: lane E's committed per_run.csv and summary.json (which include the holdout runs'
+      QBERs and E's own calibration-vs-holdout test) were visible to lane I while surveying inputs before this
+      file was written. No grid, target, tie-break or interval method was chosen by looking at holdout
+      outcomes: the interval methods follow from E's documented overdispersion finding (chi2/dof ~ 10), and
+      no selection parameter is fitted. The holdout therefore guards selection, not lane I's prior awareness.
+    status_of_result: "D1 is never CERTIFIED (lane D checker); holdout results are numerical support only"
+
+  - holdout_id: H-S2-NONE
+    note: >-
+      S2 (Kent 2022) has no tunable selection parameters fitted to data: devices are published/hypothetical
+      points fixed above, so there is nothing to hold out. Recorded explicitly rather than omitted.
