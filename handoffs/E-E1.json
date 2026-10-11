@@ -1,0 +1,148 @@
+{
+ "lane": "E",
+ "task": "E1",
+ "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+ "branch": "feat/E-photonics",
+ "starting_commit_sha": "ece05ef",
+ "final_commit_sha": "see `git log -1` on feat/E-photonics (handoff commit); last code/report commit 9e9e6ba",
+ "changed_paths": [
+  "qmint/photonics/zenodo.py",
+  "qmint/photonics/parser.py",
+  "qmint/photonics/channels.py",
+  "qmint/photonics/coincidences.py",
+  "qmint/photonics/confidence.py",
+  "qmint/photonics/calibration.py",
+  "qmint/photonics/schiansky2023.py",
+  "tests/unit/photonics/photonics_synth.py",
+  "tests/unit/photonics/test_photonics_parser.py",
+  "tests/unit/photonics/test_photonics_coincidences.py",
+  "tests/unit/photonics/test_photonics_calibration.py",
+  "tests/unit/photonics/test_photonics_confidence_zenodo.py",
+  "tests/unit/photonics/test_photonics_realdata.py",
+  "datasets/manifests/zenodo_7979319.yaml",
+  "datasets/manifests/zenodo_8020667.yaml",
+  "datasets/README.md",
+  "datasets/DATA_LICENSES.md",
+  "reports/data_working/schiansky2023/{summary.json,calibration_records.json,per_run.csv,qber_per_run.png,manifest.json}",
+  "handoffs/E-E1.json",
+  "handoffs/E-E1.md"
+ ],
+ "commands_run": [
+  "zenodo API metadata for 7979319, 7997998, 8020667, 7997961, 7985331 (all versions resolved)",
+  "qmint.photonics.zenodo.download for all 5 files -> /Users/udsy/PycharmProjects/qmint-data-cache (MD5 verified)",
+  "$PY -m qmint.photonics.schiansky2023 --out reports/data_working/schiansky2023",
+  "$PY -m pytest tests/contracts tests/unit/photonics -q",
+  "$PY -m ruff check qmint/photonics tests/unit/photonics"
+ ],
+ "test_exit_codes": {
+  "pytest tests/contracts tests/unit/photonics": 0,
+  "passed": 54,
+  "realdata_passed": 3,
+  "skip_path_verified": "QMINT_DATA_CACHE=/nonexistent -> 3 realdata skipped, rest pass",
+  "ruff": 0
+ },
+ "evidence_files": [
+  "reports/data_working/schiansky2023/manifest.json (EvidenceManifest, PHOTON_EXPERIMENT)",
+  "reports/data_working/schiansky2023/summary.json",
+  "reports/data_working/schiansky2023/calibration_records.json",
+  "datasets/manifests/zenodo_7979319.yaml",
+  "datasets/manifests/zenodo_8020667.yaml"
+ ],
+ "assumptions_verified": [
+  "Archive format by inspection: ASCII TSV 'channel\\ttag', not binary; ttp/client files row-paired (equal counts, 22 runs)",
+  "3-ns window = authors' rounded-bin rule: all 8,964,878 pairs satisfy rint(t/3) equality; independent match_bins reproduces the pairing exactly in all 22 runs",
+  "|Psi^-> anticorrelation verified on data (matched-basis error <= 3.7% per run); channel swap would give >96%",
+  "v1 and v2 data members byte-identical (CRC32+size, 44/44); v2 tagfile_example is the raw source of linear/chunk00 (TTP times equal to 4e-6 ns, channels 100%)",
+  "Correction 10.1038/s41467-023-40866-x is textual only (Discussion para 4 sentence 6)",
+  "Paper's 'average error rate' = unweighted mean over the two TTP states of P(error|state) (same estimator as authors' 03_a_coinc1_bb84.py)"
+ ],
+ "performance_numbers_with_sources": [
+  {
+   "quantity": "error rate H/V (paper estimator)",
+   "value_percent": 1.4491,
+   "se_percent": 0.0081,
+   "paper": "1.45 +/- 0.01 %",
+   "evidence_kind": "PHOTON_EXPERIMENT",
+   "source": "summary.json reproduction[0]"
+  },
+  {
+   "quantity": "error rate D/A (paper estimator)",
+   "value_percent": 3.2787,
+   "se_percent": 0.0117,
+   "paper": "3.28 +/- 0.01 % (Fig.4a e_m=0.0328)",
+   "evidence_kind": "PHOTON_EXPERIMENT",
+   "source": "summary.json reproduction[1]"
+  },
+  {
+   "quantity": "QBER Z pooled errors/sifted",
+   "value": "31231/2183822 = 1.4301%",
+   "calibration_interval_95": "[1.3946, 1.4847]%",
+   "evidence_kind": "PHOTON_EXPERIMENT"
+  },
+  {
+   "quantity": "QBER X pooled errors/sifted",
+   "value": "75417/2294692 = 3.2866%",
+   "calibration_interval_95": "[3.2324, 3.3587]%",
+   "evidence_kind": "PHOTON_EXPERIMENT"
+  },
+  {
+   "quantity": "coincidence pairs",
+   "value": "Z 4,394,577; X 4,570,301; total 8,964,878 over 22 runs of ~28.3 s",
+   "evidence_kind": "PHOTON_EXPERIMENT"
+  },
+  {
+   "quantity": "TTP passive basis split P(Z|coinc)",
+   "value": "0.4969 (Z folder), 0.4979 (X folder)",
+   "evidence_kind": "PHOTON_EXPERIMENT"
+  },
+  {
+   "quantity": "run-to-run overdispersion of QBER",
+   "value": "chi2/dof = 10.5 (Z), 9.9 (X); p < 1e-16",
+   "evidence_kind": "PHOTON_EXPERIMENT"
+  },
+  {
+   "quantity": "contiguous split runs 0-5 vs 6-10",
+   "value": "Z 1.418% vs 1.445% (p=0.09); X 3.319% vs 3.250% (p=0.003); holdout outside calibration CP in both",
+   "evidence_kind": "PHOTON_EXPERIMENT"
+  },
+  {
+   "quantity": "raw clock drift TTP vs Client (uncorrected tags, run linear/00)",
+   "value": "-2.98 ns/s, fit residual 0.32 ns, 28 blocks",
+   "evidence_kind": "PHOTON_EXPERIMENT"
+  },
+  {
+   "quantity": "independent raw pipeline vs archived chunk00",
+   "value": "391,785 pairs vs 392,222 archived; 94.7% of archived pairs recovered; QBER_Z 1.458% vs 1.463%",
+   "evidence_kind": "PHOTON_EXPERIMENT"
+  },
+  {
+   "quantity": "accidental coincidences (200-ns shifted bins, raw chunk00)",
+   "value": "7,092 / 391,785 = 1.81%",
+   "evidence_kind": "PHOTON_EXPERIMENT"
+  },
+  {
+   "quantity": "loss 22.40+/-1.50 %, multiphoton 6.76+/-0.12 %, g2h(0)=0.03010(14)",
+   "value": "transcribed only",
+   "evidence_kind": "PUBLISHED_AGGREGATE"
+  }
+ ],
+ "blockers": [
+  "Loss, detection efficiency, multiphoton: NOT observable from the archive (coincidence-filtered tags only; singles only for the one raw example run; no pump/generation counts). Left null; not invented.",
+  "X08 (2023 security curve/SDP): authors' code record has no SDP/security code; not attempted in E1.",
+  "Run acquisition order and absolute times are not in the archive; chunk index assumed to be time order for contiguous splits.",
+  "Supplementary Information not read by lane E. Lane A reports SI inconsistencies (multiphoton 6.76% vs 6.02%; N 4.2e6 vs 4,482,440). Observation, unverified: 8,964,878/2 = 4,482,439 (half the total archived pairs) is 1 off from 4,482,440."
+ ],
+ "known_limitations": [
+  "Reported qber_interval is a conservative hull of CP, 1-s-block bootstrap, run bootstrap and paper-estimator +/-1.96 SE. CP alone is too narrow: the runs are overdispersed (chi2/dof ~10).",
+  "Runs linear/06 and diagonal/05 show residual median offsets of +0.74/-0.79 ns, fewer pairs and higher QBER (1.70%, 3.64%). Likely imperfect alignment in the authors' processing. They are kept, not cut.",
+  "Raw pipeline omits the authors' per-client-detector delay shift and drops multi-occupied bins deterministically, which explains the 5.3% pair-set difference.",
+  "TTM8000 tick 82.3045 ps is taken from the authors' script and not checked against device documentation.",
+  "match_window greedy resolution is a Python loop: fine for ~1e6 candidates, slow for much more."
+ ],
+ "interfaces_changed": [
+  "None to frozen contracts. Proposal (schemas/v2): add Unit 'ns_per_s' (or 'ppb') so CalibrationRecord.clock_drift_interval can carry a drift rate; in v1 it is left null and drift is reported in summary.json.",
+  "Proposal: a CalibrationRecord field for the QBER estimator definition (pooled vs state-averaged), since they differ by 0.02 pp in Z."
+ ],
+ "whether_paid_jobs_run": false,
+ "scope_guard": "check_consumer() rejects these records for every protocol except schiansky_payment_2023; nothing was transferred to S-money."
+}
