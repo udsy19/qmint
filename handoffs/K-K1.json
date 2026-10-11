@@ -1,0 +1,62 @@
+{
+  "assumptions_verified": [
+    "Badges are a pure function of EvidenceKind/CertificateStatus; import-time asserts cover every enum member",
+    "Only CertificateStatus.CERTIFIED maps to the green tone (tested over all enum members)",
+    "Simulated-origin and measured-origin badges have disjoint labels and CSS classes (+ dashed vs double border)",
+    "None bounds render 'no applicable bound', no <data> element; tiny bounds render in exponent form",
+    "ClaimPanel rejects raw numbers, numeric literals in statement text, dangling citations and unfilled placeholders",
+    "Site build is byte-deterministic (site_sha256 672d91a8...f83ea reproduced across two builds)",
+    "FIXTURE DATA label is fail-safe: on unless --real-data AND no SYNTHETIC record"
+  ],
+  "blockers": [],
+  "branch": "feat/K-ui",
+  "changed_paths": [
+    "qmint/ui/evidence_badges.py",
+    "qmint/ui/claims.py",
+    "qmint/ui/records.py",
+    "qmint/ui/svg.py",
+    "qmint/ui/views.py",
+    "qmint/ui/app.py",
+    "qmint/ui/build.py",
+    "app/site/",
+    "tests/unit/ui/test_workbench.py",
+    "tests/unit/ui/fixtures/*.json",
+    "handoffs/K-K1.json",
+    "handoffs/K-K1.md"
+  ],
+  "commands_run": [
+    "$PY -m pytest tests/contracts tests/unit/ui -q",
+    "$PY -m ruff check qmint/ui tests/unit/ui",
+    "$PY -m qmint.ui.build --records tests/fixtures/contracts --records tests/unit/ui/fixtures --out app/site --strict"
+  ],
+  "evidence_files": [
+    "app/site/index.html",
+    "app/site/site_manifest.json",
+    "app/site/figures/pareto.svg",
+    "app/site/figures/spacetime-rec-FIXTURE_trace_smoney_2site.svg"
+  ],
+  "final_commit_sha": "33fbce0613bf196f8c7f3853f859990a36fed7b6 (code); handoff committed on top",
+  "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+  "interfaces_changed": [
+    "None changed. Proposal (v2): add certificate_id to SecurityCertificate and certificate_ref to BenchmarkRecord so Pareto points can cite certificates without a configuration-dict convention; add record_id to ProtocolSpec."
+  ],
+  "known_limitations": [
+    "All site content is SYNTHETIC fixture data; the numbers in tests/unit/ui/fixtures are invented for UI testing and are not research results",
+    "Theorem-card statements are transcribed from the frozen contract GameId comments, not re-verified against primary sources (lanes A/D)",
+    "No browser-based visual or automated WCAG audit was run (headless Chrome unavailable to the puppeteer tool); accessibility rests on semantic HTML, text badges, role=alert/note, svg title/desc, prefers-color-scheme",
+    "Record type is inferred from key signatures; a wrapper format with an explicit kind field would be more robust",
+    "Pareto view plots BenchmarkRecord photons_prepared vs security_target.epsilon_unf; a point counts as certified only if configuration.certificate_ref names a loaded CERTIFIED certificate (convention, not in contract)",
+    "Records without an id field (ProtocolSpec, SecurityCertificate) get id '<kind>:<file stem>'",
+    "Wave-1 views 'mint/test BB84 state' and interactive epsilon/constraint input are not implemented (static site)"
+  ],
+  "lane": "K",
+  "performance_numbers_with_sources": [],
+  "starting_commit_sha": "ece05ef",
+  "task": "K1",
+  "test_exit_codes": {
+    "build --strict": 0,
+    "pytest tests/contracts tests/unit/ui": "0 (42 passed: 18 contracts + 24 ui)",
+    "ruff": 0
+  },
+  "whether_paid_jobs_run": false
+}
