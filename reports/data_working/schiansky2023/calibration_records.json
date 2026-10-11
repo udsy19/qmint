@@ -1,0 +1,111 @@
+[
+ {
+  "basis_bias_interval": {
+   "hi": 0.4980342408472289,
+   "lo": 0.49583112229724713,
+   "point": 0.4969356550129853,
+   "unit": "fraction"
+  },
+  "calibration_id": "schiansky2023-zenodo7979319-Z-v1",
+  "clock_drift_interval": null,
+  "confidence_level": 0.95,
+  "data_origin": "PHOTON_EXPERIMENT",
+  "dataset_sha256": "ef73667fa87786c52340c6f3eec7cf0ccc3eb64e8fb785bdf54349e6dc800130",
+  "detection_efficiency_interval": null,
+  "device_id": "schiansky2023_ttp_client_641m_fiber",
+  "experiment_family": "schiansky_2023",
+  "independence_assumptions": [
+   "client basis fixed per folder (linear); TTP basis passive 50/50 beamsplitter",
+   "coincidences = archived pairs (authors' 3-ns rounded-bin rule, after authors' offset/drift correction)",
+   "runs (chunk files) assumed to be in acquisition order; absolute times not in archive",
+   "clopper_pearson assumes iid trials; bootstrap assumes exchangeable 1-s blocks / runs",
+   "times are relative per run (each run starts near zero); time_start/end span runs"
+  ],
+  "interval_method": "hull(clopper_pearson pooled, time_block_bootstrap 1s blocks, run_bootstrap 11 runs [B=4000 seed=0 percentile], paper state-averaged estimator +/-1.96 SE); point = pooled errors/sifted; qber denominator = basis-matched (sifted) coincidences; basis_bias = fraction of coincidences with TTP passive basis Z",
+  "loss_interval": null,
+  "multiphoton_interval": null,
+  "n_events": 4394577,
+  "qber_interval": {
+   "hi": 0.014847270745404184,
+   "lo": 0.013945719697003305,
+   "point": 0.014301073988630942,
+   "unit": "fraction"
+  },
+  "schema_version": "1.0.0",
+  "time_end_ns": 30055366651.179623,
+  "time_start_ns": 1562415814.9307446
+ },
+ {
+  "basis_bias_interval": {
+   "hi": 0.501198490282842,
+   "lo": 0.49501547326386386,
+   "point": 0.4979122819262889,
+   "unit": "fraction"
+  },
+  "calibration_id": "schiansky2023-zenodo7979319-X-v1",
+  "clock_drift_interval": null,
+  "confidence_level": 0.95,
+  "data_origin": "PHOTON_EXPERIMENT",
+  "dataset_sha256": "ef73667fa87786c52340c6f3eec7cf0ccc3eb64e8fb785bdf54349e6dc800130",
+  "detection_efficiency_interval": null,
+  "device_id": "schiansky2023_ttp_client_641m_fiber",
+  "experiment_family": "schiansky_2023",
+  "independence_assumptions": [
+   "client basis fixed per folder (diagonal); TTP basis passive 50/50 beamsplitter",
+   "coincidences = archived pairs (authors' 3-ns rounded-bin rule, after authors' offset/drift correction)",
+   "runs (chunk files) assumed to be in acquisition order; absolute times not in archive",
+   "clopper_pearson assumes iid trials; bootstrap assumes exchangeable 1-s blocks / runs",
+   "times are relative per run (each run starts near zero); time_start/end span runs"
+  ],
+  "interval_method": "hull(clopper_pearson pooled, time_block_bootstrap 1s blocks, run_bootstrap 11 runs [B=4000 seed=0 percentile], paper state-averaged estimator +/-1.96 SE); point = pooled errors/sifted; qber denominator = basis-matched (sifted) coincidences; basis_bias = fraction of coincidences with TTP passive basis Z",
+  "loss_interval": null,
+  "multiphoton_interval": null,
+  "n_events": 4570301,
+  "qber_interval": {
+   "hi": 0.033586534973645735,
+   "lo": 0.03232420568433928,
+   "point": 0.03286584866291424,
+   "unit": "fraction"
+  },
+  "schema_version": "1.0.0",
+  "time_end_ns": 30068864303.583004,
+  "time_start_ns": 1515169635.8824656
+ },
+ {
+  "basis_bias_interval": null,
+  "calibration_id": "schiansky2023-published-aggregate-v1",
+  "clock_drift_interval": null,
+  "confidence_level": 0.6827,
+  "data_origin": "PUBLISHED_AGGREGATE",
+  "dataset_sha256": null,
+  "detection_efficiency_interval": null,
+  "device_id": "schiansky2023_ttp_client_641m_fiber",
+  "experiment_family": "schiansky_2023",
+  "independence_assumptions": [
+   "as stated by the authors; see PUBLISHED_2023 anchors"
+  ],
+  "interval_method": "paper-quoted +/- (Poisson, ~1 sigma); transcribed, not re-derived; qber = max basis (D/A)",
+  "loss_interval": {
+   "hi": 0.239,
+   "lo": 0.20899999999999996,
+   "point": 0.22399999999999998,
+   "unit": "fraction"
+  },
+  "multiphoton_interval": {
+   "hi": 0.0688,
+   "lo": 0.06639999999999999,
+   "point": 0.0676,
+   "unit": "fraction"
+  },
+  "n_events": 0,
+  "qber_interval": {
+   "hi": 0.0329,
+   "lo": 0.03269999999999999,
+   "point": 0.032799999999999996,
+   "unit": "fraction"
+  },
+  "schema_version": "1.0.0",
+  "time_end_ns": null,
+  "time_start_ns": null
+ }
+]

@@ -1,0 +1,66 @@
+{
+ "command": "python -m qmint.photonics.schiansky2023",
+ "created_utc": "2026-10-11T21:20:42Z",
+ "entries": [
+  {
+   "original_or_derived": "original",
+   "path_or_uri": "https://zenodo.org/api/records/7979319/files/Archive.zip/content",
+   "role": "input",
+   "sha256": "ef73667fa87786c52340c6f3eec7cf0ccc3eb64e8fb785bdf54349e6dc800130",
+   "upstream_checksum": "md5:fd708578a613b63f57c31f986a56bf94"
+  },
+  {
+   "original_or_derived": "derived",
+   "path_or_uri": "reports/data_working/schiansky2023/summary.json",
+   "role": "output",
+   "sha256": "7023937d0bc19a60728d1543e03fc346f602579509da47d07b3074e74a2356ab",
+   "upstream_checksum": null
+  },
+  {
+   "original_or_derived": "derived",
+   "path_or_uri": "reports/data_working/schiansky2023/calibration_records.json",
+   "role": "output",
+   "sha256": "36fde5085eec6014deef4732e5a60ea3ef683a6a0ed9ade00b39129e5ee89246",
+   "upstream_checksum": null
+  },
+  {
+   "original_or_derived": "derived",
+   "path_or_uri": "reports/data_working/schiansky2023/per_run.csv",
+   "role": "output",
+   "sha256": "eb8ee2c343ecfbdb3fbfd28b53fb0cf3153853aa96d00c20dd26fe8cfae0144e",
+   "upstream_checksum": null
+  },
+  {
+   "original_or_derived": "derived",
+   "path_or_uri": "reports/data_working/schiansky2023/qber_per_run.png",
+   "role": "output",
+   "sha256": "b65a339e22b444c40f0d0228e5415f5673ca20f7dbb47f4636d6c518b72ae307",
+   "upstream_checksum": null
+  },
+  {
+   "original_or_derived": "derived",
+   "path_or_uri": "qmint/photonics/schiansky2023.py",
+   "role": "script",
+   "sha256": "82fbe9421c47177677b47b13b3d7222c0e46b8a7366322b86fe9f05665bd1978",
+   "upstream_checksum": null
+  }
+ ],
+ "environment": {
+  "numpy": "2.5.4",
+  "python": "3.12.11"
+ },
+ "evidence_kind": "PHOTON_EXPERIMENT",
+ "git_sha": "ece05ef02f3f89c2f75edc2393f478e77061ca56",
+ "manifest_id": "schiansky2023-x07-reproduction",
+ "retrieved_utc": "2026-10-11T21:20:42Z",
+ "schema_version": "1.0.0",
+ "seeds": [
+  0
+ ],
+ "source_urls": [
+  "https://zenodo.org/api/records/7979319",
+  "https://zenodo.org/api/records/8020667",
+  "https://www.nature.com/articles/s41467-023-39519-w",
+  "https://www.nature.com/articles/s41467-023-40866-x"
+ ]
+}
