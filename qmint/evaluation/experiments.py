@@ -132,7 +132,7 @@ def build_fig2(root: Path) -> FigureResult:
     return FigureResult(FigureStatus.READY, fig, caption,
                         (EvidenceKind.PUBLISHED_THEOREM, EvidenceKind.MONTE_CARLO, EvidenceKind.CERTIFIED_NUMERIC,
                          EvidenceKind.SIMULATOR_IDEAL), rows,
-                        sources=[c["source"], "https://arxiv.org/abs/1202.4010"])
+                        sources=["https://arxiv.org/abs/1202.4010"])
 
 
 # --------------------------------------------------------------------------- Fig 3
@@ -222,7 +222,7 @@ def build_fig3(root: Path) -> FigureResult:
         "for the same n for contrast only."
     )
     return FigureResult(FigureStatus.READY, fig, caption,
-                        (EvidenceKind.PUBLISHED_THEOREM, EvidenceKind.MONTE_CARLO), rows, sources=[c["source"]])
+                        (EvidenceKind.PUBLISHED_THEOREM, EvidenceKind.MONTE_CARLO), rows, sources=["https://arxiv.org/abs/1202.4010"])
 
 
 # --------------------------------------------------------------------------- Fig 4
