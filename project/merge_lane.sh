@@ -15,7 +15,7 @@ case "$LANE" in
   H) PAT='^(qmint/classical/|tests/unit/classical/|reports/classical_baseline_notes/|handoffs/H-)' ;;
   I) PAT='^(qmint/compiler/|tests/unit/compiler/|reports/optimizer_working/|benchmarks/|handoffs/I-)' ;;
   J) PAT='^(qmint/quantum/ionq\.py|qmint/quantum/qollab\.py|qollab/|tests/unit/ionq/|handoffs/J-)' ;;
-  K) PAT='^(qmint/ui/|app/|tests/unit/ui/|handoffs/K-)' ;;
+  K) PAT='^(qmint/ui/|qmint/api/|app/|web/|docs/design/|tests/unit/ui/|tests/unit/api/|handoffs/K-)' ;;
   L) PAT='^(qmint/core/(?!contracts\.py|serialization\.py|interfaces\.py)|qmint/cli\.py|scripts/|\.github/|tests/integration/|tests/contracts/(?!test_contracts\.py)|docs/REPRODUCIBILITY\.md|pyproject\.toml|handoffs/L-)' ;;
   M) PAT='^(audits/|tests/adversarial/|handoffs/M-)' ;;
   N) PAT='^(qmint/evaluation/|reports/|figures/|docs/|tests/unit/evaluation/|handoffs/N-)' ;;

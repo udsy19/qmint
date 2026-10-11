@@ -16,3 +16,9 @@
   cross-lane consumers (I, K, M, N) are dispatched after their inputs are merged.
 - **D-006 bootstrap/** stays until lane D's `qmint/proofs/ideal_bounds.py` supersedes it; lead deletes it at
   that merge (no dead code).
+- **D-007 (2026-10-11) Website scope added to lane K** (user request): Next.js App Router site in `web/`
+  (pnpm, hard-linked store to conserve disk), FastAPI research API in `qmint/api/` that wraps merged lane
+  modules (no second backend), design docs in `docs/design/`. Static wave-1 workbench (`qmint/ui` HTML
+  renderer, `app/site`) is superseded by `web/` and must be deleted once its views are covered; reusable
+  evidence-badge/claim logic moves behind the API. Sub-agents work in worktrees `K-web-*` with disjoint
+  subtrees of `web/`.
