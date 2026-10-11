@@ -16,11 +16,12 @@ dependencies = [
 [project.optional-dependencies]
 sdp = ["cvxpy>=1.5", "scs>=3.2", "clarabel>=0.9"]
 quantum = ["qiskit>=1.2", "qiskit-aer>=0.15", "qutip>=5.0"]
+ionq = ["qiskit-ionq>=1.1"]
 pqc = ["dilithium-py>=1.1"]
 data = ["requests>=2.31"]
 plots = ["matplotlib>=3.8"]
 dev = ["pytest>=8.0", "hypothesis>=6.100", "ruff>=0.6"]
-all = ["qmint[sdp,quantum,pqc,data,plots,dev]"]
+all = ["qmint[sdp,quantum,ionq,pqc,data,plots,dev]"]
 
 [project.scripts]
 qmint = "qmint.cli:main"

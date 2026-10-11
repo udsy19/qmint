@@ -40,8 +40,9 @@ gates:
     evidence: []
   G6:
     description: Optional authorized IonQ primitive result
-    status: OPEN
-    evidence: []
+    status: SKIPPED
+    evidence:
+    - 'handoffs/J-J1.json: dry-run only; no key; no paid approval'
   G7:
     description: Independent science audit and reproducible paper
     status: OPEN
@@ -151,21 +152,29 @@ tasks:
     description: Optional quantum backend adapter and provenance
     owner: subagent-lane-J
     branch: feat/J-backend
-    status: CLAIMED
-    evidence: []
-    blockers: []
-    commit: null
+    status: MERGED
+    evidence:
+    - handoffs/J-J1.json
+    - 57 tests pass
+    blockers:
+    - 'G6 real QPU SKIPPED: no IONQ_API_KEY and no paid approval'
+    - 'Qollab platform integration BLOCKED: no public API'
+    commit: 0dcc1dd
     start_sha: ece05ef
+    merge_sha: 19935fb
   K1:
     lane: K
     description: Evidence-led research interface
     owner: subagent-lane-K
     branch: feat/K-ui
-    status: CLAIMED
-    evidence: []
+    status: MERGED
+    evidence:
+    - handoffs/K-K1.json
+    - app/site (FIXTURE DATA)
     blockers: []
-    commit: null
+    commit: 061cfc2
     start_sha: ece05ef
+    merge_sha: 6c71062
   L1:
     lane: L
     description: Core package/CI/integration/frozen schema

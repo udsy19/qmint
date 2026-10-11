@@ -20,6 +20,8 @@ cvxpy==1.9.3
     # via qmint (pyproject.toml)
 cycler==0.12.1
     # via matplotlib
+decorator==5.3.1
+    # via qiskit-ionq
 dilithium-py==1.4.0
     # via qmint (pyproject.toml)
 dill==0.4.1
@@ -32,6 +34,8 @@ hypothesis==6.169.0
     # via qmint (pyproject.toml)
 idna==3.20
     # via requests
+importlib-metadata==9.0.1
+    # via qiskit-ionq
 iniconfig==2.3.1
     # via pytest
 jinja2==3.1.6
@@ -90,6 +94,8 @@ python-dateutil==2.9.0.post0
     # via
     #   matplotlib
     #   qiskit-aer
+python-dotenv==1.2.4
+    # via qiskit-ionq
 pyyaml==6.0.3
     # via qmint (pyproject.toml)
 qdldl==0.1.9.post1
@@ -98,12 +104,17 @@ qiskit==2.5.2
     # via
     #   qmint (pyproject.toml)
     #   qiskit-aer
+    #   qiskit-ionq
 qiskit-aer==0.17.2
+    # via qmint (pyproject.toml)
+qiskit-ionq==1.1.1
     # via qmint (pyproject.toml)
 qutip==5.3.1
     # via qmint (pyproject.toml)
 requests==2.34.2
-    # via qmint (pyproject.toml)
+    # via
+    #   qmint (pyproject.toml)
+    #   qiskit-ionq
 ruff==0.17.0
     # via qmint (pyproject.toml)
 rustworkx==0.18.1
@@ -143,3 +154,5 @@ typing-inspection==0.4.4
     # via pydantic
 urllib3==2.8.0
     # via requests
+zipp==4.1.1
+    # via importlib-metadata
