@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import * as React from "react";
 import { EvidenceLabel } from "@/components/ui/evidence-label";
 import { Readout, ReadoutGroup } from "@/components/ui/readout";
@@ -7,9 +8,9 @@ import { ApiError, apiGet } from "@/lib/api/client";
 import { Explorer } from "./_components/explorer";
 import type { BenchData } from "./_components/model";
 import { ComparabilityMatrix, LatencyCases, PhotonQber, Reproducibility } from "./_components/sections";
+import { STATIC_SNAPSHOT } from "@/lib/api/static";
 
 export const metadata: Metadata = { title: "Quantum vs classical" };
-export const dynamic = "force-dynamic";
 
 function Section({ id, eyebrow, title, lede, children }: { id: string; eyebrow: string; title: string; lede?: React.ReactNode; children: React.ReactNode }) {
   return (
@@ -36,6 +37,7 @@ async function load(): Promise<{ data?: BenchData; error?: ApiError }> {
 }
 
 export default async function Page() {
+  if (!STATIC_SNAPSHOT) await connection(); // request-time render; the static export prerenders from the snapshot
   const { data, error } = await load();
   return (
     <main id="main" className="container-wide grid grid-cols-[minmax(0,1fr)] gap-12 py-10 md:py-14">

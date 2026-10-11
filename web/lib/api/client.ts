@@ -2,8 +2,11 @@
  * Typed client for the QMint research API (qmint/api, FastAPI, /api/v1).
  * Types are generated: `pnpm gen:api` → lib/api/openapi.json → lib/api/schema.d.ts. Never hand-edit those.
  * All requests go same-origin to /api/* (Next rewrites to :8787), with a timeout and abort support.
+ * In the static GitHub Pages build (NEXT_PUBLIC_QMINT_STATIC=1) requests are answered from the precomputed
+ * snapshot instead (see ./static.ts); a request that was not precomputed fails with an ApiError.
  */
 import type { components, paths } from "./schema";
+import { readSnapshot, SNAPSHOT_MISS_MESSAGE, snapshotPath, STATIC_SNAPSHOT } from "./static";
 
 export type Schemas = components["schemas"];
 export type Quantity = Schemas["Quantity"];
@@ -52,7 +55,22 @@ function baseUrl(opts: RequestOptions): string {
   return "";
 }
 
+async function fromSnapshot<T>(method: "GET" | "POST", path: string, opts: RequestOptions & { body?: unknown; query?: object }): Promise<T> {
+  if (opts.signal?.aborted) throw new ApiError("aborted", `${method} ${path} was cancelled`);
+  const rel = await snapshotPath(method, path, method === "GET" ? (opts.query ?? {}) : opts.body);
+  let payload: unknown;
+  try {
+    payload = await readSnapshot(rel, opts.fetchImpl ?? fetch, opts.signal);
+  } catch (e) {
+    if (opts.signal?.aborted) throw new ApiError("aborted", `${method} ${path} was cancelled`);
+    throw new ApiError("network", `${method} ${path} failed: ${(e as Error).message}`);
+  }
+  if (payload === null) throw new ApiError("http", SNAPSHOT_MISS_MESSAGE, 404, "static_snapshot_miss", { method, path, snapshot: rel });
+  return payload as T;
+}
+
 async function request<T>(method: "GET" | "POST", path: string, opts: RequestOptions & { body?: unknown; query?: object }): Promise<T> {
+  if (STATIC_SNAPSHOT) return fromSnapshot<T>(method, path, opts);
   const timeoutMs = opts.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const ctrl = new AbortController();
   let timedOut = false;

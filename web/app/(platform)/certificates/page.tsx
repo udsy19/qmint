@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { Studio } from "@/components/certificates/studio";
 import { ErrorState } from "@/components/ui/state";
 import { ApiError, apiGet, type GetResponse } from "@/lib/api/client";
+import { STATIC_SNAPSHOT } from "@/lib/api/static";
 
 export const metadata: Metadata = { title: "Security Certificate Studio" };
-export const dynamic = "force-dynamic";
 
 async function load(): Promise<{ catalog?: GetResponse<"/api/v1/certificates/catalog">["data"]; error?: ApiError }> {
   try {
@@ -15,6 +16,7 @@ async function load(): Promise<{ catalog?: GetResponse<"/api/v1/certificates/cat
 }
 
 export default async function Page() {
+  if (!STATIC_SNAPSHOT) await connection(); // request-time render; the static export prerenders from the snapshot
   const { catalog, error } = await load();
   return (
     <main id="main" className="container-wide grid gap-10 py-10 md:py-14">

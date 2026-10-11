@@ -1,18 +1,21 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { ApiFailure } from "@/components/shell/api-failure";
 import { isEntryKind } from "@/components/research/kinds";
 import { ResearchIndex, type Filters } from "@/components/research/research-index";
 import { SourceFiles, StatusGlossary } from "@/components/research/provenance";
 import { load } from "@/components/shell/load";
 import type { StatusTone } from "@/components/shell/status-mark";
+import { STATIC_SNAPSHOT } from "@/lib/api/static";
 
 export const metadata: Metadata = { title: "Research library" };
-export const dynamic = "force-dynamic";
 
 const TONES: StatusTone[] = ["done", "partial", "open", "skipped", "danger"];
 
 export default async function ResearchPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  const sp = await searchParams;
+  if (!STATIC_SNAPSHOT) await connection(); // request-time render; the static export prerenders from the snapshot
+  // The static export has no request, so query-string filters (?game=…) are not applied on first load there.
+  const sp: Record<string, string | string[] | undefined> = STATIC_SNAPSHOT ? {} : await searchParams;
   const one = (k: string) => (Array.isArray(sp[k]) ? sp[k][0] : sp[k]) ?? "";
   const kind = one("kind");
   const tone = one("status") as StatusTone;

@@ -1,0 +1,10 @@
+{
+  "git_sha": "ebe680bae875d7afe97ee4cee63a04d0a3fa730c",
+  "generated_at": "2026-10-11T22:44:39+00:00",
+  "generator": "scripts/build_static_site.py",
+  "key": "sha256(canonical JSON of the POST body, or of the GET query object; sorted keys, no whitespace)",
+  "counts": {
+    "files": 365,
+    "failed": 0
+  }
+}
