@@ -40,3 +40,29 @@ Branch `feat/KB-web`, from `6a8053e`. Code commit `c9a4783`. Machine-readable re
 - **KD:** the `/lab/attack` reason still says "lane C not merged". Please also add a `secret_leak_control` attack so the hero stops deriving that value from `/lab/mint`.
 - **KC:** please add a `GET /evidence/highlights` endpoint for the SDP, QBER and comparability values. Then `research-values.ts` can be deleted.
 - `StateGlyph` is a candidate primitive for /lab/mint.
+
+## Update: re-targeted to the merged lab API (main @ 02aeab1)
+- **Fast-forward.** `feat/KB-web` was fast-forwarded to main. Main's typecheck errors all came from the hero against KD's new `/lab` contract, and they are now fixed.
+- **Scenario mapping** to KD's attack ids:
+
+  | Scenario | Attack id |
+  |---|---|
+  | measure–resend | `A01_basis_guess_resend` |
+  | phase-covariant cloner | `A03b_phase_covariant_xz` |
+  | MVW optimal channel | `A04_mvw_optimal_channel` |
+  | leaked secret | `CTRL_secret_leak` (taken straight from the API; no longer derived client-side) |
+  | honest holder | `/lab/mint` honest acceptance |
+
+- **Out-of-model** comes from the API's `proof_applicability`. When it is OUT_OF_MODEL, the W1 bound is the API's null "does not apply" quantity.
+- **Monte Carlo** is now available for every attack, over 1,000 fresh notes, labelled MONTE-CARLO with its 95% CI.
+- **SDP optimum.** For n ≤ 2 a CERTIFIED-NUMERIC "Optimum ≤" row shows the live SDP bracket at full precision.
+- **Note states are hidden ("?")** because they are the bank's secret. They are revealed only in the leaked-secret control, through `/lab/mint` `teaching_reveal`, the API's out-of-model teaching view. In-model scenarios never request a reveal, and a test checks this.
+- **`research-values.ts` is deleted, and so is its drift test.** Every landing-page number now comes from the API:
+  - 05 QBER, reproduced vs published, plus the pair and run counts: `GET /benchmarks` → photon.
+  - 05 SDP brackets: `POST /lab/attack` A04 at n = 1 and 2 → sdp.
+  - 04 comparability counts: `/benchmarks` comparability.
+  - 02 leak value: `CTRL_secret_leak`.
+  - 02 n_min = 73: computed as ⌈−9 / log10 per_unit⌉ from the `/games` W1 per-unit value.
+  - Links, the bibliography, the support line and the fallback disclaimer moved to `components/marketing/site.ts`.
+- **Checks:** typecheck 0, lint 0, vitest 91/91, build 0. The visual check at 1440 and 390 showed no horizontal scroll and no console errors (scratchpad `shots2/`).
+- **Superseded:** the KC/KD proposals made earlier in this handoff (evidence highlights endpoint, secret-leak attack) are no longer needed.

@@ -5,15 +5,15 @@ import { Instrument } from "./instrument";
 import { loadInstrument } from "./instrument-data";
 import { attackResponse, mintResponse } from "./instrument-fixtures";
 
-type Body = { attack?: Parameters<typeof attackResponse>[0]; n?: number; n_qubits?: number; backend?: string };
+type Body = { attack?: Parameters<typeof attackResponse>[0]; n?: number; n_qubits?: number; trials?: number; include_sdp?: boolean; teaching_reveal?: boolean };
 
 function fakeApi(calls: { path: string; body: Body }[]) {
   return vi.fn(async (url: string, init: RequestInit) => {
     const body = JSON.parse(String(init.body)) as Body;
     calls.push({ path: url, body });
     const payload = url.endsWith("/lab/mint")
-      ? mintResponse(body.n_qubits ?? 1)
-      : attackResponse(body.attack ?? "mvw_channel", body.n ?? 1, body.backend === "aer" ? { aer: { value: 0.55, lo: 0.52, hi: 0.58, trials: 2000 } } : undefined);
+      ? mintResponse(body.n_qubits ?? 1, { reveal: body.teaching_reveal })
+      : attackResponse(body.attack ?? "A04_mvw_optimal_channel", body.n ?? 1, { trials: body.trials, sdp: body.include_sdp });
     return new Response(JSON.stringify(payload), { status: 200, headers: { "Content-Type": "application/json" } });
   });
 }
@@ -43,26 +43,34 @@ describe("<Instrument/>", () => {
     expect(calls).toHaveLength(0); // server-provided initial data, no refetch on mount
   });
 
-  it("selecting the leaked-secret control queries /lab/mint and labels the result OUT-OF-MODEL", async () => {
+  it("selecting the leaked-secret control calls CTRL_secret_leak, reveals the note and marks it OUT-OF-MODEL", async () => {
     await mount();
     await act(async () => fireEvent.click(screen.getByRole("radio", { name: /Leaked secret/ })));
     await waitFor(() => expect(document.querySelector('[data-source="out_of_model"]')).not.toBeNull());
-    expect(calls.some((c) => c.path.endsWith("/lab/mint"))).toBe(true);
-    expect(document.querySelector('[data-source="out_of_model"] [data-evidence="OUT_OF_MODEL"]')).not.toBeNull();
-    expect(screen.getByText(/does not apply/)).toBeInTheDocument();
+    expect(calls.some((c) => c.body.attack === "CTRL_secret_leak")).toBe(true);
+    expect(calls.some((c) => c.path.endsWith("/lab/mint") && c.body.teaching_reveal === true)).toBe(true);
+    expect(document.querySelector('[data-evidence="OUT_OF_MODEL"]')).not.toBeNull();
+    expect(screen.getAllByText(/does not apply/).length).toBeGreaterThan(0);
     await waitFor(() => expect(screen.getByText(/out-of-model control/)).toBeInTheDocument());
   });
 
-  it("Monte Carlo sampling is only offered where the API can run it (cloners, n ≤ 2)", async () => {
+  it("in-model attacks never ask the API to reveal the secret", async () => {
     await mount();
-    const box = screen.getByRole("checkbox", { name: /sample with Aer/ });
-    expect(box).toBeDisabled(); // n = 4
-    await act(async () => fireEvent.click(screen.getByRole("radio", { name: "n = 2" })));
-    await waitFor(() => expect(box).toBeEnabled());
+    await act(async () => fireEvent.click(screen.getByRole("radio", { name: /Measure/ })));
+    await waitFor(() => expect(calls.some((c) => c.body.attack === "A01_basis_guess_resend")).toBe(true));
+    expect(calls.some((c) => c.body.teaching_reveal)).toBe(false);
+  });
+
+  it("Monte Carlo runs fresh notes for attacks and is unavailable for the honest holder", async () => {
+    await mount();
+    const box = screen.getByRole("checkbox", { name: /Monte Carlo/ });
+    expect(box).toBeEnabled();
     await act(async () => fireEvent.click(box));
-    await waitFor(() => expect(document.querySelector('[data-source="monte_carlo"]')).not.toBeNull());
-    expect(calls.some((c) => c.body.backend === "aer" && c.body.n === 2)).toBe(true);
-    expect(screen.getByText(/99% CI/)).toBeInTheDocument();
+    await waitFor(() => expect(document.querySelector('[data-source="monte_carlo"] [data-evidence="MONTE_CARLO"]')).not.toBeNull());
+    expect(calls.some((c) => c.body.trials === 1000 && c.body.n === 4)).toBe(true);
+    expect(screen.getByText(/95% CI/)).toBeInTheDocument();
+    await act(async () => fireEvent.click(screen.getByRole("radio", { name: /Honest/ })));
+    await waitFor(() => expect(box).toBeDisabled());
   });
 
   it("shows an explicit error state when the API fails", async () => {

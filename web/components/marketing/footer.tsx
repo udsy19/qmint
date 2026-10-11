@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { apiGet } from "@/lib/api/client";
-import { DISCLOSURE_URL, LICENSE_URL, REPO_URL, SUPPORT_LINE } from "./research-values";
+import { DISCLOSURE_URL, LICENSE_URL, REPO_URL, SUPPORT_LINE } from "./site";
 import { Wordmark } from "./wordmark";
 
 const COLUMNS = [

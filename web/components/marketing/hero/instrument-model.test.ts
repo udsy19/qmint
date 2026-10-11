@@ -1,84 +1,87 @@
 import { describe, expect, it } from "vitest";
-import { attackResponse, mintResponse, theorem } from "./instrument-fixtures";
-import { buildReadings, describe as describeReadings, logPosition, prettyFormula, SCENARIOS } from "./instrument-model";
+import { attackResponse, mintResponse } from "./instrument-fixtures";
+import { buildReadings, describe as describeReadings, logPosition, prettyFormula, SCENARIOS, type ApiAttack } from "./instrument-model";
 
-const attack = (a: Parameters<typeof attackResponse>[0], n: number, aer?: Parameters<typeof attackResponse>[2]) =>
-  ({ kind: "attack", perQubit: attackResponse(a, 1), nQubit: attackResponse(a, n, aer) }) as const;
+const attack = (a: ApiAttack, n: number, opts: Parameters<typeof attackResponse>[2] = {}) =>
+  ({ kind: "attack", perQubit: attackResponse(a, 1), nQubit: attackResponse(a, n, opts) }) as const;
 
 describe("hero instrument: scenario → probability source and label", () => {
+  it("scenarios map to the API's attack ids; only the control is out of model", () => {
+    expect(SCENARIOS.map((s) => (s.backend.kind === "attack" ? s.backend.attack : "honest"))).toEqual([
+      "honest",
+      "A01_basis_guess_resend",
+      "A03b_phase_covariant_xz",
+      "A04_mvw_optimal_channel",
+      "CTRL_secret_leak",
+    ]);
+    expect(SCENARIOS.filter((s) => !s.inModel).map((s) => s.id)).toEqual(["leaked_secret"]);
+  });
+
   it("MVW channel: exact model value from the API, theorem bound labelled THEOREM", () => {
-    const r = buildReadings("mvw_channel", 4, attack("mvw_channel", 4));
+    const r = buildReadings("mvw_channel", 4, attack("A04_mvw_optimal_channel", 4));
     expect(r.joint.value).toBeCloseTo(0.31640625, 12);
     expect(r.joint.source).toBe("exact_model");
     expect(r.joint.evidence).toEqual({ kind: "SIMULATOR_IDEAL", group: "evidence_kind" });
     expect(r.joint.method).toBe("exact enumeration");
-    expect(r.joint.formula).toBe("(3/4)ⁿ");
     expect(r.perQubit.value).toBe(0.75);
     expect(r.bound.source).toBe("theorem");
     expect(r.bound.evidence.kind).toBe("PUBLISHED_THEOREM");
+    expect(r.bound.formula).toBe("(3/4)ⁿ");
     expect(r.bound.applies).toBe(true);
     expect(r.sampled).toBeNull();
-    expect(r.apiStatus).toBe("DEMO_ADAPTER");
+    expect(r.optimum).toBeNull(); // n > 2: no SDP
+  });
+
+  it("n ≤ 2: the certified SDP upper end is a CERTIFIED-NUMERIC reading", () => {
+    const r = buildReadings("mvw_channel", 2, attack("A04_mvw_optimal_channel", 2, { sdp: true }));
+    expect(r.optimum?.source).toBe("certified_numeric");
+    expect(r.optimum?.evidence.kind).toBe("CERTIFIED_NUMERIC");
+    expect(r.optimum?.value).toBe(0.562500000007276);
   });
 
   it("measure-resend: (5/8)^n is an exact model value, never the theorem", () => {
-    const r = buildReadings("measure_resend", 2, attack("measure_resend", 2));
+    const r = buildReadings("measure_resend", 2, attack("A01_basis_guess_resend", 2));
     expect(r.joint.value).toBeCloseTo(0.390625, 12);
     expect(r.joint.source).toBe("exact_model");
     expect(r.joint.evidence.kind).not.toBe("PUBLISHED_THEOREM");
   });
 
-  it("sampled cloner: Monte Carlo reading with its 99% interval and shot count", () => {
-    const r = buildReadings("bruss_cloner", 2, attack("bruss_cloner", 2, { aer: { value: 0.526, lo: 0.497, hi: 0.555, trials: 2000 } }));
+  it("Monte Carlo: MONTE-CARLO reading with its interval and the number of fresh notes", () => {
+    const r = buildReadings("phase_covariant", 2, attack("A03b_phase_covariant_xz", 2, { trials: 1000, wins: 526 }));
     expect(r.sampled?.source).toBe("monte_carlo");
-    expect(r.sampled?.interval).toEqual({ lo: 0.497, hi: 0.555, confidence: 0.99 });
-    expect(r.sampled?.method).toBe("aer sampling · 2,000 shots");
+    expect(r.sampled?.evidence.kind).toBe("MONTE_CARLO");
+    expect(r.sampled?.value).toBe(0.526);
+    expect(r.sampled?.interval?.confidence).toBe(0.95);
+    expect(r.sampled?.method).toBe("monte carlo · 1,000 fresh notes");
     expect(r.joint.source).toBe("exact_model");
   });
 
-  it("honest holder: joint pass is not applicable (null, never 0)", () => {
-    const r = buildReadings("honest", 4, attack("honest", 4));
+  it("honest holder: honest acceptance from /lab/mint; joint pass is not applicable (null, never 0)", () => {
+    const r = buildReadings("honest", 4, { kind: "honest", mint: mintResponse(4) });
+    expect(r.applicability).toBe("HONEST");
     expect(r.joint.value).toBeNull();
     expect(r.joint.source).toBe("not_applicable");
+    expect(r.single.value).toBe(1);
     expect(r.single.label).toBe("Genuine note passes");
-    expect(r.single.explain).toMatch(/honest acceptance/i);
+    expect(r.bound.evidence.kind).toBe("PUBLISHED_THEOREM");
     expect(describeReadings(r)).toMatch(/not applicable/);
   });
 
-  it("leaked secret: OUT-OF-MODEL control derived from the API's honest acceptance; bound does not apply", () => {
-    const r = buildReadings("leaked_secret", 4, {
-      kind: "mint_control",
-      perQubit: mintResponse(1),
-      nQubit: mintResponse(4),
-      theorem: theorem(4),
-    });
+  it("leaked secret: the API's CTRL_secret_leak value, marked out of model; the bound does not apply", () => {
+    const r = buildReadings("leaked_secret", 4, attack("CTRL_secret_leak", 4, { trials: 1000 }));
+    expect(r.applicability).toBe("OUT_OF_MODEL");
     expect(r.joint.value).toBe(1);
     expect(r.joint.source).toBe("out_of_model");
-    expect(r.joint.evidence).toEqual({ kind: "OUT_OF_MODEL", group: "certificate_status" });
-    expect(r.joint.apiSource).toMatch(/lab\/mint/);
-    expect(r.single.evidence.kind).toBe("OUT_OF_MODEL");
-    expect(r.bound.applies).toBe(false);
-    expect(r.bound.evidence.kind).toBe("PUBLISHED_THEOREM");
-    expect(describeReadings(r)).toMatch(/out-of-model control/);
-  });
-
-  it("leaked secret squares a noisy honest acceptance (two independent genuine notes)", () => {
-    const r = buildReadings("leaked_secret", 2, { kind: "mint_control", perQubit: mintResponse(1, 0.9), nQubit: mintResponse(2, 0.9), theorem: null });
-    expect(r.joint.value).toBeCloseTo(0.81 ** 2, 12);
-    expect(r.perQubit.value).toBeCloseTo(0.81, 12);
+    expect(r.joint.evidence.kind).toBe("SIMULATOR_IDEAL"); // the API's kind is kept
+    expect(r.sampled?.source).toBe("out_of_model");
     expect(r.bound.value).toBeNull();
+    expect(r.bound.applies).toBe(false);
+    expect(describeReadings(r)).toMatch(/out-of-model control.*does not apply/);
   });
 
   it("refuses inputs from the wrong backend", () => {
-    expect(() => buildReadings("leaked_secret", 1, attack("mvw_channel", 1))).toThrow();
-    expect(() =>
-      buildReadings("mvw_channel", 1, { kind: "mint_control", perQubit: mintResponse(1), nQubit: mintResponse(1), theorem: null }),
-    ).toThrow();
-  });
-
-  it("only the leaked-secret control is out of model, and only cloners can be sampled", () => {
-    expect(SCENARIOS.filter((s) => !s.inModel).map((s) => s.id)).toEqual(["leaked_secret"]);
-    expect(SCENARIOS.filter((s) => s.sampleable).map((s) => s.id)).toEqual(["bruss_cloner", "mvw_channel"]);
+    expect(() => buildReadings("honest", 1, attack("A04_mvw_optimal_channel", 1))).toThrow();
+    expect(() => buildReadings("mvw_channel", 1, { kind: "honest", mint: mintResponse(1) })).toThrow();
   });
 });
 

@@ -2,21 +2,28 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { EvidenceLabel } from "@/components/ui/evidence-label";
-import type { GetResponse } from "@/lib/api/client";
+import type { GetResponse, Schemas } from "@/lib/api/client";
 import { cn } from "@/lib/utils";
 import {
   DATASETS,
-  LANE_C_LEAK_CONTROL,
   REFERENCES,
   REPO_URL,
-  SDP_W1,
-  ZENODO_QBER,
-} from "./research-values";
+} from "./site";
 import { prettyFormula } from "./hero/instrument-model";
 import { Section } from "./section";
 import { STATE_BASIS, STATE_KET, StateGlyph, type Bb84Label } from "./state-glyph";
 
 export type GameInfo = GetResponse<"/api/v1/games">["data"][number];
+export type Benchmarks = GetResponse<"/api/v1/benchmarks">["data"];
+export type SdpBracket = Schemas["SdpBracket"];
+export type LabQuantity = Schemas["LabQuantity"];
+
+/** Smallest n with per_unit^n ≤ 10^exp: arithmetic on the API's per-unit theorem value. */
+export function nMin(perUnit: number, exp = -9): number {
+  return Math.ceil(exp / Math.log10(perUnit));
+}
+
+const pct = (v: number, digits = 4) => (v * 100).toFixed(digits);
 export type MetaData = GetResponse<"/api/v1/meta">["data"];
 
 /* ------------------------------------------------------------------------------------------ */
@@ -137,14 +144,21 @@ function SpendFigure() {
 
 const STATES: Bb84Label[] = ["0", "1", "+", "-"];
 
-export function PrimitiveSection({ w1 }: { w1: GameInfo | null }) {
+export function PrimitiveSection({ w1, leak }: { w1: GameInfo | null; leak: LabQuantity | null }) {
+  const n9 = w1?.per_unit_value ? nMin(w1.per_unit_value) : null;
   const limits = [
     {
       t: "Imperfect copies still pass sometimes.",
       d: (
         <>
           The best counterfeiting channel passes both checks with probability 3/4 per qubit. Security is the exponent,{" "}
-          <span className="font-mono text-foreground">{prettyFormula(w1?.formula ?? "(3/4)^n")}</span>, which reaches 10⁻⁹ only at n = 73.
+          <span className="font-mono text-foreground">{prettyFormula(w1?.formula ?? "(3/4)^n")}</span>
+          {n9 ? (
+            <>
+              , which reaches 10⁻⁹ only at n = <span className="tnum font-mono text-foreground">{n9}</span>
+            </>
+          ) : null}
+          .
         </>
       ),
       label: { kind: "PUBLISHED_THEOREM", group: "evidence_kind" as const },
@@ -153,9 +167,14 @@ export function PrimitiveSection({ w1 }: { w1: GameInfo | null }) {
       t: "The secret is the security.",
       d: (
         <>
-          If the bank&apos;s bases and bits leak, a forger prepares two genuine notes and passes both checks with
-          probability <span className="tnum font-mono text-foreground">{LANE_C_LEAK_CONTROL.value}</span>. QMint
-          runs this as a control.
+          If the bank&apos;s bases and bits leak, a forger prepares two genuine notes and passes both checks
+          {leak?.value != null ? (
+            <>
+              {" "}
+              with probability <span className="tnum font-mono text-foreground">{leak.value}</span>
+            </>
+          ) : null}
+          . QMint runs this as a control (<span className="font-mono">CTRL_secret_leak</span>).
         </>
       ),
       label: { kind: "OUT_OF_MODEL", group: "certificate_status" as const },
@@ -210,8 +229,9 @@ export function PrimitiveSection({ w1 }: { w1: GameInfo | null }) {
             ))}
           </ol>
           <p className="mt-4 text-xs text-subtle">
-            Sources: MVW 2012 (arXiv:1202.4010); lane D <span className="font-mono">qmint/proofs/ideal_bounds.py</span> (n_min);
-            lane C <span className="font-mono">handoffs/C-C1-evidence.json</span> (ctrl_secret_leak, a06_toy_w2).
+            Sources: MVW 2012 (arXiv:1202.4010); <span className="font-mono">GET /api/v1/games</span> (W1 per-qubit bound);{" "}
+            <span className="font-mono">POST /api/v1/lab/attack</span> (CTRL_secret_leak); lane C{" "}
+            <span className="font-mono">handoffs/C-C1-evidence.json</span> (a06_toy_w2).
           </p>
         </div>
       </div>
@@ -308,7 +328,8 @@ const MATCHED = [
   { need: "Offline, payer privacy", best: "H6 Chaum–Fiat–Naor e-cash", gives: "Detection, not prevention: both merchants accept, the spender is identified at deposit." },
 ] as const;
 
-export function ClassicalSection({ s1 }: { s1: GameInfo | null }) {
+export function ClassicalSection({ s1, comparability }: { s1: GameInfo | null; comparability: Benchmarks["comparability"] | null }) {
+  const count = (s: string) => comparability?.filter((c) => c.status === s).length ?? 0;
   return (
     <Section
       id="classical"
@@ -357,7 +378,14 @@ export function ClassicalSection({ s1 }: { s1: GameInfo | null }) {
           <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-subtle">
             <EvidenceLabel kind="MODELLED_LATENCY" size="xs" />
             <span>Lower bounds on synthetic light-cone networks, not measurements.</span>
-            <span className="tnum font-mono">7 qualified · 4 incomparable · 0 directly comparable</span>
+            {comparability ? (
+              <span className="tnum font-mono">
+                {count("QUALIFIED")} qualified · {count("INCOMPARABLE")} incomparable · {count("COMPARABLE")} directly comparable
+                <span className="text-subtle"> · GET /api/v1/benchmarks</span>
+              </span>
+            ) : (
+              <span>Comparability matrix unavailable while the API is offline.</span>
+            )}
           </div>
         </div>
       </div>
@@ -369,7 +397,17 @@ export function ClassicalSection({ s1 }: { s1: GameInfo | null }) {
 /* 05 — Proof, not hype                                                                         */
 /* ------------------------------------------------------------------------------------------ */
 
-export function ProofSection({ w1 }: { w1: GameInfo | null }) {
+export function ProofSection({
+  w1,
+  sdp,
+  photon,
+}: {
+  w1: GameInfo | null;
+  sdp: SdpBracket[];
+  photon: Benchmarks["photon"] | null;
+}) {
+  const brackets = sdp.filter((b) => b.status === "OK" && b.lower && b.upper_certified);
+  const pairs = photon?.runs.reduce((a, r) => a + r.n_pairs, 0) ?? null;
   return (
     <Section
       id="proof"
@@ -397,64 +435,92 @@ export function ProofSection({ w1 }: { w1: GameInfo | null }) {
 
         {/* numerical */}
         <article className="grid content-start gap-6 border-b border-border py-10 lg:border-r lg:border-b-0 lg:px-8">
-          <EvidenceLabel kind={SDP_W1.evidence} />
-          <div className="grid gap-2 font-mono">
-            <p className="tnum text-[1.375rem] leading-tight tracking-tight text-foreground">
-              {SDP_W1.n1.lower} ≤ OPT₁ ≤ {SDP_W1.n1.upper}
-            </p>
-            <p className="tnum text-sm text-muted">
-              {SDP_W1.n2.lower} ≤ OPT₂ ≤ {SDP_W1.n2.upper}
-            </p>
-          </div>
+          <EvidenceLabel kind="CERTIFIED_NUMERIC" />
+          {brackets.length ? (
+            <div className="grid gap-2 font-mono">
+              {brackets.map((b, i) => (
+                <p
+                  key={b.n}
+                  className={cn("tnum leading-tight tracking-tight", i === 0 ? "text-[1.375rem] text-foreground" : "text-sm text-muted")}
+                >
+                  {b.lower?.value} ≤ OPT<sub className="text-[0.6em]">{b.n}</sub> ≤ {b.upper_certified?.value}
+                </p>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted">The SDP bracket is unavailable while the research API is offline.</p>
+          )}
           <p className="text-muted">
-            QMint solved the counterfeiting SDP over every quantum channel, then certified the dual with exact rational
-            arithmetic. An independent checker re-verified it. The bracket around 0.75 is the certificate, not a rounding.
+            QMint solves the counterfeiting SDP over every quantum channel, then certifies the dual with exact rational
+            arithmetic, and an independent checker verifies it again. The lower end is an explicit channel. The bracket
+            is the certificate, not a rounding.
           </p>
           <Source>
-            Lane C <span className="font-mono">{SDP_W1.artefact}</span> · lane D re-verification{" "}
-            <span className="font-mono">qmint/proofs/sdp_exact.py</span>
+            <span className="font-mono">POST /api/v1/lab/attack</span> → sdp (live solve, n ≤ 2) · lane C{" "}
+            <span className="font-mono">certify_w1_dual</span> · lane D <span className="font-mono">sdp_exact</span>
           </Source>
         </article>
 
         {/* measured */}
         <article className="grid content-start gap-6 py-10 lg:pl-8">
-          <EvidenceLabel kind={ZENODO_QBER.evidence} />
-          <table className="w-full text-left">
-            <caption className="sr-only">Quantum bit error rate, this work vs the published paper</caption>
-            <thead>
-              <tr className="label-mono text-subtle">
-                <th scope="col" className="pb-2 font-medium">QBER</th>
-                <th scope="col" className="pb-2 text-right font-medium">Reproduced</th>
-                <th scope="col" className="pb-2 text-right font-medium">Paper</th>
-              </tr>
-            </thead>
-            <tbody className="tnum font-mono">
-              {ZENODO_QBER.rows.map((r) => (
-                <tr key={r.basis} className="border-t border-hairline">
-                  <th scope="row" className="py-2.5 text-sm font-normal text-muted">{r.basis}</th>
-                  <td className="py-2.5 text-right text-[1.375rem] leading-none tracking-tight text-foreground">
-                    {r.ours.toFixed(4)}
-                    <span className="text-sm text-subtle">%</span>
-                    <span className="mt-1 block text-[0.6875rem] text-subtle">± {r.oursSe.toFixed(4)}</span>
-                  </td>
-                  <td className="py-2.5 text-right align-top text-sm text-muted">
-                    {r.paper.toFixed(2)}%<span className="mt-1 block text-[0.6875rem] text-subtle">± {r.paperPm.toFixed(2)}</span>
-                  </td>
+          <EvidenceLabel kind="PHOTON_EXPERIMENT" />
+          {photon ? (
+            <table className="w-full text-left">
+              <caption className="sr-only">Quantum bit error rate, reproduced from the raw data vs the published paper</caption>
+              <thead>
+                <tr className="label-mono text-subtle">
+                  <th scope="col" className="pb-2 font-medium">QBER</th>
+                  <th scope="col" className="pb-2 text-right font-medium">Reproduced</th>
+                  <th scope="col" className="pb-2 text-right font-medium">Paper</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="tnum font-mono">
+                {photon.bases.map((b) => (
+                  <tr key={b.basis} className="border-t border-hairline">
+                    <th scope="row" className="py-2.5 align-top text-sm font-normal text-muted">
+                      {b.basis === "Z" ? "H/V" : "D/A"}
+                    </th>
+                    <td className="py-2.5 text-right text-[1.375rem] leading-none tracking-tight text-foreground">
+                      {b.state_averaged.value !== null ? pct(b.state_averaged.value) : "n/a"}
+                      <span className="text-sm text-subtle">%</span>
+                      {b.state_averaged.interval ? (
+                        <span className="mt-1 block text-[0.6875rem] text-subtle">
+                          [{pct(b.state_averaged.interval.lo)}, {pct(b.state_averaged.interval.hi)}]
+                        </span>
+                      ) : null}
+                    </td>
+                    <td className="py-2.5 text-right align-top text-sm text-muted">
+                      {b.published.value !== null ? `${pct(b.published.value, 2)}%` : "n/a"}
+                      {b.published.interval ? (
+                        <span className="mt-1 block text-[0.6875rem] text-subtle">
+                          ± {pct((b.published.interval.hi - b.published.interval.lo) / 2, 2)}
+                        </span>
+                      ) : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="text-sm text-muted">The photon dataset summary is unavailable while the research API is offline.</p>
+          )}
           <p className="text-muted">
-            Error rates recomputed from {ZENODO_QBER.pairs.toLocaleString("en-US")} raw photon coincidence pairs over{" "}
-            {ZENODO_QBER.runs} runs, using the paper&apos;s own estimator. Loss and multiphoton probability can&apos;t be
-            observed from the archive, so no security claim follows from this.
+            {photon && pairs ? (
+              <>
+                Error rates recomputed from <span className="tnum">{pairs.toLocaleString("en-US")}</span> raw photon
+                coincidence pairs over <span className="tnum">{photon.runs.length}</span> runs, using the paper&apos;s
+                own estimator.{" "}
+              </>
+            ) : null}
+            Loss and multiphoton probability can&apos;t be observed from the archive, so no security claim follows from
+            this.
           </p>
           <Source>
             Schiansky et al. 2023, Nat. Commun. 14, 3849 · data{" "}
             <a className="underline decoration-border-strong underline-offset-2 hover:text-foreground" href={DATASETS[0].href}>
               doi:{DATASETS[0].doi}
             </a>{" "}
-            · lane E <span className="font-mono">reports/data_working/schiansky2023</span>
+            · <span className="font-mono">GET /api/v1/benchmarks</span> → photon (lane E)
           </Source>
         </article>
       </div>
