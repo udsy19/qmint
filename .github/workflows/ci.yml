@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      QMINT_ALLOW_NETWORK: "0"
+      QMINT_ALLOW_PAID_HARDWARE: "0"
+    defaults:
+      run:
+        shell: bash  # GitHub runs bash with -eo pipefail
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # git sha + dirty state feed the evidence manifests
+      - uses: astral-sh/setup-uv@v5
+      - name: Create environment from the lock
+        run: |
+          set -euo pipefail
+          uv venv --python 3.12 .venv
+          uv pip install --python .venv/bin/python -r requirements.lock
+          uv pip install --python .venv/bin/python --no-deps -e .
+      - name: Ruff
+        run: |
+          set -euo pipefail
+          .venv/bin/python -m ruff check .
+      - name: Pytest (no network, no real data)
+        run: |
+          set -euo pipefail
+          .venv/bin/python -m pytest -q -m "not network and not realdata"
+      - name: CLI doctor
+        run: |
+          set -euo pipefail
+          .venv/bin/qmint doctor --report reports/environment.json
+      - name: Offline core run + manifest verification
+        run: |
+          set -euo pipefail
+          .venv/bin/python scripts/run_core.py --offline --seed 42 --out experiments/run_core
+          .venv/bin/python scripts/verify_manifest.py experiments/run_core
+      - name: Pyright
+        run: echo "SKIPPED: pyright not configured for this repository"

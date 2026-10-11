@@ -1,0 +1,82 @@
+{
+  "lane": "L",
+  "task": "L1",
+  "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+  "branch": "feat/L-infra",
+  "starting_commit_sha": "ece05ef02f3f89c2f75edc2393f478e77061ca56",
+  "final_commit_sha": "SEE_GIT_LOG: the commit that adds this file (code commit 234d3c3)",
+  "changed_paths": [
+    ".github/workflows/ci.yml",
+    "docs/REPRODUCIBILITY.md",
+    "qmint/cli.py",
+    "qmint/core/config.py",
+    "qmint/core/doctor.py",
+    "qmint/core/lanes.py",
+    "qmint/core/logging.py",
+    "qmint/core/manifest.py",
+    "qmint/core/pipeline.py",
+    "qmint/core/records.py",
+    "scripts/_bootstrap.py",
+    "scripts/run_core.py",
+    "scripts/run_all.py",
+    "scripts/verify_manifest.py",
+    "tests/contracts/test_l_secret_and_serializer.py",
+    "tests/integration/conftest.py",
+    "tests/integration/test_cli.py",
+    "tests/integration/test_manifest.py",
+    "tests/integration/test_network_denied.py",
+    "tests/integration/test_records.py",
+    "tests/integration/test_repo_hygiene.py",
+    "tests/integration/test_run_core.py",
+    "handoffs/L-L1.json",
+    "handoffs/L-L1.md"
+  ],
+  "commands_run": [
+    "$PY -m pytest tests -m 'not network and not realdata'",
+    "$PY -m pytest tests/contracts tests/integration",
+    "$PY -m ruff check qmint scripts tests",
+    "$PY -m ruff check .",
+    "$PY -m qmint.cli doctor",
+    "$PY -m qmint.cli data fetch zenodo:7979319",
+    "$PY scripts/run_core.py --offline --seed 42 --out <scratch> --check-determinism",
+    "$PY scripts/verify_manifest.py <scratch>",
+    "$PY scripts/run_all.py"
+  ],
+  "test_exit_codes": {
+    "pytest tests -m 'not network and not realdata'": "0 (86 passed, 1 xfailed[strict, documents frozen-serializer bug])",
+    "pytest tests/contracts tests/integration": "0 (85 passed, 1 xfailed)",
+    "ruff check qmint scripts tests": 0,
+    "ruff check . (whole repo)": "1 -- only lead-owned bootstrap/ideal_bounds.py I001 and bootstrap/test_ideal_bounds.py F401",
+    "qmint doctor": 0,
+    "qmint data fetch (lane E not merged)": "3 NOT_AVAILABLE",
+    "run_core --offline --seed 42": "0 (PASS=2 SKIPPED=9: lanes B,F,C,D,E,G,H,I,N not merged)",
+    "verify_manifest on run_core output": 0,
+    "run_all (no real data)": "2 REFUSED"
+  },
+  "evidence_files": [],
+  "assumptions_verified": [
+    "qmint is not installed in the shared venv; tests and `python -m qmint.cli` import the worktree via cwd/pythonpath; scripts insert their own checkout first on sys.path (scripts/_bootstrap.py)",
+    "requirements.lock exists and is hashed as the environment lock",
+    "[project.scripts] qmint = qmint.cli:main already present in pyproject.toml; no pyproject edit needed"
+  ],
+  "performance_numbers_with_sources": [],
+  "blockers": [
+    "CI `ruff check .` will fail until the lead fixes two lint issues in lead-owned bootstrap/ (ruff --fix: unsorted import in ideal_bounds.py, unused `math` import in test_ideal_bounds.py). Not edited by L (not owned).",
+    "Lane entrypoints: no lane has merged qmint.<pkg>.entrypoints yet, so run_core only runs the two lane-L builtin stages; every other stage is SKIPPED with reason."
+  ],
+  "known_limitations": [
+    "network_guard patches socket.connect/connect_ex/create_connection in-process only; subprocesses spawned by a stage are not guarded (QMINT_ALLOW_NETWORK=0 is exported for them).",
+    "Real-data preflight (run_all) relies on a convention lane E has not yet confirmed: EvidenceManifests in datasets/manifests/*.json with role=input entries under datasets/cache/.",
+    "verify_manifest cannot re-hash remote URIs offline; they are reported UNVERIFIED_REMOTE (fail only with --strict-remote).",
+    "`qmint sources list` reads lane A's research/PRIOR_ART_MATRIX.csv and research/DATASOURCE_REGISTER.yaml generically (schema not yet fixed by lane A).",
+    "Default output dirs experiments/run_core and experiments/run_all are not in .gitignore (lead-owned); lead should decide whether to ignore them.",
+    "Doctor's known-credential list is only IONQ_API_KEY (from .env.example); log/record scrubbing covers any env var whose name looks like a credential.",
+    "pyright not configured; CI step prints explicit SKIPPED."
+  ],
+  "interfaces_changed": [
+    "NEW (proposal to all lanes): lane entrypoint convention -- module qmint.<pkg>.entrypoints (lane J: qmint.quantum.qollab) may expose cli_main(argv)->int (argv[0] = command), run_core_stage(*, seed, out_dir)->{'outputs': [paths]}, run_realdata_stage(*, seed, out_dir, cache_dir)->{'outputs': [...]}; raise qmint.core.lanes.StageSkipped(reason) for explicit skips. Registry: qmint/core/lanes.py.",
+    "NEW: ExperimentRecord envelope (lane-L, not a frozen contract) in qmint/core/records.py wrapping exactly one C0-C7 payload.",
+    "CONTRACT MIGRATION PROPOSAL (critical, frozen serializer): qmint.core.serialization.canonical_json leaks IssuerSecret bases/bits when the secret is nested inside an Any-typed field of a contract model (SecurityCertificate.parameters, BenchmarkRecord.configuration, TraceEvent.detail, IssuerSecret.extra...). Cause: _plain() calls parent.model_dump(), and pydantic's core serializer does not call IssuerSecret's overridden model_dump. Reproduced: canonical_json(SecurityCertificate(..., parameters={'leak': IssuerSecret(...)})) emits \"bases\":[\"Z\",\"X\"],\"bits\":[0,1]. Proposed fix (v1.0.1 serializer, schemas unaffected): either add to IssuerSecret a `@model_serializer` that raises SecretBoundaryError, or make _plain() walk BaseModel fields via getattr instead of model_dump. Lane L works around it in RecordStore (contains_issuer_secret) and log redaction; regression test tests/contracts/test_l_secret_and_serializer.py::test_frozen_canonical_json_refuses_nested_secret is a strict xfail that will flip to XPASS (fail) once fixed, prompting removal of the marker."
+  ],
+  "whether_paid_jobs_run": false
+}
