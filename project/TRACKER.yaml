@@ -260,7 +260,7 @@ tasks:
     - tests/adversarial (26 strict xfail)
     blockers: []
     commit: 9b4903d
-    notes: '5 HIGH: M-D1, M-D2, M-B1, M-H1, M-H2 -> fix lanes FDE, FB, FGH, FLK dispatched'
+    notes: All 5 HIGH (M-D1, M-D2, M-B1, M-H1, M-H2) fixed and merged; remaining strict-xfails track open low/medium items
   N1:
     lane: N
     description: Reproducibility, figures and paper
@@ -337,8 +337,48 @@ tasks:
     blockers: []
     commit: null
     notes: KB hero fixed (13a1b77); web typecheck/lint/91 vitest/build green on main; KF QA pending
+  FB:
+    lane: FB
+    description: red-team fixes
+    status: MERGED
+    commit: c8cb1f4
+    evidence:
+    - handoffs/FB-1.json
+    blockers: []
+  FDE:
+    lane: FDE
+    description: red-team fixes
+    status: MERGED
+    commit: e6c9c6a
+    evidence:
+    - handoffs/FDE-1.json
+    blockers: []
+  FGH:
+    lane: FGH
+    description: red-team fixes
+    status: MERGED
+    commit: a6f87de
+    evidence:
+    - handoffs/FGH-1.json
+    blockers: []
+  FLK:
+    lane: FLK
+    description: red-team fixes
+    status: MERGED
+    commit: 8a88b81
+    evidence:
+    - handoffs/FLK-1.json
+    blockers: []
+  PAGES:
+    lane: K
+    description: Static GitHub Pages export with API snapshot
+    status: CLAIMED
+    branch: feat/PAGES
+    evidence: []
+    blockers: []
 qollab:
   project_url: https://qollab.xyz/u/udsy/qmint-proof-carrying-quantum-m
-  version: 'v1.1 public default (v1.0 superseded: overdispersion wording fix M-E1)'
+  version: v1.2 public default (video link)
   runs: qollab/evidence/qollab_runs_2026-10-11.json
-  video: /Users/udsy/PycharmProjects/qmint-video/out/qmint-demo.mp4 (2:32, local; human uploads)
+  video: https://drive.google.com/file/d/1Q91bDAflNIMsbsbJLyPn0Bf0A6DAJHqJ/view?usp=sharing
+  submitted: 2026-10-11 ~18:37 ET, team The Quantubians, theme Quantum Impact, 5 of 5
