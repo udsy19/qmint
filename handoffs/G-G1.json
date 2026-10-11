@@ -1,0 +1,115 @@
+{
+  "lane": "G",
+  "task": "G1",
+  "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+  "branch": "feat/G-networks",
+  "starting_commit_sha": "ece05ef02f3f89c2f75edc2393f478e77061ca56",
+  "final_commit_sha": "SEE_GIT_LOG (handoff commit follows code commit 389804d)",
+  "changed_paths": [
+    "qmint/networks/events.py",
+    "qmint/networks/simulator.py",
+    "qmint/networks/causality.py",
+    "qmint/networks/topology.py",
+    "qmint/networks/ripe.py",
+    "qmint/networks/s_money_sites.py",
+    "qmint/networks/classical_race_fixtures.py",
+    "tests/unit/networks/test_networks_engine.py",
+    "tests/unit/networks/test_networks_causality.py",
+    "tests/unit/networks/test_networks_topology.py",
+    "tests/unit/networks/test_networks_ripe.py",
+    "tests/unit/networks/test_networks_s_money.py",
+    "tests/unit/networks/test_networks_race.py",
+    "datasets/fixtures/ripe/anchor_mesh_ping_hel_tmp_fra_sample.json",
+    "handoffs/G-G1.json",
+    "handoffs/G-G1.md"
+  ],
+  "commands_run": [
+    "$PY -m qmint.networks.ripe  # regenerates RIPE fixture (public API, no key)",
+    "$PY -m pytest tests/contracts tests/unit/networks -q -o addopts=''",
+    "$PY -m pytest tests/unit/networks -q -m 'not network'",
+    "$PY -m ruff check qmint/networks tests/unit/networks"
+  ],
+  "test_exit_codes": {
+    "pytest tests/contracts tests/unit/networks (incl. 1 live network test)": 0,
+    "passed": 71,
+    "of_which_networks": 53,
+    "ruff check": 0
+  },
+  "evidence_files": [
+    "datasets/fixtures/ripe/anchor_mesh_ping_hel_tmp_fra_sample.json (MEASURED_LATENCY; msm 7714918, 10683825; probes 6330, 6251, 6979; window 1791579600-1791583200 unix s)",
+    "Jiang et al. arXiv:2408.13063v2 PDF sha256 a5a4242882c4a265738dbcf84a58f41acd345dfa51eb0dcf40537df7dec5deb4 (not committed; URL + hash recorded in topology.py)"
+  ],
+  "assumptions_verified": [
+    "Jiang 2024 intra-city: 2.766 km fibre (abstract rounds to 2.77 km) between two Jinan labs 426 m apart (main text p.6; Fig.2(a) caption and SI say 425 m) -- PUBLISHED_AGGREGATE",
+    "Jiang 2024 inter-city: Yiyuan-Mazhan, 60.54 km field fibre, stated straight-line D = 51.60 km (main text p.6, Methods eq.14-15) -- PUBLISHED_AGGREGATE",
+    "Jiang 2024 Methods eq.(10)-(11): dT_tran = dT_proc + L/c_fibre with c_fibre ~ 2e8 m/s; SI: mean dT_proc = 1.507 us; classical references 27.66 us (2L/c_fibre) and 344 us (2D/c, c=3e8)",
+    "DISCREPANCY: haversine of the paper's published Yiyuan/Mazhan coordinates = ~49.55 km, not 51.60 km; stated D used, discrepancy recorded in provenance",
+    "RIPE Atlas public results fetched without API key; probe/anchor coordinates as published by RIPE; RTT/2 one-way assumption flagged everywhere (ONE_WAY_ASSUMPTION)",
+    "All RIPE RTT/2 samples exceed the light-cone bound between the declared endpoints (checked; inconsistent coordinates raise)"
+  ],
+  "performance_numbers_with_sources": [
+    {
+      "what": "S-money modelled transaction time, Jinan case",
+      "value_us": 15.337,
+      "evidence": "MODELLED_LATENCY (paper eq.10-11 with paper inputs)",
+      "compare": "published measured mean 15.34 +/- 0.01 us (PUBLISHED_AGGREGATE)"
+    },
+    {
+      "what": "S-money modelled transaction time, Yiyuan-Mazhan",
+      "value_us": 304.207,
+      "evidence": "MODELLED_LATENCY",
+      "compare": "published 304.20 +/- 0.01 us"
+    },
+    {
+      "what": "H1 fixture remote-merchant ledger RTT, Jinan fibre",
+      "value_us": 27.66,
+      "evidence": "MODELLED_LATENCY",
+      "note": "equals paper's classical cross-check reference; fixture has zero ledger processing"
+    },
+    {
+      "what": "RIPE HEL(prb6330)->TMP(prb6251) one-way RTT/2",
+      "p50_ms": 1.948,
+      "p05_ms": 1.761,
+      "p95_ms": 2.21,
+      "lightcone_ms": 0.517,
+      "evidence": "MEASURED_LATENCY (msm 7714918, 15 results x 3 pkts)"
+    },
+    {
+      "what": "RIPE TMP(prb6251)->HEL(prb6330) one-way RTT/2",
+      "p50_ms": 2.135,
+      "evidence": "MEASURED_LATENCY (msm 10683825)"
+    },
+    {
+      "what": "RIPE FRA(prb6979)->TMP(prb6251) one-way RTT/2",
+      "p50_ms": 20.381,
+      "lightcone_ms": 5.211,
+      "evidence": "MEASURED_LATENCY (msm 7714918); reverse direction NOT measured, reused and flagged"
+    },
+    {
+      "what": "S-money vs H1-fixture median on RIPE HEL-TMP (20 seeds)",
+      "smoney_ms": 1.98,
+      "h1_remote_ms": 4.132,
+      "evidence": "MEASURED_LATENCY inputs, simulated events; NOT an apples-to-apples benchmark (trust/privacy/processing not matched)"
+    }
+  ],
+  "blockers": [],
+  "known_limitations": [
+    "S-money scenario is an event-timing/causality model only: token validity is a symbolic input; no quantum security (S1/S2 epsilon) is computed or implied here",
+    "protocol_id for S-money traces uses 's_money_kent_2022_ideal_2site' as the closest registered id; Jiang 2024 practical S-tokens are not a registered protocol (see interfaces_changed)",
+    "classical_race_fixtures.py are TEST FIXTURES, not lane H baselines; zero processing delays; must be replaced by lane H state machines and deleted at integration",
+    "Flat local frame for paper/synthetic cases; spherical-Earth chord for RIPE; no GR/Sagnac corrections",
+    "RTT/2 one-way assumption (asymmetric routing not resolved); 1 hour window, 3 probes -- not a representative Internet latency distribution",
+    "Clock error bound for RIPE sites (1 us) is a declared assumption, not measured",
+    "Engine time is float ns; comparisons use 1e-6 ns tolerance",
+    "Figure 6 plotting not implemented; data available via run_s_money + run_h0/h1/h3 on the same TopologyCase",
+    "No multi-site (>2) S-money scenario yet (X16)"
+  ],
+  "interfaces_changed": [
+    "No frozen contract edited.",
+    "NEW shared actor interface (qmint/networks/events.py): Actor.on_message(msg, now_ns)->list[Effect], Actor.on_local_request(LocalRequest, now_ns)->list[Effect]; Effects = Send(dst,payload,after_ns) | Record(kind,detail,after_ns) | SetTimer(delay_ns,payload); now_ns is the site's LOCAL clock reading. Lane H adapters should target this.",
+    "PROPOSAL (v2): register protocol id 'jiang_2024_practical_stoken' (games S2-like) so Jiang traces are not labelled with the Kent 2022 ideal id.",
+    "PROPOSAL (v2): add optional Site.metadata (e.g. lat/lon, RIPE probe id) and SpacetimeNetwork.provenance; today provenance lives in TopologyCase.provenance outside the contract.",
+    "PROPOSAL (v2): TraceEvent.local_clock_ns as a first-class field (currently stored in detail)."
+  ],
+  "whether_paid_jobs_run": false
+}
