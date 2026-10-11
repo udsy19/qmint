@@ -1,0 +1,552 @@
+# QMint THEOREM REGISTRY SEED (lane A, task A1). Snapshot 2026-10-11.
+# Inputs for lanes B (protocols), C (attacks/SDP), D (proof engine), I (compiler).
+#
+# Rules used when filling this file:
+# - Each theorem has a `verification` map that marks every transcribed field as
+#   VERIFIED_FROM_SOURCE (read in the primary source at the anchor given) or NOT_VERIFIED
+#   (with a reason in `not_verified_reasons`). A third value is used only for derived
+#   checks: RECOMPUTED_BY_LANE_A (lane A recomputed a published number from the
+#   transcribed formula; that's a numerical consistency check, not a proof).
+# - Formulas are in LaTeX (`bound_latex`) and in plain math (`bound_plain`). `bound_plain` is
+#   a transcription aid and not a vetted implementation. Lane D must implement from the LaTeX
+#   and check against the anchors.
+# - A theorem is valid ONLY for its `game`. Don't move a bound across games
+#   (W1 != W1_CV != W2 != S1 != S2 != D1 != A1). `not_valid_for` lists known misuses.
+# - Probabilities are adversary-success upper bounds (epsilon), never error bars.
+# - Source PDFs were hashed when they were read (sha256 below). These are the publisher/arXiv
+#   files as downloaded on 2026-10-11. Re-download and compare before relying on page numbers.
+
+schema: qmint.research.theorem_registry_seed/v1
+snapshot_date: "2026-10-11"
+status_values: [VERIFIED_FROM_SOURCE, NOT_VERIFIED, RECOMPUTED_BY_LANE_A]
+
+sources:
+  P01:
+    url: https://arxiv.org/abs/1202.4010
+    pdf_url: https://arxiv.org/pdf/1202.4010v1
+    version: "arXiv v1 (2012-02-17); only arXiv version"
+    pdf_sha256: a95b64d9fc03c8286171694006ed6219374a75360152d27a6ab63a0f338eb2a6
+  P03:
+    url: https://doi.org/10.1038/s41534-022-00524-4
+    pdf_url: https://www.nature.com/articles/s41534-022-00524-4.pdf
+    si_url: https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fs41534-022-00524-4/MediaObjects/41534_2022_524_MOESM1_ESM.pdf
+    table5_url: https://www.nature.com/articles/s41534-022-00524-4/tables/5
+    table6_url: https://www.nature.com/articles/s41534-022-00524-4/tables/6
+    version: "npj Quantum Inf. 8, 28 (published 2022-03-11); equations transcribed from the article HTML TeX source"
+    pdf_sha256: 8980aeabba8ff2c0dca6f2bafae31357b503baa4e3a0d254010dd109ff36df3a
+    si_sha256: 7b49b60c8acbd3d2785fb7f6b227dae56ab1c78b6f4b8b57598e1d21bb833b66
+  P04:
+    url: https://doi.org/10.1038/s41467-023-39519-w
+    pdf_url: https://www.nature.com/articles/s41467-023-39519-w.pdf
+    si_url: https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fs41467-023-39519-w/MediaObjects/41467_2023_39519_MOESM1_ESM.pdf
+    correction_url: https://doi.org/10.1038/s41467-023-40866-x
+    version: "Nat. Commun. 14, 3849 (published 2023-06-29; corrected 2023-08-21). Read after correction."
+    pdf_sha256: 7689e53d6116999db070812a92f82d4a7e19e79329622aef1a28d160efdae596
+    si_sha256: 26e50b759192559e58e05a48a93d6ad70dd744da8ba975ee973266a46591a223
+    correction_pdf_sha256: 5018ada3a27042d8549d35f83e11be120effee9f6fad6eb08f4050f2d8df237c
+  P05:
+    url: https://arxiv.org/abs/2408.13063
+    pdf_url: https://arxiv.org/pdf/2408.13063v2
+    version: "arXiv v2 (2024-09-19); preprint, no journal reference on arXiv as of 2026-10-11"
+    pdf_sha256: a5a4242882c4a265738dbcf84a58f41acd345dfa51eb0dcf40537df7dec5deb4
+  P06:
+    url: https://arxiv.org/abs/2510.06212
+    pdf_url: https://arxiv.org/pdf/2510.06212v2
+    version: "arXiv v2 (2025-10-21)"
+    pdf_sha256: 84b5087ed0b9897c036a104f3820aefdebe7a9b71c059b42ea8aebd3d54e5b11
+
+theorems:
+
+  # ------------------------------------------------------------------ MVW 2012 (P01)
+  - theorem_id: T-MVW12-THM1
+    proof_obligation: P-W1
+    game: W1
+    source_paper_id: P01
+    source_url: https://arxiv.org/abs/1202.4010
+    anchor: "Theorem 1, p.2 (statement); Sec. 3.1 SDP p.7; Sec. 3.2 n=1 primal/dual p.7-8; Sec. 3.4 parallel repetition p.9-10"
+    status: VERIFIED_FROM_SOURCE
+    statement_verbatim: >-
+      Theorem 1. The optimal simple counterfeiting attack against Wiesner's quantum money scheme
+      has success probability exactly (3/4)^n, where n is the number of qubits in each bank note.
+    bound_latex: 'P^{\mathrm{opt}}_{\mathrm{two\ valid}}(n)=\left(\tfrac34\right)^{n}'
+    bound_plain: "(3/4)**n"
+    variables:
+      n: "number of qubits per bank note (positive integer)"
+    game_definition: >-
+      Bank picks key k uniformly at random, i.e. each of n qubits is |0>,|1>,|+>,|-> with probability 1/4
+      independently (n-fold parallel repetition of the single-qubit ensemble, Sec. 3.4). The
+      counterfeiter receives ONE note (register X) and applies any CPTP map Phi: L(X) -> L(Y (x) Z).
+      Success = both Y and Z independently pass the bank's projective test {Pi=|psi_k><psi_k|, 1-Pi}
+      (eq. 2, p.7: sum_k p_k <psi_k (x) psi_k| Phi(|psi_k><psi_k|) |psi_k (x) psi_k>).
+    sdp_n1:
+      primal: "maximize <Q,X> s.t. Tr_{Y(x)Z}(X) = 1_X, X >= 0 on Y(x)Z(x)X (p.7)"
+      dual: "minimize Tr(Y) s.t. 1_{Y(x)Z} (x) Y >= Q, Y Hermitian on X (p.7)"
+      Q: "Q = sum_k p_k |psi_k psi_k conj(psi_k)><psi_k psi_k conj(psi_k)| ; for Wiesner n=1: Q = (1/4)(|000><000| + |111><111| + |+++><+++| + |---><---|) (p.8)"
+      subsystem_order: "Choi operator J(Phi) in L(Y (x) Z (x) X), output registers first, input last (Sec. 2.2: J(Phi) = sum_ij Phi(|i><j|) (x) |i><j|)"
+      optimal_primal: "Phi(rho) = A0 rho A0^* + A1 rho A1^*, A0 = (1/sqrt12)[[3,0],[0,1],[0,1],[1,0]], A1 = (1/sqrt12)[[0,1],[1,0],[1,0],[0,3]] (4x2 matrices, output basis |00>,|01>,|10>,|11>) (p.8)"
+      optimal_dual: "Y = (3/8) 1_X ; ||Q|| = 3/8 (p.8)"
+      optimum: "3/4"
+    assumptions:
+      - "ideal, noiseless BB84 states; exact accept-all-qubits verifier"
+      - "no access to the bank's verifier beyond the final two independent verifications"
+      - "single genuine note as input"
+    quantifier_over_adversaries: "all CPTP maps from one note to two candidate notes (unbounded quantum adversary)"
+    tightness: "exact (optimal attack achieves the value)"
+    not_valid_for:
+      - "W1_CV (classical verification) -> use T-MVW12-THM2"
+      - "W2 noisy/threshold verifier (per-copy thresholds) -> no closed form here"
+      - "adaptive attacks with verification queries (paper p.2: 2^-n Bell attack; Lutomirski O(n) attack when post-measurement qubits are returned)"
+      - "S1/S2 S-money games"
+      - "m -> m+1 counterfeiting for m > 1 (not analysed)"
+    verification:
+      statement_verbatim: VERIFIED_FROM_SOURCE
+      bound_latex: VERIFIED_FROM_SOURCE
+      game_definition: VERIFIED_FROM_SOURCE
+      sdp_n1: VERIFIED_FROM_SOURCE
+      optimum_n1_recomputed: RECOMPUTED_BY_LANE_A
+    recomputation_notes: >-
+      Lane A checked with numpy that the Kraus pair above is trace preserving, gives success 0.75
+      on the 4-state ensemble, and that ||Q|| = 0.375. This is a consistency check of the
+      transcription. It doesn't replace lane C's SDP.
+
+  - theorem_id: T-MVW12-THM2
+    proof_obligation: P-W1-CV
+    game: W1_CV
+    source_paper_id: P01
+    source_url: https://arxiv.org/abs/1202.4010
+    anchor: "Theorem 2, p.3; game Sec. 4.1 eq.(8) p.13; Lemma 5 and proof p.14; matching lower bound Lemma 6 p.15"
+    status: VERIFIED_FROM_SOURCE
+    statement_verbatim: >-
+      Theorem 2. For the classical-verification analogue of Wiesner's quantum money scheme, the
+      optimal simple counterfeiting attack has success probability exactly (3/4 + sqrt(2)/8)^n, for
+      n being the number of qubits in each bank note.
+    bound_latex: 'P^{\mathrm{opt}}(n)=\left(\tfrac34+\tfrac{\sqrt2}{8}\right)^{n}'
+    bound_plain: "(3/4 + sqrt(2)/8)**n   # = 0.92677669529...**n"
+    general_form_lemma5: >-
+      Lemma 5 (p.14): for the n-qudit classical-verification scheme with two bases {e^0_t},{e^1_t}
+      of C^d, success probability <= (3/4 + sqrt(c)/4)^n where c = max_{s,t} |<e^0_s|e^1_t>|^2
+      (effective overlap; c >= 1/d, footnote 9). Achievable when d = 2. For d = 2 MUB c = 1/2 gives
+      3/4 + 1/(4 sqrt 2) = 3/4 + sqrt2/8. Qudit Fourier scheme: (3/4 + 1/(4 sqrt d))^n (Lemma 6, tight).
+    variables:
+      n: "number of qubits per ticket"
+      c: "effective overlap max_{s,t}|<e^0_s|e^1_t>|^2 (Lemma 5)"
+      d: "local dimension (d=2 for Wiesner)"
+    game_definition: >-
+      Ticket = Wiesner-type state with secret key k and serial number. Honest verification: user
+      announces serial, bank sends uniformly random challenge c in {0,1}^n (C = {0,1} per qubit);
+      user measures qubit i in the computational basis if c_i=0 and in the Hadamard basis if c_i=1
+      and reports outcomes; bank accepts iff every position where c_i equals the encoding basis has
+      the correct outcome. Valid single-qubit answers: a = t if b = c, any a if b != c (Sec. 4.2).
+      Simple counterfeiting attack: from ONE ticket, answer TWO independent uniformly random
+      challenges c1, c2 correctly. Attack is modelled as POVMs A^{c1 c2} that depend on BOTH
+      challenges (eq. 8, p.13). Verification destroys the ticket (footnote 6).
+    assumptions:
+      - "ideal states; exact verification of matching-basis positions"
+      - "the counterfeiter sees both challenges before measuring (as modelled in eq. 8)"
+      - "no additional bank interaction"
+    quantifier_over_adversaries: "all POVMs on the ticket conditioned on (c1, c2)"
+    tightness: "exact for d = 2 (Lemma 5 'moreover' part)"
+    not_valid_for:
+      - "W1 (quantum verification): different game, value (3/4)^n"
+      - "S1: Kent et al. ideal S-token bound is (1/2 + 1/(2 sqrt2))^N, a different game and value"
+      - "noisy/threshold or lossy classical verification"
+    verification:
+      statement_verbatim: VERIFIED_FROM_SOURCE
+      bound_latex: VERIFIED_FROM_SOURCE
+      general_form_lemma5: VERIFIED_FROM_SOURCE
+      game_definition: VERIFIED_FROM_SOURCE
+
+  - theorem_id: T-MVW12-SEC35
+    proof_obligation: null
+    game: W1_THRESH_JOINT   # NOT in frozen GameId enum; see handoff interfaces_changed
+    source_paper_id: P01
+    source_url: https://arxiv.org/abs/1202.4010
+    anchor: "Sec. 3.5 'Threshold results', eq.(4) p.10, conditions eq.(5) p.10, proof sketch p.10-11"
+    status: VERIFIED_FROM_SOURCE
+    statement_summary: >-
+      For n-fold repetition where the bank declares the note valid when at least t of n repetitions
+      succeed, the optimal counterfeiting probability equals sum_{t<=j<=n} C(n,j) alpha^j (1-alpha)^{n-j}
+      (eq. 4), with alpha the single-repetition optimum (3/4 for Wiesner). It holds under
+      sum_k p_k |psi_k><psi_k| = (1/d) 1 (eq. 5) and Y = (alpha/d) 1 optimal dual. The paper says this
+      holds for Wiesner's scheme and the other schemes it discusses.
+    bound_latex: '\sum_{t\le j\le n}\binom{n}{j}\alpha^{j}(1-\alpha)^{n-j}'
+    variables:
+      n: "repetitions (qubits)"
+      t: "required number of successful repetitions"
+      alpha: "single-repetition optimal counterfeiting probability"
+    game_definition: >-
+      The success event counted per repetition is Q_1 = the counterfeit succeeds for BOTH copies in
+      that repetition, and the attacker wins if the number of such joint successes is >= t (operator R
+      on p.11). This is NOT the realistic noisy game in which each copy separately must pass its own
+      threshold test.
+    assumptions: ["ideal states", "eq.(5) ensemble condition", "dual Y = (alpha/d) 1 optimal"]
+    not_valid_for:
+      - "W2 as defined in the master plan (per-copy threshold verifier, noise, loss)"
+      - "any honest-noise model: the formula says nothing about honest acceptance"
+    verification:
+      statement_summary: VERIFIED_FROM_SOURCE
+      bound_latex: VERIFIED_FROM_SOURCE
+      game_definition: VERIFIED_FROM_SOURCE
+      applicability_to_W2: NOT_VERIFIED
+    not_verified_reasons:
+      applicability_to_W2: "The paper's threshold game counts joint per-repetition successes. Lane A found no published per-copy-threshold BB84 bound in sources read (P13 Pastawski et al. 2012 not read in full)."
+
+  # ------------------------------------------------------------------ Kent, Lowndes, Pitalua-Garcia, Rarity 2022 (P03)
+  - theorem_id: T-KLPR22-LEMMA1
+    proof_obligation: P-S1
+    game: S1
+    source_paper_id: P03
+    source_url: https://doi.org/10.1038/s41534-022-00524-4
+    anchor: "Lemma 1, eq.(1), main text PDF p.5; protocols IQT1/IQT2 in Table 1 (PDF p.3); proof Supplementary Note IV, SI p.5-6 (eqs 47-48), using Lemma 6 (SI Note III)"
+    status: VERIFIED_FROM_SOURCE
+    statement_verbatim: "Lemma 1: The quantum token schemes IQT1 and IQT2 are eps_unf-unforgeable with eps_unf = (1/2 + 1/(2 sqrt 2))^N."
+    bound_latex: '\epsilon_{\mathrm{unf}}=\left(\frac{1}{2}+\frac{1}{2\sqrt{2}}\right)^{N}'
+    bound_plain: "(0.5 + 1/(2*sqrt(2)))**N   # base = cos^2(pi/8) = 0.853553390593..."
+    variables:
+      N: "number of BB84 qubits Bob sends Alice (no losses in the ideal scheme)"
+    definitions:
+      eps_unf: "eps_unf-unforgeable: probability that Bob accepts Alice's tokens as valid at any two or more different presentation points is <= eps_unf, if Bob follows the scheme honestly (main text p.3)."
+    game_definition: >-
+      Ideal two-presentation-point scheme (M=1). IQT1 (Table 1): B sends N BB84 states |phi_{t_k u_k}>.
+      A measures each in random basis y_k, keeps outcomes x, sends d = y (z=0) or the bitwise
+      complement of y (z=1) to B. In stage II, A chooses b, sends c = b xor z. B_i computes d~_i, and
+      B_b validates x if x_b = t_b on Delta_b = {k : d~_{b,k} = u_k}. IQT2: A measures all qubits in one
+      basis z. Dishonest Alice wins if she gets valid tokens at BOTH Q0 and Q1 (SI p.5: a_0 = t_0
+      and b_1 = t_1). Proof: Lemma 6 with gamma_err=0, beta_PB=0, theta=0 (O = 1/sqrt2), so
+      lambda = 1/2 - 1/(2 sqrt2) and max ||D_{a,b}|| <= (1-lambda)^N.
+    assumptions:
+      - "no losses, no errors, exact BB84 states, uniform bases/states (beta_PB = beta_PS = 0)"
+      - "secure and authenticated classical channels among agents of the same party; secure labs"
+      - "Bob honest (unforgeability is against dishonest Alice)"
+    quantifier_over_adversaries: "general cheating strategy: joint projective measurement on the N qubits plus an arbitrary finite-dimensional ancilla (SI p.5)"
+    tightness: "upper bound (no tightness claim found in the main text)"
+    not_valid_for:
+      - "W1 / W1_CV Wiesner games (different game; MVW W1_CV base is 3/4+sqrt2/8 = 0.9268, not 0.8536)"
+      - "the realistic schemes QT1/QT2 with loss/noise/bias (use T-KLPR22-THM1)"
+      - "2^M presentation points without the Theorem 2 pair-count factor"
+    verification:
+      statement_verbatim: VERIFIED_FROM_SOURCE
+      bound_latex: VERIFIED_FROM_SOURCE
+      definitions: VERIFIED_FROM_SOURCE
+      game_definition: VERIFIED_FROM_SOURCE
+
+  - theorem_id: T-KLPR22-LEMMA2
+    proof_obligation: P-S2
+    game: S2
+    source_paper_id: P03
+    source_url: https://doi.org/10.1038/s41534-022-00524-4
+    anchor: "Lemma 2, eqs.(2)-(3), main text PDF p.5; proof Supplementary Note V"
+    status: VERIFIED_FROM_SOURCE
+    statement_summary: "If 0 < gamma_det < P_det (2), then QT1 and QT2 are eps_rob-robust with (3)."
+    bound_latex: '\epsilon_{\mathrm{rob}}=e^{-\frac{P_{\mathrm{det}}N}{2}\left(1-\frac{\gamma_{\mathrm{det}}}{P_{\mathrm{det}}}\right)^{2}}'
+    bound_plain: "exp(-(P_det*N/2) * (1 - gamma_det/P_det)**2)"
+    preconditions_latex: ['0<\gamma_{\mathrm{det}}<P_{\mathrm{det}}']
+    variables: &klpr_vars
+      N: "number of quantum states (pulses) Bob sends Alice"
+      n: "|Lambda|, number of states Alice reports as successfully measured"
+      P_det: "probability that a state transmitted by Bob is reported by Alice as successfully measured"
+      gamma_det: "agreed minimum detection rate; Bob aborts unless n >= gamma_det N (Table 2 step 2)"
+      gamma_err: "agreed maximum error rate; B_b validates iff d(x_b, r_b) <= |Delta_b| gamma_err (step 12)"
+      E: "Alice's error probability when measuring in Bob's preparation basis; E = max_{t,u} E_tu"
+      beta_PB: "bias of Bob's preparation-basis distribution: 1/2 - beta_PB <= P^k_PB(u) <= 1/2 + beta_PB, 0 < beta_PB < 1/2"
+      beta_PS: "bias of Bob's preparation-state distribution: 1/2 - beta_PS <= P^k_PS(t) <= 1/2 + beta_PS"
+      beta_E: "bias of Alice's bit z: 1/2 - beta_E <= P_E(z) <= 1/2 + beta_E"
+      P_noqub: "probability that a prepared state has dimension > 2 (photonic: multi-photon pulse); Poisson source P_noqub = 1-(1+mu)e^{-mu}"
+      theta: "uncertainty angle on the Bloch sphere of Bob's bases relative to computational/Hadamard, theta in (0, pi/4); also absorbs Alice's measurement misalignment (Table 5 item 5)"
+      O_theta: "O(theta) = (cos theta + sin theta)/sqrt2; |<phi_t0|phi_t'1>| <= O(theta) (Table 5 item 2)"
+      lambda: "lambda(theta, beta_PB) = (1/2)(1 - sqrt(1 - [1 - O(theta)^2](1 - 4 beta_PB^2))) (Table 5 item 3); 0 < lambda < (1/2)(1 - 1/sqrt2)"
+      nu_cor: "free mathematical variable chosen by Alice in Lemma 3"
+      nu_unf: "free mathematical variable chosen by Bob in Theorem 1"
+      M: "2^M presentation points (Theorem 2)"
+      C: "number of pairs of spacelike-separated presentation points (Theorem 2)"
+    verification:
+      statement_summary: VERIFIED_FROM_SOURCE
+      bound_latex: VERIFIED_FROM_SOURCE
+      variables: VERIFIED_FROM_SOURCE
+
+  - theorem_id: T-KLPR22-LEMMA3
+    proof_obligation: P-S2
+    game: S2
+    source_paper_id: P03
+    source_url: https://doi.org/10.1038/s41534-022-00524-4
+    anchor: "Lemma 3, eqs.(4)-(5), main text PDF p.5-6; proof Supplementary Note V"
+    status: VERIFIED_FROM_SOURCE
+    statement_summary: "If (4) holds, QT1 and QT2 are eps_cor-correct with (5)."
+    preconditions_latex:
+      - '0<\frac{\gamma_{\mathrm{err}}}{2}<E<\gamma_{\mathrm{err}}'
+      - '0<\nu_{\mathrm{cor}}<\frac{P_{\mathrm{det}}(1-2\beta_{\mathrm{PB}})}{2}'
+    bound_latex: '\epsilon_{\mathrm{cor}}=e^{-\frac{P_{\mathrm{det}}(1-2\beta_{\mathrm{PB}})N}{4}\left(1-\frac{2\nu_{\mathrm{cor}}}{P_{\mathrm{det}}(1-2\beta_{\mathrm{PB}})}\right)^{2}}+e^{-\frac{E\nu_{\mathrm{cor}}N}{3}\left(\frac{\gamma_{\mathrm{err}}}{E}-1\right)^{2}}'
+    bound_plain: "exp(-(P_det*(1-2*beta_PB)*N/4)*(1 - 2*nu_cor/(P_det*(1-2*beta_PB)))**2) + exp(-(E*nu_cor*N/3)*(gamma_err/E - 1)**2)"
+    variables: *klpr_vars
+    caveat: "As transcribed, precondition (4) requires E > gamma_err/2. That is what the source says (TeX from the article HTML). Don't 'fix' it."
+    verification:
+      statement_summary: VERIFIED_FROM_SOURCE
+      preconditions_latex: VERIFIED_FROM_SOURCE
+      bound_latex: VERIFIED_FROM_SOURCE
+
+  - theorem_id: T-KLPR22-LEMMA4
+    proof_obligation: P-PRIV
+    game: S2
+    source_paper_id: P03
+    source_url: https://doi.org/10.1038/s41534-022-00524-4
+    anchor: "Lemma 4, eq.(6), main text PDF p.5-6; privacy definition p.3; Table 6 assumptions C, D, E, F"
+    status: VERIFIED_FROM_SOURCE
+    statement_summary: "QT1 and QT2 are eps_priv-private with eps_priv = beta_E."
+    bound_latex: '\epsilon_{\mathrm{priv}}=\beta_{\mathrm{E}}'
+    definitions:
+      eps_priv: "probability that Bob guesses Alice's bit-string b before she presents her token is <= 1/2^M + eps_priv, if Alice is honest and chooses b uniformly (p.3)"
+    variables: *klpr_vars
+    caveat: "Privacy depends on assumptions C-F (no side channels, detector symmetry). If those aren't met the privacy status is NOT_PROVEN. It doesn't become 0."
+    verification:
+      statement_summary: VERIFIED_FROM_SOURCE
+      bound_latex: VERIFIED_FROM_SOURCE
+      definitions: VERIFIED_FROM_SOURCE
+
+  - theorem_id: T-KLPR22-THM1
+    proof_obligation: P-S2
+    game: S2
+    source_paper_id: P03
+    source_url: https://doi.org/10.1038/s41534-022-00524-4
+    anchor: "Theorem 1, eqs.(7)-(10), main text PDF p.5-6; lambda and O(theta) defined in Table 5 items 2-3 (online table 5); assumptions Table 6 A-G; proof Supplementary Note VII"
+    status: VERIFIED_FROM_SOURCE
+    statement_summary: >-
+      Consider constraints (7) and define f by (8)-(9). There exist parameters satisfying (7) for
+      which f > 0. For these parameters, QT1 and QT2 are eps_unf-unforgeable with (10).
+    preconditions_latex:
+      - '0<\gamma_{\mathrm{err}}<\lambda(\theta,\beta_{\mathrm{PB}})'
+      - '0<P_{\mathrm{noqub}}<\nu_{\mathrm{unf}}<\min\left\{2P_{\mathrm{noqub}},\ \gamma_{\mathrm{det}}\left(1-\frac{\gamma_{\mathrm{err}}}{\lambda(\theta,\beta_{\mathrm{PB}})}\right)\right\}'
+      - '0<\beta_{\mathrm{PS}}<\frac{1}{2}\left[e^{\frac{\lambda(\theta,\beta_{\mathrm{PB}})}{2}\left(1-\frac{\delta}{\lambda(\theta,\beta_{\mathrm{PB}})}\right)^{2}}-1\right]'
+      - 'f(\gamma_{\mathrm{err}},\beta_{\mathrm{PS}},\beta_{\mathrm{PB}},\theta,\nu_{\mathrm{unf}},\gamma_{\mathrm{det}})>0'
+    auxiliary_latex:
+      f: 'f=(\gamma_{\mathrm{det}}-\nu_{\mathrm{unf}})\left[\frac{\lambda(\theta,\beta_{\mathrm{PB}})}{2}\left(1-\frac{\delta}{\lambda(\theta,\beta_{\mathrm{PB}})}\right)^{2}-\ln(1+2\beta_{\mathrm{PS}})\right]-\left(1-(\gamma_{\mathrm{det}}-\nu_{\mathrm{unf}})\right)\ln\left[1+h(\beta_{\mathrm{PS}},\beta_{\mathrm{PB}},\theta)\right]'
+      h: 'h(\beta_{\mathrm{PS}},\beta_{\mathrm{PB}},\theta)=2\beta_{\mathrm{PS}}\sqrt{\frac{1}{2}+2\beta_{\mathrm{PB}}^{2}+\left(\frac{1}{2}-2\beta_{\mathrm{PB}}^{2}\right)\sin(2\theta)}'
+      delta: '\delta=\frac{\gamma_{\mathrm{det}}\gamma_{\mathrm{err}}}{\gamma_{\mathrm{det}}-\nu_{\mathrm{unf}}}'
+      lambda: '\lambda(\theta,\beta_{\mathrm{PB}})=\frac{1}{2}\left(1-\sqrt{1-[1-(O(\theta))^{2}](1-4\beta_{\mathrm{PB}}^{2})}\right)'
+      O: 'O(\theta)=\frac{1}{\sqrt2}(\cos\theta+\sin\theta)'
+    bound_latex: '\epsilon_{\mathrm{unf}}=e^{-\frac{P_{\mathrm{noqub}}N}{3}\left(\frac{\nu_{\mathrm{unf}}}{P_{\mathrm{noqub}}}-1\right)^{2}}+e^{-Nf(\gamma_{\mathrm{err}},\beta_{\mathrm{PS}},\beta_{\mathrm{PB}},\theta,\nu_{\mathrm{unf}},\gamma_{\mathrm{det}})}'
+    bound_plain: "exp(-(P_noqub*N/3)*(nu_unf/P_noqub - 1)**2) + exp(-N*f)"
+    variables: *klpr_vars
+    assumptions_table6:
+      A: "Bob prepares each qubit state from exactly two orthonormal qubit bases"
+      B: "t and u generated with exactly product distributions (no correlations)"
+      C: "Lambda gives Bob no information about W and z"
+      D: "QT1: conditioned on k in Lambda, Alice's basis is uniform (P_MB = 1/2)"
+      E: "Bob cannot use un-agreed degrees of freedom to affect/learn Alice's measurement statistics (no side channels)"
+      F: "photonic: Alice's detectors have equal efficiency eta, dark counts with (1-d0)(1-d1) = (1-d+)(1-d-), independent"
+      G: "photonic: from Alice's perspective Bob's pulses are Fock-state mixtures (phase randomised)"
+    allowed_imperfections_table5: "items 1-8: multi-photon/non-qubit states (P_noqub); basis uncertainty theta; biases beta_PS, beta_PB; losses (Lambda, gamma_det); arbitrary pair of measurement bases D0, D1; measurement errors (gamma_err); bias beta_E; threshold detectors with dark counts"
+    quantifier_over_adversaries: "dishonest Alice, arbitrary quantum strategy; only possible restriction is indirect, through assumption G (Discussion, PDF p.7)"
+    out_of_domain_rule: "If (7) fails or f <= 0, the theorem gives no bound. The QMint status must be UNCERTIFIED and must not be extrapolated."
+    published_parameter_tuples:
+      experiment_QT1_M1:
+        anchor: "Results 'Quantum experimental tests' and Methods 'Experimental tests and numerical example'"
+        evidence_kind: PUBLISHED_AGGREGATE
+        values: {mu: 0.09, rep_rate_Hz: 1.0e7, N: 4.0e7, eta: 0.21, P_det: 0.019, P_det_precise: 0.01856, n: 742491, E: 0.058, beta_PB: 2.4e-3, beta_PS: 3.6e-3, P_noqub: 3.8e-3, theta_deg_assumed_max: 10}
+        note: "These parameters do NOT give unforgeability (the authors say so explicitly)."
+      fig5_numerical_example:
+        anchor: "Fig. 5 caption (PDF p.7) and Methods"
+        evidence_kind: PUBLISHED_AGGREGATE
+        values: {eps_target_each: 1.0e-9, gamma_det: 0.018, eps_rob: "e^-1052", nu_unf: 3.9e-3, beta_max_E0058_theta10: 6.0e-6, beta_max_E003_theta5: 2.3e-4, beta_max_E001_theta0: 6.0e-4}
+        note: "Authors: 'we do not claim that our numerical example is optimal'. gamma_err and nu_cor values per point were not published."
+    lane_a_sanity_check: >-
+      RECOMPUTED_BY_LANE_A: with mu=0.09 (P_noqub=0.0038150) and N=4e7, the first term of (10) reaches
+      5e-10 at nu_unf ~ 3.89e-3, which matches the reported 3.9e-3 'minimum value' after rounding. At
+      theta=5 deg, beta=2.3e-4 and gamma_err just above E=0.03, f is about 1.8e-5 > 0, which agrees
+      with the Fig.5 region. This is a consistency check of the transcription, not a reproduction of Fig.5.
+    verification:
+      statement_summary: VERIFIED_FROM_SOURCE
+      preconditions_latex: VERIFIED_FROM_SOURCE
+      auxiliary_latex: VERIFIED_FROM_SOURCE
+      bound_latex: VERIFIED_FROM_SOURCE
+      assumptions_table6: VERIFIED_FROM_SOURCE
+      published_parameter_tuples: VERIFIED_FROM_SOURCE
+      lane_a_sanity_check: RECOMPUTED_BY_LANE_A
+      supplementary_proof_correctness: NOT_VERIFIED
+    not_verified_reasons:
+      supplementary_proof_correctness: "Lane A transcribed the statements and didn't audit the SI Note VII proof line by line. Lane D/M need to do that."
+
+  - theorem_id: T-KLPR22-THM2
+    proof_obligation: P-S2
+    game: S2
+    source_paper_id: P03
+    source_url: https://doi.org/10.1038/s41534-022-00524-4
+    anchor: "Theorem 2, eq.(11), main text PDF p.7; proof Supplementary Note VIII"
+    status: VERIFIED_FROM_SOURCE
+    statement_summary: >-
+      For any integer M >= 1 there exist schemes QT1^M, QT2^M (2^M presentation points, Bob sends NM
+      states) that, under constraints (2), (4), (7) with f > 0, have the parameters below.
+    bound_latex:
+      rob: '\epsilon^{M}_{\mathrm{rob}}=M\epsilon_{\mathrm{rob}}'
+      cor: '\epsilon^{M}_{\mathrm{cor}}=M\epsilon_{\mathrm{cor}}'
+      priv: '\epsilon^{M}_{\mathrm{priv}}=\frac{1}{2^{M}}\left[(1+2\epsilon_{\mathrm{priv}})^{M}-1\right]'
+      unf: '\epsilon^{M}_{\mathrm{unf}}=C\epsilon_{\mathrm{unf}}'
+    variables:
+      M: "2^M presentation points"
+      C: "number of pairs of spacelike-separated presentation points (NOT an arbitrary factor)"
+    verification:
+      statement_summary: VERIFIED_FROM_SOURCE
+      bound_latex: VERIFIED_FROM_SOURCE
+
+  - theorem_id: T-KLPR22-LEMMA5
+    proof_obligation: P-S2
+    game: S2
+    source_paper_id: P03
+    source_url: https://doi.org/10.1038/s41534-022-00524-4
+    anchor: "Methods, Lemma 5, eqs.(12)-(16), PDF p.8; theoretical P_det eq.(17)"
+    status: VERIFIED_FROM_SOURCE
+    statement_summary: >-
+      Under assumptions E and F, reporting strategy 1 (QT1) and 2 (QT2) give report probabilities
+      that factorise over pulses and don't depend on the measured basis. So the message m gives Bob
+      no information about w_k for k with m_k = 1 (protection against arbitrary multi-photon attacks).
+    formulas_latex:
+      eq12: 'P^{(1)}_{\mathrm{rep}}(m,w|\rho,L)=\prod_{k=1}^{N}G^{(1)}_{m_k,w_k}(d_0,d_1,\eta,L_k)'
+      eq13: 'G^{(1)}_{1,b}=(1-d_0)(1-d_1)(1-\eta/2)^{a}-(1-d_0)^2(1-d_1)^2(1-\eta)^{a};\ G^{(1)}_{0,0}=1-2G^{(1)}_{1,0};\ G^{(1)}_{0,1}=0'
+      eq15: 'P^{(2)}_{\mathrm{rep}}(m|w,\rho,L)=\prod_{k=1}^{N}G^{(2)}_{m_k}(d_0,d_1,\eta,L_k)'
+      eq16: 'G^{(2)}_{0}=(1-d_0)(1-d_1)(1-\eta)^{a};\ G^{(2)}_{1}=1-(1-d_0)(1-d_1)(1-\eta)^{a}'
+      eq17: 'P^{\mathrm{theo}}_{\mathrm{det}}=2\left(e^{-\mu\eta/2}-e^{-\mu\eta}\right)=0.01863\ (\mu=0.09,\eta=0.21)'
+    verification:
+      statement_summary: VERIFIED_FROM_SOURCE
+      formulas_latex: VERIFIED_FROM_SOURCE
+
+  # ------------------------------------------------------------------ Schiansky et al. 2023 (P04)
+  - theorem_id: T-SCH23-SDP-N1
+    proof_obligation: P-D1
+    game: D1
+    source_paper_id: P04
+    source_url: https://doi.org/10.1038/s41467-023-39519-w
+    anchor: "Supplementary Information, Supplementary Note 3A 'For N = 1', eqs.(9)-(15), SI PDF p.4-6; main text Methods 'Optimal cheating strategy'"
+    status: VERIFIED_FROM_SOURCE
+    statement_summary: >-
+      Two-merchant double-spend: from the token state rho_P produce two classical cryptograms
+      kappa_0 (Z basis, M0) and kappa_1 (X basis, M1) that both pass. The SDP minimises the error
+      e = Tr(E0 J(Lambda)) the adversary must cause while declaring at most l losses per cryptogram.
+    sdp_primal: |
+      min Tr(E0 J)  s.t.  Tr_{H0 (x) H1}(J) = 1_{HP};  Tr(E0 J) >= Tr(E1 J);  Tr(L0 J) <= l;  Tr(L1 J) <= l;  J >= 0      (eq. 14)
+    sdp_dual_as_printed: |
+      max Tr[X1] + l (x2 + x3)  s.t.  1_9 (x) X1 + L0 x2 + L1 x3 + (E1 - E0) x4 - E0 <= 0,  X1 Hermitian 2x2, x2,x3,x4 real   (eq. 15)
+    spaces: "H0, H1: 3-dim {|a0>,|a1>,|empty>}; HP: 7-dim {|v>,|q0>,|q1>,|m0>..|m3>} (vacuum, qubit, 4 orthogonal multiphoton flags)"
+    states: "sigma_k = p0|v><v| + p1 |s_k><s_k| + pm |m_k><m_k| with s_k in {|+>,|+i>,|->,|-i>} (X and Y eigenstates in the SI); rho_P = (1/4) sum_k sigma_k (eq. 9)"
+    operators: "E0 = (1/4) sum_{k=0}^{3} (1/2)|a_k^perp><a_k^perp| (x) 1 (x) conj(sigma_k);  E1 = (1/4) sum_k 1 (x) (1/2)|a_k^perp><a_k^perp| (x) conj(sigma_k);  L0 = (1/4) sum_k |empty><empty| (x) 1 (x) conj(sigma_k);  L1 = (1/4) sum_k 1 (x) |empty><empty| (x) conj(sigma_k)  (eqs. 12-13; the 1/2 appears in E0/E1 only, as typeset). P0 = Tr sum_k ((1/2)|a_k^perp><a_k^perp| (x) 1) Lambda((1/4) sigma_k) (eq. 10)."
+    observations_for_lane_C:
+      - "The SI dual says 'X1 is a hermitian 2x2 matrix' but HP is 7-dimensional, so the dual variable for Tr_{H0H1} J = 1_HP should be 7x7. Either a typo or a different reduced space. Check before reusing it."
+      - "SI eq.(6) defines the Choi operator with a 1/d prefactor, J = (1/d) sum Lambda(|i><j|) (x) |i><j|, and states trace preservation as Tr_{out} J = 1. With the 1/d normalisation that should read (1/d)1, so the normalisation convention is internally inconsistent as printed. MVW (P01) uses no 1/d. Lane C must fix one convention and document it."
+      - "The SI writes the qubit states as X/Y eigenstates. The main text writes H/V and D/A. That's a relabeling of an unbiased basis pair, but lanes B/C must use one consistent convention (C7: Z/X)."
+    verification:
+      statement_summary: VERIFIED_FROM_SOURCE
+      sdp_primal: VERIFIED_FROM_SOURCE
+      sdp_dual_as_printed: VERIFIED_FROM_SOURCE
+      operators: VERIFIED_FROM_SOURCE
+
+  - theorem_id: T-SCH23-ASYMPTOTIC
+    proof_obligation: P-D1
+    game: D1
+    source_paper_id: P04
+    source_url: https://doi.org/10.1038/s41467-023-39519-w
+    anchor: "Supplementary Note 3B, eqs.(16)-(18), SI PDF p.6-7; main text Fig.4a"
+    status: VERIFIED_FROM_SOURCE
+    statement_summary: >-
+      Analytic fit to the optimal cheating boundary: e = -(1/(4+2 sqrt2)) l + (1 - p_m/2)/(8 + 4 sqrt2)
+      (16). Equivalently, the secure region is M(e,l) = (4+2 sqrt2) e + l <= (1/2)(1 - p_m/2) (18). N -> infinity
+      is justified 'following the exponential de Finetti arguments' (qualitative).
+    bound_latex: 'M(e,l)=(4+2\sqrt{2})\,e+l\le\frac{1}{2}\left(1-\frac{p_m}{2}\right)'
+    variables:
+      e: "fraction of declared outcomes that disagree with (b, B)"
+      l: "fraction of token states declared lost"
+      p_m: "multiphoton emission probability"
+    recomputation: >-
+      RECOMPUTED_BY_LANE_A: e*(l=0.224) = 3.795% with p_m=6.76% (main-text value) and 3.822% with
+      p_m=6.02% (SI Table 2 value). These match the main-text 3.79% and SI 3.82%. So the two
+      documents use different p_m. Allowed mishaps M = 0.5(1-0.0602/2) = 0.48495 matches SI 0.4849.
+    caveats:
+      - "eq.(16) is described as 'an analytical expression that fits' the SDP optimum. It's a fit, not a derived theorem."
+      - "Collective-to-coherent reduction (de Finetti) is argued, not quantified."
+    verification:
+      statement_summary: VERIFIED_FROM_SOURCE
+      bound_latex: VERIFIED_FROM_SOURCE
+      recomputation: RECOMPUTED_BY_LANE_A
+      coherent_attack_reduction: NOT_VERIFIED
+    not_verified_reasons:
+      coherent_attack_reduction: "SI Note 3B gives only a qualitative de Finetti argument with no explicit finite-N correction term."
+
+  - theorem_id: T-SCH23-FINITE
+    proof_obligation: P-D1
+    game: D1
+    source_paper_id: P04
+    source_url: https://doi.org/10.1038/s41467-023-39519-w
+    anchor: "Supplementary Note 3C, eqs.(19)-(23), SI PDF p.7-8; Supplementary Table 2 (SI p.10-11); main text Fig.4b"
+    status: VERIFIED_FROM_SOURCE
+    statement_summary: >-
+      Honest success p_h >= 1 - exp(-(delta_h^2/3) M(e_h,l_h) N) (20), subject to
+      M(e_h,l_h)(1+delta_h) < (1/2)(1-p_m/2) (21). Dishonest success
+      p_d = P[M(e_d,l_d) <= (1-delta_d)(1/2)(1-p_m/2)] <= exp(-(delta_d^2/2)(1/2)(1-p_m/2) N) (22),
+      with (1/2)(1-p_m/2)(1-delta_d) >= M(e_h,l_h)(1+delta_h) (23). N = number of quantum states
+      used to verify ONE bit of the cryptogram. Total token length lambda = N log2|m| = N log2 sqrt|C|.
+    bound_latex: 'p_d\le\exp\!\left(-\frac{\delta_d^{2}}{2}\cdot\frac{1}{2}\left(1-\frac{p_m}{2}\right)N\right)'
+    published_values:
+      evidence_kind: PUBLISHED_AGGREGATE
+      values: {delta_h: 0.031, delta_d: 0.01, p_d: 5.911e-45, p_d_unc: 0.088e-45, N_fig4: 4.2e6, N_SI_table2: 4482440, p_m_SI: 0.0602, p_m_main: 0.0676}
+    recomputation: >-
+      RECOMPUTED_BY_LANE_A: exp(-(0.01^2/2)*0.5*(1-0.0602/2)*N) gives 5.91e-45 only with N = 4.2e6
+      (exponent 101.84). With the SI Table 2 N = 4,482,440 it gives 6.3e-48. So the reported p_d
+      uses N = 4.2e6 and p_m = 6.02%.
+    caveats:
+      - "Chernoff-Hoeffding (SI eqs 7-8) is for sums of independent {0,1} variables. M = (4+2 sqrt2) e + l is a weighted combination with weight > 1. Lane D must check whether the bound is applied within its hypotheses (open question, NOT a claim of error)."
+      - "Independence across the N states is assumed in the Chernoff step."
+      - "MAC forgery p_t = 1/sqrt|C| (main text; SI Note 4) is a separate term. The overall cheating probability composition is not stated as a single theorem."
+    verification:
+      statement_summary: VERIFIED_FROM_SOURCE
+      bound_latex: VERIFIED_FROM_SOURCE
+      published_values: VERIFIED_FROM_SOURCE
+      recomputation: RECOMPUTED_BY_LANE_A
+      chernoff_applicability: NOT_VERIFIED
+    not_verified_reasons:
+      chernoff_applicability: "Needs a formal check by lane D. Lane A only flags it."
+
+  # ------------------------------------------------------------------ Jiang et al. 2024 (P05)
+  - theorem_id: T-JIANG24-THM1
+    proof_obligation: null
+    game: S2_JIANG24   # NOT in frozen GameId enum; distinct theorem from T-KLPR22-THM1
+    source_paper_id: P05
+    source_url: https://arxiv.org/abs/2408.13063
+    anchor: "Methods 'Security analysis', Theorem 1, eqs.(22)-(25), arXiv v2 PDF p.17; parameter-confidence correction eqs.(26)-(29) p.18"
+    status: VERIFIED_FROM_SOURCE
+    statement_summary: >-
+      If max_{j,k} 2 P_MC(chi^k_j) < 1, N gamma_det <= n <= N, and
+      0 < P_noqub,theta < nu_unf < gamma_det (1 - gamma_err/(1 - P_bound)), with
+      max 2 P_MC <= P_bound < 1, then eps_unf = sum_{l=0}^{floor(N(1-nu_unf))} C(N,l)(1-P_noqub,theta)^l P_noqub,theta^{N-l}
+      + sum_{l=0}^{floor(n gamma_err)} C(n - floor(N nu_unf), l)(1-P_bound)^l P_bound^{n - floor(N nu_unf) - l}.
+    reported_values:
+      evidence_kind: PUBLISHED_AGGREGATE
+      values: {N: 10048, E: 0.062550, P_noqub: 4.9e-5, beta_PB: 0.001360, beta_PS: 0.001120, theta_deg: 5.115515, P_theta: 0.027, P_noqub_theta: 0.027047677, P_bound: 0.884130, gamma_err: 0.094, nu_cor: 0.457643134, nu_unf: 0.037547677, eps_unf: 5.49112e-9, eps_unf_prime: 5.52e-9, eps_cor: 3.94458e-15, eps_cor_prime: 2.1e-11, P_wrong: 2.6e-12, K_unf: 6, K_cor: 7}
+    recomputation: >-
+      RECOMPUTED_BY_LANE_A: eq.(28), 1-(1-P_wrong)^6 + eps_unf (1-P_wrong)^6 = 5.507e-9 (reported 5.52e-9).
+      Eq.(27) with K=7 gives 1.82e-11 (reported 2.1e-11). The reported values are larger, so this
+      looks like conservative rounding rather than an unsafe error. Flagged for lane D, not
+      treated as an erratum.
+    verification:
+      statement_summary: VERIFIED_FROM_SOURCE
+      reported_values: VERIFIED_FROM_SOURCE
+      recomputation: RECOMPUTED_BY_LANE_A
+      P_MC_definition: NOT_VERIFIED
+    not_verified_reasons:
+      P_MC_definition: "Lane A didn't transcribe the maximum-confidence quantities chi^k_j and eq.(4) P_noqub,theta from SI pages."
+
+  # ------------------------------------------------------------------ Gavinsky et al. 2025 (P06)
+  - theorem_id: T-GAV25-CONSTR10
+    proof_obligation: P-PRIV
+    game: A1
+    source_paper_id: P06
+    source_url: https://arxiv.org/abs/2510.06212
+    anchor: "Definition 9; Construction 10 parameter statement (arXiv v2 PDF, Section 3 end, before Sec. 3.1); Claims 12-13 (Sec. 3.1-4); Construction 15"
+    status: NOT_VERIFIED
+    statement_summary: >-
+      Construction 10 satisfies Definition 9 with n = k, m = k 2^{k/4}, N_Mint = 2^{k/4},
+      N_Verify = 2^{k/2}, t = k, eps_loss = 2^{-k/2}, eps_fraud = 2^{-k/4}, for any 4 | k. Anonymity
+      (Claim 13) is an audit bound via swap test. Its exact inequality was not transcribed.
+    verification:
+      statement_summary: VERIFIED_FROM_SOURCE
+      claim13_inequality: NOT_VERIFIED
+      construction15_parameters: NOT_VERIFIED
+    not_verified_reasons:
+      claim13_inequality: "PDF text extraction garbled the inequality. Lane O1 must read the typeset PDF."
+      construction15_parameters: "Not read in detail. Lane A only had time for a summary-level reading of P06."
