@@ -1,0 +1,83 @@
+{
+  "lane": "B",
+  "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+  "branch": "feat/B-protocols",
+  "starting_commit_sha": "ece05ef02f3f89c2f75edc2393f478e77061ca56",
+  "final_commit_sha": "834c9a9 (code); this handoff file is committed in the next commit on the branch",
+  "commands_run": [
+    "PY=/Users/udsy/PycharmProjects/Qollab-QMint/.venv/bin/python",
+    "$PY -m pytest tests/contracts tests/unit/protocols -q",
+    "$PY -m ruff check qmint/protocols tests/unit/protocols",
+    "$PY -m ruff format qmint/protocols tests/unit/protocols"
+  ],
+  "test_exit_codes": {
+    "pytest tests/contracts tests/unit/protocols": 0,
+    "ruff check": 0,
+    "pass_counts": "135 passed (18 contracts + 117 lane-B), 0 failed"
+  },
+  "whether_paid_jobs_run": false,
+  "task": "B1-wiesner",
+  "changed_paths": [
+    "qmint/protocols/register.py",
+    "qmint/protocols/common.py",
+    "qmint/protocols/wiesner.py",
+    "tests/unit/protocols/test_protocols_wiesner.py"
+  ],
+  "evidence_files": [
+    "tests/unit/protocols/test_protocols_wiesner.py"
+  ],
+  "assumptions_verified": [
+    "C7 BB84 mapping (Z,0)=|0>,(Z,1)=|1>,(X,0)=|+>,(X,1)=|-> used via contracts.BB84_STATE_OF only (test_state_ordering_c7)",
+    "IssuerSecret held only by WiesnerChallenger; wallet RegisterHandle graph contains no IssuerSecret; canonical_json(record) has only the serial",
+    "Exact verifier = threshold verifier with t=0 (single code path); mutation tests (swapped X mapping, all-Z verifier) are caught",
+    "n=128 handled via product blocks (no 2^n vectors)"
+  ],
+  "performance_numbers_with_sources": [
+    {
+      "quantity": "honest acceptance, ideal, n in {1,2,8,16,32,64,128}",
+      "value": 1.0,
+      "evidence_kind": "SIMULATOR_IDEAL"
+    },
+    {
+      "quantity": "Z measure-resend, per qubit, averaged over secret: single copy / both copies (W1 event)",
+      "value": "3/4 / 5/8",
+      "evidence_kind": "SIMULATOR_IDEAL exact conditional values, averaged by MONTE_CARLO over 3000 mints (n=3)"
+    },
+    {
+      "quantity": "keep original + output |0>, both valid, per qubit averaged",
+      "value": "1/2",
+      "evidence_kind": "SIMULATOR_IDEAL + MONTE_CARLO over secret"
+    },
+    {
+      "quantity": "TEST_ONLY secret-leak forger, n=16, 50 trials",
+      "value": "50/50 wins, CP95 [0.929,1]",
+      "evidence_kind": "MONTE_CARLO",
+      "proof_applicability": "OUT_OF_MODEL"
+    },
+    {
+      "quantity": "depolarizing(p) honest acceptance with threshold t",
+      "value": "= binom.cdf(t, n, p/2) to rel 1e-9",
+      "evidence_kind": "SIMULATOR_NOISY"
+    },
+    {
+      "quantity": "bit-flip(p) honest acceptance for a given note",
+      "value": "= binom.cdf(t, n_Z, p): X-basis qubits are immune to X flips, so it is NOT Bin(n,p)",
+      "evidence_kind": "SIMULATOR_NOISY"
+    }
+  ],
+  "blockers": [],
+  "known_limitations": [
+    "Work-order text says Z measure-resend 'wins per-qubit 3/4': 3/4 is the single-copy pass rate; the W1 success (both copies valid) is 5/8 per qubit. Tests assert both.",
+    "No bound computed: (3/4)^n is lane D's; nothing here certifies anything.",
+    "W1_CV (classical-verification variant) has no dedicated API.",
+    "Noise is applied by the verifier to each presented qubit (models verifier/channel noise); no loss/reporting in Wiesner.",
+    "Joint (non-product) channels limited to blocks of <= 12 qubits.",
+    "EXACT-mode verify samples from the exact outcome law; SHOTS mode measures sequentially with collapse; SYMBOLIC supports honest notes only.",
+    "Replay rule: any second presentation of a serial (accepted or rejected first) is refused without measuring; game-mode verify/verify_pair bypasses the ledger by design (W1 verifies both candidates)."
+  ],
+  "interfaces_changed": [
+    "PROPOSAL (C1 migration): IssuerSecret is deep-copyable: pydantic BaseModel.__deepcopy__/__copy__ bypass the __getstate__ guard (verified: copy.deepcopy(IssuerSecret(...)) succeeds). Propose IssuerSecret.__deepcopy__ and __copy__ raising SecretBoundaryError. Lane B works around it with qmint.protocols.common.SecretHolder (challengers refuse copy/pickle).",
+    "PROPOSAL (interfaces): TokenHandle exposes only record + n_qubits(); attacker capabilities are concrete methods of qmint.protocols.register.RegisterHandle: split(kraus, joint=False, copies=2) -> candidate handles, measure(position, projector0, rng). Propose adding these to the TokenHandle Protocol so lane C codes against the interface, plus Challenger.verify_pair(c1, c2) for two-candidate games (W1/W2).",
+    "NOTE (dedup at merge): qmint/protocols/register.py contains bb84_ket/bb84_projector and a factorized density-matrix register; if lane F's qmint/quantum/{bb84,channels}.py lands, one implementation must be deleted and the other reused."
+  ]
+}
