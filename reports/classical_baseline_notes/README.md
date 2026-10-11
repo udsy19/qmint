@@ -1,6 +1,7 @@
 # Lane H: classical comparators (H0–H6) vs S-money S1
 
-Regenerate with `python -m qmint.classical.run_baselines --pqc-reps 5`. Every number in `benchmark_records.jsonl` is
+Regenerate with `python -m qmint.classical.run_baselines --pqc-reps 5`. All H scenarios now run on lane G's
+discrete-event engine through `qmint/classical/engine_adapter.py`. Every number in `benchmark_records.jsonl` is
 `MODELLED_LATENCY` on SYNTHETIC lightcone networks: link `propagation_lower_bound_ns` plus declared processing
 (site 10 µs, coordinator/replica 50 µs). These are lower bounds. They favour coordination-based designs and are
 not measurements. `pqc_timings.json` holds wall-clock CPU timings of a pure-Python reference ML-DSA on an Apple M4 Pro.
@@ -41,3 +42,59 @@ extra trust or hardness assumptions are disallowed.
 - Chaum, Fiat, Naor, CRYPTO'88, LNCS 403 pp.319–327, §1, doi:10.1007/0-387-34799-2_25. The copy read was the Wayback
   archive of blog.koehntopp.de/uploads/chaum_fiat_naor_ecash.pdf (sha256 07e6544a…5637). The Springer original was not
   accessed.
+
+## Matched topology: S-money vs H0–H6 on one engine (lane GH)
+
+Regenerate with `python -m qmint.classical.matched_topology` (about 1 min). Outputs:
+- `matched_topology_results.csv`: 264 rows = 6 topologies × 11 protocols × 2 processing models × b ∈ {1, 0}.
+  RIPE rows are medians over 20 seeds.
+- `matched_topology_records.jsonl`: one C6 record per (topology, protocol, processing model), b = 1.
+- `matched_topology_traces.jsonl`: C4 traces, seed 0, b = 1, Jiang processing, honest runs plus double-spend races.
+- `figure6_trace_data.json`: spacetime-diagram data (S1 vs H1 race vs H3 late commit, plain and OT) for Jinan,
+  Yiyuan–Mazhan, 100 km and RIPE.
+
+Every protocol runs on the same lane-G `TopologyCase`, with the same seed and the same choreography:
+- Alice chooses b at L0.
+- Any Stage-II message starts at the choice.
+- Both sites see a presentation at the same nominal time.
+- The issuer, ledger and HQ sit at L0.
+
+All values are `MODELLED_LATENCY`. RIPE link delays are measured inputs (RTT/2). The processing models are:
+- `jiang_dTproc_1507ns`: every node step costs 1.507 µs (Jiang 2024 SI). Relays cost 0, as in G's S-money B0→B1.
+- `zero_processing`: communication only.
+
+Every trace passes G's causality check.
+
+Choice → local accept at the remote site (b = 1, Jiang processing; µs):
+
+| protocol | Jinan 2.766 km | Yiyuan–Mazhan 60.54 km | 10 km | 100 km | 1000 km | RIPE HEL–TMP (median) |
+|---|---|---|---|---|---|---|
+| S1 S-money (G model) | 15.34 | 304.21 | 51.54 | 501.85 | 5004.97 | 1979.62 |
+| H3 late-commit (disclosed / ideal-OT) | 15.34 | 304.21 | 51.54 | 501.85 | 5004.97 | 1979.62 |
+| H3 preassigned, H4+H3 (site fixed at issuance) | 15.34 | 304.21 | 51.54 | 501.85 | 5004.97 | 1928.7–1933.8 |
+| H0 (negative control, double spend accepted) | 15.34 | 304.21 | 51.54 | 501.85 | 5004.97 | 1928.67 |
+| H5 (trusted hardware), H6 (detection only) | 16.84 | 305.71 | 53.05 | 503.36 | 5006.48 | 1930.18 |
+| H1, H4+H1 (ledger at L0) | 46.01 | 912.62 | 154.62 | 1505.56 | 15014.91 | 6022.74 |
+| H2 (3 replicas, 2 at L0) | 49.02 | 915.64 | 157.64 | 1508.57 | 15017.92 | 6083.53 |
+
+Local validation is 1.507 µs for S1, H0, H3 and H4+H3, and 3.014 µs for H5 and H6 (a challenge round). For
+H1/H4+H1 at Jinan it is 32.18 µs, which is 2L/c_fibre = 27.66 µs plus 3 processing steps.
+
+Issuer awareness and settlement on the same topology: S1 29.17 µs at Jinan, because B_b's outcome still has to
+reach L0. That is the same as H0/H3/H4+H3 and within one processing step of H1 (30.67 µs).
+
+What the numbers say:
+- **Where S-money has no latency edge:**
+  - Over H3 late-commit, with or without the ideal-OT privacy, choice → accept and the pre-presentation commit
+    (13.83 µs at Jinan, 302.70 µs at Yiyuan–Mazhan) are identical on every topology. The Stage-II relay of c and
+    H3's relay are the same message pattern.
+  - Over H3/H4+H3 preassigned, H0, H5 and H6: equal, or within one processing step.
+  - Over issuer awareness and settlement: no protocol has an edge.
+  - On RIPE, S1 and H3-late are about 51 µs (median) slower than protocols that need only Alice's signal. Validation
+    waits for whichever arrives later, the presentation or the relayed c. In 7 of 20 seeds c reached B1 after the
+    presentation.
+- **Where it has one:** against online-ledger designs (H1, H2, H4+H1) whose ledger is not at the presentation site,
+  the edge is exactly one synchronous round trip. At Jinan with zero processing that is 2L/c_fibre = 27.66 µs,
+  Jiang's classical reference. That edge buys late choice without a trusted relay that learns b, which only
+  H3-OT matches. H3-OT matches it computationally, with an ideal OT that is NOT_IMPLEMENTED.
+- The comparability statuses in `comparability_matrix.csv` are unchanged by these results.
