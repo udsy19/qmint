@@ -1,0 +1,392 @@
+{
+    "status": "OK",
+    "evidence_kind": "SIMULATOR_NOISY",
+    "provenance": {
+        "source": "qmint.protocols.wiesner (lane B) + qmint.quantum (lane F) + qmint.proofs (lane D)",
+        "git_sha": "6a8053eee2dbac62854ca24905631d1538f98517-dirty",
+        "generated_at_utc": "2026-10-11T22:03:12+00:00",
+        "seed": 5,
+        "software": {
+            "python": "3.12.11",
+            "numpy": "2.5.4",
+            "scipy": "1.18.1",
+            "qiskit": "2.5.2",
+            "qiskit_aer": "0.17.2",
+            "qutip": "5.3.1"
+        },
+        "notes": "hypothetical noise parameters"
+    },
+    "reason": null,
+    "data": {
+        "token": {
+            "schema_version": "1.0.0",
+            "token_id": "wiesner-SN-249523be50ab823b",
+            "protocol_id": "wiesner_ideal",
+            "n_prepared": 3,
+            "commitment_time_utc_ns": null,
+            "source_state_family": "BB84",
+            "public_metadata": {
+                "serial": "SN-249523be50ab823b"
+            },
+            "issue_event_id": "ev-issue-000001",
+            "state_kind": "ideal_simulated",
+            "freshness": "fresh",
+            "ownership_context": "lab_wallet",
+            "backend_provenance": "SIMULATOR:qmint.protocols.register.FactorizedRegister:exact"
+        },
+        "protocol": {
+            "protocol_id": "wiesner_ideal",
+            "game_id": "W1",
+            "threshold": 0,
+            "verifier_rule": "measure every qubit in its secret basis; accept iff wrong positions \u2264 threshold",
+            "security_model_id": "wiesner_ideal_exact_verifier_v1",
+            "proof_assumptions": [
+                "iid_uniform_bb84",
+                "exact_projective_verifier",
+                "no_verification_oracle"
+            ],
+            "unsupported_extensions": []
+        },
+        "flow": [
+            {
+                "id": "mint",
+                "label": "Bank mints the note",
+                "result": "done",
+                "detail": "3 qubits, each one of |0\u27e9 |1\u27e9 |+\u27e9 |\u2212\u27e9 chosen uniformly; the bank keeps the choice secret",
+                "serial": "SN-249523be50ab823b"
+            },
+            {
+                "id": "transmit",
+                "label": "Holder stores / sends it",
+                "result": "done",
+                "detail": "dephasing(0.1) acts on every qubit (hypothetical noise)",
+                "serial": null
+            },
+            {
+                "id": "verify",
+                "label": "Bank verifies (spend once)",
+                "result": "accepted",
+                "detail": "each qubit measured in its secret basis; all must match; one sampled verification (the note is consumed)",
+                "serial": "SN-249523be50ab823b"
+            },
+            {
+                "id": "replay",
+                "label": "Same serial presented again",
+                "result": "refused",
+                "detail": "bank ledger: serial is 'spent'; replay refused without measuring",
+                "serial": "SN-249523be50ab823b"
+            },
+            {
+                "id": "remint",
+                "label": "Bank issues a fresh note",
+                "result": "done",
+                "detail": "accepted notes are replaced by a new note with a new serial",
+                "serial": "SN-524ace62c885f017"
+            }
+        ],
+        "circuit": {
+            "redacted": true,
+            "qubits": [
+                {
+                    "index": 0,
+                    "prepare": [
+                        "secret"
+                    ],
+                    "channel": [
+                        "dephasing(0.1)"
+                    ],
+                    "verify": [
+                        "secret"
+                    ]
+                },
+                {
+                    "index": 1,
+                    "prepare": [
+                        "secret"
+                    ],
+                    "channel": [
+                        "dephasing(0.1)"
+                    ],
+                    "verify": [
+                        "secret"
+                    ]
+                },
+                {
+                    "index": 2,
+                    "prepare": [
+                        "secret"
+                    ],
+                    "channel": [
+                        "dephasing(0.1)"
+                    ],
+                    "verify": [
+                        "secret"
+                    ]
+                }
+            ],
+            "noise_description": "qubit_channel=dephasing(param=0.1) on every note qubit between prep and verify; readout p01=0.0 p10=0.0; hypothetical parameters",
+            "bit_order_note": "qubit q_i is Qiskit qubit i, measured into clbit i; outcomes are shown in C7 order (char i = q_i)"
+        },
+        "statistics": {
+            "threshold": 0,
+            "shots": 200,
+            "acceptance": [
+                {
+                    "id": "honest_accept_mean",
+                    "label": "Honest acceptance, any note (closed form)",
+                    "value": 0.8573749999999999,
+                    "log10_value": null,
+                    "unit": "probability",
+                    "evidence_kind": "SIMULATOR_NOISY",
+                    "method": "closed_form",
+                    "interval": null,
+                    "source": "qmint.quantum.channels.analytic_correct_probability + binomial",
+                    "formula": "P[Bin(n, \u0113) \u2264 t], \u0113 = 0.05",
+                    "note": "qubit_channel=dephasing(param=0.1) on every note qubit between prep and verify; readout p01=0.0 p10=0.0; hypothetical parameters"
+                },
+                {
+                    "id": "honest_accept_note_exact",
+                    "label": "Honest acceptance, this note (bank exact)",
+                    "value": 0.8099999999999992,
+                    "log10_value": null,
+                    "unit": "probability",
+                    "evidence_kind": "SIMULATOR_NOISY",
+                    "method": "exact_enumeration",
+                    "interval": null,
+                    "source": "qmint.protocols.wiesner.WiesnerChallenger.acceptance_probability",
+                    "formula": null,
+                    "note": "bank-side analysis oracle; cross-checked against the lane-F closed form to 1e-9"
+                },
+                {
+                    "id": "honest_accept_note_aer",
+                    "label": "Honest acceptance, this note (Aer shots)",
+                    "value": 0.795,
+                    "log10_value": null,
+                    "unit": "probability",
+                    "evidence_kind": "SIMULATOR_NOISY",
+                    "method": "aer_sampling",
+                    "interval": {
+                        "lo": 0.7323460792147147,
+                        "hi": 0.8486894280044806,
+                        "confidence": 0.95,
+                        "method": "clopper_pearson_0.95"
+                    },
+                    "source": "qmint.quantum.circuits.run_aer (aer_simulator, local)",
+                    "formula": null,
+                    "note": "159/200 shots; seed_simulator=5"
+                },
+                {
+                    "id": "honest_accept_mc",
+                    "label": "Honest acceptance, fresh notes (Monte Carlo)",
+                    "value": 0.9,
+                    "log10_value": null,
+                    "unit": "probability",
+                    "evidence_kind": "SIMULATOR_NOISY",
+                    "method": "monte_carlo",
+                    "interval": {
+                        "lo": 0.7818646335657977,
+                        "hi": 0.9667249064109775,
+                        "confidence": 0.95,
+                        "method": "clopper_pearson_0.95"
+                    },
+                    "source": "qmint.protocols.wiesner.WiesnerChallenger (one fresh note per trial)",
+                    "formula": null,
+                    "note": "45/50 fresh notes accepted"
+                }
+            ],
+            "error_counts": [
+                {
+                    "errors": 0,
+                    "exact_probability": 0.81,
+                    "sampled_count": 159,
+                    "accepted": true
+                },
+                {
+                    "errors": 1,
+                    "exact_probability": 0.17999999999999997,
+                    "sampled_count": 39,
+                    "accepted": false
+                },
+                {
+                    "errors": 2,
+                    "exact_probability": 0.009999999999999995,
+                    "sampled_count": 2,
+                    "accepted": false
+                },
+                {
+                    "errors": 3,
+                    "exact_probability": 0.0,
+                    "sampled_count": 0,
+                    "accepted": false
+                }
+            ],
+            "error_counts_note": "number of wrong positions in one verification of this note; per-position results are never returned (they would reveal the secret)"
+        },
+        "theorem": {
+            "id": "w1_theorem_bound",
+            "label": "W1 theorem: no counterfeiter beats",
+            "value": 0.42187500000000006,
+            "log10_value": null,
+            "unit": "probability",
+            "evidence_kind": "PUBLISHED_THEOREM",
+            "method": "closed_form",
+            "interval": null,
+            "source": "A. Molina, T. Vidick, J. Watrous. Optimal counterfeiting attacks and generalizations for Wiesner's quantum money. TQC 2012, LNCS 7582, 45-64. arXiv:1202.4010v1; MVW2012 Theorem 1; https://arxiv.org/abs/1202.4010",
+            "formula": "(3/4)^n",
+            "note": "ideal game W1 only: one note, two outputs, exact verifier, no oracle; the declared noise affects the honest holder here, the theorem itself assumes no noise"
+        },
+        "hardware": {
+            "id": "qpu",
+            "label": "Quantum hardware",
+            "value": null,
+            "log10_value": null,
+            "unit": "probability",
+            "evidence_kind": "QPU",
+            "method": "not_available",
+            "interval": null,
+            "source": "qmint.quantum.ionq (lane J)",
+            "formula": null,
+            "note": "not run: paid hardware submission is disabled in this build (lane J); no QPU number exists"
+        },
+        "teaching": {
+            "domain": "TEST_ONLY_TEACHING_REVEAL",
+            "proof_applicability": "OUT_OF_MODEL",
+            "warning": "TEST_ONLY teaching reveal: the bank's leak_secret_TEST_ONLY control was called because you asked for it. A real issuer never discloses bases or bits; with them a trivial forger wins every time (OUT_OF_MODEL).",
+            "qubits": [
+                {
+                    "index": 0,
+                    "basis": "X",
+                    "bit": 1,
+                    "state_label": "-",
+                    "bloch": [
+                        -1.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "index": 1,
+                    "basis": "X",
+                    "bit": 0,
+                    "state_label": "+",
+                    "bloch": [
+                        1.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "index": 2,
+                    "basis": "Z",
+                    "bit": 1,
+                    "state_label": "1",
+                    "bloch": [
+                        0.0,
+                        0.0,
+                        -1.0
+                    ]
+                }
+            ],
+            "expected_outcome": "101",
+            "outcome_distribution": [
+                {
+                    "outcome": "101",
+                    "probability": 0.8099999999999987
+                },
+                {
+                    "outcome": "001",
+                    "probability": 0.08999999999999989
+                },
+                {
+                    "outcome": "111",
+                    "probability": 0.08999999999999983
+                },
+                {
+                    "outcome": "011",
+                    "probability": 0.010000000000000004
+                }
+            ],
+            "outcome_distribution_truncated": false,
+            "circuit": {
+                "redacted": false,
+                "qubits": [
+                    {
+                        "index": 0,
+                        "prepare": [
+                            "x",
+                            "h"
+                        ],
+                        "channel": [
+                            "dephasing(0.1)"
+                        ],
+                        "verify": [
+                            "h",
+                            "measure_z"
+                        ]
+                    },
+                    {
+                        "index": 1,
+                        "prepare": [
+                            "h"
+                        ],
+                        "channel": [
+                            "dephasing(0.1)"
+                        ],
+                        "verify": [
+                            "h",
+                            "measure_z"
+                        ]
+                    },
+                    {
+                        "index": 2,
+                        "prepare": [
+                            "x"
+                        ],
+                        "channel": [
+                            "dephasing(0.1)"
+                        ],
+                        "verify": [
+                            "measure_z"
+                        ]
+                    }
+                ],
+                "noise_description": "qubit_channel=dephasing(param=0.1) on every note qubit between prep and verify; readout p01=0.0 p10=0.0; hypothetical parameters",
+                "bit_order_note": "qubit q_i is Qiskit qubit i, measured into clbit i; outcomes are shown in C7 order (char i = q_i)"
+            },
+            "qasm2": "OPENQASM 2.0;\ninclude \"qelib1.inc\";\nqreg q[3];\ncreg c[3];\nx q[0];\nh q[0];\nh q[1];\nx q[2];\nbarrier q[0],q[1],q[2];\nh q[0];\nh q[1];\nmeasure q[0] -> c[0];\nmeasure q[1] -> c[1];\nmeasure q[2] -> c[2];",
+            "resources": {
+                "width_qubits": 3,
+                "clbits": 3,
+                "depth": 5,
+                "gate_counts": {
+                    "barrier": 2,
+                    "h": 4,
+                    "measure": 3,
+                    "quantum_channel": 3,
+                    "x": 2
+                },
+                "two_qubit_gates": 0
+            },
+            "circuit_sha256": "ad80a0c5c34f4b06c5d481e396256be6624743de6768dc9aae071505e57a1f88"
+        },
+        "run": {
+            "backends": [
+                "qmint.protocols.register.FactorizedRegister (exact)",
+                "aer_simulator (local, density_matrix)"
+            ],
+            "seed": 5,
+            "shots": 200,
+            "trials": 50,
+            "elapsed_ms": 21.2,
+            "deadline_s": 20.0,
+            "limits": {
+                "n_max": 8,
+                "shots_max": 20000,
+                "trials_max": 5000,
+                "trials_max_a08": 400,
+                "sdp_n_max": 2
+            }
+        },
+        "simulator_caveat": "A simulator's state is classical data that can be copied freely; nothing here demonstrates physical no-cloning. Only the modelled quantum register is simulated."
+    }
+}

@@ -108,10 +108,16 @@
           },
           "attack": {
             "enum": [
-              "honest",
-              "measure_resend",
-              "bruss_cloner",
-              "mvw_channel"
+              "A01_basis_guess_resend",
+              "A01b_basis_guess_bayes_resend",
+              "A02_breidbart_resend",
+              "A02b_breidbart_bayes_resend",
+              "A03_universal_buzek_hillery",
+              "A03b_phase_covariant_xz",
+              "A04_mvw_optimal_channel",
+              "A06_split_and_report_loss",
+              "A08_adaptive_oracle_probe",
+              "CTRL_secret_leak"
             ],
             "title": "Attack",
             "type": "string"
@@ -130,20 +136,33 @@
               }
             ]
           },
+          "capabilities": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Capabilities",
+            "type": "array"
+          },
+          "counterfeit_success": {
+            "items": {
+              "$ref": "#/components/schemas/LabQuantity"
+            },
+            "title": "Counterfeit Success",
+            "type": "array"
+          },
           "description": {
             "title": "Description",
             "type": "string"
           },
-          "double_verification_success": {
-            "items": {
-              "$ref": "#/components/schemas/Quantity"
-            },
-            "title": "Double Verification Success",
-            "type": "array"
+          "game_id": {
+            "$ref": "#/components/schemas/GameId"
+          },
+          "hardware": {
+            "$ref": "#/components/schemas/LabQuantity"
           },
           "honest_acceptance": {
             "items": {
-              "$ref": "#/components/schemas/Quantity"
+              "$ref": "#/components/schemas/LabQuantity"
             },
             "title": "Honest Acceptance",
             "type": "array"
@@ -155,24 +174,57 @@
             "title": "Notes",
             "type": "array"
           },
-          "single_verification_pass": {
-            "$ref": "#/components/schemas/Quantity"
+          "proof_applicability": {
+            "enum": [
+              "IN_MODEL",
+              "NO_THEOREM",
+              "OUT_OF_MODEL"
+            ],
+            "title": "Proof Applicability",
+            "type": "string"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunInfo"
+          },
+          "sdp": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SdpBracket"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "simulator_caveat": {
+            "title": "Simulator Caveat",
+            "type": "string"
+          },
+          "single_copy_pass": {
+            "$ref": "#/components/schemas/LabQuantity"
           },
           "theorem_bound": {
-            "$ref": "#/components/schemas/Quantity"
+            "$ref": "#/components/schemas/LabQuantity"
           }
         },
         "required": [
           "attack",
           "attack_label",
           "description",
+          "game_id",
+          "proof_applicability",
+          "capabilities",
           "honest_acceptance",
-          "single_verification_pass",
-          "double_verification_success",
+          "single_copy_pass",
+          "counterfeit_success",
           "theorem_bound",
+          "sdp",
+          "hardware",
           "attack_result",
           "assumptions",
-          "notes"
+          "notes",
+          "run",
+          "simulator_caveat"
         ],
         "title": "AttackData",
         "type": "object"
@@ -181,53 +233,61 @@
         "additionalProperties": false,
         "properties": {
           "attack": {
-            "default": "mvw_channel",
+            "default": "A04_mvw_optimal_channel",
             "enum": [
-              "honest",
-              "measure_resend",
-              "bruss_cloner",
-              "mvw_channel"
+              "A01_basis_guess_resend",
+              "A01b_basis_guess_bayes_resend",
+              "A02_breidbart_resend",
+              "A02b_breidbart_bayes_resend",
+              "A03_universal_buzek_hillery",
+              "A03b_phase_covariant_xz",
+              "A04_mvw_optimal_channel",
+              "A06_split_and_report_loss",
+              "A08_adaptive_oracle_probe",
+              "CTRL_secret_leak"
             ],
             "title": "Attack",
             "type": "string"
           },
-          "backend": {
-            "default": "analytic",
-            "enum": [
-              "analytic",
-              "aer"
-            ],
-            "title": "Backend",
-            "type": "string"
+          "include_sdp": {
+            "default": true,
+            "title": "Include Sdp",
+            "type": "boolean"
           },
-          "game": {
-            "const": "W1",
-            "default": "W1",
-            "title": "Game",
-            "type": "string"
+          "max_error_fraction": {
+            "default": 0.0,
+            "description": "A06 toy verifier",
+            "maximum": 0.5,
+            "minimum": 0.0,
+            "title": "Max Error Fraction",
+            "type": "number"
+          },
+          "max_loss_fraction": {
+            "default": 0.5,
+            "description": "A06 toy verifier",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Max Loss Fraction",
+            "type": "number"
           },
           "n": {
-            "default": 1,
+            "default": 2,
             "maximum": 8.0,
             "minimum": 1.0,
             "title": "N",
             "type": "integer"
           },
           "noise": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/NoiseIn"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LabNoise",
+            "description": "honest holder's channel (honest acceptance only)"
           },
-          "protocol_id": {
-            "const": "wiesner_ideal",
-            "default": "wiesner_ideal",
-            "title": "Protocol Id",
-            "type": "string"
+          "probes": {
+            "default": 10,
+            "description": "A08 Z-probes per position",
+            "maximum": 16.0,
+            "minimum": 1.0,
+            "title": "Probes",
+            "type": "integer"
           },
           "seed": {
             "default": 42,
@@ -236,11 +296,11 @@
             "title": "Seed",
             "type": "integer"
           },
-          "shots": {
-            "default": 2000,
-            "maximum": 20000.0,
-            "minimum": 1.0,
-            "title": "Shots",
+          "trials": {
+            "default": 1000,
+            "maximum": 5000.0,
+            "minimum": 0.0,
+            "title": "Trials",
             "type": "integer"
           }
         },
@@ -1365,10 +1425,6 @@
             "title": "Bit Order Note",
             "type": "string"
           },
-          "circuit_sha256": {
-            "title": "Circuit Sha256",
-            "type": "string"
-          },
           "noise_description": {
             "anyOf": [
               {
@@ -1380,18 +1436,6 @@
             ],
             "title": "Noise Description"
           },
-          "qasm2": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "noiseless verify circuit; channels are not expressible in QASM 2",
-            "title": "Qasm2"
-          },
           "qubits": {
             "items": {
               "$ref": "#/components/schemas/QubitOps"
@@ -1399,22 +1443,14 @@
             "title": "Qubits",
             "type": "array"
           },
-          "resources": {
-            "additionalProperties": true,
-            "title": "Resources",
-            "type": "object"
-          },
-          "resources_note": {
-            "title": "Resources Note",
-            "type": "string"
+          "redacted": {
+            "title": "Redacted",
+            "type": "boolean"
           }
         },
         "required": [
+          "redacted",
           "qubits",
-          "resources",
-          "resources_note",
-          "circuit_sha256",
-          "qasm2",
           "noise_description",
           "bit_order_note"
         ],
@@ -1655,6 +1691,91 @@
           "detail"
         ],
         "title": "DoubleSpendOutcome",
+        "type": "object"
+      },
+      "EntryField": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "text",
+              "latex",
+              "list",
+              "code"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "kind"
+        ],
+        "title": "EntryField",
+        "type": "object"
+      },
+      "ErrorCountRow": {
+        "additionalProperties": false,
+        "properties": {
+          "accepted": {
+            "title": "Accepted",
+            "type": "boolean"
+          },
+          "errors": {
+            "title": "Errors",
+            "type": "integer"
+          },
+          "exact_probability": {
+            "title": "Exact Probability",
+            "type": "number"
+          },
+          "sampled_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sampled Count"
+          }
+        },
+        "required": [
+          "errors",
+          "exact_probability",
+          "sampled_count",
+          "accepted"
+        ],
+        "title": "ErrorCountRow",
         "type": "object"
       },
       "EvidenceData": {
@@ -1902,6 +2023,60 @@
         "title": "ExportBlock",
         "type": "object"
       },
+      "FlowStep": {
+        "additionalProperties": false,
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "id": {
+            "enum": [
+              "mint",
+              "transmit",
+              "verify",
+              "replay",
+              "remint"
+            ],
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "result": {
+            "enum": [
+              "done",
+              "accepted",
+              "rejected",
+              "refused",
+              "skipped"
+            ],
+            "title": "Result",
+            "type": "string"
+          },
+          "serial": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Serial"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "result",
+          "detail"
+        ],
+        "title": "FlowStep",
+        "type": "object"
+      },
       "GameEntry": {
         "additionalProperties": false,
         "properties": {
@@ -1977,6 +2152,14 @@
       "GameInfo": {
         "additionalProperties": false,
         "properties": {
+          "anchors": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/TheoremAnchor"
+            },
+            "title": "Anchors",
+            "type": "array"
+          },
           "assumptions": {
             "items": {
               "type": "string"
@@ -2116,6 +2299,74 @@
         "title": "GamesResponse",
         "type": "object"
       },
+      "GateStatus": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "evidence": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "gate_id": {
+            "title": "Gate Id",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "gate_id",
+          "description",
+          "status",
+          "evidence",
+          "notes"
+        ],
+        "title": "GateStatus",
+        "type": "object"
+      },
+      "GlossaryItem": {
+        "additionalProperties": false,
+        "properties": {
+          "definition": {
+            "title": "Definition",
+            "type": "string"
+          },
+          "source_file": {
+            "title": "Source File",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "source_file",
+          "definition"
+        ],
+        "title": "GlossaryItem",
+        "type": "object"
+      },
       "Health": {
         "additionalProperties": false,
         "properties": {
@@ -2184,78 +2435,196 @@
         "title": "IntervalIn",
         "type": "object"
       },
-      "IssuerQubit": {
+      "LabNoise": {
         "additionalProperties": false,
+        "description": "Declared (hypothetical) iid qubit channel between minting and verification.\n\nReadout error is deliberately absent: the lane-B register verifier has no classical readout\nstage, and a readout flip in the secret basis cannot be expressed as a channel on the note\nwithout knowing the secret.",
         "properties": {
-          "basis": {
-            "$ref": "#/components/schemas/Basis"
-          },
-          "bit": {
-            "title": "Bit",
-            "type": "integer"
-          },
-          "bloch": {
-            "maxItems": 3,
-            "minItems": 3,
-            "prefixItems": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "number"
-              },
-              {
-                "type": "number"
-              }
+          "channel": {
+            "default": "none",
+            "enum": [
+              "none",
+              "depolarizing",
+              "dephasing",
+              "amplitude_damping"
             ],
-            "title": "Bloch",
-            "type": "array"
-          },
-          "index": {
-            "title": "Index",
-            "type": "integer"
-          },
-          "state_label": {
-            "title": "State Label",
+            "title": "Channel",
             "type": "string"
+          },
+          "strength": {
+            "default": 0.0,
+            "description": "p (depolarizing/dephasing) or gamma (damping)",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Strength",
+            "type": "number"
           }
         },
-        "required": [
-          "index",
-          "basis",
-          "bit",
-          "state_label",
-          "bloch"
-        ],
-        "title": "IssuerQubit",
+        "title": "LabNoise",
         "type": "object"
       },
-      "IssuerView": {
+      "LabProtocolInfo": {
         "additionalProperties": false,
         "properties": {
-          "domain": {
-            "const": "ISSUER_PRIVATE_DEMO",
-            "default": "ISSUER_PRIVATE_DEMO",
-            "title": "Domain",
-            "type": "string"
+          "game_id": {
+            "$ref": "#/components/schemas/GameId"
           },
-          "qubits": {
+          "proof_assumptions": {
             "items": {
-              "$ref": "#/components/schemas/IssuerQubit"
+              "type": "string"
             },
-            "title": "Qubits",
+            "title": "Proof Assumptions",
             "type": "array"
           },
-          "warning": {
-            "title": "Warning",
+          "protocol_id": {
+            "title": "Protocol Id",
+            "type": "string"
+          },
+          "security_model_id": {
+            "title": "Security Model Id",
+            "type": "string"
+          },
+          "threshold": {
+            "title": "Threshold",
+            "type": "integer"
+          },
+          "unsupported_extensions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Unsupported Extensions",
+            "type": "array"
+          },
+          "verifier_rule": {
+            "title": "Verifier Rule",
             "type": "string"
           }
         },
         "required": [
-          "warning",
-          "qubits"
+          "protocol_id",
+          "game_id",
+          "threshold",
+          "verifier_rule",
+          "security_model_id",
+          "proof_assumptions",
+          "unsupported_extensions"
         ],
-        "title": "IssuerView",
+        "title": "LabProtocolInfo",
+        "type": "object"
+      },
+      "LabQuantity": {
+        "additionalProperties": false,
+        "description": "``Quantity`` plus methods ``monte_carlo`` (fresh notes) and ``numerical_sdp`` (proposed for schemas.Method).",
+        "properties": {
+          "evidence_kind": {
+            "$ref": "#/components/schemas/EvidenceKind"
+          },
+          "formula": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Formula"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "interval": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ConfidenceInterval"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "log10_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "log10(value), for values below float range",
+            "title": "Log10 Value"
+          },
+          "method": {
+            "anyOf": [
+              {
+                "enum": [
+                  "closed_form",
+                  "exact_enumeration",
+                  "aer_sampling",
+                  "event_simulation",
+                  "published_value",
+                  "measured_dataset",
+                  "not_available"
+                ],
+                "type": "string"
+              },
+              {
+                "enum": [
+                  "monte_carlo",
+                  "numerical_sdp"
+                ],
+                "type": "string"
+              }
+            ],
+            "title": "Method"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "source": {
+            "description": "module path or citation (URL + anchor)",
+            "minLength": 1,
+            "title": "Source",
+            "type": "string"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/Unit"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "value",
+          "unit",
+          "evidence_kind",
+          "method",
+          "source"
+        ],
+        "title": "LabQuantity",
         "type": "object"
       },
       "LaneStatus": {
@@ -2354,73 +2723,6 @@
         "title": "LatencyCase",
         "type": "object"
       },
-      "MeasurementStats": {
-        "additionalProperties": false,
-        "properties": {
-          "acceptance": {
-            "items": {
-              "$ref": "#/components/schemas/Quantity"
-            },
-            "title": "Acceptance",
-            "type": "array"
-          },
-          "aer_counts": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/OutcomeCount"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Aer Counts"
-          },
-          "analytic_distribution": {
-            "items": {
-              "$ref": "#/components/schemas/OutcomeProbability"
-            },
-            "title": "Analytic Distribution",
-            "type": "array"
-          },
-          "analytic_method": {
-            "title": "Analytic Method",
-            "type": "string"
-          },
-          "analytic_truncated": {
-            "title": "Analytic Truncated",
-            "type": "boolean"
-          },
-          "expected_outcome": {
-            "title": "Expected Outcome",
-            "type": "string"
-          },
-          "shots": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Shots"
-          }
-        },
-        "required": [
-          "expected_outcome",
-          "analytic_distribution",
-          "analytic_truncated",
-          "analytic_method",
-          "aer_counts",
-          "shots",
-          "acceptance"
-        ],
-        "title": "MeasurementStats",
-        "type": "object"
-      },
       "MetaData": {
         "additionalProperties": false,
         "properties": {
@@ -2513,15 +2815,41 @@
           "circuit": {
             "$ref": "#/components/schemas/CircuitDescription"
           },
-          "issuer_view": {
-            "$ref": "#/components/schemas/IssuerView"
+          "flow": {
+            "items": {
+              "$ref": "#/components/schemas/FlowStep"
+            },
+            "title": "Flow",
+            "type": "array"
+          },
+          "hardware": {
+            "$ref": "#/components/schemas/LabQuantity"
+          },
+          "protocol": {
+            "$ref": "#/components/schemas/LabProtocolInfo"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunInfo"
           },
           "simulator_caveat": {
             "title": "Simulator Caveat",
             "type": "string"
           },
           "statistics": {
-            "$ref": "#/components/schemas/MeasurementStats"
+            "$ref": "#/components/schemas/MintStatistics"
+          },
+          "teaching": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TeachingReveal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "theorem": {
+            "$ref": "#/components/schemas/LabQuantity"
           },
           "token": {
             "$ref": "#/components/schemas/TokenRecord"
@@ -2529,9 +2857,14 @@
         },
         "required": [
           "token",
-          "issuer_view",
+          "protocol",
+          "flow",
           "circuit",
           "statistics",
+          "theorem",
+          "hardware",
+          "teaching",
+          "run",
           "simulator_caveat"
         ],
         "title": "MintData",
@@ -2541,9 +2874,9 @@
         "additionalProperties": false,
         "properties": {
           "backend": {
-            "default": "analytic",
+            "default": "aer",
             "enum": [
-              "analytic",
+              "exact",
               "aer"
             ],
             "title": "Backend",
@@ -2557,18 +2890,14 @@
             "type": "integer"
           },
           "noise": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/NoiseIn"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LabNoise"
           },
           "protocol_id": {
-            "const": "wiesner_ideal",
             "default": "wiesner_ideal",
+            "enum": [
+              "wiesner_ideal",
+              "wiesner_noisy"
+            ],
             "title": "Protocol Id",
             "type": "string"
           },
@@ -2580,10 +2909,32 @@
             "type": "integer"
           },
           "shots": {
-            "default": 4000,
+            "default": 2000,
             "maximum": 20000.0,
             "minimum": 1.0,
             "title": "Shots",
+            "type": "integer"
+          },
+          "teaching_reveal": {
+            "default": false,
+            "description": "TEST_ONLY: also return the issuer secret of this note (OUT_OF_MODEL teaching view)",
+            "title": "Teaching Reveal",
+            "type": "boolean"
+          },
+          "threshold": {
+            "default": 0,
+            "description": "max wrong positions accepted (wiesner_noisy)",
+            "maximum": 8.0,
+            "minimum": 0.0,
+            "title": "Threshold",
+            "type": "integer"
+          },
+          "trials": {
+            "default": 1000,
+            "description": "fresh notes for the honest Monte Carlo",
+            "maximum": 5000.0,
+            "minimum": 0.0,
+            "title": "Trials",
             "type": "integer"
           }
         },
@@ -2639,64 +2990,51 @@
         "title": "MintResponse",
         "type": "object"
       },
-      "NoiseIn": {
+      "MintStatistics": {
         "additionalProperties": false,
-        "description": "Declared (hypothetical) noise: one qubit channel on every note qubit plus readout error.",
         "properties": {
-          "channel": {
-            "default": "none",
-            "enum": [
-              "none",
-              "depolarizing",
-              "dephasing",
-              "amplitude_damping"
+          "acceptance": {
+            "items": {
+              "$ref": "#/components/schemas/LabQuantity"
+            },
+            "title": "Acceptance",
+            "type": "array"
+          },
+          "error_counts": {
+            "items": {
+              "$ref": "#/components/schemas/ErrorCountRow"
+            },
+            "title": "Error Counts",
+            "type": "array"
+          },
+          "error_counts_note": {
+            "title": "Error Counts Note",
+            "type": "string"
+          },
+          "shots": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
             ],
-            "title": "Channel",
-            "type": "string"
+            "title": "Shots"
           },
-          "param": {
-            "default": 0.0,
-            "maximum": 1.0,
-            "minimum": 0.0,
-            "title": "Param",
-            "type": "number"
-          },
-          "readout_p01": {
-            "default": 0.0,
-            "maximum": 0.5,
-            "minimum": 0.0,
-            "title": "Readout P01",
-            "type": "number"
-          },
-          "readout_p10": {
-            "default": 0.0,
-            "maximum": 0.5,
-            "minimum": 0.0,
-            "title": "Readout P10",
-            "type": "number"
-          }
-        },
-        "title": "NoiseIn",
-        "type": "object"
-      },
-      "OutcomeCount": {
-        "additionalProperties": false,
-        "properties": {
-          "count": {
-            "title": "Count",
+          "threshold": {
+            "title": "Threshold",
             "type": "integer"
-          },
-          "outcome": {
-            "description": "C7 order: character i is qubit q_i",
-            "title": "Outcome",
-            "type": "string"
           }
         },
         "required": [
-          "outcome",
-          "count"
+          "threshold",
+          "shots",
+          "acceptance",
+          "error_counts",
+          "error_counts_note"
         ],
-        "title": "OutcomeCount",
+        "title": "MintStatistics",
         "type": "object"
       },
       "OutcomeProbability": {
@@ -3410,6 +3748,7 @@
             "type": "integer"
           },
           "prepare": {
+            "description": "'secret' (redacted) or gates x / h",
             "items": {
               "type": "string"
             },
@@ -3417,6 +3756,7 @@
             "type": "array"
           },
           "verify": {
+            "description": "'secret' (redacted) or gates h / measure_z",
             "items": {
               "type": "string"
             },
@@ -3523,7 +3863,21 @@
       "ResearchData": {
         "additionalProperties": false,
         "properties": {
-          "snapshot_note": {
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/SourceFile"
+            },
+            "title": "Files",
+            "type": "array"
+          },
+          "glossary": {
+            "items": {
+              "$ref": "#/components/schemas/GlossaryItem"
+            },
+            "title": "Glossary",
+            "type": "array"
+          },
+          "snapshot_date": {
             "anyOf": [
               {
                 "type": "string"
@@ -3532,11 +3886,11 @@
                 "type": "null"
               }
             ],
-            "title": "Snapshot Note"
+            "title": "Snapshot Date"
           },
           "sources": {
             "items": {
-              "$ref": "#/components/schemas/ResearchSource"
+              "$ref": "#/components/schemas/ResearchEntry"
             },
             "title": "Sources",
             "type": "array"
@@ -3544,9 +3898,217 @@
         },
         "required": [
           "sources",
-          "snapshot_note"
+          "files",
+          "glossary",
+          "snapshot_date"
         ],
         "title": "ResearchData",
+        "type": "object"
+      },
+      "ResearchEntry": {
+        "additionalProperties": false,
+        "properties": {
+          "anchor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anchor"
+          },
+          "dois": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Dois",
+            "type": "array"
+          },
+          "games": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Games",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "paper",
+              "theorem",
+              "obligation",
+              "correction",
+              "novelty",
+              "dataset"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "related": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Related",
+            "type": "array"
+          },
+          "source_file": {
+            "title": "Source File",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtitle"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "title_source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title Source"
+          },
+          "urls": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Urls",
+            "type": "array"
+          },
+          "verification": {
+            "title": "Verification",
+            "type": "string"
+          },
+          "year": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "games",
+          "status",
+          "verification",
+          "summary",
+          "urls",
+          "dois",
+          "source_file",
+          "related"
+        ],
+        "title": "ResearchEntry",
+        "type": "object"
+      },
+      "ResearchEntryDetail": {
+        "additionalProperties": false,
+        "properties": {
+          "entry": {
+            "$ref": "#/components/schemas/ResearchEntry"
+          },
+          "fields": {
+            "items": {
+              "$ref": "#/components/schemas/EntryField"
+            },
+            "title": "Fields",
+            "type": "array"
+          },
+          "related": {
+            "items": {
+              "$ref": "#/components/schemas/ResearchEntry"
+            },
+            "title": "Related",
+            "type": "array"
+          }
+        },
+        "required": [
+          "entry",
+          "fields",
+          "related"
+        ],
+        "title": "ResearchEntryDetail",
+        "type": "object"
+      },
+      "ResearchEntryResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ResearchEntryDetail"
+          },
+          "evidence_kind": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EvidenceKind"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/ApiProvenance"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "status": {
+            "enum": [
+              "OK",
+              "DEMO_ADAPTER",
+              "NOT_AVAILABLE"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "evidence_kind",
+          "provenance",
+          "data"
+        ],
+        "title": "ResearchEntryResponse",
         "type": "object"
       },
       "ResearchResponse": {
@@ -3598,44 +4160,91 @@
         "title": "ResearchResponse",
         "type": "object"
       },
-      "ResearchSource": {
+      "RunInfo": {
         "additionalProperties": false,
         "properties": {
-          "citation": {
-            "title": "Citation",
-            "type": "string"
-          },
-          "id": {
-            "title": "Id",
-            "type": "string"
-          },
-          "kind": {
-            "title": "Kind",
-            "type": "string"
-          },
-          "title": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Title"
-          },
-          "urls": {
+          "backends": {
             "items": {
               "type": "string"
             },
-            "title": "Urls",
+            "title": "Backends",
             "type": "array"
           },
-          "verification": {
-            "title": "Verification",
-            "type": "string"
+          "deadline_s": {
+            "default": 20.0,
+            "title": "Deadline S",
+            "type": "number"
           },
-          "year": {
+          "elapsed_ms": {
+            "title": "Elapsed Ms",
+            "type": "number"
+          },
+          "limits": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Limits",
+            "type": "object"
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "integer"
+          },
+          "shots": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shots"
+          },
+          "trials": {
+            "title": "Trials",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "backends",
+          "seed",
+          "shots",
+          "trials",
+          "elapsed_ms"
+        ],
+        "title": "RunInfo",
+        "type": "object"
+      },
+      "SdpBracket": {
+        "additionalProperties": false,
+        "description": "Two-sided enclosure of the OPTIMAL W1 counterfeit probability for small n.",
+        "properties": {
+          "lower": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LabQuantity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "n": {
+            "title": "N",
+            "type": "integer"
+          },
+          "numerical": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LabQuantity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reason": {
             "anyOf": [
               {
                 "type": "string"
@@ -3644,19 +4253,47 @@
                 "type": "null"
               }
             ],
-            "title": "Year"
+            "title": "Reason"
+          },
+          "recorded_evidence": {
+            "default": "handoffs/C-C1-evidence.json",
+            "title": "Recorded Evidence",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "OK",
+              "UNSUPPORTED"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "upper_certified": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LabQuantity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "upper_independent": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LabQuantity"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
-          "id",
-          "citation",
-          "title",
-          "year",
-          "urls",
-          "kind",
-          "verification"
+          "n",
+          "status"
         ],
-        "title": "ResearchSource",
+        "title": "SdpBracket",
         "type": "object"
       },
       "SecurityAxis": {
@@ -3871,6 +4508,37 @@
         "title": "Slot",
         "type": "object"
       },
+      "SourceFile": {
+        "additionalProperties": false,
+        "properties": {
+          "entries": {
+            "title": "Entries",
+            "type": "integer"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sha256"
+          }
+        },
+        "required": [
+          "path",
+          "sha256",
+          "entries"
+        ],
+        "title": "SourceFile",
+        "type": "object"
+      },
       "StateKind": {
         "enum": [
           "physical_quantum",
@@ -3998,6 +4666,258 @@
           }
         },
         "title": "TargetsIn",
+        "type": "object"
+      },
+      "TaskStatus": {
+        "additionalProperties": false,
+        "properties": {
+          "blockers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Blockers",
+            "type": "array"
+          },
+          "commit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Commit"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "evidence": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "lane": {
+            "title": "Lane",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "task_id": {
+            "title": "Task Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "lane",
+          "description",
+          "status",
+          "commit",
+          "evidence",
+          "blockers",
+          "notes"
+        ],
+        "title": "TaskStatus",
+        "type": "object"
+      },
+      "TeachingQubit": {
+        "additionalProperties": false,
+        "properties": {
+          "basis": {
+            "$ref": "#/components/schemas/Basis"
+          },
+          "bit": {
+            "title": "Bit",
+            "type": "integer"
+          },
+          "bloch": {
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "title": "Bloch",
+            "type": "array"
+          },
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "state_label": {
+            "title": "State Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "index",
+          "basis",
+          "bit",
+          "state_label",
+          "bloch"
+        ],
+        "title": "TeachingQubit",
+        "type": "object"
+      },
+      "TeachingReveal": {
+        "additionalProperties": false,
+        "properties": {
+          "circuit": {
+            "$ref": "#/components/schemas/CircuitDescription"
+          },
+          "circuit_sha256": {
+            "title": "Circuit Sha256",
+            "type": "string"
+          },
+          "domain": {
+            "const": "TEST_ONLY_TEACHING_REVEAL",
+            "default": "TEST_ONLY_TEACHING_REVEAL",
+            "title": "Domain",
+            "type": "string"
+          },
+          "expected_outcome": {
+            "title": "Expected Outcome",
+            "type": "string"
+          },
+          "outcome_distribution": {
+            "items": {
+              "$ref": "#/components/schemas/OutcomeProbability"
+            },
+            "title": "Outcome Distribution",
+            "type": "array"
+          },
+          "outcome_distribution_truncated": {
+            "title": "Outcome Distribution Truncated",
+            "type": "boolean"
+          },
+          "proof_applicability": {
+            "const": "OUT_OF_MODEL",
+            "default": "OUT_OF_MODEL",
+            "title": "Proof Applicability",
+            "type": "string"
+          },
+          "qasm2": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Qasm2"
+          },
+          "qubits": {
+            "items": {
+              "$ref": "#/components/schemas/TeachingQubit"
+            },
+            "title": "Qubits",
+            "type": "array"
+          },
+          "resources": {
+            "additionalProperties": true,
+            "title": "Resources",
+            "type": "object"
+          },
+          "warning": {
+            "title": "Warning",
+            "type": "string"
+          }
+        },
+        "required": [
+          "warning",
+          "qubits",
+          "expected_outcome",
+          "outcome_distribution",
+          "outcome_distribution_truncated",
+          "circuit",
+          "qasm2",
+          "resources",
+          "circuit_sha256"
+        ],
+        "title": "TeachingReveal",
+        "type": "object"
+      },
+      "TheoremAnchor": {
+        "additionalProperties": false,
+        "description": "A transcribed theorem (lane A) or proof obligation (lane D) that applies to exactly this game.",
+        "properties": {
+          "anchor": {
+            "title": "Anchor",
+            "type": "string"
+          },
+          "formula": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Formula"
+          },
+          "kind": {
+            "enum": [
+              "theorem",
+              "obligation"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "ref_id": {
+            "title": "Ref Id",
+            "type": "string"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "ref_id",
+          "kind",
+          "anchor",
+          "status",
+          "source_url",
+          "formula"
+        ],
+        "title": "TheoremAnchor",
         "type": "object"
       },
       "TheoremInfo": {
@@ -4212,6 +5132,117 @@
           "backend_provenance"
         ],
         "title": "TokenRecord",
+        "type": "object"
+      },
+      "TrackerData": {
+        "additionalProperties": false,
+        "properties": {
+          "gates": {
+            "items": {
+              "$ref": "#/components/schemas/GateStatus"
+            },
+            "title": "Gates",
+            "type": "array"
+          },
+          "project_phase": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Phase"
+          },
+          "source_file": {
+            "title": "Source File",
+            "type": "string"
+          },
+          "status_values": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Status Values",
+            "type": "array"
+          },
+          "tasks": {
+            "items": {
+              "$ref": "#/components/schemas/TaskStatus"
+            },
+            "title": "Tasks",
+            "type": "array"
+          },
+          "updated_at_utc": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At Utc"
+          }
+        },
+        "required": [
+          "source_file",
+          "project_phase",
+          "updated_at_utc",
+          "status_values",
+          "gates",
+          "tasks"
+        ],
+        "title": "TrackerData",
+        "type": "object"
+      },
+      "TrackerResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/TrackerData"
+          },
+          "evidence_kind": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EvidenceKind"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/ApiProvenance"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "status": {
+            "enum": [
+              "OK",
+              "DEMO_ADAPTER",
+              "NOT_AVAILABLE"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "evidence_kind",
+          "provenance",
+          "data"
+        ],
+        "title": "TrackerResponse",
         "type": "object"
       },
       "UncertaintyStep": {
@@ -4454,6 +5485,7 @@
     },
     "/api/v1/evidence": {
       "get": {
+        "description": "Index of experiment records in the RecordStore registry, newest first (may be empty).",
         "operationId": "evidence_api_v1_evidence_get",
         "responses": {
           "200": {
@@ -4475,6 +5507,7 @@
     },
     "/api/v1/evidence/labels": {
       "get": {
+        "description": "Display labels for every EvidenceKind, CertificateStatus and API status.",
         "operationId": "labels_api_v1_evidence_labels_get",
         "responses": {
           "200": {
@@ -4496,6 +5529,7 @@
     },
     "/api/v1/games": {
       "get": {
+        "description": "Security games W1..C1 with transcribed closed-form bounds and their theorem / proof-obligation anchors.",
         "operationId": "games_api_v1_games_get",
         "responses": {
           "200": {
@@ -4517,6 +5551,7 @@
     },
     "/api/v1/health": {
       "get": {
+        "description": "Liveness probe.",
         "operationId": "health_api_v1_health_get",
         "responses": {
           "200": {
@@ -4579,6 +5614,16 @@
               }
             },
             "description": "Internal error"
+          },
+          "504": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Compute deadline exceeded"
           }
         },
         "summary": "Attack",
@@ -4630,6 +5675,16 @@
               }
             },
             "description": "Internal error"
+          },
+          "504": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Compute deadline exceeded"
           }
         },
         "summary": "Mint",
@@ -4640,6 +5695,7 @@
     },
     "/api/v1/meta": {
       "get": {
+        "description": "API and schema versions, git sha, lane package probe and the research-platform disclaimer.",
         "operationId": "meta_api_v1_meta_get",
         "responses": {
           "200": {
@@ -4659,8 +5715,31 @@
         ]
       }
     },
+    "/api/v1/meta/tracker": {
+      "get": {
+        "description": "Gate and task status read verbatim from project/TRACKER.yaml (lead-maintained).",
+        "operationId": "tracker_api_v1_meta_tracker_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrackerResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Tracker",
+        "tags": [
+          "meta"
+        ]
+      }
+    },
     "/api/v1/protocols": {
       "get": {
+        "description": "Registered protocol ids, their games, and whether a merged lane implements them.",
         "operationId": "protocols_api_v1_protocols_get",
         "responses": {
           "200": {
@@ -4682,6 +5761,7 @@
     },
     "/api/v1/research/sources": {
       "get": {
+        "description": "Research library index: papers, theorems, obligations, datasets, corrections, novelty audit.",
         "operationId": "sources_api_v1_research_sources_get",
         "responses": {
           "200": {
@@ -4693,9 +5773,92 @@
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Request validation error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Internal error"
           }
         },
         "summary": "Sources",
+        "tags": [
+          "research"
+        ]
+      }
+    },
+    "/api/v1/research/sources/{entry_id}": {
+      "get": {
+        "description": "One research entry with every field of its source record and related entries (404 if unknown).",
+        "operationId": "source_entry_api_v1_research_sources__entry_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entry_id",
+            "required": true,
+            "schema": {
+              "title": "Entry Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchEntryResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Unknown entry id"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Request validation error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Internal error"
+          }
+        },
+        "summary": "Source Entry",
         "tags": [
           "research"
         ]

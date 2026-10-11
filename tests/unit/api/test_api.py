@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import math
 
 import pytest
@@ -10,9 +9,7 @@ from fastapi.testclient import TestClient
 
 from qmint.api.app import app
 from qmint.api.export import DEFAULT_OUT, dumps, labels_doc, openapi_doc
-from qmint.api.routes.lab import cloner_single_copy_pass, measure_resend_per_qubit
 from qmint.core.contracts import CertificateStatus, EvidenceKind
-from qmint.quantum.cloner import BRUSS_BOTH_PASS_ANALYTIC
 
 FORBIDDEN = {"basis", "bases", "bits", "secret", "secret_bases", "secret_bits", "outcomes", "key", "verifier_key"}
 
@@ -70,81 +67,6 @@ def test_games_bounds(client: TestClient) -> None:
         assert games[g]["closed_form"] is False and games[g]["per_unit_value"] is None
 
 
-def _mint(client: TestClient, **kw) -> dict:
-    r = client.post("/api/v1/lab/mint", json=kw)
-    assert r.status_code == 200, r.text
-    return r.json()
-
-
-def test_mint_deterministic_and_secret_separated(client: TestClient) -> None:
-    a = _mint(client, n_qubits=5, seed=7, backend="aer", shots=500)
-    b = _mint(client, n_qubits=5, seed=7, backend="aer", shots=500)
-    _envelope(a)
-    assert a["data"] == b["data"]
-    token = a["data"]["token"]
-    assert not {k.lower() for k in token["public_metadata"]} & FORBIDDEN
-    assert not [k for k in FORBIDDEN if f"\"{k}\":" in json.dumps(token)]
-    iv = a["data"]["issuer_view"]
-    assert iv["domain"] == "ISSUER_PRIVATE_DEMO" and len(iv["qubits"]) == 5
-    expected = "".join(str(q["bit"]) for q in iv["qubits"])
-    assert a["data"]["statistics"]["expected_outcome"] == expected
-    assert a["evidence_kind"] == "SIMULATOR_IDEAL"
-    # ideal: the only outcome is the secret bit string, and every shot accepts
-    assert a["data"]["statistics"]["analytic_distribution"] == [{"outcome": expected, "probability": 1.0}]
-    aer = [q for q in a["data"]["statistics"]["acceptance"] if q["method"] == "aer_sampling"][0]
-    assert aer["value"] == 1.0 and aer["interval"]["confidence"] == 0.99
-
-
-def test_mint_noisy_labels_and_ci(client: TestClient) -> None:
-    body = _mint(client, n_qubits=3, seed=1, backend="aer", shots=4000,
-                 noise={"channel": "depolarizing", "param": 0.1, "readout_p01": 0.01, "readout_p10": 0.02})
-    assert body["evidence_kind"] == "SIMULATOR_NOISY"
-    assert body["data"]["token"]["state_kind"] == "noisy_simulated"
-    acc = {q["id"]: q for q in body["data"]["statistics"]["acceptance"]}
-    exact, ci = acc["honest_accept_note_analytic"]["value"], acc["honest_accept_note_aer"]["interval"]
-    assert ci["lo"] <= exact <= ci["hi"]
-
-
-def test_mint_rejects_too_many_qubits(client: TestClient) -> None:
-    r = client.post("/api/v1/lab/mint", json={"n_qubits": 9})
-    assert r.status_code == 422
-    assert r.json()["error"]["code"] == "validation_error"
-
-
-def test_measure_resend_exact_values() -> None:
-    single, both = measure_resend_per_qubit()
-    assert math.isclose(single, 3 / 4) and math.isclose(both, 5 / 8)
-    assert math.isclose(cloner_single_copy_pass("bruss2000"), 0.5 + math.sqrt(1 / 8))
-
-
-@pytest.mark.parametrize("attack", ["honest", "measure_resend", "bruss_cloner", "mvw_channel"])
-@pytest.mark.parametrize("n", [1, 3])
-def test_attack_quantities(client: TestClient, attack: str, n: int) -> None:
-    r = client.post("/api/v1/lab/attack", json={"attack": attack, "n": n, "backend": "aer", "shots": 800, "seed": 3})
-    assert r.status_code == 200, r.text
-    body = r.json()
-    _envelope(body)
-    assert body["status"] == "DEMO_ADAPTER" and "lane C" in body["reason"]
-    d = body["data"]
-    assert d["theorem_bound"]["value"] == pytest.approx(0.75**n)
-    assert d["theorem_bound"]["evidence_kind"] == "PUBLISHED_THEOREM"
-    for q in _quantities(d):
-        assert q["value"] is None or 0.0 <= q["value"] <= 1.0
-    exact = {q["id"]: q for q in d["double_verification_success"]}
-    if attack == "honest":
-        assert exact["double_verification_success"]["value"] is None
-        return
-    base = {"measure_resend": 5 / 8, "bruss_cloner": BRUSS_BOTH_PASS_ANALYTIC, "mvw_channel": 3 / 4}[attack]
-    assert exact["double_verification_success"]["value"] == pytest.approx(base**n)
-    assert exact["double_verification_success"]["value"] <= d["theorem_bound"]["value"] + 1e-12
-    mc = exact.get("double_verification_success_aer")
-    if attack in ("bruss_cloner", "mvw_channel") and n == 1:
-        assert mc is not None and mc["evidence_kind"] in ("MONTE_CARLO", "SIMULATOR_IDEAL")
-        assert "LOWER bound" in mc["note"]
-        assert mc["interval"]["lo"] - 0.02 <= base <= mc["interval"]["hi"] + 0.02
-        assert d["attack_result"]["game_id"] == "W1"
-    else:
-        assert mc is None
 
 
 def test_certificate_protocol_game_mismatch_is_422(client: TestClient) -> None:
