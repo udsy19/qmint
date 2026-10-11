@@ -1,0 +1,61 @@
+{
+  "lane": "C",
+  "task": "C1",
+  "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+  "branch": "feat/C-attacks",
+  "starting_commit_sha": "ece05ef",
+  "final_commit_sha": "SEE_GIT_LOG (commit containing this file)",
+  "changed_paths": [
+    "qmint/attacks/linalg.py", "qmint/attacks/stats.py", "qmint/attacks/games.py",
+    "qmint/attacks/coherent_sdp.py", "qmint/attacks/certify.py", "qmint/attacks/heuristic.py",
+    "qmint/attacks/records.py", "qmint/attacks/report.py",
+    "tests/unit/attacks/test_attacks_sdp.py", "tests/unit/attacks/test_attacks_controls.py",
+    "tests/unit/attacks/test_attacks_games.py", "tests/unit/attacks/test_attacks_heuristic.py",
+    "audits/SDP_DERIVATION.md", "handoffs/C-C1.json", "handoffs/C-C1.md", "handoffs/C-C1-evidence.json"
+  ],
+  "commands_run": [
+    "curl -sL https://arxiv.org/pdf/1202.4010 && pdftotext (MVW 2012 read Sec. 1-4)",
+    "$PY -m pytest tests/contracts tests/unit/attacks -q -m 'not slow'",
+    "$PY -m pytest tests/contracts tests/unit/attacks -q",
+    "$PY -m ruff check qmint/attacks tests/unit/attacks",
+    "$PY -m qmint.attacks.report --out handoffs/C-C1-evidence.json --clarabel-n2"
+  ],
+  "test_exit_codes": {"pytest_full_incl_slow": 0, "pytest_full_counts": "65 passed", "pytest_not_slow": 0, "pytest_not_slow_counts": "64 passed, 1 deselected", "ruff": 0},
+  "evidence_files": ["handoffs/C-C1-evidence.json", "audits/SDP_DERIVATION.md"],
+  "assumptions_verified": [
+    "MVW 2012 arXiv:1202.4010v1 read from PDF: Thm 1 p.2, Thm 2 p.3, Sec 2.2 Choi p.5, Sec 3.1 SDP p.7, Sec 3.2 Kraus+dual p.7-8, Sec 3.4 parallel repetition p.9-10, Sec 3.5 threshold p.10-11, Lemma 5 p.14",
+    "G_n NumPy == QuTiP (tensor+permute) == exact rational, n=1,2",
+    "MVW Sec 3.2 channel is CPTP and achieves exactly 3/4 (exact rationals); 9/16 for n=2 product",
+    "W1_CV POVM may depend jointly on both challenges (MVW eq. 8), as implemented"
+  ],
+  "performance_numbers_with_sources": {
+    "W1_n1_SCS": {"primal": 0.7500000000000013, "dual": 0.7500000000000002, "evidence_kind": "NUMERICAL_SDP"},
+    "W1_n1_CLARABEL": {"primal": 0.7500000000003952, "dual": 0.7499999996197124, "evidence_kind": "NUMERICAL_SDP"},
+    "W1_n2_SCS": {"primal": 0.562499999999955, "dual": 0.5624999999999998, "time_s": 0.21, "evidence_kind": "NUMERICAL_SDP"},
+    "W1_n2_CLARABEL": {"primal": 0.5625000002258056, "dual": 0.56249999894657, "primal_status": "optimal_inaccurate", "time_s": 23.9, "peak_rss_gb": 6.5, "evidence_kind": "NUMERICAL_SDP"},
+    "W1_n1_certified_upper": {"value": 0.750000000003638, "exact_lower": "3/4", "evidence_kind": "CERTIFIED_NUMERIC"},
+    "W1_n2_certified_upper": {"value": 0.562500000007276, "exact_lower": "9/16", "evidence_kind": "CERTIFIED_NUMERIC"},
+    "W1_CV_n1": {"primal": 0.9267766952901161, "certified_upper": 0.9267766955417756, "theorem": 0.9267766952966369, "evidence_kind": "CERTIFIED_NUMERIC"},
+    "W1_n3": "UNSUPPORTED (Choi dim 512 refused by size guard); general n = MVW Sec 3.4 cited only",
+    "heuristic_exact_per_qubit_both_pass": {"A01_resend": "5/8", "A01/A02_bayes_resend": "(3+sqrt5)/8=0.6545", "A02_breidbart_resend": "5/8", "A03_buzek_hillery": "2/3", "A03b_phase_covariant_xz": "(3+2sqrt2)/8=0.7286", "A04_mvw": "3/4"},
+    "W1_MC": "28 configs (7 attacks x n=1,2,4,8), 10000 fresh notes each; Clopper-Pearson 95% CI covers exact value in 26/28 (expected ~1.4 misses at 95%); MONTE_CARLO lower bounds only",
+    "A06_toy_W2_split_loss": {"n8_L0.5_tau0": "10000/10000, exact 1.0", "n8_L0.25_tau0.125": "3247/10000, exact 0.3164 vs (3/4)^8=0.1001", "n16_L0.25_tau0.125": "4300/10000, exact 0.4363", "applicability": "NO_THEOREM"},
+    "A08_leaky_oracle": {"n4_r10": "994/1000, exact 0.9961, 42 queries", "n8_r10": "996/1000, exact 0.9922 vs (3/4)^8=0.1001, 84 queries", "applicability": "OUT_OF_MODEL"},
+    "secret_leak_control_n8": "1000/1000, OUT_OF_MODEL"
+  },
+  "blockers": [],
+  "known_limitations": [
+    "Prompt expectation 'A01 -> (3/4)^n' is incorrect: Z/X guess measure-resend gives (5/8)^n (Bayes-optimal resend (0.6545)^n); 3/4 needs a coherent channel (A04/MVW).",
+    "Two negative controls are mathematically undetectable on BB84 n=1 (transpose omitted; MVW factor order): run on six-state / n=2 instead (done).",
+    "Bit-order/relabeling bugs do not change optimal-attack values; caught only by honest-acceptance checks.",
+    "CERTIFIED_NUMERIC = exact-rational check of a dual certificate by our own LDL^T code, not a proof-assistant proof; needs an independent re-check (lane D/M).",
+    "Simulation register keeps positions unentangled; joint coherent attacks covered only by SDP (n<=2).",
+    "A06/A08 games are toy verifiers defined in qmint/attacks/games.py, not published protocols; MVW eq.(4) is a joint-both-copies event and is NOT a per-note W2 bound.",
+    "Clarabel n=2 needs ~6.5 GB RSS and returns optimal_inaccurate on the primal; marked slow in tests.",
+    "W1 theorem constant duplicated in qmint/attacks/games.py until lane D theorem registry lands; should then import from lane D."
+  ],
+  "interfaces_changed": [
+    "None to frozen contracts. Proposal: AttackResult has no field for certified lower/upper split or for 'exact_analytic' reference; we place them in evidence JSON. Integration adapter needed: lane B TokenHandle must expose per-qubit channel application (apply_channel(kraus)) or the lead wraps it."
+  ],
+  "whether_paid_jobs_run": false
+}
