@@ -1,0 +1,141 @@
+{
+  "lane": "M",
+  "task": "M1",
+  "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+  "branch": "feat/M-redteam",
+  "starting_commit_sha": "9a4e8a9368e75d3e8e329231020e1992bc7f04ea",
+  "review_sha": "9a4e8a9368e75d3e8e329231020e1992bc7f04ea",
+  "also_rechecked_on_main_sha": "7130c1fa9b844ea23d1dffd842d47fe4eca03fd3",
+  "final_commit_sha": "131b18c (audit + tests); this metadata-only follow-up commit records it",
+  "changed_paths": [
+    "audits/CRYPTOGRAPHIC_REVIEW.md",
+    "audits/DATA_LEAKAGE_REVIEW.md",
+    "audits/CLASSICAL_FAIRNESS_REVIEW.md",
+    "audits/CLAIMS_AUDIT.md",
+    "tests/adversarial/",
+    "handoffs/M-M1.json",
+    "handoffs/M-M1.md"
+  ],
+  "commands_run": [
+    "$PY -m pytest tests -m 'not network and not realdata'  # 796 passed before, 826 passed + 26 xfailed after",
+    "$PY -m pytest tests/contracts tests/adversarial  # 62 passed, 26 xfailed (incl. realdata)",
+    "$PY -m qmint.attacks.report --out <scratch>/c_evidence.json  # 90.8 s, values identical",
+    "$PY -m qmint.proofs.reproduce --out <scratch>/d_certs  # all [ok]",
+    "$PY -m pytest tests/unit/photonics/test_photonics_realdata.py -m realdata  # 3 passed",
+    "$PY -m qmint.classical.run_baselines --out <scratch>/h --pqc-reps 1  # decisions + matrix identical",
+    "$PY -m qmint.quantum.evidence <scratch>/f_evidence.json x  # numeric fields identical",
+    "git archive main | tar -x -C <scratch>/main_snap; pytest tests/adversarial  # 34 passed, 26 xfailed on main 7130c1f",
+    "$PY -m ruff check tests/adversarial  # clean"
+  ],
+  "test_exit_codes": {
+    "tests/contracts+tests/adversarial": 0,
+    "full suite (not network/realdata)": 0,
+    "ruff tests/adversarial": 0
+  },
+  "evidence_files": [
+    "audits/CLAIMS_AUDIT.md",
+    "tests/adversarial/test_m_claims.py"
+  ],
+  "findings_by_severity": {
+    "HIGH": [
+      "M-D1",
+      "M-D2",
+      "M-B1",
+      "M-H1",
+      "M-H2"
+    ],
+    "MEDIUM": [
+      "M-B2",
+      "M-B3",
+      "M-D4",
+      "M-H3",
+      "M-L1",
+      "M-K1",
+      "M-S1(claims)",
+      "M-H4(claims)"
+    ],
+    "LOW": [
+      "M-D3",
+      "M-D5",
+      "M-E1",
+      "M-G1",
+      "M-B4",
+      "M-H6",
+      "stale-environment-lock"
+    ],
+    "INFO": [
+      "M-C0",
+      "M-G2",
+      "M-E2",
+      "M-H5"
+    ]
+  },
+  "assumptions_verified": [
+    "Schiansky 2023 SI Note 1C Eqs (7)-(8) are stated for {0,1}-valued variables; Eqs (18)-(22) apply them to M(e,l) without rescaling (read from Nature SI PDF)",
+    "Schiansky p_d 5.911e-45 uses Fig. 4b N=4.2e6, not SI Table 2 N=4,482,440",
+    "Kent 2022 Table 1 steps 7-9: c = b xor z sent A->B->B_i in the causal past of Q_i",
+    "Kent 2022 does not claim its experimental tuple satisfies Theorem 1",
+    "MVW 2012 never states (5/8)^n; measure-resend both-copy = 5/8 per qubit by derivation",
+    "Zenodo 7979319 Archive.zip md5 fd708578a613b63f57c31f986a56bf94 matches record; sha256 ef73667f...0130 matches lane E dataset_sha256"
+  ],
+  "performance_numbers_with_sources": {
+    "qber_state_avg_Z": {
+      "value": 0.0144907,
+      "evidence_kind": "PHOTON_EXPERIMENT",
+      "source": "independent parser, Zenodo 7979319"
+    },
+    "qber_state_avg_X": {
+      "value": 0.0327872,
+      "evidence_kind": "PHOTON_EXPERIMENT",
+      "source": "independent parser, Zenodo 7979319"
+    },
+    "run_overdispersion_chi2_per_dof": {
+      "Z": 10.48,
+      "X": 9.88,
+      "evidence_kind": "PHOTON_EXPERIMENT"
+    },
+    "split_half_welch_p": {
+      "Z": 0.59,
+      "X": 0.33,
+      "evidence_kind": "PHOTON_EXPERIMENT"
+    },
+    "schiansky_iid_boundary_cheater_exact_tail": {
+      "value": 6.96e-09,
+      "evidence_kind": "UNCERTIFIED",
+      "note": "exact Binomial tail under the paper's iid model at (e=0.0710,l=0); conditional on boundary attainability"
+    },
+    "mvw_cloner_vs_lane_B_challenger": {
+      "value": "0.75^n, n=1..3",
+      "evidence_kind": "SIMULATOR_IDEAL"
+    },
+    "measure_resend_vs_lane_B_challenger": {
+      "value": "0.625^n, n=1..3",
+      "evidence_kind": "SIMULATOR_IDEAL"
+    },
+    "deepcopy_clone_w1_pair_acceptance_n8": {
+      "value": 0.9999999999999953,
+      "evidence_kind": "SIMULATOR_IDEAL",
+      "applicability": "OUT_OF_MODEL (simulator artefact)"
+    }
+  },
+  "blockers": [],
+  "known_limitations": [
+    "M-B4 (adaptive S1 harness) impact uncertain: no Lemma-1-beating strategy found; no regression test (needs G/B integration)",
+    "M-S1 counterexample assumes attainability of the fitted boundary at l->0",
+    "E raw-tag pipeline, G RIPE numbers, C Clarabel n=2, J prices not re-run",
+    "Review SHA predates GH/K-web merges; findings re-checked on main 7130c1f but GH matched-topology and qmint/api not audited in depth"
+  ],
+  "interfaces_changed": [
+    "PROPOSAL C1 v2: TokenHandle non-copyable / non-picklable",
+    "PROPOSAL C2 v2: CalibrationRecord dataset_sha256 must be registered for its family; confidence_level >= 0.95",
+    "PROPOSAL C5 v2: per-game allowed_parameters in OBLIGATIONS.yaml, enforced by evaluator and checker",
+    "PROPOSAL lane L: registry hash chain; get() verifies registry record_sha256"
+  ],
+  "reaudit_after_merge": {
+    "Q": "imports + strict xfails",
+    "I": "checker-only verdicts; M-D1/D2 mutation inputs",
+    "GH": "strong adversary, hold_until_active + re-commit, processing-time matching",
+    "K-web": "provenance gate in qmint/api evidence routes; lab demo never IN_MODEL"
+  },
+  "whether_paid_jobs_run": false
+}
