@@ -1,0 +1,145 @@
+{
+  "lane": "H",
+  "task": "H1",
+  "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+  "branch": "feat/H-classical",
+  "starting_commit_sha": "ece05ef02f3f89c2f75edc2393f478e77061ca56",
+  "final_commit_sha": "SEE_GIT_LOG (this handoff is committed after 6d40865; records carry git_sha 1051ee5 = code commit)",
+  "changed_paths": [
+    "qmint/classical/common.py",
+    "qmint/classical/h0_bearer.py",
+    "qmint/classical/h1_ledger.py",
+    "qmint/classical/h2_quorum.py",
+    "qmint/classical/h3_escrow.py",
+    "qmint/classical/h4_pqc.py",
+    "qmint/classical/h5_secure_hardware.py",
+    "qmint/classical/h6_ecash.py",
+    "qmint/classical/scenarios.py",
+    "qmint/classical/comparability.py",
+    "qmint/classical/run_baselines.py",
+    "tests/unit/classical/",
+    "reports/classical_baseline_notes/",
+    "handoffs/H-H1.json",
+    "handoffs/H-H1.md"
+  ],
+  "commands_run": [
+    "$PY -m pytest tests/contracts tests/unit/classical -o addopts='' -q",
+    "$PY -m ruff check qmint/classical tests/unit/classical",
+    "$PY -m qmint.classical.run_baselines --pqc-reps 5"
+  ],
+  "test_exit_codes": {
+    "pytest tests/contracts tests/unit/classical": "0 (61 passed: 43 lane-H + 18 contracts)",
+    "ruff": "0"
+  },
+  "evidence_files": {
+    "reports/classical_baseline_notes/benchmark_records.jsonl": "23 C6 BenchmarkRecords, MODELLED_LATENCY",
+    "reports/classical_baseline_notes/comparability_matrix.csv": "X11 matrix, 11 pairs vs s_money_kent_2022_ideal_2site",
+    "reports/classical_baseline_notes/pqc_timings.json": "ML-DSA-44/65/87 wall-clock timings (pure Python) + sizes",
+    "reports/classical_baseline_notes/README.md": "best-classical-per-scenario narrative + sources"
+  },
+  "assumptions_verified": [
+    "FIPS 204 Table 2 p.16 sizes (2560/1312/2420, 4032/1952/3309, 4896/2592/4627) match dilithium_py output (test)",
+    "Kent et al. arXiv:2104.11717v4 Table I steps 7-9: S1 needs Stage-II bit c relayed to B_i in causal past of Q_i; Lemma 1 eq.(1)",
+    "CFN88 Sec.1 withdrawal/payment/tracing reproduced from archived PDF pp.320-322 (sha256 07e6544a55c3bf754043133498b2db5356877c636d27fb2185399d1ccc915637)"
+  ],
+  "performance_numbers_with_sources": [
+    {
+      "what": "H1 honest redemption, coordinator at midpoint, 100 km A-B",
+      "value_s": 0.000403564,
+      "evidence": "MODELLED_LATENCY (lightcone lower bound + declared 10/50 us processing)"
+    },
+    {
+      "what": "H1 2-site 10 km, coordinator at A, worst site B",
+      "value_s": 0.00013671,
+      "evidence": "MODELLED_LATENCY"
+    },
+    {
+      "what": "H2 f=1 sharded quorum, home leader co-located / remote (100 km)",
+      "value_s": [
+        0.000503564,
+        0.001170692
+      ],
+      "evidence": "MODELLED_LATENCY"
+    },
+    {
+      "what": "H3 / H4+H3 / H5 / H6 local acceptance",
+      "value_s": [
+        1e-05,
+        1e-05,
+        2e-05,
+        2e-05
+      ],
+      "evidence": "MODELLED_LATENCY (declared processing only)"
+    },
+    {
+      "what": "H3 late-commit Stage-II commit-to-activation, 100 km, issuer at midpoint",
+      "value_s": 0.000383564,
+      "evidence": "MODELLED_LATENCY"
+    },
+    {
+      "what": "H1 availability with site B partitioned",
+      "value": 0.5,
+      "evidence": "MODELLED (scenario fraction of sites able to complete)"
+    },
+    {
+      "what": "ML-DSA-44 keygen/sign/verify median (ms)",
+      "value": [
+        2.95,
+        7.49,
+        3.37
+      ],
+      "evidence": "wall-clock, dilithium_py 1.4.0 pure Python, Apple M4 Pro, 5 reps; NOT representative of optimized implementations"
+    },
+    {
+      "what": "ML-DSA-65 keygen/sign/verify median (ms)",
+      "value": [
+        4.67,
+        22.51,
+        5.24
+      ],
+      "evidence": "same caveat"
+    },
+    {
+      "what": "ML-DSA-87 keygen/sign/verify median (ms)",
+      "value": [
+        7.18,
+        29.52,
+        8.15
+      ],
+      "evidence": "same caveat"
+    },
+    {
+      "what": "double spends successful",
+      "value": {
+        "H0": 1,
+        "H1": 0,
+        "H2": 0,
+        "H3 (all modes)": 0,
+        "H4 alone": 1,
+        "H4+H1": 0,
+        "H4+H3": 0,
+        "H5 assumption holds": 0,
+        "H5 assumption violated": 1,
+        "H6 (detected ex post)": 1
+      },
+      "evidence": "deterministic state-machine runs"
+    }
+  ],
+  "blockers": [],
+  "known_limitations": [
+    "No event engine (by design, lane G owns it): scenarios use direct calls + qmint.classical.common.deliver/path_delay_ns; _run_chain in scenarios.py follows a single request/response chain in time order and should be replaced by G's engine when available.",
+    "All latencies are lightcone lower bounds on SYNTHETIC networks; no fiber, queueing, RIPE data.",
+    "H2: steady-state leader only; no leader election/view change, crash faults only (no Byzantine), no cross-shard txns; conflicting in-flight spend rejected conservatively.",
+    "H3 late_commit_ot_private uses an IDEAL OT functionality; real OT instantiation NOT_IMPLEMENTED and necessarily computational.",
+    "H4 timings from pure-Python reference ML-DSA (dilithium_py README: not secure, educational); liboqs not installed.",
+    "H5 is a trust model; HMAC stands in for asymmetric device attestation; no real device benchmarked.",
+    "H6: toy 512-bit RSA; SHA-256 for f,g (g not bijective => untraceability heuristic, not unconditional); CFN Sec.2 (framing protection) and Sec.3 not implemented; colluding merchants with identical challenges defeat tracing (paper notes this).",
+    "H6 source read from a Wayback archive copy, not the Springer original.",
+    "pqc timings are embedded in H4 record configuration, so H4 record_ids change between runs."
+  ],
+  "interfaces_changed": [
+    "None to frozen contracts. Proposal for lane G: host nodes satisfying qmint.classical.common.ProtocolNode (node_id, site_id, processing_ns, handle(Message, now_ns)->list[Message]); MerchantTerminal.on_timeout(idem_key, now_ns) needs a timer hook.",
+    "Proposal (v2): BenchmarkRecord could add a 'stage_ii_commit_seconds' field (pre-presentation commit latency, distinct from post-presentation cross-check) and a 'detection_vs_prevention' enum; currently stored in configuration.extra."
+  ],
+  "whether_paid_jobs_run": false
+}
