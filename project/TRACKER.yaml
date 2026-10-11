@@ -47,8 +47,10 @@ gates:
     - 'X1 matched-topology runs: identical network/seed/choreography for S-money vs H0-H6; comparability_matrix QUALIFIED/INCOMPARABLE'
   G5:
     description: Independent certificate checking and optimizer benchmark
-    status: OPEN
-    evidence: []
+    status: IN_REVIEW
+    evidence:
+    - 'I1: exhaustive-oracle agreement, independent checker on all releases, pre-registered holdout; weak/conditional improvement'
+    notes: Pending FDE fixes (M-D1/D2) and re-run
   G6:
     description: Optional authorized IonQ primitive result
     status: SKIPPED
@@ -197,10 +199,15 @@ tasks:
     description: Resource-optimized security certificate compiler
     owner: subagent-lane-I
     branch: feat/I-compiler
-    status: CLAIMED
-    evidence: []
+    status: MERGED
+    evidence:
+    - handoffs/I-I1.json
+    - reports/optimizer_working/results.md
+    - pre-registration 0268fee
     blockers: []
-    commit: null
+    commit: e4f6243
+    notes: 'G5 weak positive: compiler==oracle 16/16; 320 certs all checker-CERTIFIED; large point-device savings (1.8-10.6x vs naive) vanish
+      under uncertainty boxes; robust pass only on hypothetical half-beta devices (1.12x / 7.08x box). Not a new method (QKD-style parameter optimisation).'
   J1:
     lane: J
     description: Optional quantum backend adapter and provenance
@@ -329,7 +336,7 @@ tasks:
     - 'web-A merged 7a5d69e: 47 Mobbin refs, design system, Next 16 scaffold, FastAPI /api/v1 (11 endpoints), 22/22 e2e'
     blockers: []
     commit: null
-    notes: KB, KC, KD, KE merged; web typecheck failing only in marketing hero (attack id rename) -> KB fixing; KF QA pending
+    notes: KB hero fixed (13a1b77); web typecheck/lint/91 vitest/build green on main; KF QA pending
 qollab:
   project_url: https://qollab.xyz/u/udsy/qmint-proof-carrying-quantum-m
   version: 'v1.1 public default (v1.0 superseded: overdispersion wording fix M-E1)'
