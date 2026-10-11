@@ -1,0 +1,370 @@
+{
+ "axes": [
+  {
+   "applicable": true,
+   "axis": "epsilon_unf",
+   "label": "Unforgeability",
+   "meets_target": true,
+   "result": {
+    "assumptions_checked": [
+     "two_merchants_one_bit",
+     "honest_ttp",
+     "it_secure_mac",
+     "fock_diagonal_spdc_source",
+     "permutation_symmetric_iid_reduction",
+     "noise_source=published_schiansky_2023"
+    ],
+    "axis": "epsilon_unf",
+    "evidence_kind": "PUBLISHED_AGGREGATE",
+    "failed_assumptions": [],
+    "game_id": "D1",
+    "log10_value": -44.22833288978621,
+    "notes": "Schiansky 2023 SI Eq. (22) (with Eq. (18) fit): exp(-(delta_d^2/2)(1/2)(1-p_m/2) N) | D1: fitted SDP boundary + informal de Finetti reduction; excludes MAC forgery p_t; open question: Chernoff applied to weighted error+loss sum (see P-D1 dossier)",
+    "out_of_domain": false,
+    "protocol_id": "schiansky_payment_2023",
+    "status": "NUMERICALLY_SUPPORTED",
+    "theorem_id": "P-D1/unf",
+    "value": 5.911083717434657e-45
+   },
+   "target": 1e-40,
+   "uncertainty": []
+  },
+  {
+   "applicable": true,
+   "axis": "epsilon_cor",
+   "label": "Correctness",
+   "meets_target": null,
+   "result": {
+    "assumptions_checked": [
+     "two_merchants_one_bit",
+     "honest_ttp",
+     "it_secure_mac",
+     "fock_diagonal_spdc_source",
+     "permutation_symmetric_iid_reduction",
+     "noise_source=published_schiansky_2023"
+    ],
+    "axis": "epsilon_cor",
+    "evidence_kind": "PUBLISHED_AGGREGATE",
+    "failed_assumptions": [],
+    "game_id": "D1",
+    "log10_value": -261.67039060374253,
+    "notes": "Schiansky 2023 SI Eqs. (19)-(20): exp(-(delta_h^2/3) M(e_h,l_h) N) | D1: fitted SDP boundary + informal de Finetti reduction; excludes MAC forgery p_t; open question: Chernoff applied to weighted error+loss sum (see P-D1 dossier)",
+    "out_of_domain": false,
+    "protocol_id": "schiansky_payment_2023",
+    "status": "NUMERICALLY_SUPPORTED",
+    "theorem_id": "P-D1/cor",
+    "value": 2.1360400743744434e-262
+   },
+   "target": null,
+   "uncertainty": []
+  },
+  {
+   "applicable": false,
+   "axis": "epsilon_rob",
+   "label": "Robustness",
+   "meets_target": null,
+   "result": {
+    "assumptions_checked": [],
+    "axis": "epsilon_rob",
+    "evidence_kind": "UNCERTIFIED",
+    "failed_assumptions": [],
+    "game_id": "D1",
+    "log10_value": null,
+    "notes": "no published theorem for D1/epsilon_rob",
+    "out_of_domain": false,
+    "protocol_id": "schiansky_payment_2023",
+    "status": "UNSUPPORTED",
+    "theorem_id": null,
+    "value": null
+   },
+   "target": null,
+   "uncertainty": []
+  },
+  {
+   "applicable": false,
+   "axis": "epsilon_priv",
+   "label": "Privacy",
+   "meets_target": null,
+   "result": {
+    "assumptions_checked": [],
+    "axis": "epsilon_priv",
+    "evidence_kind": "UNCERTIFIED",
+    "failed_assumptions": [],
+    "game_id": "D1",
+    "log10_value": null,
+    "notes": "no published theorem for D1/epsilon_priv (privacy is never reported as 0)",
+    "out_of_domain": false,
+    "protocol_id": "schiansky_payment_2023",
+    "status": "UNSUPPORTED",
+    "theorem_id": null,
+    "value": null
+   },
+   "target": null,
+   "uncertainty": []
+  }
+ ],
+ "calibration": {
+  "accepted_families": [
+   "schiansky_2023"
+  ],
+  "calibration_id": null,
+  "data_origin": null,
+  "dataset_sha256": null,
+  "experiment_family": null,
+  "family_matches": null,
+  "intervals": {},
+  "note": "no calibration record attached",
+  "source": "none"
+ },
+ "checked_certificate": {
+  "assumptions_met": true,
+  "calibration_id": null,
+  "certificate_version": "1.0.0",
+  "checker_id": "qmint.proofs.checker/decimal-v1",
+  "claim_level": "L0",
+  "evidence_hashes": [
+   "7ac9e4532f50832ac6c7eb3ab33e1cb9096980aeb088dc5292eaedd2a24cf6f0"
+  ],
+  "evidence_kind": "PUBLISHED_AGGREGATE",
+  "failed_assumptions": [],
+  "game_id": "D1",
+  "log10_upper_bounds": {
+   "epsilon_unf": -44.22833288978621
+  },
+  "parameters": {
+   "N": 4200000,
+   "declared_assumptions": [
+    "two_merchants_one_bit",
+    "honest_ttp",
+    "it_secure_mac",
+    "fock_diagonal_spdc_source",
+    "permutation_symmetric_iid_reduction"
+   ],
+   "delta_d": 0.01,
+   "delta_h": 0.031,
+   "e_h": 0.03278,
+   "l_h": 0.224,
+   "noise_source": "published_schiansky_2023",
+   "p_m": 0.0602
+  },
+  "proof_check_status": "UNCERTIFIED",
+  "proof_reference": "P-D1",
+  "protocol_id": "schiansky_payment_2023",
+  "reason": "UNCERTIFIED by independent checker: evidence_kind PUBLISHED_AGGREGATE cannot be certified | D1 (Schiansky 2023) bound is NUMERICALLY_SUPPORTED only (fitted SDP boundary, informal de Finetti); never certified",
+  "security_model_id": "P-D1-studio",
+  "software_revision": "81fcbc36a729b05513656dcce79dafaf5688ecbd-dirty",
+  "targets": {
+   "epsilon_cor": null,
+   "epsilon_priv": null,
+   "epsilon_rob": null,
+   "epsilon_unf": 1e-40
+  },
+  "upper_bounds": {
+   "epsilon_cor": null,
+   "epsilon_priv": null,
+   "epsilon_rob": null,
+   "epsilon_unf": 5.911083717434657e-45
+  }
+ },
+ "checker": {
+  "checker_id": "qmint.proofs.checker/decimal-v1",
+  "reasons": [
+   "evidence_kind PUBLISHED_AGGREGATE cannot be certified",
+   "D1 (Schiansky 2023) bound is NUMERICALLY_SUPPORTED only (fitted SDP boundary, informal de Finetti); never certified"
+  ],
+  "status": "UNCERTIFIED"
+ },
+ "classification": {
+  "derived_from": "studio classification of the evaluator and checker reasons; the independent checker itself returns only CERTIFIED or UNCERTIFIED, and its status is exported unchanged",
+  "headline": "D1 is never certified: fitted SDP boundary, informal de Finetti step, open Chernoff question",
+  "reasons": [
+   "evidence_kind PUBLISHED_AGGREGATE cannot be certified",
+   "D1 (Schiansky 2023) bound is NUMERICALLY_SUPPORTED only (fitted SDP boundary, informal de Finetti); never certified"
+  ],
+  "verdict": "UNCERTIFIED"
+ },
+ "declarations": [
+  {
+   "declared": true,
+   "description": "two merchants one bit",
+   "name": "two_merchants_one_bit"
+  },
+  {
+   "declared": true,
+   "description": "honest ttp",
+   "name": "honest_ttp"
+  },
+  {
+   "declared": true,
+   "description": "it secure mac",
+   "name": "it_secure_mac"
+  },
+  {
+   "declared": true,
+   "description": "fock diagonal spdc source",
+   "name": "fock_diagonal_spdc_source"
+  },
+  {
+   "declared": true,
+   "description": "permutation symmetric iid reduction",
+   "name": "permutation_symmetric_iid_reduction"
+  }
+ ],
+ "draft_certificate": {
+  "assumptions_met": true,
+  "calibration_id": null,
+  "certificate_version": "1.0.0",
+  "checker_id": null,
+  "claim_level": "L0",
+  "evidence_hashes": [
+   "7ac9e4532f50832ac6c7eb3ab33e1cb9096980aeb088dc5292eaedd2a24cf6f0"
+  ],
+  "evidence_kind": "PUBLISHED_AGGREGATE",
+  "failed_assumptions": [],
+  "game_id": "D1",
+  "log10_upper_bounds": {
+   "epsilon_unf": -44.22833288978621
+  },
+  "parameters": {
+   "N": 4200000,
+   "declared_assumptions": [
+    "two_merchants_one_bit",
+    "honest_ttp",
+    "it_secure_mac",
+    "fock_diagonal_spdc_source",
+    "permutation_symmetric_iid_reduction"
+   ],
+   "delta_d": 0.01,
+   "delta_h": 0.031,
+   "e_h": 0.03278,
+   "l_h": 0.224,
+   "noise_source": "published_schiansky_2023",
+   "p_m": 0.0602
+  },
+  "proof_check_status": "UNCERTIFIED",
+  "proof_reference": "P-D1",
+  "protocol_id": "schiansky_payment_2023",
+  "reason": "draft from qmint.proofs.engine; requires IndependentProofChecker",
+  "security_model_id": "P-D1-studio",
+  "software_revision": "81fcbc36a729b05513656dcce79dafaf5688ecbd-dirty",
+  "targets": {
+   "epsilon_cor": null,
+   "epsilon_priv": null,
+   "epsilon_rob": null,
+   "epsilon_unf": 1e-40
+  },
+  "upper_bounds": {
+   "epsilon_cor": null,
+   "epsilon_priv": null,
+   "epsilon_rob": null,
+   "epsilon_unf": 5.911083717434657e-45
+  }
+ },
+ "effective_parameters": {
+  "N": 4200000,
+  "declared_assumptions": [
+   "two_merchants_one_bit",
+   "honest_ttp",
+   "it_secure_mac",
+   "fock_diagonal_spdc_source",
+   "permutation_symmetric_iid_reduction"
+  ],
+  "delta_d": 0.01,
+  "delta_h": 0.031,
+  "e_h": 0.03278,
+  "l_h": 0.224,
+  "noise_source": "published_schiansky_2023",
+  "p_m": 0.0602
+ },
+ "export": {
+  "canonical_json": "{\"assumptions_met\":true,\"calibration_id\":null,\"certificate_version\":\"1.0.0\",\"checker_id\":\"qmint.proofs.checker/decimal-v1\",\"claim_level\":\"L0\",\"evidence_hashes\":[\"7ac9e4532f50832ac6c7eb3ab33e1cb9096980aeb088dc5292eaedd2a24cf6f0\"],\"evidence_kind\":\"PUBLISHED_AGGREGATE\",\"failed_assumptions\":[],\"game_id\":\"D1\",\"log10_upper_bounds\":{\"epsilon_unf\":-44.22833288978621},\"parameters\":{\"N\":4200000,\"declared_assumptions\":[\"two_merchants_one_bit\",\"honest_ttp\",\"it_secure_mac\",\"fock_diagonal_spdc_source\",\"permutation_symmetric_iid_reduction\"],\"delta_d\":0.01,\"delta_h\":0.031,\"e_h\":0.03278,\"l_h\":0.224,\"noise_source\":\"published_schiansky_2023\",\"p_m\":0.0602},\"proof_check_status\":\"UNCERTIFIED\",\"proof_reference\":\"P-D1\",\"protocol_id\":\"schiansky_payment_2023\",\"reason\":\"UNCERTIFIED by independent checker: evidence_kind PUBLISHED_AGGREGATE cannot be certified | D1 (Schiansky 2023) bound is NUMERICALLY_SUPPORTED only (fitted SDP boundary, informal de Finetti); never certified\",\"security_model_id\":\"P-D1-studio\",\"software_revision\":\"81fcbc36a729b05513656dcce79dafaf5688ecbd-dirty\",\"targets\":{\"epsilon_cor\":null,\"epsilon_priv\":null,\"epsilon_rob\":null,\"epsilon_unf\":1e-40},\"upper_bounds\":{\"epsilon_cor\":null,\"epsilon_priv\":null,\"epsilon_rob\":null,\"epsilon_unf\":5.911083717434657e-45}}",
+  "filename": "qmint-certificate-D1-f47db4fe76e3.json",
+  "obligations_sha256": "7ac9e4532f50832ac6c7eb3ab33e1cb9096980aeb088dc5292eaedd2a24cf6f0",
+  "sha256": "f47db4fe76e3c0297ab8de72651007ed8ed0247aba09075493cc6778373d53f3"
+ },
+ "game": "D1",
+ "no_theorem_reason": null,
+ "optimization": {
+  "curve": [],
+  "label": "Resource optimisation",
+  "quantities": [],
+  "reason": "Resource optimisation (choosing N, thresholds and analysis variables to minimise photons under all targets) is the certificate compiler, lane I, which is in flight and not merged. Nothing here searches parameters.",
+  "status": "NOT_AVAILABLE"
+ },
+ "protocol_id": "schiansky_payment_2023",
+ "sizing": {
+  "curve": [],
+  "label": "THEOREM sizing",
+  "quantities": [],
+  "reason": "No closed-form sizing for D1: finite-size and noisy games need the certificate compiler (lane I, in flight). The declared N is evaluated as given.",
+  "status": "NOT_AVAILABLE"
+ },
+ "theorem": {
+  "assumptions": [
+   "Two merchants (one committed bit per sub-token); TTP honest; i.t.-secure MAC; Client's choice of merchant independent of external bias.",
+   "Source emits states diagonal in photon number (SPDC; sigma_k of SI Note 3A with p0, p1, pm); multiphoton probability pm known.",
+   "Attack model: general CPTP map on the token producing two classical cryptograms; TTP checks declared error e and loss l.",
+   "N -> infinity: exponential de Finetti argument stated informally (SI Note 3B), i.e. collective attacks assumed asymptotically i.i.d.",
+   "Finite N: Chernoff-Hoeffding (SI Eqs. 7-8) applied to the mishap count M(e,l) = (4+2 sqrt 2) e + l."
+  ],
+  "axes": [
+   {
+    "anchor": "Schiansky 2023 SI Eq. (22) (with Eq. (18) fit)",
+    "axis": "epsilon_unf",
+    "bound_id": "P-D1/unf",
+    "domain": "0 < delta_d <= 1; 0 <= p_m < 1; Eq. (23) holds; two merchants",
+    "domain_only": [
+     "e_h",
+     "l_h"
+    ],
+    "formula": "exp(-(delta_d^2/2)(1/2)(1-p_m/2) N)",
+    "monotonicity": {
+     "p_m": "increasing"
+    }
+   },
+   {
+    "anchor": "Schiansky 2023 SI Eqs. (19)-(20)",
+    "axis": "epsilon_cor",
+    "bound_id": "P-D1/cor",
+    "domain": "0 < delta_h <= 1; M(e_h,l_h) > 0; Eq. (23) holds",
+    "domain_only": [
+     "p_m"
+    ],
+    "formula": "exp(-(delta_h^2/3) M(e_h,l_h) N)",
+    "monotonicity": {
+     "e_h": "decreasing",
+     "l_h": "decreasing"
+    }
+   }
+  ],
+  "calibration_families": [
+   "schiansky_2023"
+  ],
+  "caveats": [
+   "Secure-region boundary Eq. (16) is described by the authors as an analytic expression that FITS the numerical SDP optimum, not a proven closed form.",
+   "The N->infinity step is an informal appeal to exponential de Finetti without finite-N correction terms.",
+   "Chernoff bound (stated for sums of Bernoulli variables) is applied to the weighted mishap combination M(e,l).",
+   "p_d excludes the MAC tag-forgery probability p_t = 1/sqrt|C|; the paper chooses p_d ~ p_t but states no composed epsilon. QMint does not compose them.",
+   "Main text vs SI disagree: multiphoton probability 6.76 +- 0.12 % (main; reproduces main-text e_d = 3.79 %) vs p_m = 6.02 +- 0.28 % (SI Table 2; reproduces e_d = 3.82 % and allowed mishaps 0.4849); sub-token length N = 4.2e6 (Fig. 4b) vs 4,482,440 (SI Table 2). The published p_d = 5.911e-45 reproduces ONLY with N = 4.2e6 and p_m = 6.02 % (N = 4,482,440 gives 6.3e-48; p_m = 6.76 % gives 8.7e-45). Cross-checked with lane A (research/THEOREM_REGISTRY_SEED.yaml T-SCH23-FINITE).",
+   "OPEN QUESTION (QMint assessment, not a claim of error): SI Eqs. (7)-(8) are multiplicative Chernoff bounds for sums of independent variables in {0,1}. The mishap variable per state takes values in {0, 1, 4+2 sqrt 2} (weight > 1 on errors), outside that hypothesis. Rescaling to [0,1] (divide by w = 4+2 sqrt 2) gives the textbook-valid exponent reduced by w: p_d <= exp(-(delta_d^2/2)(1/2)(1-p_m/2) N / w) = 3.3e-7 at the published tuple instead of 5.9e-45. The authors may have a different justification; until resolved D1 stays uncertifiable. Same issue for the honest bound (Eq. 19).",
+   "Therefore results carry evidence kind PUBLISHED_AGGREGATE and status NUMERICALLY_SUPPORTED; the independent checker never marks a D1 certificate CERTIFIED."
+  ],
+  "citation": "P. Schiansky et al. Demonstration of quantum-digital payments. Nature Communications 14, 3849 (2023). doi:10.1038/s41467-023-39519-w",
+  "claim_id": "P-D1",
+  "finite_or_asymptotic": "finite N via Chernoff, on top of an asymptotic (de Finetti) reduction",
+  "game": "D1",
+  "parameters": {
+   "N": "quantum states per committed bit (sub-token length)",
+   "delta_d": "dishonest tolerance (0,1]",
+   "delta_h": "honest tolerance (0,1]",
+   "e_h": "honest error rate",
+   "l_h": "honest loss rate",
+   "p_m": "multiphoton emission probability"
+  },
+  "protocol": "schiansky_payment_2023",
+  "quantifier": "a malicious Client/Merchant applying any CPTP map to the token (SDP over Choi matrices, N=1), extended to N by an informal de Finetti argument",
+  "statement": "Schiansky et al. 2023 SI Note 3: N=1 SDP (Eqs. 14-15), analytic fit of the secure-region boundary (Eqs. 16-18), finite-N Chernoff bounds for honest (Eqs. 19-21) and dishonest (Eqs. 22-23) success; main text Fig. 4b.",
+  "status": "NUMERICALLY_SUPPORTED",
+  "url": "https://www.nature.com/articles/s41467-023-39519-w"
+ }
+}

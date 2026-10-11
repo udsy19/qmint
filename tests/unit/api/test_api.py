@@ -147,49 +147,9 @@ def test_attack_quantities(client: TestClient, attack: str, n: int) -> None:
         assert mc is None
 
 
-def test_certificates_never_certified(client: TestClient) -> None:
-    for game in ("W1", "W1_CV", "W2", "S1", "S2", "D1", "A1", "C1"):
-        r = client.post("/api/v1/certificates", json={"game": game, "epsilon_unf_target": 1e-6, "n": 128})
-        assert r.status_code == 200, r.text
-        body = r.json()
-        _envelope(body)
-        cert = body["data"]["certificate"]
-        assert cert["proof_check_status"] != CertificateStatus.CERTIFIED.value
-        assert cert["upper_bounds"]["epsilon_unf"] is None  # null, never 0
-        if game in ("W1", "S1"):
-            assert body["status"] == "DEMO_ADAPTER"
-            ids = {q["id"]: q for q in body["data"]["demo_bounds"]}
-            assert ids["published_bound_at_size"]["value"] > 0
-            assert "not a certificate" in ids["published_bound_at_size"]["note"]
-        else:
-            assert body["status"] == "NOT_AVAILABLE" and body["data"]["demo_bounds"] == []
-
-
-def test_certificate_min_size_and_failed_assumption(client: TestClient) -> None:
-    body = client.post("/api/v1/certificates", json={"game": "W1", "epsilon_unf_target": 1e-9, "n": 64,
-                                                     "honest_error_tolerance": 0.02}).json()
-    ids = {q["id"]: q for q in body["data"]["demo_bounds"]}
-    n_min = int(ids["min_size_for_target"]["value"])
-    assert 0.75**n_min <= 1e-9 < 0.75 ** (n_min - 1)
-    assert "ideal_noiseless_game" in body["data"]["certificate"]["failed_assumptions"]
-
-
 def test_certificate_protocol_game_mismatch_is_422(client: TestClient) -> None:
     r = client.post("/api/v1/certificates", json={"game": "W1", "protocol_id": "wiesner_noisy"})
     assert r.status_code == 422 and r.json()["error"]["code"] == "validation_error"
-
-
-def test_benchmarks_rows(client: TestClient) -> None:
-    rows = {r["id"]: r for r in client.get("/api/v1/benchmarks").json()["data"]["rows"]}
-    intra = {q["id"]: q for q in rows["jiang2024-intracity"]["quantities"]}
-    assert intra["smoney_published"]["evidence_kind"] == "PUBLISHED_AGGREGATE"
-    assert intra["smoney_modelled"]["evidence_kind"] == "MODELLED_LATENCY"
-    assert abs(intra["smoney_modelled"]["value"] - 15_340.0) <= 10.0
-    ripe = {q["id"]: q for q in rows["ripe-prb6330-prb6251"]["quantities"]}
-    assert ripe["one_way_p50"]["evidence_kind"] == "MEASURED_LATENCY" and "RTT/2" in ripe["one_way_p50"]["note"]
-    assert ripe["one_way_p50"]["value"] > ripe["lightcone_bound"]["value"]
-    classical = [r for r in rows.values() if r["family"] == "classical"]
-    assert classical and all(r["status"] == "NOT_AVAILABLE" and r["reason"] for r in classical)
 
 
 def test_labels_cover_enums(client: TestClient) -> None:

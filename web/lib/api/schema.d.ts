@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/certificates/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Catalog */
+        get: operations["catalog_api_v1_certificates_catalog_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/evidence": {
         parameters: {
             query?: never;
@@ -45,10 +62,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Evidence
-         * @description Index of experiment records in the RecordStore registry, newest first (may be empty).
-         */
+        /** Evidence */
         get: operations["evidence_api_v1_evidence_get"];
         put?: never;
         post?: never;
@@ -65,10 +79,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Labels
-         * @description Display labels for every EvidenceKind, CertificateStatus and API status.
-         */
+        /** Labels */
         get: operations["labels_api_v1_evidence_labels_get"];
         put?: never;
         post?: never;
@@ -85,10 +96,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Games
-         * @description Security games W1..C1 with transcribed closed-form bounds and their theorem / proof-obligation anchors.
-         */
+        /** Games */
         get: operations["games_api_v1_games_get"];
         put?: never;
         post?: never;
@@ -105,10 +113,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Health
-         * @description Liveness probe.
-         */
+        /** Health */
         get: operations["health_api_v1_health_get"];
         put?: never;
         post?: never;
@@ -159,31 +164,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Meta
-         * @description API and schema versions, git sha, lane package probe and the research-platform disclaimer.
-         */
+        /** Meta */
         get: operations["meta_api_v1_meta_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/meta/tracker": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Tracker
-         * @description Gate and task status read verbatim from project/TRACKER.yaml (lead-maintained).
-         */
-        get: operations["tracker_api_v1_meta_tracker_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -199,10 +181,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Protocols
-         * @description Registered protocol ids, their games, and whether a merged lane implements them.
-         */
+        /** Protocols */
         get: operations["protocols_api_v1_protocols_get"];
         put?: never;
         post?: never;
@@ -219,31 +198,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Sources
-         * @description Research library index: papers, theorems, obligations, datasets, corrections, novelty audit.
-         */
+        /** Sources */
         get: operations["sources_api_v1_research_sources_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/research/sources/{entry_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Source Entry
-         * @description One research entry with every field of its source record and related entries (404 if unknown).
-         */
-        get: operations["source_entry_api_v1_research_sources__entry_id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -288,18 +244,6 @@ export interface components {
             };
             /** Source */
             source: string;
-        };
-        /** AssumptionCheck */
-        AssumptionCheck: {
-            /** Assumption */
-            assumption: string;
-            /** Detail */
-            detail: string;
-            /**
-             * Satisfied
-             * @description None = cannot be checked by this adapter
-             */
-            satisfied: boolean | null;
         };
         /** AttackData */
         AttackData: {
@@ -433,47 +377,58 @@ export interface components {
             /** Verifier Rule */
             verifier_rule: string;
         };
+        /** AxisAnchor */
+        AxisAnchor: {
+            /** Anchor */
+            anchor: string;
+            axis: components["schemas"]["SecurityAxis"];
+            /** Bound Id */
+            bound_id: string;
+            /** Domain */
+            domain: string;
+            /** Domain Only */
+            domain_only: string[];
+            /** Formula */
+            formula: string;
+            /** Monotonicity */
+            monotonicity: {
+                [key: string]: string;
+            };
+        };
+        /** AxisResult */
+        AxisResult: {
+            /** Applicable */
+            applicable: boolean;
+            axis: components["schemas"]["SecurityAxis"];
+            /** Label */
+            label: string;
+            /** Meets Target */
+            meets_target: boolean | null;
+            result: components["schemas"]["BoundResult"];
+            /** Target */
+            target: number | null;
+            /** Uncertainty */
+            uncertainty: components["schemas"]["UncertaintyStep"][];
+        };
         /**
          * Basis
          * @description BB84 basis. Z: {|0>,|1>}; X: {|+>,|->}. Never inferred from Qiskit bit order.
          * @enum {string}
          */
         Basis: "Z" | "X";
-        /** BenchmarkRow */
-        BenchmarkRow: {
-            /** Assumptions */
-            assumptions: string[];
-            /**
-             * Family
-             * @enum {string}
-             */
-            family: "quantum" | "classical";
-            /** Id */
-            id: string;
-            /** Protocol Id */
-            protocol_id: string;
-            /** Quantities */
-            quantities: components["schemas"]["Quantity"][];
-            /** Reason */
-            reason?: string | null;
-            /** Reproduce */
-            reproduce: string | null;
-            /** Sources */
-            sources: string[];
-            /**
-             * Status
-             * @enum {string}
-             */
-            status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
-            /** Title */
-            title: string;
-        };
         /** BenchmarksData */
         BenchmarksData: {
+            /** Comparability */
+            comparability: components["schemas"]["ComparabilityPair"][];
             /** Comparability Note */
             comparability_note: string;
-            /** Rows */
-            rows: components["schemas"]["BenchmarkRow"][];
+            /** Latency Cases */
+            latency_cases: components["schemas"]["LatencyCase"][];
+            matched_topology: components["schemas"]["Slot"];
+            photon: components["schemas"]["PhotonData"];
+            /** Protocols */
+            protocols: components["schemas"]["ProtocolRow"][];
+            reproducibility: components["schemas"]["Reproducibility"];
         };
         /** BenchmarksResponse */
         BenchmarksResponse: {
@@ -488,47 +443,167 @@ export interface components {
              */
             status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
         };
+        /**
+         * BoundResult
+         * @description Output of a ProofEvaluator. ``value is None`` means no applicable bound (never 0).
+         */
+        BoundResult: {
+            /** Assumptions Checked */
+            assumptions_checked?: string[];
+            axis: components["schemas"]["SecurityAxis"];
+            evidence_kind: components["schemas"]["EvidenceKind"];
+            /** Failed Assumptions */
+            failed_assumptions?: string[];
+            game_id: components["schemas"]["GameId"];
+            /** Log10 Value */
+            log10_value?: number | null;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+            /**
+             * Out Of Domain
+             * @default false
+             */
+            out_of_domain: boolean;
+            /** Protocol Id */
+            protocol_id: string;
+            status: components["schemas"]["ProofStatus"];
+            /** Theorem Id */
+            theorem_id?: string | null;
+            /** Value */
+            value?: number | null;
+        };
+        /** CalibrationInfo */
+        CalibrationInfo: {
+            /** Accepted Families */
+            accepted_families: string[];
+            /** Calibration Id */
+            calibration_id: string | null;
+            data_origin: components["schemas"]["EvidenceKind"] | null;
+            /** Dataset Sha256 */
+            dataset_sha256: string | null;
+            /** Experiment Family */
+            experiment_family: string | null;
+            /** Family Matches */
+            family_matches: boolean | null;
+            /** Intervals */
+            intervals: {
+                [key: string]: {
+                    [key: string]: number | null;
+                };
+            };
+            /** Note */
+            note: string;
+            /**
+             * Source
+             * @enum {string}
+             */
+            source: "none" | "schiansky_photon_Z" | "schiansky_photon_X" | "schiansky_published_aggregate";
+        };
+        /** CalibrationOption */
+        CalibrationOption: {
+            /** Calibration Id */
+            calibration_id: string | null;
+            data_origin: components["schemas"]["EvidenceKind"] | null;
+            /** Experiment Family */
+            experiment_family: string | null;
+            /** Intervals */
+            intervals: {
+                [key: string]: {
+                    [key: string]: number | null;
+                };
+            };
+            /** Label */
+            label: string;
+            /**
+             * Source
+             * @enum {string}
+             */
+            source: "none" | "schiansky_photon_Z" | "schiansky_photon_X" | "schiansky_published_aggregate";
+        };
+        /** CatalogData */
+        CatalogData: {
+            /** Calibrations */
+            calibrations: components["schemas"]["CalibrationOption"][];
+            /** Games */
+            games: components["schemas"]["GameEntry"][];
+            /** Noise Sources */
+            noise_sources: string[];
+            /** Presets */
+            presets: components["schemas"]["Preset"][];
+        };
+        /** CatalogResponse */
+        CatalogResponse: {
+            data: components["schemas"]["CatalogData"];
+            evidence_kind: components["schemas"]["EvidenceKind"] | null;
+            provenance: components["schemas"]["ApiProvenance"];
+            /** Reason */
+            reason?: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
+        };
         /** CertificateData */
         CertificateData: {
-            /** Assumption Checks */
-            assumption_checks: components["schemas"]["AssumptionCheck"][];
-            certificate: components["schemas"]["SecurityCertificate"];
-            /** Demo Bounds */
-            demo_bounds: components["schemas"]["Quantity"][];
-            /** Demo Bounds Status */
-            demo_bounds_status: string;
-            /** Reasons */
-            reasons: string[];
-            theorem: components["schemas"]["GameInfo"];
+            /** Axes */
+            axes: components["schemas"]["AxisResult"][];
+            calibration: components["schemas"]["CalibrationInfo"];
+            checked_certificate: components["schemas"]["SecurityCertificate"];
+            checker: components["schemas"]["CheckerInfo"];
+            classification: components["schemas"]["Classification"];
+            /** Declarations */
+            declarations: components["schemas"]["Declaration"][];
+            draft_certificate: components["schemas"]["SecurityCertificate"];
+            /** Effective Parameters */
+            effective_parameters: {
+                [key: string]: unknown;
+            };
+            export: components["schemas"]["ExportBlock"];
+            game: components["schemas"]["GameId"];
+            /** No Theorem Reason */
+            no_theorem_reason: string | null;
+            optimization: components["schemas"]["Sizing"];
+            /** Protocol Id */
+            protocol_id: string;
+            sizing: components["schemas"]["Sizing"];
+            theorem: components["schemas"]["TheoremInfo"] | null;
         };
         /** CertificateRequest */
         CertificateRequest: {
-            /** Adversary Assumptions */
-            adversary_assumptions?: string[];
-            channel?: components["schemas"]["NoiseIn"] | null;
             /**
-             * Epsilon Unf Target
-             * @default 1e-9
+             * Calibration
+             * @default none
+             * @enum {string}
              */
-            epsilon_unf_target: number;
+            calibration: "none" | "schiansky_photon_Z" | "schiansky_photon_X" | "schiansky_published_aggregate";
+            /** Declared Assumptions */
+            declared_assumptions?: string[];
             /** @default W1 */
             game: components["schemas"]["GameId"];
             /**
              * Honest Error Tolerance
-             * @default 0
+             * @description ideal games: any value > 0 is outside the theorem; S2: used as gamma_err when not given
              */
-            honest_error_tolerance: number;
+            honest_error_tolerance?: number | null;
+            /** Noise Source */
+            noise_source?: ("published_kent_2022" | "published_schiansky_2023" | "hypothetical" | "calibration") | null;
             /**
-             * N
-             * @description qubits (W1) or N (S1)
-             * @default 64
+             * Parameters
+             * @description theorem parameters: a number or an interval {lo, hi}
              */
-            n: number;
+            parameters?: {
+                [key: string]: number | components["schemas"]["IntervalIn"];
+            };
             /**
              * Protocol Id
-             * @description defaults to the first protocol registered for game
+             * @description defaults to the protocol registered for the game
              */
             protocol_id?: string | null;
+            targets?: components["schemas"]["TargetsIn"];
         };
         /** CertificateResponse */
         CertificateResponse: {
@@ -548,6 +623,14 @@ export interface components {
          * @enum {string}
          */
         CertificateStatus: "CERTIFIED" | "UNCERTIFIED" | "INFEASIBLE" | "UNSAFE" | "OUT_OF_MODEL";
+        /** CheckerInfo */
+        CheckerInfo: {
+            /** Checker Id */
+            checker_id: string | null;
+            /** Reasons */
+            reasons: string[];
+            status: components["schemas"]["CertificateStatus"];
+        };
         /** CircuitDescription */
         CircuitDescription: {
             /** Bit Order Note */
@@ -576,6 +659,45 @@ export interface components {
          * @enum {string}
          */
         ClaimLevel: "L0" | "L1" | "L2" | "L3" | "L4" | "L5";
+        /** Classification */
+        Classification: {
+            /** Derived From */
+            derived_from: string;
+            /** Headline */
+            headline: string;
+            /** Reasons */
+            reasons: string[];
+            /**
+             * Verdict
+             * @enum {string}
+             */
+            verdict: "CERTIFIED" | "UNCERTIFIED" | "INFEASIBLE" | "OUT_OF_MODEL";
+        };
+        /** ComparabilityPair */
+        ComparabilityPair: {
+            /** Columns */
+            columns: components["schemas"]["Concession"][];
+            /** Left Protocol */
+            left_protocol: string;
+            /** Pair Id */
+            pair_id: string;
+            /** Right Protocol */
+            right_protocol: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "COMPARABLE" | "QUALIFIED" | "INCOMPARABLE";
+        };
+        /** Concession */
+        Concession: {
+            /** Column */
+            column: string;
+            /** Left */
+            left: string;
+            /** Right */
+            right: string;
+        };
         /**
          * ConfidenceInterval
          * @description Interval around an estimate. For published aggregates this is the quoted +/- range.
@@ -596,24 +718,33 @@ export interface components {
              */
             method: string;
         };
-        /** EntryField */
-        EntryField: {
+        /** CurvePoint */
+        CurvePoint: {
+            /** Log10 Bound */
+            log10_bound: number;
+            /** N */
+            n: number;
+        };
+        /** Declaration */
+        Declaration: {
+            /** Declared */
+            declared: boolean;
+            /** Description */
+            description: string;
+            /** Name */
+            name: string;
+        };
+        /** DoubleSpendOutcome */
+        DoubleSpendOutcome: {
+            /** Detail */
+            detail: string;
             /**
-             * Items
-             * @default []
-             */
-            items: string[];
-            /** Key */
-            key: string;
-            /**
-             * Kind
+             * Outcome
              * @enum {string}
              */
-            kind: "text" | "latex" | "list" | "code";
-            /** Label */
-            label: string;
-            /** Text */
-            text?: string | null;
+            outcome: "PREVENTED" | "SUCCEEDS" | "DETECTED_NOT_PREVENTED" | "OUT_OF_MODEL" | "BOUNDED_BY_THEOREM";
+            /** Successful */
+            successful: number | null;
         };
         /** EvidenceData */
         EvidenceData: {
@@ -678,6 +809,30 @@ export interface components {
              */
             status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
         };
+        /** ExportBlock */
+        ExportBlock: {
+            /** Canonical Json */
+            canonical_json: string;
+            /** Filename */
+            filename: string;
+            /** Obligations Sha256 */
+            obligations_sha256: string;
+            /** Sha256 */
+            sha256: string;
+        };
+        /** GameEntry */
+        GameEntry: {
+            /** Declarations */
+            declarations: components["schemas"]["Declaration"][];
+            game: components["schemas"]["GameId"];
+            /** No Theorem Reason */
+            no_theorem_reason: string | null;
+            /** Protocol Ids */
+            protocol_ids: string[];
+            /** Sizing Available */
+            sizing_available: boolean;
+            theorem: components["schemas"]["TheoremInfo"] | null;
+        };
         /**
          * GameId
          * @description Named, versioned security experiments (master plan 3.1).
@@ -686,11 +841,6 @@ export interface components {
         GameId: "W1" | "W1_CV" | "W2" | "S1" | "S2" | "D1" | "A1" | "C1";
         /** GameInfo */
         GameInfo: {
-            /**
-             * Anchors
-             * @default []
-             */
-            anchors: components["schemas"]["TheoremAnchor"][];
             /** Assumptions */
             assumptions: string[];
             bound_evidence_kind: components["schemas"]["EvidenceKind"];
@@ -726,28 +876,6 @@ export interface components {
              */
             status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
         };
-        /** GateStatus */
-        GateStatus: {
-            /** Description */
-            description: string;
-            /** Evidence */
-            evidence: string[];
-            /** Gate Id */
-            gate_id: string;
-            /** Notes */
-            notes: string | null;
-            /** Status */
-            status: string;
-        };
-        /** GlossaryItem */
-        GlossaryItem: {
-            /** Definition */
-            definition: string;
-            /** Source File */
-            source_file: string;
-            /** Status */
-            status: string;
-        };
         /** Health */
         Health: {
             /** Ok */
@@ -765,6 +893,13 @@ export interface components {
             /** Point */
             point?: number | null;
             unit: components["schemas"]["Unit"];
+        };
+        /** IntervalIn */
+        IntervalIn: {
+            /** Hi */
+            hi: number;
+            /** Lo */
+            lo: number;
         };
         /** IssuerQubit */
         IssuerQubit: {
@@ -807,6 +942,28 @@ export interface components {
             merged: boolean;
             /** Package */
             package: string;
+        };
+        /** LatencyCase */
+        LatencyCase: {
+            /** Assumptions */
+            assumptions: string[];
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "paper_topology" | "measured_network";
+            /** Protocol Id */
+            protocol_id: string;
+            /** Quantities */
+            quantities: components["schemas"]["Quantity"][];
+            /** Reproduce */
+            reproduce: string;
+            /** Sources */
+            sources: string[];
+            /** Title */
+            title: string;
         };
         /** MeasurementStats */
         MeasurementStats: {
@@ -951,6 +1108,88 @@ export interface components {
             /** Probability */
             probability: number;
         };
+        /** PhotonBasis */
+        PhotonBasis: {
+            /**
+             * Basis
+             * @enum {string}
+             */
+            basis: "Z" | "X";
+            /** Calibration Id */
+            calibration_id: string;
+            /** Holdout P Value */
+            holdout_p_value: number;
+            /** Label */
+            label: string;
+            pooled: components["schemas"]["Quantity"];
+            published: components["schemas"]["Quantity"];
+            /** Run Dispersion Chi2 Per Dof */
+            run_dispersion_chi2_per_dof: number;
+            state_averaged: components["schemas"]["Quantity"];
+        };
+        /** PhotonData */
+        PhotonData: {
+            /** Bases */
+            bases: components["schemas"]["PhotonBasis"][];
+            /** Ci Method */
+            ci_method: string;
+            /** Dataset */
+            dataset: {
+                [key: string]: string | number;
+            };
+            /** Not Observable */
+            not_observable: string[];
+            /** Published Aggregate Calibration Id */
+            published_aggregate_calibration_id: string;
+            /** Reproduce */
+            reproduce: string;
+            /** Runs */
+            runs: components["schemas"]["PhotonRun"][];
+            /** Sources */
+            sources: string[];
+        };
+        /** PhotonRun */
+        PhotonRun: {
+            /**
+             * Basis
+             * @enum {string}
+             */
+            basis: "Z" | "X";
+            /** Chunk */
+            chunk: number;
+            /** Ci Hi */
+            ci_hi: number;
+            /** Ci Lo */
+            ci_lo: number;
+            /** Folder */
+            folder: string;
+            /** N Errors */
+            n_errors: number;
+            /** N Pairs */
+            n_pairs: number;
+            /** N Sifted */
+            n_sifted: number;
+            /** Qber */
+            qber: number;
+        };
+        /** Preset */
+        Preset: {
+            /** Id */
+            id: string;
+            request: components["schemas"]["CertificateRequest"];
+            /** Source */
+            source: string;
+            /** Summary */
+            summary: string;
+            /** Title */
+            title: string;
+        };
+        /**
+         * ProofStatus
+         * @description Status of a proof obligation / bound (master plan 3.6).
+         * @enum {string}
+         */
+        ProofStatus: "PUBLISHED_REPRODUCED" | "NUMERICALLY_SUPPORTED" | "CERTIFIED_NUMERIC" | "CONJECTURE" | "UNSUPPORTED";
         /** ProtocolInfo */
         ProtocolInfo: {
             /** Family */
@@ -965,6 +1204,70 @@ export interface components {
             protocol_id: string;
             /** Quantum */
             quantum: boolean;
+        };
+        /** ProtocolRow */
+        ProtocolRow: {
+            /** Adversary */
+            adversary: string;
+            /** Classical Bytes */
+            classical_bytes: number | null;
+            /** Code */
+            code: string;
+            /** Comparability Pair */
+            comparability_pair: string | null;
+            /**
+             * Comparability Status
+             * @enum {string}
+             */
+            comparability_status: "COMPARABLE" | "QUALIFIED" | "INCOMPARABLE" | "REFERENCE" | "NO_PAIR";
+            cross_check: components["schemas"]["Quantity"] | null;
+            double_spend: components["schemas"]["DoubleSpendOutcome"];
+            /** Environment Lock */
+            environment_lock: string | null;
+            evidence_kind: components["schemas"]["EvidenceKind"];
+            /**
+             * Family
+             * @enum {string}
+             */
+            family: "quantum" | "classical";
+            /** Flexibility */
+            flexibility: string;
+            /** Id */
+            id: string;
+            /** Issuer Calls */
+            issuer_calls: number | null;
+            /** Label */
+            label: string;
+            /** Latency Basis */
+            latency_basis: string | null;
+            /** Latency Unavailable Reason */
+            latency_unavailable_reason: string | null;
+            local_validation: components["schemas"]["Quantity"] | null;
+            /** Method */
+            method: string;
+            /** Network Id */
+            network_id: string | null;
+            /** Pre Distribution */
+            pre_distribution: string;
+            pre_presentation_commit: components["schemas"]["Quantity"] | null;
+            /** Privacy */
+            privacy: string;
+            /** Protocol Id */
+            protocol_id: string;
+            /** Record Git Sha */
+            record_git_sha: string | null;
+            /** Reproduce */
+            reproduce: string;
+            /** Site Count */
+            site_count: number;
+            /** Sources */
+            sources: string[];
+            /** Trust Model */
+            trust_model: string;
+            /** Trusted Hardware */
+            trusted_hardware: string;
+            /** Variant */
+            variant: string | null;
         };
         /** ProtocolsResponse */
         ProtocolsResponse: {
@@ -1041,73 +1344,23 @@ export interface components {
             /** Reproducibility */
             reproducibility: string;
         };
+        /** Reproducibility */
+        Reproducibility: {
+            /** Commands */
+            commands: string[];
+            /** Environment Locks */
+            environment_locks: string[];
+            /** Evidence Files */
+            evidence_files: string[];
+            /** Lane H Git Shas */
+            lane_h_git_shas: string[];
+        };
         /** ResearchData */
         ResearchData: {
-            /** Files */
-            files: components["schemas"]["SourceFile"][];
-            /** Glossary */
-            glossary: components["schemas"]["GlossaryItem"][];
-            /** Snapshot Date */
-            snapshot_date: string | null;
+            /** Snapshot Note */
+            snapshot_note: string | null;
             /** Sources */
-            sources: components["schemas"]["ResearchEntry"][];
-        };
-        /** ResearchEntry */
-        ResearchEntry: {
-            /** Anchor */
-            anchor?: string | null;
-            /** Dois */
-            dois: string[];
-            /** Games */
-            games: string[];
-            /** Id */
-            id: string;
-            /**
-             * Kind
-             * @enum {string}
-             */
-            kind: "paper" | "theorem" | "obligation" | "correction" | "novelty" | "dataset";
-            /** Related */
-            related: string[];
-            /** Source File */
-            source_file: string;
-            /** Status */
-            status: string;
-            /** Subtitle */
-            subtitle?: string | null;
-            /** Summary */
-            summary: string;
-            /** Title */
-            title: string;
-            /** Title Source */
-            title_source?: string | null;
-            /** Urls */
-            urls: string[];
-            /** Verification */
-            verification: string;
-            /** Year */
-            year?: string | null;
-        };
-        /** ResearchEntryDetail */
-        ResearchEntryDetail: {
-            entry: components["schemas"]["ResearchEntry"];
-            /** Fields */
-            fields: components["schemas"]["EntryField"][];
-            /** Related */
-            related: components["schemas"]["ResearchEntry"][];
-        };
-        /** ResearchEntryResponse */
-        ResearchEntryResponse: {
-            data: components["schemas"]["ResearchEntryDetail"];
-            evidence_kind: components["schemas"]["EvidenceKind"] | null;
-            provenance: components["schemas"]["ApiProvenance"];
-            /** Reason */
-            reason?: string | null;
-            /**
-             * Status
-             * @enum {string}
-             */
-            status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
+            sources: components["schemas"]["ResearchSource"][];
         };
         /** ResearchResponse */
         ResearchResponse: {
@@ -1122,6 +1375,28 @@ export interface components {
              */
             status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
         };
+        /** ResearchSource */
+        ResearchSource: {
+            /** Citation */
+            citation: string;
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Title */
+            title: string | null;
+            /** Urls */
+            urls: string[];
+            /** Verification */
+            verification: string;
+            /** Year */
+            year: string | null;
+        };
+        /**
+         * SecurityAxis
+         * @enum {string}
+         */
+        SecurityAxis: "epsilon_unf" | "epsilon_cor" | "epsilon_rob" | "epsilon_priv";
         /** SecurityCertificate */
         SecurityCertificate: {
             /**
@@ -1171,14 +1446,36 @@ export interface components {
             targets?: components["schemas"]["Targets"];
             upper_bounds?: components["schemas"]["UpperBounds"];
         };
-        /** SourceFile */
-        SourceFile: {
-            /** Entries */
-            entries: number;
-            /** Path */
-            path: string;
-            /** Sha256 */
-            sha256: string | null;
+        /** Sizing */
+        Sizing: {
+            /**
+             * Curve
+             * @description ideal games: log10 bound vs n (THEOREM)
+             */
+            curve?: components["schemas"]["CurvePoint"][];
+            /** Label */
+            label: string;
+            /** Quantities */
+            quantities: components["schemas"]["Quantity"][];
+            /** Reason */
+            reason: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "OK" | "NOT_AVAILABLE";
+        };
+        /** Slot */
+        Slot: {
+            /** Expected Source */
+            expected_source: string;
+            /** Reason */
+            reason: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "OK" | "NOT_AVAILABLE";
         };
         /**
          * StateKind
@@ -1196,45 +1493,49 @@ export interface components {
             /** Epsilon Unf */
             epsilon_unf?: number | null;
         };
-        /** TaskStatus */
-        TaskStatus: {
-            /** Blockers */
-            blockers: string[];
-            /** Commit */
-            commit: string | null;
-            /** Description */
-            description: string;
-            /** Evidence */
-            evidence: string[];
-            /** Lane */
-            lane: string;
-            /** Notes */
-            notes: string | null;
-            /** Status */
-            status: string;
-            /** Task Id */
-            task_id: string;
+        /** TargetsIn */
+        TargetsIn: {
+            /** Epsilon Cor */
+            epsilon_cor?: number | null;
+            /** Epsilon Priv */
+            epsilon_priv?: number | null;
+            /** Epsilon Rob */
+            epsilon_rob?: number | null;
+            /** Epsilon Unf */
+            epsilon_unf?: number | null;
         };
-        /**
-         * TheoremAnchor
-         * @description A transcribed theorem (lane A) or proof obligation (lane D) that applies to exactly this game.
-         */
-        TheoremAnchor: {
-            /** Anchor */
-            anchor: string;
-            /** Formula */
-            formula: string | null;
-            /**
-             * Kind
-             * @enum {string}
-             */
-            kind: "theorem" | "obligation";
-            /** Ref Id */
-            ref_id: string;
-            /** Source Url */
-            source_url: string | null;
+        /** TheoremInfo */
+        TheoremInfo: {
+            /** Assumptions */
+            assumptions: string[];
+            /** Axes */
+            axes: components["schemas"]["AxisAnchor"][];
+            /** Calibration Families */
+            calibration_families: string[];
+            /** Caveats */
+            caveats: string[];
+            /** Citation */
+            citation: string | null;
+            /** Claim Id */
+            claim_id: string;
+            /** Finite Or Asymptotic */
+            finite_or_asymptotic: string;
+            /** Game */
+            game: string;
+            /** Parameters */
+            parameters: {
+                [key: string]: string;
+            };
+            /** Protocol */
+            protocol: string;
+            /** Quantifier */
+            quantifier: string;
+            /** Statement */
+            statement: string;
             /** Status */
             status: string;
+            /** Url */
+            url: string | null;
         };
         /**
          * TokenRecord
@@ -1275,33 +1576,21 @@ export interface components {
             /** Token Id */
             token_id: string;
         };
-        /** TrackerData */
-        TrackerData: {
-            /** Gates */
-            gates: components["schemas"]["GateStatus"][];
-            /** Project Phase */
-            project_phase: string | null;
-            /** Source File */
-            source_file: string;
-            /** Status Values */
-            status_values: string[];
-            /** Tasks */
-            tasks: components["schemas"]["TaskStatus"][];
-            /** Updated At Utc */
-            updated_at_utc: string | null;
-        };
-        /** TrackerResponse */
-        TrackerResponse: {
-            data: components["schemas"]["TrackerData"];
-            evidence_kind: components["schemas"]["EvidenceKind"] | null;
-            provenance: components["schemas"]["ApiProvenance"];
-            /** Reason */
-            reason?: string | null;
+        /** UncertaintyStep */
+        UncertaintyStep: {
             /**
-             * Status
+             * Direction
              * @enum {string}
              */
-            status: "OK" | "DEMO_ADAPTER" | "NOT_AVAILABLE";
+            direction: "increasing" | "decreasing" | "domain_only" | "undocumented";
+            /** Endpoint Used */
+            endpoint_used: string;
+            /** Hi */
+            hi: number;
+            /** Lo */
+            lo: number;
+            /** Parameter */
+            parameter: string;
         };
         /**
          * Unit
@@ -1369,6 +1658,44 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CertificateResponse"];
+                };
+            };
+            /** @description Request validation error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    catalog_api_v1_certificates_catalog_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogResponse"];
                 };
             };
             /** @description Request validation error */
@@ -1575,26 +1902,6 @@ export interface operations {
             };
         };
     };
-    tracker_api_v1_meta_tracker_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TrackerResponse"];
-                };
-            };
-        };
-    };
     protocols_api_v1_protocols_get: {
         parameters: {
             query?: never;
@@ -1631,73 +1938,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ResearchResponse"];
-                };
-            };
-            /** @description Request validation error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Internal error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    source_entry_api_v1_research_sources__entry_id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                entry_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResearchEntryResponse"];
-                };
-            };
-            /** @description Unknown entry id */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Request validation error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Internal error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
                 };
             };
         };
