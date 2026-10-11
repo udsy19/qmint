@@ -148,25 +148,30 @@ def write_figures(pareto: list[dict[str, Any]], unc: list[dict[str, Any]], out_d
 
     paths = []
     devs = sorted({p["device"] for p in pareto})
-    styles = {"published_fixed": ("s", "-"), "naive_analytic": ("^", "--"), "compiler": ("o", ":")}
+    styles = {"published_fixed": ("s", "-", "#1b6ca8"), "naive_analytic": ("^", "--", "#d95f02"),
+              "compiler": ("o", ":", "#1a9850")}
     fig, axes = plt.subplots(1, max(1, len(devs)), figsize=(4 * max(1, len(devs)), 3.6), squeeze=False)
     for ax, dev in zip(axes[0], devs, strict=False):
-        for sel, (mk, ls) in styles.items():
+        for sel, (mk, ls, col) in styles.items():
             for unc_kind, fill in (("point", True), ("interval", False)):
                 pts = sorted((p["eps_unf_target"], p["N"]) for p in pareto
                              if p["device"] == dev and p["selector"] == sel and p["uncertainty"] == unc_kind and p["honest_target"] == 1e-3)
                 if pts:
-                    ax.plot([x for x, _ in pts], [y for _, y in pts], marker=mk, linestyle=ls,
-                            fillstyle="full" if fill else "none", label=f"{sel} ({unc_kind})")
+                    ax.plot([x for x, _ in pts], [y for _, y in pts], marker=mk, linestyle=ls, color=col,
+                            fillstyle="full" if fill else "none", label=f"{sel} ({unc_kind}: {'filled' if fill else 'open'})")
         ax.set_xscale("log")
         ax.set_yscale("log")
         ax.invert_xaxis()
         ax.set_title(dev, fontsize=9)
         ax.set_xlabel("target eps_unf (honest <= 1e-3)")
         ax.set_ylabel("certified N (pulses)")
-    axes[0][0].legend(fontsize=6)
+    handles = {}
+    for ax in axes[0]:
+        for h, lab in zip(*ax.get_legend_handles_labels(), strict=True):
+            handles.setdefault(lab, h)
+    fig.legend(list(handles.values()), list(handles), fontsize=6, loc="lower center", ncol=3)
     fig.suptitle("Fig. 8 data: CERTIFIED S2 resource vs target (KLPR2022 bound; devices DIGITIZED/HYPOTHETICAL)", fontsize=8)
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0.12, 1, 1))
     p = out_dir / "fig8_pareto_s2.png"
     fig.savefig(p, dpi=120, bbox_inches="tight")
     plt.close(fig)
