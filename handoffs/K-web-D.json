@@ -1,0 +1,78 @@
+{
+  "lane": "K-web-D",
+  "task": "quantum lab /lab/mint + /lab/attack (web + qmint/api/routes/lab.py)",
+  "input_contract_sha": "6a8053e (project/WEB_PREAMBLE.md, docs/design/WEBSITE_BRIEF.md)",
+  "branch": "feat/KD-web",
+  "starting_commit_sha": "6a8053eee2dbac62854ca24905631d1538f98517",
+  "final_commit_sha": "528e0b3 (code); handoff commit follows",
+  "changed_paths": [
+    "qmint/api/routes/lab.py",
+    "tests/unit/api/test_d_lab.py",
+    "web/app/(platform)/lab/mint/page.tsx",
+    "web/app/(platform)/lab/attack/page.tsx",
+    "web/components/lab/**",
+    "web/lib/api/openapi.json",
+    "web/lib/api/schema.d.ts (generated)",
+    "handoffs/K-web-D.{md,json,test_api.patch}"
+  ],
+  "commands_run": [
+    "$PY -m pytest tests/unit/api/test_d_lab.py",
+    "git apply handoffs/K-web-D.test_api.patch && $PY -m pytest tests/unit/api tests/contracts",
+    "$PY -m ruff check qmint/api tests/unit/api",
+    "pnpm gen:api",
+    "pnpm typecheck",
+    "pnpm lint",
+    "pnpm test",
+    "pnpm build",
+    "playwright-core screenshots 390/768/1440/1920 (api :8783, web :3003)"
+  ],
+  "test_exit_codes": {
+    "pytest test_d_lab.py": "0 (34 passed)",
+    "pytest tests/unit/api+contracts with test_api patch": "0 (82 passed)",
+    "pytest tests/unit/api without patch": "collection error in test_api.py (imports deleted helpers) - patch provided",
+    "ruff": 0,
+    "typecheck": 0,
+    "lint": 0,
+    "vitest": "0 (36 passed)",
+    "build": 0
+  },
+  "evidence_files": [
+    "handoffs/C-C1-evidence.json (cited, recorded SDP evidence)",
+    "/private/tmp/claude-501/-Users-udsy-PycharmProjects-Qollab-QMint/634384d6-a062-4a24-8650-bcd5800df2da/scratchpad/final/*.png (visual QA, not committed)"
+  ],
+  "assumptions_verified": [
+    "lane-B bank exact acceptance == lane-F Poisson-binomial closed form (runtime assert, 1e-9)",
+    "exact both-pass per qubit: A01 5/8, A01b/A02b 0.6545, A03 2/3, A03b (3+2sqrt2)/8, A04 3/4 (tests)",
+    "MC 95% CP intervals cover exact values for all W1 attacks at n=3, 1500 trials; A06/A08/CTRL at n=4",
+    "SDP n=1,2: lower (exact MVW channel) = independent lane-D bound = (3/4)^n <= lane-C certified upper <= +1e-9",
+    "no secret-like key or the secret bit string/circuit hash/QASM appears in non-teaching mint responses (test)"
+  ],
+  "performance_numbers_with_sources": {
+    "mint n=8 shots=20000 trials=5000": "4.4 s local",
+    "attack n=8 trials=5000 (W1 product)": "~7 s local",
+    "A08 n=8 trials=400": "3.9 s",
+    "SDP live n=1 / n=2 (SCS)": "0.02 s / 0.3 s",
+    "certify n=2": "0.1 s"
+  },
+  "blockers": [
+    "test_api.py must be patched by the lead (handoffs/K-web-D.test_api.patch) - it imports helpers this change deletes"
+  ],
+  "known_limitations": [
+    "queued->running is a client-side estimate (no progress channel)",
+    "cancel aborts HTTP only; server work ends at its 20 s deadline",
+    "readout error not offered (lane-B register has no readout stage)",
+    "per-note bank-side statistics are analysis a holder cannot obtain (labelled)",
+    "QPU never run"
+  ],
+  "interfaces_changed": {
+    "POST /api/v1/lab/mint": "new request (protocol_id wiesner_ideal|wiesner_noisy, threshold, noise{channel,strength}, backend exact|aer, shots, trials, teaching_reveal) and response (token, protocol, flow, circuit(redacted), statistics, theorem, hardware, teaching|null, run); issuer_view removed",
+    "POST /api/v1/lab/attack": "new attack ids A01..A08/CTRL, trials, A06/A08 params, include_sdp; response adds game_id, proof_applicability, counterfeit_success, sdp bracket, hardware, run; status OK (was DEMO_ADAPTER)",
+    "504 timeout": "lab routes return ApiError code 'timeout' on deadline",
+    "proposals": [
+      "schemas.Method += monte_carlo, numerical_sdp",
+      "ui/slider: forward aria-label/aria-valuetext to Thumb",
+      "ui/readout ReadoutGroup: fix wrapped-item divider/indent or promote lab ReadoutGrid"
+    ]
+  },
+  "whether_paid_jobs_run": false
+}
