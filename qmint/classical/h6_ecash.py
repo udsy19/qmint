@@ -272,6 +272,7 @@ class CFNMerchant:
     seed: int = 0
     processing_ns: float = 10_000.0
     to_deposit: list[dict] = field(default_factory=list)
+    deposit_results: list[dict] = field(default_factory=list)
     _open: dict[str, dict] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
@@ -292,6 +293,9 @@ class CFNMerchant:
             d = Decision.ACCEPT if ok else Decision.REJECT_BAD_SIGNATURE
             return [new_msg("Result", self.node_id, msg.src, "h6", decision=d.value,
                             decided_at_ns=now_ns + self.processing_ns)]
+        if msg.kind == "DepositResult":  # bank's answer to a deposit: bookkeeping only
+            self.deposit_results.append(dict(p))
+            return []
         raise ValueError(f"unexpected message {msg.kind}")
 
     def deposit_messages(self, bank_node: str) -> list[Message]:

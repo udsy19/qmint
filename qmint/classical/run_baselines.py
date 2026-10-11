@@ -60,8 +60,8 @@ def to_record(r: S.ScenarioResult, network: SpacetimeNetwork, git_sha: str, env_
         "local_accept_ns_by_site": r.local_accept_ns,
         "double_spend_decisions": r.double_spend_decisions,
         "declared_processing_ns": {"site": S.SITE_PROC_NS, "coordinator": S.COORD_PROC_NS},
-        "latency_basis": "sum of link propagation_lower_bound_ns (lightcone, SYNTHETIC) + declared processing; "
-                         "lower bound, favourable to coordination-based designs",
+        "latency_basis": "lane-G engine, Lightcone runtime: every hop = link lower bound (exact light cone, "
+                         "SYNTHETIC) + declared processing; lower bound, favourable to coordination-based designs",
         "extra": r.extra,
     }
     body = {"protocol_id": r.protocol_id, "network_id": r.network_id, "config": config}
@@ -82,7 +82,8 @@ def to_record(r: S.ScenarioResult, network: SpacetimeNetwork, git_sha: str, env_
         issuer_calls=r.issuer_calls,
         false_rejects=r.false_rejects,
         double_spends_successful=r.double_spends_successful,
-        method="lane-H deterministic state machines driven by direct calls (qmint.classical.scenarios)",
+        method="lane-H deterministic state machines hosted on lane-G's discrete-event engine "
+               "(qmint.classical.scenarios via qmint.classical.engine_adapter)",
         configuration=json.loads(canonical_json(config)),
         evidence_kind=EvidenceKind.MODELLED_LATENCY,
         git_sha=git_sha,

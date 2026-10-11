@@ -256,6 +256,7 @@ class Simulator:
         self._dropped: list[DroppedMessage] = []
         self._link_busy_until: dict[tuple[str, str], float] = {}
         self._msg_counter = 0
+        self._last_event_of: dict[str, str] = {}
         self._ran = False
 
     # ----------------------------------------------------------------- setup
@@ -303,6 +304,11 @@ class Simulator:
         detail: Mapping[str, Any] | None = None,
     ) -> SimEvent:
         site = self.actors[actor_id].site_id
+        # Process order (Lamport happens-before): an actor's event also follows its previous event, so
+        # state it received earlier (e.g. S-money's relayed c, Kent 2022 Table I step 9) is a causal
+        # ancestor of what it later does. The trigger stays first in ``causal_parent_ids``.
+        prev = self._last_event_of.get(actor_id)
+        parents = (*parents, prev) if prev is not None and prev not in parents else tuple(parents)
         ev = SimEvent(
             event_id=f"e{len(self._events):06d}",
             site_id=site,
@@ -310,11 +316,12 @@ class Simulator:
             kind=kind,
             time_ns=t,
             local_clock_ns=t + self.clock_offsets_ns[site],
-            causal_parent_ids=tuple(parents),
+            causal_parent_ids=parents,
             message_id=message_id,
             detail=detail or {},
         )
         self._events.append(ev)
+        self._last_event_of[actor_id] = ev.event_id
         return ev
 
     # ------------------------------------------------------------- transport

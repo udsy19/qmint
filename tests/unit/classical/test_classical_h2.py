@@ -1,8 +1,8 @@
 import pytest
 
 from qmint.classical import scenarios as S
-from qmint.classical.common import path_delay_ns
 from qmint.classical.h2_quorum import home_shard
+from qmint.networks.causality import link_lower_bound_ns
 
 
 def test_home_shard_deterministic_and_spread():
@@ -18,10 +18,10 @@ def test_routes_to_home_shard_not_global_wait(net3):
     home = lat["A|home_leader@A"]
     remote = lat["B|home_leader@A"]
     # co-located leader: only leader->nearest follower RTT (A<->H), not a wait on every site
-    expected_home = 2 * S.SITE_PROC_NS + 3 * S.COORD_PROC_NS + 2 * path_delay_ns(net3, "A", "H")
+    expected_home = 2 * S.SITE_PROC_NS + 3 * S.COORD_PROC_NS + 2 * link_lower_bound_ns(net3, "A", "H")
     assert home == pytest.approx(expected_home)
-    assert remote == pytest.approx(home + 2 * path_delay_ns(net3, "B", "A"))
-    assert home < 2 * path_delay_ns(net3, "A", "B")  # does not wait for the far site
+    assert remote == pytest.approx(home + 2 * link_lower_bound_ns(net3, "B", "A"))
+    assert home < 2 * link_lower_bound_ns(net3, "A", "B")  # does not wait for the far site
 
 
 def test_f_faults_tolerated_f_plus_one_unavailable(net3):

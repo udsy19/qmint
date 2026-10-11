@@ -250,3 +250,40 @@ def test_message_payload_is_immutable():
 def test_record_rejects_unknown_kind():
     with pytest.raises(ValueError):
         Record("settled_instantly")
+
+
+@dataclass
+class Holder:
+    """Stores a value from one message; acts on a later, unrelated local request (state dependency)."""
+
+    actor_id: str
+    site_id: str
+    value: int | None = None
+
+    def on_local_request(self, request, now_ns):
+        return [Record("verification_result_available_local", {"token_id": "t", "accepted": self.value == 1})]
+
+    def on_message(self, msg, now_ns):
+        self.value = msg.payload["v"]
+        return []
+
+
+def test_process_order_makes_earlier_state_a_causal_ancestor():
+    """Lamport process order: an effect triggered locally still descends from state the actor received
+    earlier (S-money's relayed c, Kent 2022 Table I step 9). The trigger stays the first parent."""
+    from qmint.networks.causality import ancestors_of
+
+    net = make_net([(0.0, 0.0), (30_000.0, 0.0)])
+    src, holder = Chatter("a0", "S0", reply=False), Holder("h1", "S1")
+    sim = Simulator(net, [src, holder], seed=0)
+    sim.schedule(LocalRequest("r", "a0", 0.0, payload={"targets": []}))
+    sim.schedule(LocalRequest("present", "h1", 1e6, kind="local_validation_start"))
+    src.on_local_request = lambda req, now: [Send("h1", {"v": 1})]  # type: ignore[method-assign]
+    res = sim.run()
+    tr = res.to_transaction_trace("t", "t", "classical_h0_bearer", "none", False)
+    acc = res.first("verification_result_available_local")
+    recv = res.first("message_receive")
+    trig = res.first("local_validation_start")
+    assert acc.causal_parent_ids[0] == trig.event_id
+    assert recv.event_id in ancestors_of(acc.event_id, tr.events)
+    assert_causal(tr, net)

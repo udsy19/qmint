@@ -114,8 +114,12 @@ class EscrowSiteVerifier:
     site_index: int
     n_sites: int
     processing_ns: float = 10_000.0
+    # Late-commit modes: hold a presentation that arrives before the Stage-II message and decide
+    # when it lands (as S-money's B_i waits for c). False: reject at once with REJECT_NOT_ACTIVATED.
+    hold_until_active: bool = False
     tokens: dict[str, dict] = field(default_factory=dict)
     spent_local: set[str] = field(default_factory=set)
+    held: list[Message] = field(default_factory=list)
 
     def handle(self, msg: Message, now_ns: float) -> list[Message]:
         p = msg.payload
@@ -123,19 +127,30 @@ class EscrowSiteVerifier:
         if msg.kind == "Provision":
             self.tokens[tok] = dict(p)
             return []
-        if msg.kind == "Activate":
-            self.tokens[tok]["active"] = p["site"] == self.site_id
-            return []
-        if msg.kind == "RelayC":
-            self.tokens[tok]["c"] = int(p["c"])
-            return []
+        if msg.kind in ("Activate", "RelayC"):
+            if msg.kind == "Activate":
+                self.tokens[tok]["active"] = p["site"] == self.site_id
+            else:
+                self.tokens[tok]["c"] = int(p["c"])
+            release = [m for m in self.held if m.payload["token_id"] == tok]
+            self.held = [m for m in self.held if m.payload["token_id"] != tok]
+            return [self._present(m, now_ns) for m in release]
         if msg.kind == "Present":
-            decision = self._decide(tok, p.get("secret_hex"))
-            if decision == Decision.ACCEPT:
-                self.spent_local.add(tok)
-            return [new_msg("Result", self.node_id, msg.src, "h3", token_id=tok, decision=decision.value,
-                            decided_at_ns=now_ns + self.processing_ns)]
+            st = self.tokens.get(tok)
+            if self.hold_until_active and st is not None and st["mode"] != "preassigned" \
+                    and "active" not in st and "c" not in st:
+                self.held.append(msg)
+                return []
+            return [self._present(msg, now_ns)]
         raise ValueError(f"unexpected message {msg.kind}")
+
+    def _present(self, msg: Message, now_ns: float) -> Message:
+        tok = msg.payload["token_id"]
+        decision = self._decide(tok, msg.payload.get("secret_hex"))
+        if decision == Decision.ACCEPT:
+            self.spent_local.add(tok)
+        return new_msg("Result", self.node_id, msg.src, "h3", token_id=tok, decision=decision.value,
+                       decided_at_ns=now_ns + self.processing_ns)
 
     def _decide(self, tok: str, secret_hex: str | None) -> Decision:
         st = self.tokens.get(tok)

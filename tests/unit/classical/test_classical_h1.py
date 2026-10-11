@@ -3,8 +3,9 @@ import threading
 import pytest
 
 from qmint.classical import scenarios as S
-from qmint.classical.common import Message, path_delay_ns
+from qmint.classical.common import Message
 from qmint.classical.h1_ledger import LedgerCoordinator, MerchantTerminal, request_mac
+from qmint.networks.causality import link_lower_bound_ns
 
 KEYS = {f"m{i}": f"k{i}".encode() for i in range(16)}
 
@@ -95,7 +96,7 @@ def test_event_race_one_accept_and_latency_includes_coordinator_rtt(net3):
     r = S.run_h1(net3, "H", partition_site="B")
     assert r.double_spends_successful == 0
     assert sorted(r.double_spend_decisions.values()) == ["ACCEPT", "REJECT_DOUBLE_SPEND"]
-    rtt = 2 * path_delay_ns(net3, "A", "H")
+    rtt = 2 * link_lower_bound_ns(net3, "A", "H")
     assert r.local_accept_ns["A"] == pytest.approx(rtt + 2 * S.SITE_PROC_NS + S.COORD_PROC_NS)
     assert r.local_accept_ns["A"] >= rtt  # never faster than the coordinator round trip
     part = r.extra["partition"]
