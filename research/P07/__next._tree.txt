@@ -1,0 +1,13 @@
+:HL["/qmint/_next/static/chunks/0jt8-e66amnw0.css","style"]
+:HL["/qmint/_next/static/media/GeistMono_Variable.p.3ms9vq719j3f8.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/qmint/_next/static/media/GeistPixel_Circle.p.0rqe0db4f0cia.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/qmint/_next/static/media/GeistPixel_Grid.p.2ss63b6eqyzy4.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/qmint/_next/static/media/GeistPixel_Line.p.1gvmpev-r-ty_.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/qmint/_next/static/media/GeistPixel_Square.p.2hsizu-z_gncm.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/qmint/_next/static/media/GeistPixel_Triangle.p.04xw1z5oncddb.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/qmint/_next/static/media/Geist_Variable-s.p.0mrjj4bg00-he.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+4:[["children",{"s":"__PAGE__","h":160}]]
+3:[["children",{"s":{"n":"id","t":"d","k":"P07","s":[]},"h":96,"c":"$Q4"}]]
+2:[["children",{"s":"research","h":96,"c":"$Q3"}]]
+1:[["children",{"s":"(platform)","h":96,"c":"$Q2"}]]
+0:{"b":"JYsm_7fv64ICNPUdHrT4W","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
