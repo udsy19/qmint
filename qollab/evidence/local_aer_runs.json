@@ -1,0 +1,97 @@
+{
+  "bases": "ZXZXXZXZ",
+  "bits": "10110010",
+  "ideal": {
+    "decoded_counts_qubit_order": {
+      "10110010": 1000
+    },
+    "record": {
+      "backend_is_simulator": true,
+      "bit_order": "qiskit_clbit0_rightmost",
+      "circuit_sha256": "2124dfb444ac8275ce9bba4dab00f0d540417fe0d62898ea494a3baf5b4741a6",
+      "completed_utc": "2026-10-11T21:15:27.639164+00:00",
+      "counts": {
+        "01001101": 1000
+      },
+      "error": null,
+      "evidence_kind": "SIMULATOR_IDEAL",
+      "executed_backend": "local_aer_simulator",
+      "job_id": "local-aer:7869aeff-41be-4f70-97d8-7246a7315b3f",
+      "native_gate_counts": null,
+      "noise_model": null,
+      "reason": null,
+      "requested_backend": "local_aer_simulator",
+      "shots": 1000,
+      "status": "COMPLETED"
+    },
+    "verify_pass": {
+      "successes": 1000,
+      "trials": 1000,
+      "wilson95": {
+        "hi": 1.0,
+        "lo": 0.9961732415144449,
+        "point": 1.0,
+        "unit": "fraction"
+      }
+    }
+  },
+  "noisy": {
+    "decoded_counts_qubit_order": {
+      "00010010": 1,
+      "00100010": 1,
+      "00110010": 8,
+      "10010010": 10,
+      "10100010": 6,
+      "10101010": 1,
+      "10110000": 7,
+      "10110010": 929,
+      "10110011": 6,
+      "10110110": 9,
+      "10110111": 1,
+      "10111010": 10,
+      "11110010": 11
+    },
+    "record": {
+      "backend_is_simulator": true,
+      "bit_order": "qiskit_clbit0_rightmost",
+      "circuit_sha256": "2124dfb444ac8275ce9bba4dab00f0d540417fe0d62898ea494a3baf5b4741a6",
+      "completed_utc": "2026-10-11T21:15:28.050619+00:00",
+      "counts": {
+        "00001101": 7,
+        "01000100": 1,
+        "01000101": 6,
+        "01001000": 1,
+        "01001001": 10,
+        "01001100": 8,
+        "01001101": 929,
+        "01001111": 11,
+        "01010101": 1,
+        "01011101": 10,
+        "01101101": 9,
+        "11001101": 6,
+        "11101101": 1
+      },
+      "error": null,
+      "evidence_kind": "SIMULATOR_NOISY",
+      "executed_backend": "local_aer_simulator",
+      "job_id": "local-aer:d72a66d4-e003-4f38-a0d2-687e2f1dfb4e",
+      "native_gate_counts": null,
+      "noise_model": "hypothetical depolarizing(p1=0.001) on x/h + symmetric readout flip 0.01; not IonQ-calibrated",
+      "reason": null,
+      "requested_backend": "local_aer_simulator",
+      "shots": 1000,
+      "status": "COMPLETED"
+    },
+    "verify_pass": {
+      "successes": 929,
+      "trials": 1000,
+      "wilson95": {
+        "hi": 0.9433303046495485,
+        "lo": 0.9113863365698451,
+        "point": 0.929,
+        "unit": "fraction"
+      }
+    }
+  },
+  "seed": 7
+}
