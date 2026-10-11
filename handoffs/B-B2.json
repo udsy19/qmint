@@ -1,0 +1,94 @@
+{
+  "lane": "B",
+  "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+  "branch": "feat/B-protocols",
+  "starting_commit_sha": "ece05ef02f3f89c2f75edc2393f478e77061ca56",
+  "final_commit_sha": "834c9a9 (code); this handoff file is committed in the next commit on the branch",
+  "commands_run": [
+    "PY=/Users/udsy/PycharmProjects/Qollab-QMint/.venv/bin/python",
+    "$PY -m pytest tests/contracts tests/unit/protocols -q",
+    "$PY -m ruff check qmint/protocols tests/unit/protocols",
+    "$PY -m ruff format qmint/protocols tests/unit/protocols"
+  ],
+  "test_exit_codes": {
+    "pytest tests/contracts tests/unit/protocols": 0,
+    "ruff check": 0,
+    "pass_counts": "135 passed (18 contracts + 117 lane-B), 0 failed"
+  },
+  "whether_paid_jobs_run": false,
+  "task": "B2-kent-smoney-2022",
+  "changed_paths": [
+    "qmint/protocols/kent_smoney_2022.py",
+    "qmint/protocols/common.py",
+    "tests/unit/protocols/test_protocols_kent_smoney.py"
+  ],
+  "evidence_files": [
+    "tests/unit/protocols/test_protocols_kent_smoney.py"
+  ],
+  "sources": [
+    {
+      "id": "P03",
+      "url": "https://doi.org/10.1038/s41534-022-00524-4",
+      "pdf_sha256": "8980aeabba8ff2c0dca6f2bafae31357b503baa4e3a0d254010dd109ff36df3a",
+      "anchors": [
+        "Table 1 (IQT1, IQT2) -- complements read from https://www.nature.com/articles/s41534-022-00524-4/tables/1 because PDF text drops overlines",
+        "Table 2 (QT1 steps 0-12)",
+        "Table 3 (QT2)",
+        "Table 4 notation",
+        "eps_rob/cor/priv/unf definitions p.3",
+        "Table 5, Table 6 (assumptions A-G)",
+        "Fig. 3 caption reporting strategies 1/2"
+      ]
+    },
+    {
+      "id": "P03-SI",
+      "url": "https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fs41534-022-00524-4/MediaObjects/41534_2022_524_MOESM1_ESM.pdf",
+      "sha256": "7b49b60c8acbd3d2785fb7f6b227dae56ab1c78b6f4b8b57598e1d21bb833b66",
+      "use": "downloaded, not needed for scheme steps"
+    }
+  ],
+  "assumptions_verified": [
+    "IQT1: d_0=d, d_1=complement(d); d~_i = d_i (c=0) or complement (c=1); Delta_v={k: d~_{v,k}=u_k}; accept iff x=t on Delta_b (honest: d~_b=y)",
+    "IQT2/QT2: d~_{i,k} = i xor c for all k; Alice measures all qubits in D_z",
+    "QT1/QT2: Bob does not abort iff n >= gamma_det N; g = numerical ordering; r_j=t_k, s_j=u_k (j=g(k)); accept iff d(x_b,r_b) <= |Delta_b| gamma_err (inclusive, tested at the boundary)",
+    "Privacy (exact enumeration of Alice's y,z, N=3, all four schemes): Bob's pre-reveal view has the same law for b=0 and b=1",
+    "With P_E(z=1)=p, Bob's optimal pre-reveal guess of b succeeds with exactly 1/2+|p-1/2| (consistent with P03 Lemma 4 eps_priv = beta_E)",
+    "B_i validates from local data only; d~_i computed before presentation; trace is a valid C4 DAG"
+  ],
+  "performance_numbers_with_sources": [
+    {
+      "quantity": "S1 dual acceptance, IQT1, N=3, random-basis-then-guess strategy",
+      "value": "CI99.9 contains (3/4)^3",
+      "evidence_kind": "MONTE_CARLO (4000 trials) -- lower bound on optimal cheating only"
+    },
+    {
+      "quantity": "S1 dual acceptance, IQT1, N=3, Breidbart (pi/8) measurement",
+      "value": "CI99.9 contains (1/2+1/(2 sqrt2))^3 = 0.623",
+      "evidence_kind": "MONTE_CARLO (4000 trials); equals the P03 Lemma 1 value per qubit, i.e. that bound is attained by this simple attack"
+    },
+    {
+      "quantity": "honest token presented at the other site (IQT1/IQT2), N=3",
+      "value": "CI99.9 contains (3/4)^3",
+      "evidence_kind": "MONTE_CARLO (3000 trials)"
+    },
+    {
+      "quantity": "QT1/QT2 honest acceptance, N=40, p_det=0.6, E=0.08, gamma_det=0.5, gamma_err=0.1",
+      "value": "MC CI99.9 contains exact mixture sum_n Bin(N,p_det)[n>=gamma_det N] sum_m Bin(n,1/2) BinCDF(floor(m gamma_err); m, E)",
+      "evidence_kind": "SIMULATOR_NOISY vs exact formula for the simulated channel (not a P03 lemma)"
+    }
+  ],
+  "blockers": [],
+  "known_limitations": [
+    "Only two presentation points (M=1); the 2^M extension of Supplementary Note VIII is not implemented.",
+    "Honest realistic channel is a simulation choice: iid detection p_det and outcome flip E. Multi-photon pulses (P_noqub), dark counts, reporting strategies 1/2, preparation biases beta_PS/beta_PB and misalignment theta are not simulated.",
+    "Paper-faithful quirk: if |Delta_b| = 0 (possible for tiny n) the Hamming rule accepts trivially.",
+    "Spacelike separation of Q0/Q1 is not checked here (lane G); times and arrivals are caller-supplied, otherwise tagged latency 'unmodelled'.",
+    "Lemma 1 / Lemmas 2-4 / Theorem 1 formulas are not transcribed (PDF text of the equations is garbled; lane D must read them from the HTML/SI).",
+    "KENT_REALISTIC_SPEC.theorem_id is None pending lane D's registry id."
+  ],
+  "interfaces_changed": [
+    "PROPOSAL (C1 migration): IssuerSecret is deep-copyable: pydantic BaseModel.__deepcopy__/__copy__ bypass the __getstate__ guard (verified: copy.deepcopy(IssuerSecret(...)) succeeds). Propose IssuerSecret.__deepcopy__ and __copy__ raising SecretBoundaryError. Lane B works around it with qmint.protocols.common.SecretHolder (challengers refuse copy/pickle).",
+    "PROPOSAL (interfaces): TokenHandle exposes only record + n_qubits(); attacker capabilities are concrete methods of qmint.protocols.register.RegisterHandle: split(kraus, joint=False, copies=2) -> candidate handles, measure(position, projector0, rng). Propose adding these to the TokenHandle Protocol so lane C codes against the interface, plus Challenger.verify_pair(c1, c2) for two-candidate games (W1/W2).",
+    "NOTE (dedup at merge): qmint/protocols/register.py contains bb84_ket/bb84_projector and a factorized density-matrix register; if lane F's qmint/quantum/{bb84,channels}.py lands, one implementation must be deleted and the other reused."
+  ]
+}

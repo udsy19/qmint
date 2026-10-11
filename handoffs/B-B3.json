@@ -1,0 +1,112 @@
+{
+  "lane": "B",
+  "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+  "branch": "feat/B-protocols",
+  "starting_commit_sha": "ece05ef02f3f89c2f75edc2393f478e77061ca56",
+  "final_commit_sha": "834c9a9 (code); this handoff file is committed in the next commit on the branch",
+  "commands_run": [
+    "PY=/Users/udsy/PycharmProjects/Qollab-QMint/.venv/bin/python",
+    "$PY -m pytest tests/contracts tests/unit/protocols -q",
+    "$PY -m ruff check qmint/protocols tests/unit/protocols",
+    "$PY -m ruff format qmint/protocols tests/unit/protocols"
+  ],
+  "test_exit_codes": {
+    "pytest tests/contracts tests/unit/protocols": 0,
+    "ruff check": 0,
+    "pass_counts": "135 passed (18 contracts + 117 lane-B), 0 failed"
+  },
+  "whether_paid_jobs_run": false,
+  "task": "B3-schiansky-payment-2023",
+  "changed_paths": [
+    "qmint/protocols/schiansky_payment_2023.py",
+    "qmint/protocols/common.py",
+    "tests/unit/protocols/test_protocols_schiansky.py"
+  ],
+  "evidence_files": [
+    "tests/unit/protocols/test_protocols_schiansky.py"
+  ],
+  "sources": [
+    {
+      "id": "P04",
+      "url": "https://doi.org/10.1038/s41467-023-39519-w",
+      "pdf_sha256": "7689e53d6116999db070812a92f82d4a7e19e79329622aef1a28d160efdae596",
+      "anchors": [
+        "'Quantum advantage' steps 2-5",
+        "Methods: i.t.-secure MAC, Optimal cheating strategy (22.5 deg, ~85.4%)",
+        "Fig. 4"
+      ]
+    },
+    {
+      "id": "P04-SI",
+      "url": "https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fs41467-023-39519-w/MediaObjects/41467_2023_39519_MOESM1_ESM.pdf",
+      "sha256": "26e50b759192559e58e05a48a93d6ad70dd744da8ba975ee973266a46591a223",
+      "anchors": [
+        "Note 2D (|T|=sqrt|K|)",
+        "Note 3A SDP (14)",
+        "Note 3B eqs (16)-(18)",
+        "Note 3C eqs (19)-(23)",
+        "Note 4 (lambda = N log2|C|)",
+        "Note 5",
+        "Table 2"
+      ]
+    },
+    {
+      "id": "P04-correction",
+      "url": "https://doi.org/10.1038/s41467-023-40866-x",
+      "pdf_sha256": "5018ada3a27042d8549d35f83e11be120effee9f6fad6eb08f4050f2d8df237c",
+      "finding": "only the Discussion sentence on unbounded purchases changed (grow C via appended QKD states, authenticate with kappa); no protocol-step or numerical change"
+    }
+  ],
+  "assumptions_verified": [
+    "Basis-bit mapping from the paper's step-2 example (b,B)=(0101,0011) -> |+>|->|0>|1>: B=0 diagonal, B=1 rectilinear (test vector)",
+    "Each MAC tag bit selects the basis of one sub-token of N states; lambda = N*ell",
+    "MAC instance tag = a*M xor k over GF(2^ell) is strongly universal (exhaustive check ell=2) with |m|=|M|=sqrt|C|",
+    "Ideal TTP rule exactly as step 5; merchant substitution on CH3, quantum substitution on CH1, replay are rejected",
+    "kappa law is independent of the chosen merchant (exact, N=1)"
+  ],
+  "performance_numbers_with_sources": [
+    {
+      "quantity": "M(e_m^{+/-}=0.03278, l_m=0.224)",
+      "value": 0.448,
+      "paper_value": "0.448 +/- 0.016 (SI Table 2)",
+      "evidence_kind": "PUBLISHED_AGGREGATE reproduction"
+    },
+    {
+      "quantity": "allowed mishaps (1/2)(1-p_m/2), p_m=0.0602",
+      "value": 0.48495,
+      "paper_value": "0.4849 (SI Table 2)",
+      "evidence_kind": "PUBLISHED_AGGREGATE reproduction"
+    },
+    {
+      "quantity": "eq. (23) admissibility at delta_h=0.031, delta_d=0.01",
+      "value": "holds (0.4619 <= 0.4801)",
+      "evidence_kind": "PUBLISHED_AGGREGATE reproduction"
+    },
+    {
+      "quantity": "honest per-sub-token pass rate at (l=0.224, e=0.0328), threshold 1.031*M(e_h,l_h)",
+      "value": "N=2000: 0.63; N=2e4: 0.84; N=2e5: 0.9989; N=4.48e6: 1.000",
+      "evidence_kind": "MONTE_CARLO (count-level, 2e5 draws; full system sim agrees at N=2000, 150 trials) -- depends on INTERPRETATION of e/l estimators"
+    },
+    {
+      "quantity": "D1 double cryptogram, ell=1, N=3: measure-in-m0-guess-m1 / Breidbart",
+      "value": "CI99.9 contains 0.75^3 / 0.854^3",
+      "evidence_kind": "MONTE_CARLO (~4000 non-colliding trials) -- simple strategies only, no bound"
+    }
+  ],
+  "blockers": [
+    "UNSPECIFIED_IN_SOURCE (not invented as fact): concrete MAC family -- implemented a standard GF(2^ell) a*M+k instance consistent with SI Note 2D cardinalities.",
+    "UNSPECIFIED_IN_SOURCE: exact estimators e_hat (denominator: sifted non-lost states, i.e. QBER) and l_hat (all states), strict '<' and per-sub-token vs whole-token granularity of the M(e,l) test -- both granularities implemented, per_block default; flagged INTERPRETATION."
+  ],
+  "known_limitations": [
+    "Remote state preparation via SPDC entanglement is modelled as direct BB84 preparation (equivalent for the TTP's (b,B) description); multiphoton emission and photon-number structure of SI Note 3A are not simulated.",
+    "Correction's C-growing extension and n-time-secure MAC reuse are not implemented; one key per account, one token per payment.",
+    "TTP ledger is stateful (ttp_verify) while check() is the stateless D1 game predicate; a single honest TTP therefore never double-settles; D1 is about producing two valid merchant-bound cryptograms.",
+    "Peer-review concern (Reviewer 1, MOESM2): a malicious client could change its honest (l_h, e_h) profile; the protocol takes the TTP threshold as a configured parameter, which inherits that issue.",
+    "No SDP / Chernoff bound implemented (lane D)."
+  ],
+  "interfaces_changed": [
+    "PROPOSAL (C1 migration): IssuerSecret is deep-copyable: pydantic BaseModel.__deepcopy__/__copy__ bypass the __getstate__ guard (verified: copy.deepcopy(IssuerSecret(...)) succeeds). Propose IssuerSecret.__deepcopy__ and __copy__ raising SecretBoundaryError. Lane B works around it with qmint.protocols.common.SecretHolder (challengers refuse copy/pickle).",
+    "PROPOSAL (interfaces): TokenHandle exposes only record + n_qubits(); attacker capabilities are concrete methods of qmint.protocols.register.RegisterHandle: split(kraus, joint=False, copies=2) -> candidate handles, measure(position, projector0, rng). Propose adding these to the TokenHandle Protocol so lane C codes against the interface, plus Challenger.verify_pair(c1, c2) for two-candidate games (W1/W2).",
+    "NOTE (dedup at merge): qmint/protocols/register.py contains bb84_ket/bb84_projector and a factorized density-matrix register; if lane F's qmint/quantum/{bb84,channels}.py lands, one implementation must be deleted and the other reused."
+  ]
+}
