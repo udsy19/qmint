@@ -13,7 +13,7 @@
  "legend": [],
  "manifest_id": "figure-fig07_classical_vs_quantum_latency",
  "manifest_path": "figures/fig07_classical_vs_quantum_latency.manifest.json",
- "manifest_sha256": "54f196a7c82ce2979f179f3b10f685d0e77a7939248904cb917bd2a479bbe5c4",
+ "manifest_sha256": "4ddfec519306a7899553bd88e17c26c2b553aeb346d3241e99fe0b752b8ef057",
  "inputs": [],
  "data_csv": "figures/fig07_classical_vs_quantum_latency.csv",
  "outputs": [

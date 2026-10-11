@@ -13,7 +13,7 @@
  "legend": [],
  "manifest_id": "figure-fig08_certificate_pareto",
  "manifest_path": "figures/fig08_certificate_pareto.manifest.json",
- "manifest_sha256": "073673f8eadad789c5d53690d1cdc956b61473f298f34fbcad12d34eb70b2985",
+ "manifest_sha256": "82a4313bfa5da90a572cd7eca50a3a9ec6068837083063a1fe03d62dab1dafaf",
  "inputs": [],
  "data_csv": "figures/fig08_certificate_pareto.csv",
  "outputs": [

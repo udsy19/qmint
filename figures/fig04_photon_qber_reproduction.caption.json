@@ -24,7 +24,7 @@
  ],
  "manifest_id": "figure-fig04_photon_qber_reproduction",
  "manifest_path": "figures/fig04_photon_qber_reproduction.manifest.json",
- "manifest_sha256": "3d5bc211bf0d522e40a54be4ad882a5a86ad5e94a83da22d9da1f27ee288288e",
+ "manifest_sha256": "a3863f9338765a3b0267d4cc6b45877a747d70a5617bc9f15d7c4dd8fcead67b",
  "inputs": [
   {
    "path": "reports/data_working/schiansky2023/per_run.csv",

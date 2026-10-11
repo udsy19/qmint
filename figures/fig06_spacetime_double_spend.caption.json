@@ -13,7 +13,7 @@
  "legend": [],
  "manifest_id": "figure-fig06_spacetime_double_spend",
  "manifest_path": "figures/fig06_spacetime_double_spend.manifest.json",
- "manifest_sha256": "85416fea806a01941b61cdf5009c828d13c226174cf4611ab153a2cb16bbef55",
+ "manifest_sha256": "8e58163fc61fd5da482146f7a5e0755c646e5782232cc843bc993a787f0c2594",
  "inputs": [],
  "data_csv": "figures/fig06_spacetime_double_spend.csv",
  "outputs": [

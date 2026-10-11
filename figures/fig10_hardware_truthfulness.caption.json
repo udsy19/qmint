@@ -32,7 +32,7 @@
  ],
  "manifest_id": "figure-fig10_hardware_truthfulness",
  "manifest_path": "figures/fig10_hardware_truthfulness.manifest.json",
- "manifest_sha256": "f94e8f65cc4d8c235fe990322ca8c1209d6fec3f38d0923d727dd61a1f5d5581",
+ "manifest_sha256": "963e6795be8a670e5f8648ca26e2d6d229e05ddbb9ef61f9c985ab467867ead8",
  "inputs": [
   {
    "path": "handoffs/F-F1_evidence.json",

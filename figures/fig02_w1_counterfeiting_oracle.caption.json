@@ -26,7 +26,7 @@
  ],
  "manifest_id": "figure-fig02_w1_counterfeiting_oracle",
  "manifest_path": "figures/fig02_w1_counterfeiting_oracle.manifest.json",
- "manifest_sha256": "d8533ea81b8ed3335a123fd63ce16e7040b0aca0691c5ab3d439c9b789803314",
+ "manifest_sha256": "768ba01634236afecf94f412a20d948ba46eae4555318d82ceb2c67e4f593006",
  "inputs": [
   {
    "path": "handoffs/C-C1-evidence.json",
@@ -40,7 +40,6 @@
   "figures/fig02_w1_counterfeiting_oracle.csv"
  ],
  "sources": [
-  "Molina, Vidick, Watrous 2012, arXiv:1202.4010v1",
   "https://arxiv.org/abs/1202.4010"
  ],
  "notes": [],

@@ -23,7 +23,7 @@
  ],
  "manifest_id": "figure-fig05_kent2022_secure_region",
  "manifest_path": "figures/fig05_kent2022_secure_region.manifest.json",
- "manifest_sha256": "46d83e84a0b884f265e785cf9a460a3d24b27276eb64f5bbf2f02bf330f617aa",
+ "manifest_sha256": "15ba2c585b561de32e127f4e768862dbe10a1d85f1d5943177deea8030798f68",
  "inputs": [
   {
    "path": "proofs/certificates/reproduction_v1.json",
