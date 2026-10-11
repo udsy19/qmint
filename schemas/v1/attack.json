@@ -1,0 +1,296 @@
+{
+  "$defs": {
+    "EvidenceKind": {
+      "description": "What kind of evidence a number is. Never interchangeable.",
+      "enum": [
+        "PUBLISHED_THEOREM",
+        "NUMERICAL_SDP",
+        "CERTIFIED_NUMERIC",
+        "MONTE_CARLO",
+        "PHOTON_EXPERIMENT",
+        "PUBLISHED_AGGREGATE",
+        "DIGITIZED_FIGURE",
+        "SYNTHETIC",
+        "SIMULATOR_IDEAL",
+        "SIMULATOR_NOISY",
+        "QPU",
+        "MODELLED_LATENCY",
+        "MEASURED_LATENCY",
+        "UNCERTIFIED"
+      ],
+      "title": "EvidenceKind",
+      "type": "string"
+    },
+    "GameId": {
+      "description": "Named, versioned security experiments (master plan 3.1).",
+      "enum": [
+        "W1",
+        "W1_CV",
+        "W2",
+        "S1",
+        "S2",
+        "D1",
+        "A1",
+        "C1"
+      ],
+      "title": "GameId",
+      "type": "string"
+    },
+    "Interval": {
+      "additionalProperties": false,
+      "description": "Closed interval [lo, hi] with explicit unit and (optional) confidence semantics.",
+      "properties": {
+        "hi": {
+          "title": "Hi",
+          "type": "number"
+        },
+        "lo": {
+          "title": "Lo",
+          "type": "number"
+        },
+        "point": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Point"
+        },
+        "unit": {
+          "$ref": "#/$defs/Unit"
+        }
+      },
+      "required": [
+        "lo",
+        "hi",
+        "unit"
+      ],
+      "title": "Interval",
+      "type": "object"
+    },
+    "Unit": {
+      "description": "Canonical units. Fractions/probabilities are dimensionless in [0,1], never percent.",
+      "enum": [
+        "fraction",
+        "probability",
+        "ns",
+        "s",
+        "m",
+        "km",
+        "dB",
+        "count",
+        "Hz",
+        "byte"
+      ],
+      "title": "Unit",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "attack_capability": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Attack Capability",
+      "type": "array"
+    },
+    "attack_id": {
+      "minLength": 1,
+      "title": "Attack Id",
+      "type": "string"
+    },
+    "attack_method": {
+      "minLength": 1,
+      "title": "Attack Method",
+      "type": "string"
+    },
+    "backend_kind": {
+      "minLength": 1,
+      "title": "Backend Kind",
+      "type": "string"
+    },
+    "ci_method": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Ci Method"
+    },
+    "dual_feasibility_residual": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Dual Feasibility Residual"
+    },
+    "evidence_kind": {
+      "$ref": "#/$defs/EvidenceKind"
+    },
+    "game_id": {
+      "$ref": "#/$defs/GameId"
+    },
+    "primal_feasibility_residual": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Primal Feasibility Residual"
+    },
+    "proof_applicability": {
+      "enum": [
+        "IN_MODEL",
+        "OUT_OF_MODEL",
+        "NO_THEOREM"
+      ],
+      "title": "Proof Applicability",
+      "type": "string"
+    },
+    "quantum_channel_description": {
+      "minLength": 1,
+      "title": "Quantum Channel Description",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sdp_dual": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Sdp Dual"
+    },
+    "sdp_primal": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Sdp Primal"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Seed"
+    },
+    "solver": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Solver"
+    },
+    "source_code_sha": {
+      "minLength": 1,
+      "title": "Source Code Sha",
+      "type": "string"
+    },
+    "success_rate_ci": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Interval"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "successes": {
+      "minimum": 0,
+      "title": "Successes",
+      "type": "integer"
+    },
+    "theorem_upper_bound": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Theorem Upper Bound"
+    },
+    "token_n": {
+      "minimum": 1,
+      "title": "Token N",
+      "type": "integer"
+    },
+    "trials": {
+      "minimum": 0,
+      "title": "Trials",
+      "type": "integer"
+    },
+    "verifier_rule": {
+      "minLength": 1,
+      "title": "Verifier Rule",
+      "type": "string"
+    }
+  },
+  "required": [
+    "attack_id",
+    "game_id",
+    "attack_capability",
+    "token_n",
+    "attack_method",
+    "quantum_channel_description",
+    "verifier_rule",
+    "trials",
+    "successes",
+    "proof_applicability",
+    "backend_kind",
+    "evidence_kind",
+    "source_code_sha"
+  ],
+  "title": "AttackResult",
+  "type": "object"
+}

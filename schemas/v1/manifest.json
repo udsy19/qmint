@@ -1,0 +1,161 @@
+{
+  "$defs": {
+    "EvidenceKind": {
+      "description": "What kind of evidence a number is. Never interchangeable.",
+      "enum": [
+        "PUBLISHED_THEOREM",
+        "NUMERICAL_SDP",
+        "CERTIFIED_NUMERIC",
+        "MONTE_CARLO",
+        "PHOTON_EXPERIMENT",
+        "PUBLISHED_AGGREGATE",
+        "DIGITIZED_FIGURE",
+        "SYNTHETIC",
+        "SIMULATOR_IDEAL",
+        "SIMULATOR_NOISY",
+        "QPU",
+        "MODELLED_LATENCY",
+        "MEASURED_LATENCY",
+        "UNCERTIFIED"
+      ],
+      "title": "EvidenceKind",
+      "type": "string"
+    },
+    "ManifestEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "original_or_derived": {
+          "enum": [
+            "original",
+            "derived"
+          ],
+          "title": "Original Or Derived",
+          "type": "string"
+        },
+        "path_or_uri": {
+          "minLength": 1,
+          "title": "Path Or Uri",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "input",
+            "output",
+            "script",
+            "environment"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "upstream_checksum": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Upstream Checksum"
+        }
+      },
+      "required": [
+        "path_or_uri",
+        "sha256",
+        "role",
+        "original_or_derived"
+      ],
+      "title": "ManifestEntry",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "command": {
+      "minLength": 1,
+      "title": "Command",
+      "type": "string"
+    },
+    "created_utc": {
+      "minLength": 1,
+      "title": "Created Utc",
+      "type": "string"
+    },
+    "entries": {
+      "items": {
+        "$ref": "#/$defs/ManifestEntry"
+      },
+      "minItems": 1,
+      "title": "Entries",
+      "type": "array"
+    },
+    "environment": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Environment",
+      "type": "object"
+    },
+    "evidence_kind": {
+      "$ref": "#/$defs/EvidenceKind"
+    },
+    "git_sha": {
+      "minLength": 1,
+      "title": "Git Sha",
+      "type": "string"
+    },
+    "manifest_id": {
+      "minLength": 1,
+      "title": "Manifest Id",
+      "type": "string"
+    },
+    "retrieved_utc": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Retrieved Utc"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "seeds": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Seeds",
+      "type": "array"
+    },
+    "source_urls": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Source Urls",
+      "type": "array"
+    }
+  },
+  "required": [
+    "manifest_id",
+    "created_utc",
+    "command",
+    "git_sha",
+    "evidence_kind",
+    "entries"
+  ],
+  "title": "EvidenceManifest",
+  "type": "object"
+}

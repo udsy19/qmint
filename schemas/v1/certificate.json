@@ -1,0 +1,322 @@
+{
+  "$defs": {
+    "CertificateStatus": {
+      "enum": [
+        "CERTIFIED",
+        "UNCERTIFIED",
+        "INFEASIBLE",
+        "UNSAFE",
+        "OUT_OF_MODEL"
+      ],
+      "title": "CertificateStatus",
+      "type": "string"
+    },
+    "ClaimLevel": {
+      "description": "Research claims hierarchy (master plan 4.6).",
+      "enum": [
+        "L0",
+        "L1",
+        "L2",
+        "L3",
+        "L4",
+        "L5"
+      ],
+      "title": "ClaimLevel",
+      "type": "string"
+    },
+    "EvidenceKind": {
+      "description": "What kind of evidence a number is. Never interchangeable.",
+      "enum": [
+        "PUBLISHED_THEOREM",
+        "NUMERICAL_SDP",
+        "CERTIFIED_NUMERIC",
+        "MONTE_CARLO",
+        "PHOTON_EXPERIMENT",
+        "PUBLISHED_AGGREGATE",
+        "DIGITIZED_FIGURE",
+        "SYNTHETIC",
+        "SIMULATOR_IDEAL",
+        "SIMULATOR_NOISY",
+        "QPU",
+        "MODELLED_LATENCY",
+        "MEASURED_LATENCY",
+        "UNCERTIFIED"
+      ],
+      "title": "EvidenceKind",
+      "type": "string"
+    },
+    "GameId": {
+      "description": "Named, versioned security experiments (master plan 3.1).",
+      "enum": [
+        "W1",
+        "W1_CV",
+        "W2",
+        "S1",
+        "S2",
+        "D1",
+        "A1",
+        "C1"
+      ],
+      "title": "GameId",
+      "type": "string"
+    },
+    "Targets": {
+      "additionalProperties": false,
+      "properties": {
+        "epsilon_cor": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Epsilon Cor"
+        },
+        "epsilon_priv": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Epsilon Priv"
+        },
+        "epsilon_rob": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Epsilon Rob"
+        },
+        "epsilon_unf": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Epsilon Unf"
+        }
+      },
+      "title": "Targets",
+      "type": "object"
+    },
+    "UpperBounds": {
+      "additionalProperties": false,
+      "properties": {
+        "epsilon_cor": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Epsilon Cor"
+        },
+        "epsilon_priv": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Epsilon Priv"
+        },
+        "epsilon_rob": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Epsilon Rob"
+        },
+        "epsilon_unf": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Epsilon Unf"
+        }
+      },
+      "title": "UpperBounds",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assumptions_met": {
+      "default": false,
+      "title": "Assumptions Met",
+      "type": "boolean"
+    },
+    "calibration_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Calibration Id"
+    },
+    "certificate_version": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Certificate Version",
+      "type": "string"
+    },
+    "checker_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Checker Id"
+    },
+    "claim_level": {
+      "$ref": "#/$defs/ClaimLevel",
+      "default": "L0"
+    },
+    "evidence_hashes": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "title": "Evidence Hashes",
+      "type": "array"
+    },
+    "evidence_kind": {
+      "$ref": "#/$defs/EvidenceKind",
+      "default": "UNCERTIFIED"
+    },
+    "failed_assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Failed Assumptions",
+      "type": "array"
+    },
+    "game_id": {
+      "$ref": "#/$defs/GameId"
+    },
+    "log10_upper_bounds": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Log10 Upper Bounds",
+      "type": "object"
+    },
+    "parameters": {
+      "additionalProperties": true,
+      "title": "Parameters",
+      "type": "object"
+    },
+    "proof_check_status": {
+      "$ref": "#/$defs/CertificateStatus",
+      "default": "UNCERTIFIED"
+    },
+    "proof_reference": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Proof Reference"
+    },
+    "protocol_id": {
+      "title": "Protocol Id",
+      "type": "string"
+    },
+    "reason": {
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    },
+    "security_model_id": {
+      "minLength": 1,
+      "title": "Security Model Id",
+      "type": "string"
+    },
+    "software_revision": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Software Revision"
+    },
+    "targets": {
+      "$ref": "#/$defs/Targets"
+    },
+    "upper_bounds": {
+      "$ref": "#/$defs/UpperBounds"
+    }
+  },
+  "required": [
+    "protocol_id",
+    "game_id",
+    "security_model_id",
+    "reason"
+  ],
+  "title": "SecurityCertificate",
+  "type": "object"
+}

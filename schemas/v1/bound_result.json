@@ -1,0 +1,153 @@
+{
+  "$defs": {
+    "EvidenceKind": {
+      "description": "What kind of evidence a number is. Never interchangeable.",
+      "enum": [
+        "PUBLISHED_THEOREM",
+        "NUMERICAL_SDP",
+        "CERTIFIED_NUMERIC",
+        "MONTE_CARLO",
+        "PHOTON_EXPERIMENT",
+        "PUBLISHED_AGGREGATE",
+        "DIGITIZED_FIGURE",
+        "SYNTHETIC",
+        "SIMULATOR_IDEAL",
+        "SIMULATOR_NOISY",
+        "QPU",
+        "MODELLED_LATENCY",
+        "MEASURED_LATENCY",
+        "UNCERTIFIED"
+      ],
+      "title": "EvidenceKind",
+      "type": "string"
+    },
+    "GameId": {
+      "description": "Named, versioned security experiments (master plan 3.1).",
+      "enum": [
+        "W1",
+        "W1_CV",
+        "W2",
+        "S1",
+        "S2",
+        "D1",
+        "A1",
+        "C1"
+      ],
+      "title": "GameId",
+      "type": "string"
+    },
+    "ProofStatus": {
+      "description": "Status of a proof obligation / bound (master plan 3.6).",
+      "enum": [
+        "PUBLISHED_REPRODUCED",
+        "NUMERICALLY_SUPPORTED",
+        "CERTIFIED_NUMERIC",
+        "CONJECTURE",
+        "UNSUPPORTED"
+      ],
+      "title": "ProofStatus",
+      "type": "string"
+    },
+    "SecurityAxis": {
+      "enum": [
+        "epsilon_unf",
+        "epsilon_cor",
+        "epsilon_rob",
+        "epsilon_priv"
+      ],
+      "title": "SecurityAxis",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Output of a ProofEvaluator. ``value is None`` means no applicable bound (never 0).",
+  "properties": {
+    "assumptions_checked": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumptions Checked",
+      "type": "array"
+    },
+    "axis": {
+      "$ref": "#/$defs/SecurityAxis"
+    },
+    "evidence_kind": {
+      "$ref": "#/$defs/EvidenceKind"
+    },
+    "failed_assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Failed Assumptions",
+      "type": "array"
+    },
+    "game_id": {
+      "$ref": "#/$defs/GameId"
+    },
+    "log10_value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Log10 Value"
+    },
+    "notes": {
+      "default": "",
+      "title": "Notes",
+      "type": "string"
+    },
+    "out_of_domain": {
+      "default": false,
+      "title": "Out Of Domain",
+      "type": "boolean"
+    },
+    "protocol_id": {
+      "title": "Protocol Id",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ProofStatus"
+    },
+    "theorem_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Theorem Id"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Value"
+    }
+  },
+  "required": [
+    "protocol_id",
+    "game_id",
+    "axis",
+    "status",
+    "evidence_kind"
+  ],
+  "title": "BoundResult",
+  "type": "object"
+}

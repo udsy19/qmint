@@ -1,0 +1,19 @@
+{
+  "adversary_game_id": "W1",
+  "classical_authentication": "not_applicable",
+  "issuer_trust": "honest_bank",
+  "proof_assumptions": [
+    "iid_uniform_bb84",
+    "exact_projective_verifier",
+    "no_verification_oracle"
+  ],
+  "protocol_id": "wiesner_ideal",
+  "protocol_revision": "mvw2012_simple_counterfeiting",
+  "quantum_memory_required": true,
+  "quantum_stage": "note_is_quantum_state",
+  "redemption_semantics": "single_verifier_bank",
+  "same_party_agent_trust": "not_applicable",
+  "security_model_id": "wiesner_ideal_exact_verifier_v1",
+  "source_paper_id": "P01",
+  "theorem_id": "P-W1"
+}

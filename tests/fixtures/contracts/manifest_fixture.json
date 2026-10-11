@@ -1,0 +1,15 @@
+{
+  "command": "python tests/fixtures/contracts/make_fixtures.py",
+  "created_utc": "2026-10-11T00:00:00Z",
+  "entries": [
+    {
+      "original_or_derived": "derived",
+      "path_or_uri": "tests/fixtures/contracts/token_wiesner.json",
+      "role": "output",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "evidence_kind": "SYNTHETIC",
+  "git_sha": "bootstrap",
+  "manifest_id": "man-fixture-0001"
+}

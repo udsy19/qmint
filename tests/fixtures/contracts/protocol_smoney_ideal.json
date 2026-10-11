@@ -1,0 +1,14 @@
+{
+  "adversary_game_id": "S1",
+  "classical_authentication": "pre_shared_authenticated_channels",
+  "issuer_trust": "honest_bank",
+  "protocol_id": "s_money_kent_2022_ideal_2site",
+  "protocol_revision": "published_table_1",
+  "quantum_memory_required": false,
+  "quantum_stage": "short_range_before_commitment",
+  "redemption_semantics": "one_of_two_spacelike_sites",
+  "same_party_agent_trust": "trusted",
+  "security_model_id": "s_money_ideal_v1",
+  "source_paper_id": "P03",
+  "theorem_id": "P-S1"
+}

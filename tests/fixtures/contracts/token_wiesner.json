@@ -1,0 +1,13 @@
+{
+  "backend_provenance": "SYNTHETIC:fixture",
+  "issue_event_id": "ev-issue-0001",
+  "n_prepared": 8,
+  "ownership_context": "fixture_wallet",
+  "protocol_id": "wiesner_ideal",
+  "public_metadata": {
+    "serial": "SN-0001"
+  },
+  "source_state_family": "BB84",
+  "state_kind": "ideal_simulated",
+  "token_id": "tok-fixture-0001"
+}

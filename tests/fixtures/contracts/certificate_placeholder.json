@@ -1,0 +1,15 @@
+{
+  "game_id": "S2",
+  "parameters": {
+    "N": 0,
+    "error_threshold": null,
+    "loss_threshold": null
+  },
+  "protocol_id": "s_money_kent_2022_realistic",
+  "reason": "example_placeholder_not_a_certificate",
+  "security_model_id": "specific_published_model",
+  "targets": {
+    "epsilon_cor": 1e-06,
+    "epsilon_unf": 1e-09
+  }
+}

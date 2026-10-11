@@ -1,0 +1,165 @@
+{
+  "$defs": {
+    "EvidenceKind": {
+      "description": "What kind of evidence a number is. Never interchangeable.",
+      "enum": [
+        "PUBLISHED_THEOREM",
+        "NUMERICAL_SDP",
+        "CERTIFIED_NUMERIC",
+        "MONTE_CARLO",
+        "PHOTON_EXPERIMENT",
+        "PUBLISHED_AGGREGATE",
+        "DIGITIZED_FIGURE",
+        "SYNTHETIC",
+        "SIMULATOR_IDEAL",
+        "SIMULATOR_NOISY",
+        "QPU",
+        "MODELLED_LATENCY",
+        "MEASURED_LATENCY",
+        "UNCERTIFIED"
+      ],
+      "title": "EvidenceKind",
+      "type": "string"
+    },
+    "TraceEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "causal_parent_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Causal Parent Ids",
+          "type": "array"
+        },
+        "detail": {
+          "additionalProperties": true,
+          "title": "Detail",
+          "type": "object"
+        },
+        "event_id": {
+          "minLength": 1,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "issue",
+            "quantum_exchange",
+            "measurement",
+            "commitment",
+            "branch_choice",
+            "message_send",
+            "message_receive",
+            "local_validation_start",
+            "verification_result_available_local",
+            "issuer_aware_of_spend",
+            "bank_settlement_final",
+            "merchant_funds_irrevocable",
+            "buyer_receipt",
+            "reject",
+            "privacy_reveal",
+            "other"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "message_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Message Id"
+        },
+        "site_id": {
+          "minLength": 1,
+          "title": "Site Id",
+          "type": "string"
+        },
+        "time_ns": {
+          "title": "Time Ns",
+          "type": "number"
+        }
+      },
+      "required": [
+        "event_id",
+        "site_id",
+        "kind",
+        "time_ns"
+      ],
+      "title": "TraceEvent",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "double_spend_accepted": {
+      "title": "Double Spend Accepted",
+      "type": "boolean"
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/TraceEvent"
+      },
+      "minItems": 1,
+      "title": "Events",
+      "type": "array"
+    },
+    "irrevocability_rule": {
+      "minLength": 1,
+      "title": "Irrevocability Rule",
+      "type": "string"
+    },
+    "latency_breakdown_ns": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Latency Breakdown Ns",
+      "type": "object"
+    },
+    "latency_evidence": {
+      "$ref": "#/$defs/EvidenceKind"
+    },
+    "network_id": {
+      "minLength": 1,
+      "title": "Network Id",
+      "type": "string"
+    },
+    "protocol_id": {
+      "title": "Protocol Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "token_id": {
+      "minLength": 1,
+      "title": "Token Id",
+      "type": "string"
+    },
+    "trace_id": {
+      "minLength": 1,
+      "title": "Trace Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "trace_id",
+    "token_id",
+    "protocol_id",
+    "network_id",
+    "events",
+    "irrevocability_rule",
+    "double_spend_accepted",
+    "latency_evidence"
+  ],
+  "title": "TransactionTrace",
+  "type": "object"
+}

@@ -1,0 +1,244 @@
+{
+  "$defs": {
+    "EvidenceKind": {
+      "description": "What kind of evidence a number is. Never interchangeable.",
+      "enum": [
+        "PUBLISHED_THEOREM",
+        "NUMERICAL_SDP",
+        "CERTIFIED_NUMERIC",
+        "MONTE_CARLO",
+        "PHOTON_EXPERIMENT",
+        "PUBLISHED_AGGREGATE",
+        "DIGITIZED_FIGURE",
+        "SYNTHETIC",
+        "SIMULATOR_IDEAL",
+        "SIMULATOR_NOISY",
+        "QPU",
+        "MODELLED_LATENCY",
+        "MEASURED_LATENCY",
+        "UNCERTIFIED"
+      ],
+      "title": "EvidenceKind",
+      "type": "string"
+    },
+    "Interval": {
+      "additionalProperties": false,
+      "description": "Closed interval [lo, hi] with explicit unit and (optional) confidence semantics.",
+      "properties": {
+        "hi": {
+          "title": "Hi",
+          "type": "number"
+        },
+        "lo": {
+          "title": "Lo",
+          "type": "number"
+        },
+        "point": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Point"
+        },
+        "unit": {
+          "$ref": "#/$defs/Unit"
+        }
+      },
+      "required": [
+        "lo",
+        "hi",
+        "unit"
+      ],
+      "title": "Interval",
+      "type": "object"
+    },
+    "Unit": {
+      "description": "Canonical units. Fractions/probabilities are dimensionless in [0,1], never percent.",
+      "enum": [
+        "fraction",
+        "probability",
+        "ns",
+        "s",
+        "m",
+        "km",
+        "dB",
+        "count",
+        "Hz",
+        "byte"
+      ],
+      "title": "Unit",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "basis_bias_interval": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Interval"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "calibration_id": {
+      "minLength": 1,
+      "title": "Calibration Id",
+      "type": "string"
+    },
+    "clock_drift_interval": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Interval"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "confidence_level": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Confidence Level",
+      "type": "number"
+    },
+    "data_origin": {
+      "$ref": "#/$defs/EvidenceKind"
+    },
+    "dataset_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Dataset Sha256"
+    },
+    "detection_efficiency_interval": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Interval"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "device_id": {
+      "minLength": 1,
+      "title": "Device Id",
+      "type": "string"
+    },
+    "experiment_family": {
+      "minLength": 1,
+      "title": "Experiment Family",
+      "type": "string"
+    },
+    "independence_assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Independence Assumptions",
+      "type": "array"
+    },
+    "interval_method": {
+      "minLength": 1,
+      "title": "Interval Method",
+      "type": "string"
+    },
+    "loss_interval": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Interval"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "multiphoton_interval": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Interval"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "n_events": {
+      "minimum": 0,
+      "title": "N Events",
+      "type": "integer"
+    },
+    "qber_interval": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Interval"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "time_end_ns": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Time End Ns"
+    },
+    "time_start_ns": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Time Start Ns"
+    }
+  },
+  "required": [
+    "calibration_id",
+    "device_id",
+    "experiment_family",
+    "data_origin",
+    "n_events",
+    "confidence_level",
+    "interval_method",
+    "independence_assumptions"
+  ],
+  "title": "CalibrationRecord",
+  "type": "object"
+}

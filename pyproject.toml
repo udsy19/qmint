@@ -1,0 +1,52 @@
+[project]
+name = "qmint"
+version = "0.1.0"
+description = "QMint: proof-carrying quantum payment security research platform (research simulator; not a payment system)"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = { text = "Apache-2.0" }
+authors = [{ name = "QMint contributors" }]
+dependencies = [
+  "numpy>=2.0",
+  "scipy>=1.13",
+  "pydantic>=2.7",
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+sdp = ["cvxpy>=1.5", "scs>=3.2", "clarabel>=0.9"]
+quantum = ["qiskit>=1.2", "qiskit-aer>=0.15", "qutip>=5.0"]
+pqc = ["dilithium-py>=1.1"]
+data = ["requests>=2.31"]
+plots = ["matplotlib>=3.8"]
+dev = ["pytest>=8.0", "hypothesis>=6.100", "ruff>=0.6"]
+all = ["qmint[sdp,quantum,pqc,data,plots,dev]"]
+
+[project.scripts]
+qmint = "qmint.cli:main"
+
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["qmint"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+markers = [
+  "slow: long-running (SDP n=2, large Monte Carlo)",
+  "network: requires public network access (Zenodo, RIPE Atlas)",
+  "realdata: requires downloaded real dataset in datasets/cache",
+  "optional_dep: requires an optional dependency; skipped with explicit reason if absent",
+]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E501", "UP042"]

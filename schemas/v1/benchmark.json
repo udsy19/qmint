@@ -1,0 +1,419 @@
+{
+  "$defs": {
+    "ClaimLevel": {
+      "description": "Research claims hierarchy (master plan 4.6).",
+      "enum": [
+        "L0",
+        "L1",
+        "L2",
+        "L3",
+        "L4",
+        "L5"
+      ],
+      "title": "ClaimLevel",
+      "type": "string"
+    },
+    "EvidenceKind": {
+      "description": "What kind of evidence a number is. Never interchangeable.",
+      "enum": [
+        "PUBLISHED_THEOREM",
+        "NUMERICAL_SDP",
+        "CERTIFIED_NUMERIC",
+        "MONTE_CARLO",
+        "PHOTON_EXPERIMENT",
+        "PUBLISHED_AGGREGATE",
+        "DIGITIZED_FIGURE",
+        "SYNTHETIC",
+        "SIMULATOR_IDEAL",
+        "SIMULATOR_NOISY",
+        "QPU",
+        "MODELLED_LATENCY",
+        "MEASURED_LATENCY",
+        "UNCERTIFIED"
+      ],
+      "title": "EvidenceKind",
+      "type": "string"
+    },
+    "Interval": {
+      "additionalProperties": false,
+      "description": "Closed interval [lo, hi] with explicit unit and (optional) confidence semantics.",
+      "properties": {
+        "hi": {
+          "title": "Hi",
+          "type": "number"
+        },
+        "lo": {
+          "title": "Lo",
+          "type": "number"
+        },
+        "point": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Point"
+        },
+        "unit": {
+          "$ref": "#/$defs/Unit"
+        }
+      },
+      "required": [
+        "lo",
+        "hi",
+        "unit"
+      ],
+      "title": "Interval",
+      "type": "object"
+    },
+    "Targets": {
+      "additionalProperties": false,
+      "properties": {
+        "epsilon_cor": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Epsilon Cor"
+        },
+        "epsilon_priv": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Epsilon Priv"
+        },
+        "epsilon_rob": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Epsilon Rob"
+        },
+        "epsilon_unf": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Epsilon Unf"
+        }
+      },
+      "title": "Targets",
+      "type": "object"
+    },
+    "Unit": {
+      "description": "Canonical units. Fractions/probabilities are dimensionless in [0,1], never percent.",
+      "enum": [
+        "fraction",
+        "probability",
+        "ns",
+        "s",
+        "m",
+        "km",
+        "dB",
+        "count",
+        "Hz",
+        "byte"
+      ],
+      "title": "Unit",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "claim_level": {
+      "$ref": "#/$defs/ClaimLevel",
+      "default": "L0"
+    },
+    "classical_bytes": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Classical Bytes"
+    },
+    "classical_or_quantum": {
+      "enum": [
+        "classical",
+        "quantum"
+      ],
+      "title": "Classical Or Quantum",
+      "type": "string"
+    },
+    "configuration": {
+      "additionalProperties": true,
+      "title": "Configuration",
+      "type": "object"
+    },
+    "data_sha": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Data Sha"
+    },
+    "double_spends_successful": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Double Spends Successful"
+    },
+    "environment_lock": {
+      "minLength": 1,
+      "title": "Environment Lock",
+      "type": "string"
+    },
+    "evidence_kind": {
+      "$ref": "#/$defs/EvidenceKind"
+    },
+    "false_rejects": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "False Rejects"
+    },
+    "git_sha": {
+      "minLength": 1,
+      "title": "Git Sha",
+      "type": "string"
+    },
+    "issue_seconds": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Issue Seconds"
+    },
+    "issuer_calls": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Issuer Calls"
+    },
+    "method": {
+      "minLength": 1,
+      "title": "Method",
+      "type": "string"
+    },
+    "network_cross_check_seconds": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Network Cross Check Seconds"
+    },
+    "network_id": {
+      "minLength": 1,
+      "title": "Network Id",
+      "type": "string"
+    },
+    "numerical_ci": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Interval"
+      },
+      "title": "Numerical Ci",
+      "type": "object"
+    },
+    "photons_detected": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Photons Detected"
+    },
+    "photons_prepared": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Photons Prepared"
+    },
+    "pre_distribution": {
+      "minLength": 1,
+      "title": "Pre Distribution",
+      "type": "string"
+    },
+    "privacy_game": {
+      "minLength": 1,
+      "title": "Privacy Game",
+      "type": "string"
+    },
+    "protocol_id": {
+      "title": "Protocol Id",
+      "type": "string"
+    },
+    "record_id": {
+      "minLength": 1,
+      "title": "Record Id",
+      "type": "string"
+    },
+    "redemption_local_seconds": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Redemption Local Seconds"
+    },
+    "run_repetition": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Run Repetition",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "security_target": {
+      "$ref": "#/$defs/Targets"
+    },
+    "site_count": {
+      "minimum": 1,
+      "title": "Site Count",
+      "type": "integer"
+    },
+    "spending_flexibility": {
+      "enum": [
+        "late_choice_any_site",
+        "preassigned_site",
+        "online_any_site",
+        "none"
+      ],
+      "title": "Spending Flexibility",
+      "type": "string"
+    },
+    "total_setup_cost": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Total Setup Cost"
+    },
+    "trust_model": {
+      "minLength": 1,
+      "title": "Trust Model",
+      "type": "string"
+    }
+  },
+  "required": [
+    "record_id",
+    "protocol_id",
+    "classical_or_quantum",
+    "security_target",
+    "trust_model",
+    "pre_distribution",
+    "spending_flexibility",
+    "privacy_game",
+    "network_id",
+    "site_count",
+    "method",
+    "evidence_kind",
+    "git_sha",
+    "environment_lock"
+  ],
+  "title": "BenchmarkRecord",
+  "type": "object"
+}

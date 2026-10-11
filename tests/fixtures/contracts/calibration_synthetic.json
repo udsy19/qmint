@@ -1,0 +1,18 @@
+{
+  "calibration_id": "cal-synthetic-0001",
+  "confidence_level": 0.95,
+  "data_origin": "SYNTHETIC",
+  "device_id": "synthetic_source",
+  "experiment_family": "synthetic",
+  "independence_assumptions": [
+    "iid_events_synthetic"
+  ],
+  "interval_method": "clopper_pearson",
+  "n_events": 1000,
+  "qber_interval": {
+    "hi": 0.03,
+    "lo": 0.01,
+    "point": 0.02,
+    "unit": "fraction"
+  }
+}

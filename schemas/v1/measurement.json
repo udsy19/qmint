@@ -1,0 +1,158 @@
+{
+  "$defs": {
+    "Basis": {
+      "description": "BB84 basis. Z: {|0>,|1>}; X: {|+>,|->}. Never inferred from Qiskit bit order.",
+      "enum": [
+        "Z",
+        "X"
+      ],
+      "title": "Basis",
+      "type": "string"
+    },
+    "EvidenceKind": {
+      "description": "What kind of evidence a number is. Never interchangeable.",
+      "enum": [
+        "PUBLISHED_THEOREM",
+        "NUMERICAL_SDP",
+        "CERTIFIED_NUMERIC",
+        "MONTE_CARLO",
+        "PHOTON_EXPERIMENT",
+        "PUBLISHED_AGGREGATE",
+        "DIGITIZED_FIGURE",
+        "SYNTHETIC",
+        "SIMULATOR_IDEAL",
+        "SIMULATOR_NOISY",
+        "QPU",
+        "MODELLED_LATENCY",
+        "MEASURED_LATENCY",
+        "UNCERTIFIED"
+      ],
+      "title": "EvidenceKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "backend": {
+      "minLength": 1,
+      "title": "Backend",
+      "type": "string"
+    },
+    "basis": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Basis"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "causal_parent_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Causal Parent Ids",
+      "type": "array"
+    },
+    "clock_id": {
+      "minLength": 1,
+      "title": "Clock Id",
+      "type": "string"
+    },
+    "event_id": {
+      "minLength": 1,
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_time_utc_ns": {
+      "title": "Event Time Utc Ns",
+      "type": "integer"
+    },
+    "job_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Job Id"
+    },
+    "noise_model": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Noise Model"
+    },
+    "outcome": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Outcome"
+    },
+    "shots": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Shots"
+    },
+    "site_id": {
+      "minLength": 1,
+      "title": "Site Id",
+      "type": "string"
+    },
+    "source_kind": {
+      "$ref": "#/$defs/EvidenceKind"
+    },
+    "timestamp_accuracy_ns": {
+      "minimum": 0.0,
+      "title": "Timestamp Accuracy Ns",
+      "type": "number"
+    },
+    "token_id": {
+      "minLength": 1,
+      "title": "Token Id",
+      "type": "string"
+    },
+    "valid": {
+      "title": "Valid",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "event_id",
+    "token_id",
+    "site_id",
+    "clock_id",
+    "event_time_utc_ns",
+    "timestamp_accuracy_ns",
+    "valid",
+    "backend",
+    "source_kind"
+  ],
+  "title": "MeasurementEvent",
+  "type": "object"
+}

@@ -1,0 +1,136 @@
+{
+  "$defs": {
+    "GameId": {
+      "description": "Named, versioned security experiments (master plan 3.1).",
+      "enum": [
+        "W1",
+        "W1_CV",
+        "W2",
+        "S1",
+        "S2",
+        "D1",
+        "A1",
+        "C1"
+      ],
+      "title": "GameId",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "adversary_game_id": {
+      "$ref": "#/$defs/GameId"
+    },
+    "classical_authentication": {
+      "minLength": 1,
+      "title": "Classical Authentication",
+      "type": "string"
+    },
+    "correctness_conditions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Correctness Conditions",
+      "type": "array"
+    },
+    "issuer_trust": {
+      "enum": [
+        "honest_bank",
+        "honest_but_curious",
+        "malicious",
+        "not_applicable"
+      ],
+      "title": "Issuer Trust",
+      "type": "string"
+    },
+    "proof_assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Proof Assumptions",
+      "type": "array"
+    },
+    "protocol_id": {
+      "title": "Protocol Id",
+      "type": "string"
+    },
+    "protocol_revision": {
+      "minLength": 1,
+      "title": "Protocol Revision",
+      "type": "string"
+    },
+    "quantum_memory_required": {
+      "title": "Quantum Memory Required",
+      "type": "boolean"
+    },
+    "quantum_stage": {
+      "minLength": 1,
+      "title": "Quantum Stage",
+      "type": "string"
+    },
+    "redemption_semantics": {
+      "minLength": 1,
+      "title": "Redemption Semantics",
+      "type": "string"
+    },
+    "same_party_agent_trust": {
+      "enum": [
+        "trusted",
+        "untrusted",
+        "not_applicable"
+      ],
+      "title": "Same Party Agent Trust",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "security_model_id": {
+      "minLength": 1,
+      "title": "Security Model Id",
+      "type": "string"
+    },
+    "source_paper_id": {
+      "minLength": 1,
+      "title": "Source Paper Id",
+      "type": "string"
+    },
+    "theorem_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Theorem Id"
+    },
+    "unsupported_extensions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Unsupported Extensions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "protocol_id",
+    "source_paper_id",
+    "protocol_revision",
+    "issuer_trust",
+    "same_party_agent_trust",
+    "redemption_semantics",
+    "quantum_stage",
+    "quantum_memory_required",
+    "classical_authentication",
+    "adversary_game_id",
+    "security_model_id"
+  ],
+  "title": "ProtocolSpec",
+  "type": "object"
+}

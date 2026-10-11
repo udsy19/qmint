@@ -1,0 +1,35 @@
+# QMint task tracker template, truthful initial state; lead orchestrator owns edits.
+project: qmint-research
+schema_version: '1.0.0'
+updated_at_utc: "2026-10-11T00:00:00Z"
+bootstrap_contract_commit_sha: null
+owner: lead-orchestrator
+project_phase: phase_0_bootstrap
+status_values: [OPEN, CLAIMED, IN_REVIEW, MERGED, BLOCKED, SKIPPED]
+gates:
+  G0: {description: 'Frozen schemas/CI/fixtures', status: OPEN, evidence: []}
+  G1: {description: 'Wiesner optimal-attack SDP and independent correctness', status: OPEN, evidence: []}
+  G2: {description: 'Published S-money state machine and causal tests', status: OPEN, evidence: []}
+  G3: {description: 'Real photonic data reproduction with provenance', status: OPEN, evidence: []}
+  G4: {description: 'Trust-matched classical comparison', status: OPEN, evidence: []}
+  G5: {description: 'Independent certificate checking and optimizer benchmark', status: OPEN, evidence: []}
+  G6: {description: 'Optional authorized IonQ primitive result', status: OPEN, evidence: []}
+  G7: {description: 'Independent science audit and reproducible paper', status: OPEN, evidence: []}
+tasks:
+  A1: {lane: A, description: 'Papers/proofs/novelty/license register', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  B1: {lane: B, description: 'Wiesner ideal protocol', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  B2: {lane: B, description: 'S-money two-site protocol', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  C1: {lane: C, description: 'Adversaries and 1->2 Choi SDP', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  D1: {lane: D, description: 'Bound engine and theorem predicates', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  E1: {lane: E, description: '2023 raw photon timetag dataset and calibration', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  F1: {lane: F, description: 'Qiskit and QuTiP independent circuits', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  G1: {lane: G, description: 'Spacetime topology and causal simulations', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  H1: {lane: H, description: 'Atomic ledger/escrow/PQC classical baselines', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  I1: {lane: I, description: 'Resource-optimized security certificate compiler', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  J1: {lane: J, description: 'Optional quantum backend adapter and provenance', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  K1: {lane: K, description: 'Evidence-led research interface', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  L1: {lane: L, description: 'Core package/CI/integration/frozen schema', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  M1: {lane: M, description: 'Independent red-team audit', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  N1: {lane: N, description: 'Reproducibility, figures and paper', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  O1: {lane: O, description: 'Optional 2025 anonymous tokens', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}
+  O2: {lane: O, description: 'Optional public-key/lightning research', owner: null, branch: null, status: OPEN, evidence: [], blockers: [], commit: null}

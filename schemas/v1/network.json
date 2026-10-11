@@ -1,0 +1,172 @@
+{
+  "$defs": {
+    "EvidenceKind": {
+      "description": "What kind of evidence a number is. Never interchangeable.",
+      "enum": [
+        "PUBLISHED_THEOREM",
+        "NUMERICAL_SDP",
+        "CERTIFIED_NUMERIC",
+        "MONTE_CARLO",
+        "PHOTON_EXPERIMENT",
+        "PUBLISHED_AGGREGATE",
+        "DIGITIZED_FIGURE",
+        "SYNTHETIC",
+        "SIMULATOR_IDEAL",
+        "SIMULATOR_NOISY",
+        "QPU",
+        "MODELLED_LATENCY",
+        "MEASURED_LATENCY",
+        "UNCERTIFIED"
+      ],
+      "title": "EvidenceKind",
+      "type": "string"
+    },
+    "Link": {
+      "additionalProperties": false,
+      "properties": {
+        "authenticated": {
+          "title": "Authenticated",
+          "type": "boolean"
+        },
+        "dst": {
+          "title": "Dst",
+          "type": "string"
+        },
+        "latency_evidence": {
+          "$ref": "#/$defs/EvidenceKind"
+        },
+        "latency_model": {
+          "minLength": 1,
+          "title": "Latency Model",
+          "type": "string"
+        },
+        "message_cost_bytes": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Message Cost Bytes",
+          "type": "integer"
+        },
+        "propagation_lower_bound_ns": {
+          "minimum": 0.0,
+          "title": "Propagation Lower Bound Ns",
+          "type": "number"
+        },
+        "src": {
+          "title": "Src",
+          "type": "string"
+        }
+      },
+      "required": [
+        "src",
+        "dst",
+        "propagation_lower_bound_ns",
+        "latency_model",
+        "latency_evidence",
+        "authenticated"
+      ],
+      "title": "Link",
+      "type": "object"
+    },
+    "Site": {
+      "additionalProperties": false,
+      "properties": {
+        "clock_error_bound_ns": {
+          "minimum": 0.0,
+          "title": "Clock Error Bound Ns",
+          "type": "number"
+        },
+        "frame": {
+          "minLength": 1,
+          "title": "Frame",
+          "type": "string"
+        },
+        "site_id": {
+          "minLength": 1,
+          "title": "Site Id",
+          "type": "string"
+        },
+        "trust_domain": {
+          "minLength": 1,
+          "title": "Trust Domain",
+          "type": "string"
+        },
+        "x_m": {
+          "title": "X M",
+          "type": "number"
+        },
+        "y_m": {
+          "title": "Y M",
+          "type": "number"
+        },
+        "z_m": {
+          "default": 0.0,
+          "title": "Z M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "site_id",
+        "frame",
+        "x_m",
+        "y_m",
+        "trust_domain",
+        "clock_error_bound_ns"
+      ],
+      "title": "Site",
+      "type": "object"
+    },
+    "TopologySource": {
+      "enum": [
+        "paper",
+        "measured_ripe",
+        "synthetic"
+      ],
+      "title": "TopologySource",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "event_queue_policy": {
+      "default": "fifo",
+      "title": "Event Queue Policy",
+      "type": "string"
+    },
+    "links": {
+      "items": {
+        "$ref": "#/$defs/Link"
+      },
+      "title": "Links",
+      "type": "array"
+    },
+    "network_id": {
+      "minLength": 1,
+      "title": "Network Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sites": {
+      "items": {
+        "$ref": "#/$defs/Site"
+      },
+      "minItems": 1,
+      "title": "Sites",
+      "type": "array"
+    },
+    "topology_source": {
+      "$ref": "#/$defs/TopologySource"
+    }
+  },
+  "required": [
+    "network_id",
+    "topology_source",
+    "sites"
+  ],
+  "title": "SpacetimeNetwork",
+  "type": "object"
+}

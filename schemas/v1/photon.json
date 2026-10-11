@@ -1,0 +1,67 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "arrival_ns": {
+      "title": "Arrival Ns",
+      "type": "number"
+    },
+    "channel_mapping_version": {
+      "minLength": 1,
+      "title": "Channel Mapping Version",
+      "type": "string"
+    },
+    "coincidence_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Coincidence Id"
+    },
+    "dataset_id": {
+      "minLength": 1,
+      "title": "Dataset Id",
+      "type": "string"
+    },
+    "decode_status": {
+      "enum": [
+        "ok",
+        "malformed",
+        "duplicate",
+        "out_of_range"
+      ],
+      "title": "Decode Status",
+      "type": "string"
+    },
+    "file_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "File Hash",
+      "type": "string"
+    },
+    "raw_channel": {
+      "minimum": 0,
+      "title": "Raw Channel",
+      "type": "integer"
+    },
+    "record_index": {
+      "minimum": 0,
+      "title": "Record Index",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "dataset_id",
+    "file_hash",
+    "record_index",
+    "raw_channel",
+    "arrival_ns",
+    "channel_mapping_version",
+    "decode_status"
+  ],
+  "title": "PhotonEvent",
+  "type": "object"
+}
