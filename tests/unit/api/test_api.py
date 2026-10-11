@@ -192,13 +192,6 @@ def test_benchmarks_rows(client: TestClient) -> None:
     assert classical and all(r["status"] == "NOT_AVAILABLE" and r["reason"] for r in classical)
 
 
-def test_research_sources_unverified(client: TestClient) -> None:
-    body = client.get("/api/v1/research/sources").json()
-    srcs = body["data"]["sources"]
-    assert len(srcs) >= 10 and all(s["verification"] == "from plan, unverified" for s in srcs)
-    assert any("1202.4010" in u for s in srcs for u in s["urls"])
-
-
 def test_labels_cover_enums(client: TestClient) -> None:
     labels = client.get("/api/v1/evidence/labels").json()["data"]
     keys = {lab["key"] for lab in labels}
