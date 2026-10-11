@@ -1,0 +1,61 @@
+{
+  "lane": "FLK",
+  "task": "FLK-1 core records (M-L1), workbench retirement + API provenance gate (M-K1), lane-A probe, Method, /evidence/highlights, YAML manifests",
+  "input_contract_sha": "02aeab1",
+  "branch": "feat/FLK-fixes",
+  "starting_commit_sha": "02aeab1",
+  "final_commit_sha": "d2ab1ff",
+  "changed_paths": [
+    "qmint/core/records.py", "qmint/core/manifest.py", "qmint/core/pipeline.py", "scripts/run_all.py",
+    "qmint/api/evidence_labels.py (moved from qmint/ui/evidence_badges.py)", "qmint/api/routes/evidence.py",
+    "qmint/api/routes/highlights.py (new)", "qmint/api/routes/lab.py", "qmint/api/schemas.py", "qmint/api/common.py",
+    "qmint/api/app.py", "qmint/ui/ (deleted)", "app/site/ (deleted)", "tests/unit/ui/ (deleted)",
+    "tests/adversarial/test_m_records.py", "tests/integration/test_run_core.py", "tests/unit/api/test_api.py",
+    "tests/unit/api/test_evidence_labels.py (new)", "tests/unit/api/test_highlights.py (new)",
+    "web/lib/api/openapi.json", "web/lib/api/schema.d.ts", "handoffs/FLK-1.md", "handoffs/FLK-1.json"
+  ],
+  "commands_run": [
+    "$PY -m pytest tests -q -m \"not network and not slow\" -o addopts=\"\"",
+    "$PY -m ruff check qmint scripts tests",
+    "cd web && pnpm install --frozen-lockfile --prefer-offline && pnpm gen:api && pnpm typecheck && pnpm test"
+  ],
+  "test_exit_codes": {
+    "pytest full (not network, not slow)": "0 (974 passed, 2 deselected, 21 xfailed)",
+    "ruff qmint scripts tests": 0,
+    "ruff . (repo-wide)": "1: 2 pre-existing B023 in qollab/main.py (untouched, not owned)",
+    "pnpm typecheck": "non-zero, 46 errors (was 49), all in components/marketing/hero/* (other agent)",
+    "pnpm test": "0 (93 passed)"
+  },
+  "evidence_files": [
+    "handoffs/C-C1-evidence.json", "proofs/certificates/reproduction_v1.json",
+    "reports/data_working/schiansky2023/summary.json",
+    "reports/classical_baseline_notes/matched_topology_results.csv",
+    "reports/classical_baseline_notes/comparability_matrix.csv"
+  ],
+  "assumptions_verified": [
+    "No Python outside qmint/ui imported qmint.ui.* (git grep); claims.py unused by the API, so deleted",
+    "evidence-labels.json byte-identical after the move",
+    "web/components/lab imports the LabQuantity schema name, so the subclass is kept as a name alias"
+  ],
+  "performance_numbers_with_sources": {
+    "W1 SDP n=1 bracket": "3/4 <= OPT <= 0.750000000003638 CERTIFIED_NUMERIC (C-C1-evidence w1_sdp.n1_SCS; D exact dual 3/4)",
+    "W1 SDP n=2 bracket": "9/16 <= OPT <= 0.562500000007276 CERTIFIED_NUMERIC (C-C1-evidence w1_sdp.n2_SCS; D exact dual 9/16)",
+    "QBER Z / X": "1.4491% / 3.2787% PHOTON_EXPERIMENT (summary.json state-averaged); published 1.45% / 3.28% PUBLISHED_AGGREGATE",
+    "Jinan choice->accept": "S1 15337 ns, H3 late-commit OT 15337 ns, H1 46011 ns MODELLED_LATENCY; comparability 0/7/4"
+  },
+  "blockers": [],
+  "known_limitations": [
+    "Gate uses fixture markers (substring 'fixture', non-hex git sha) plus RecordStore.get; no EvidenceManifest lookup; no registry hash chain, so consistent rewrite of result+registry is still possible",
+    "Comparability counts carry MODELLED_LATENCY (no classification evidence kind in the contract)",
+    "Stale prose/comments naming qmint/ui in non-owned files (web/lib/format.ts, web/lib/evidence/index.ts, web/components/docs/content/methodology.tsx, docs/design/*, project/*, AGENT_WORK_PACKAGES.md, QMINT_MASTER_RESEARCH_PLAN.md)",
+    "run_all still REFUSED until FDE commits real EvidenceManifests (.json or .yaml with manifest_id)"
+  ],
+  "interfaces_changed": [
+    "API: RecordSummary gains recorded_evidence_kind, provenance_verified, provenance_problems; evidence_kind is the served (gated) kind",
+    "API: new GET /api/v1/evidence/highlights (HighlightsResponse)",
+    "API: schemas.Method adds monte_carlo, numerical_sdp; LabQuantity no longer widens method (KD: switch web/components/lab to Quantity, then drop the alias)",
+    "API: /meta lane A package field is 'research/' (file probe)",
+    "core: RecordStore.get verifies against run_registry.jsonl; manifest.load_manifest accepts YAML; realdata_preflight accepts YAML EvidenceManifests with manifest_id"
+  ],
+  "whether_paid_jobs_run": false
+}
