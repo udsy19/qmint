@@ -2,8 +2,7 @@ name: pages
 
 # Static snapshot of the website on GitHub Pages (https://udsy19.github.io/qmint/). See docs/STATIC_SITE.md.
 on:
-  push:
-    branches: [main]
+  # Manual only: the live site is currently published from the gh-pages branch (built locally, see docs/STATIC_SITE.md).
   workflow_dispatch:
 
 permissions:
