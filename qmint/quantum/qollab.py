@@ -111,3 +111,24 @@ def export_bundle(bits: Sequence[int], bases: Sequence[Basis | str], out_dir: st
     }
     (out / "manifest.json").write_text(canonical_json(doc) + "\n", encoding="utf-8")
     return doc
+
+
+def cli_main(argv: list[str]) -> int:
+    """``qmint qollab export --demo wiesner --out dist/qollab [--bits 10110010 --bases ZXZXXZXZ]``.
+
+    Writes the portable bundle only; Qollab platform integration stays BLOCKED (no public API)."""
+    import argparse
+    import json
+
+    ap = argparse.ArgumentParser(prog="qmint qollab", description=cli_main.__doc__)
+    sub = ap.add_subparsers(dest="action", required=True)
+    e = sub.add_parser("export", help="write OpenQASM 3 + standalone script + manifest")
+    e.add_argument("--demo", choices=["wiesner"], default="wiesner")
+    e.add_argument("--out", type=Path, required=True)
+    e.add_argument("--bits", default="10110010")
+    e.add_argument("--bases", default="ZXZXXZXZ")
+    a = ap.parse_args(argv[1:])
+    doc = export_bundle([int(c) for c in a.bits], list(a.bases), a.out)
+    print(json.dumps({"out": str(a.out), "circuit": doc["circuit"],
+                      "platform_integration": QOLLAB_PLATFORM_STATUS["status"]}, indent=2, sort_keys=True))
+    return 0

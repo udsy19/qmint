@@ -19,6 +19,7 @@ from __future__ import annotations
 import importlib
 import importlib.util
 from dataclasses import dataclass
+from pathlib import Path
 from types import ModuleType
 
 
@@ -92,6 +93,17 @@ def probe(entry: LaneEntry | StageEntry) -> tuple[str, str]:
     if spec is None:
         return "NOT_AVAILABLE", f"lane {entry.lane} module {entry.module} not merged"
     return "PRESENT", entry.module
+
+
+def write_stage_json(out_dir: Path, name: str, obj: object) -> Path:
+    """Shared lane-entrypoint helper: write ``obj`` as canonical JSON (byte-deterministic for a
+    fixed seed, as run_core's determinism check requires) to ``out_dir/name``; return the path."""
+    from qmint.core.serialization import canonical_json
+
+    path = Path(out_dir) / name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(canonical_json(obj) + "\n", encoding="utf-8")
+    return path
 
 
 def load(entry: LaneEntry | StageEntry, func: str) -> object:
