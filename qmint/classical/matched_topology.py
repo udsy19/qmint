@@ -22,6 +22,23 @@ latency (choice -> Stage-II message at every site), issuer awareness and settlem
 from the choice), choice -> local accept (Jiang et al. 2024's "transaction time"), and the
 synchronous cross-site round trips on the accept's causal path (G's detector).
 
+Double-spend adversaries (security outcomes from the real H state machines, never latency):
+
+* ``replay``: the weak adversary of lanes H/GH. The genuine presentation is made at EVERY site at the
+  same nominal time (race), nothing else.
+* ``strong`` (lane M finding M-H4): ``replay`` plus an adaptive second wave made after the first
+  outcome is in the customer's causal past, using only what a customer legitimately holds (her
+  token / wallet, r_z and z in H3-OT, her own Stage-II message, the results): a second Stage-II
+  commit to the other site (H3 late modes), re-presentation at the other site, presentations of
+  forged OT secrets derived from public data (H3-OT, the pre-fix M-H1 derivation), and, for the
+  ledger designs, presentations at a second till of the SAME merchant at the other site and at a
+  fresh (restarted) till of that merchant at L_b (M-H3 deployment). Successful double spends =
+  accepted presentations of the token - 1.
+
+Processing is a matched parameter: every model in ``PROC_MODELS`` applies ONE per-step processing
+time to every protocol node, S-money's B_i included (relays cost 0 for S-money's B0 and H3's issuer
+alike), so the sweep doubles as the processing-time sensitivity analysis (lane M re-audit of M-H5).
+
 Evidence: MODELLED_LATENCY. Runtime link delays come from G's topology cases (paper fibre,
 synthetic fibre at 2/3 c, or RIPE RTT/2 resampling = MEASURED_LATENCY *inputs*). Security is
 not simulated: S-money validity is symbolic (G), classical double-spend outcomes come from the
@@ -34,6 +51,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import statistics
 from collections.abc import Callable, Mapping
@@ -84,10 +102,13 @@ from qmint.networks.topology import (
 ROOT = Path(__file__).resolve().parents[2]
 T_CHOICE_NS = 1_000_000.0  # Stage II starts 1 ms after issuance (t = 0), as in G's run_s_money
 PROC_MODELS: dict[str, float] = {
-    # Jiang et al. 2024 SI: measured mean dT_proc = 1.507 us, applied to EVERY classical node step too
-    "jiang_dTproc_1507ns": JIANG2024_PROC_NS,
+    # ONE per-step processing time applied to EVERY node of EVERY protocol (S-money's B_i included)
+    "jiang_dTproc_1507ns": JIANG2024_PROC_NS,  # Jiang et al. 2024 SI: measured mean dT_proc = 1.507 us
     "zero_processing": 0.0,  # pure communication structure
+    "h_site_10us": S.SITE_PROC_NS,  # lane H's declared terminal processing, applied to all (sensitivity)
+    "h_coord_50us": S.COORD_PROC_NS,  # lane H's declared coordinator processing, applied to all (sensitivity)
 }
+ADVERSARIES = ("replay", "strong")
 RIPE_PROBES = (6330, 6251)  # Helsinki anchor -> Tampere anchor (G's committed fixture)
 S1 = "S1_s_money"
 LEDGER_RULE = "bank_settlement_final := authoritative ledger / quorum commit (first ACCEPT decision)"
@@ -138,6 +159,8 @@ class Spec:
     commit_kinds: tuple[str, ...] = ()
     issuance: list[HMessage] = field(default_factory=list)  # sent by ``issuer_actor`` at t = 0
     issuer_actor: str | None = None
+    strong_present: dict[int, list[HMessage]] = field(default_factory=dict)  # extra wave-2 attempts at site i
+    strong_attempts: tuple[str, ...] = ()  # human-readable list of the strong adversary's attempts
 
 
 def _ledger_records(m: HMessage) -> list[Record]:
@@ -156,9 +179,13 @@ def _two(f: Callable[[int, str], list[HMessage]], sites: tuple[str, str]) -> dic
     return {i: f(i, s) for i, s in enumerate(sites)}
 
 
-def spec_for(label: str, sites: tuple[str, str], p: float, b: int, retry_ns: float) -> Spec:
-    """Build the nodes of one classical protocol on (L0, L1) with every node's processing = ``p``."""
+def spec_for(label: str, sites: tuple[str, str], p: float, b: int, retry_ns: float, strong: bool = False) -> Spec:
+    """Build the nodes of one classical protocol on (L0, L1) with every node's processing = ``p``.
+    ``strong``: also deploy what the strong adversary needs (extra tills of the merchant at L_b) and
+    fill ``strong_present``."""
     l0 = sites[0]
+    lb, lo = sites[b], sites[1 - b]
+    tills = {f"t2@{lo}": (lo, lb), f"t3@{lb}": (lb, lb)} if strong else None  # 2nd till / restarted till of m@L_b
     if label == "H0":
         serial = h0_bearer.mint_serial(0, 0)
         vs = [h0_bearer.BearerVerifier(f"v@{s}", s, frozenset({serial}), p) for s in sites]
@@ -177,28 +204,41 @@ def spec_for(label: str, sites: tuple[str, str], p: float, b: int, retry_ns: flo
 
             def wrap_t(t):
                 return h4_pqc.SignedTerminal(t, "ML_DSA_44", issuer.pk)
-        coord, terms = S.h1_nodes(l0, tokens, sites, p, p, wrap_terminal=wrap_t, retry_timeout_ns=retry_ns)
+        coord, terms = S.h1_nodes(l0, tokens, sites, p, p, wrap_terminal=wrap_t, retry_timeout_ns=retry_ns,
+                                  extra_tills=tills)
         return Spec(pid, var, tok, [NodeActor(coord, annotate=_ledger_records), *terms.values()],
                     _two(lambda i, s: [_present(s, f"t@{s}", **payload)], sites), {0: f"t@{sites[0]}", 1: f"t@{sites[1]}"},
                     trust, "issued set at the ledger only", "online_any_site",
-                    "none (ledger learns token, merchant, site)", 1, ledger=True)
+                    "none (ledger learns token, merchant, site)", 1, ledger=True,
+                    **_ledger_strong(sites, b, payload, strong))
     if label == "H2":
         tok = "tok-h2-0"
         # f = 1 needs 2f+1 = 3 replicas on two sites: leader + one follower at L0, one follower at L1
         nodes, route = S.h2_cluster(1, [l0, l0, sites[1]], [l0], frozenset({tok}), list(sites), p, p,
-                                    retry_timeout_ns=retry_ns)
+                                    retry_timeout_ns=retry_ns, extra_tills=tills)
         actors = [NodeActor(n, annotate=_ledger_records) if n.node_id == route(tok) else n for n in nodes.values()]
         return Spec(h2_quorum.PROTOCOL_ID, "sharded_quorum_f1_majority_at_L0", tok, actors,
                     _two(lambda i, s: [_present(s, f"t@{s}", token_id=tok)], sites),
                     {0: f"t@{sites[0]}", 1: f"t@{sites[1]}"},
                     "crash-fault replicas (2 of 3 at L0, so the commit quorum is local to L0); honest operator",
                     "issued set replicated in the home shard", "online_any_site", "none (home shard learns site)",
-                    1, ledger=True)
+                    1, ledger=True, **_ledger_strong(sites, b, {"token_id": tok}, strong))
     if label.startswith("H3_"):
         mode = label[3:]
         tok = "tok-h3-0"
         # The issuer only RELAYS the Stage-II message: zero processing, matched to G's S-money B0 -> B1 relay.
         st = S.h3_setup(list(sites), l0, mode, tok, chosen=b, site_proc_ns=p, coord_proc_ns=0.0)  # type: ignore[arg-type]
+        strong_kw: dict[str, Any] = {}
+        if strong:
+            attempts = ["race: genuine presentation at both sites", f"re-present at {lo} after the accept"]
+            forged: list[HMessage] = []
+            if mode != "preassigned":
+                attempts.insert(1, f"second Stage-II commit to {lo} after the accept")
+            if mode == "late_commit_ot_private":
+                forged = [_present(lo, f"e@{lo}", token_id=tok, secret_hex=hashlib.sha256(
+                    f"h3-ot|0|{tok}|{i}".encode()).hexdigest()) for i in range(2)]
+                attempts.append(f"present OT secrets derived from public data (seed 0 + token id) at {lo}")
+            strong_kw = {"strong_present": {1 - b: forged}, "strong_attempts": tuple(attempts)}
         privacy = {"preassigned": "none (issuer learns site at issuance)",
                    "late_commit_disclosed": "none (issuer learns b at Stage-II commit)",
                    "late_commit_ot_private": "b hidden from issuer under IDEAL OT (computational in practice)"}[mode]
@@ -209,7 +249,7 @@ def spec_for(label: str, sites: tuple[str, str], p: float, b: int, retry_ns: flo
                     "per-token provisioning to every site at issuance", "preassigned_site" if mode == "preassigned"
                     else "late_choice_any_site", privacy, 0 if mode == "preassigned" else 1,
                     commit=st.commit, commit_kinds=("Activate", "RelayC"), issuance=st.provisioning,
-                    issuer_actor=st.issuer.node_id)
+                    issuer_actor=st.issuer.node_id, **strong_kw)
     if label == "H4+H3":
         issuer = h4_pqc.PQCIssuer("ML_DSA_44", seed=0)
         tokw = issuer.issue("tok-h4-0", 1, sites[b]).wire()  # site bound at issuance = the later choice (best case)
@@ -246,6 +286,21 @@ def spec_for(label: str, sites: tuple[str, str], p: float, b: int, retry_ns: flo
     raise ValueError(label)
 
 
+def _ledger_strong(sites: tuple[str, str], b: int, payload: Mapping[str, Any], strong: bool) -> dict[str, Any]:
+    """Strong-adversary attempts against a ledger design deployed with a 2nd / restarted till of m@L_b."""
+    if not strong:
+        return {}
+    lb, lo = sites[b], sites[1 - b]
+    return {"strong_present": {1 - b: [_present(lo, f"t2@{lo}", **payload)], b: [_present(lb, f"t3@{lb}", **payload)]},
+            "strong_attempts": ("race: genuine presentation at both sites", f"re-present at {lo} after the accept",
+                                f"present at a second till of merchant m@{lb} located at {lo}",
+                                f"present at a restarted (fresh) till of merchant m@{lb} at {lb}")}
+
+
+def _generic_strong_attempts(sites: tuple[str, str], b: int) -> tuple[str, ...]:
+    return ("race: genuine presentation at both sites", f"re-present at {sites[1 - b]} after the first outcome")
+
+
 @dataclass
 class ChoiceAgent:
     """Alice's agent A at L0: on ``branch_choice`` sends the Stage-II message (if any) and tells
@@ -257,12 +312,12 @@ class ChoiceAgent:
     points: tuple[str, ...]
     go_delay_ns: tuple[float, ...]
     commit: Mapping[int, HMessage]
-    adversarial: bool = False  # present the token at EVERY site (double-spend attempt)
+    adversary: str | None = None  # "replay" / "strong": present the token at EVERY site (double-spend race)
 
     def on_local_request(self, request: LocalRequest, now_ns: float) -> list[Effect]:
         b = int(request.payload["b"])
         eff: list[Effect] = [Send(self.commit[b].dst, wrap(self.commit[b]))] if b in self.commit else []
-        eff += [Send(pt, {"type": "go", "genuine": self.adversarial or i == b}, after_ns=self.go_delay_ns[i])
+        eff += [Send(pt, {"type": "go", "genuine": self.adversary is not None or i == b}, after_ns=self.go_delay_ns[i])
                 for i, pt in enumerate(self.points)]
         return eff
 
@@ -284,7 +339,7 @@ class MatchedRun:
     b: int
     proc_model: str
     seed: int
-    adversarial: bool
+    adversary: str | None  # None (honest), "replay" or "strong"
     result: SimulationResult
     trace: TransactionTrace
     metrics: dict[str, Any]
@@ -319,30 +374,48 @@ def _metrics(res: SimulationResult, trace: TransactionTrace, site_b: str, commit
         "settlement_ns": _rel(res.first("bank_settlement_final"), t0),
         "sync_cross_site_msgs_after_presentation": len(rts),
         "accepted_sites": len(res.accepted_sites(token_id)),
+        "accepted_presentations": sum(1 for e in res.of_kind("verification_result_available_local")
+                                      if e.detail.get("token_id") == token_id and e.detail.get("accepted") is True),
     }
 
 
 def run_classical(case: TopologyCase, label: str, b: int, proc_ns: float, *, case_id: str = "", seed: int = 0,
-                  adversarial: bool = False, proc_model: str = "") -> MatchedRun:
+                  adversary: str | None = None, proc_model: str = "") -> MatchedRun:
+    if adversary not in (None, *ADVERSARIES):
+        raise ValueError(adversary)
     sites = case.site_ids[:2]
     nominal = nominal_one_way_ns(case, sites[0], sites[1])
-    retry_ns = max(S.RETRY_TIMEOUT_NS, 4 * max(nominal, nominal_one_way_ns(case, sites[1], sites[0])))
-    spec = spec_for(label, sites, proc_ns, b, retry_ns)
+    worst = max(nominal, nominal_one_way_ns(case, sites[1], sites[0]))
+    retry_ns = max(S.RETRY_TIMEOUT_NS, 4 * worst)
+    strong = adversary == "strong"
+    spec = spec_for(label, sites, proc_ns, b, retry_ns, strong)
     hq = None if spec.ledger else "HQ"
     points = [PresentationPoint(f"cust@{s}", s, spec.token_id, spec.reacts.get(i), hq, spec.present[i])
               for i, s in enumerate(sites)]
     alice = ChoiceAgent("alice", sites[0], tuple(pt.actor_id for pt in points), (nominal, 0.0), spec.commit,
-                        adversarial)
+                        adversary)
     actors = [n if isinstance(n, NodeActor) else NodeActor(n) for n in spec.nodes]
     extra = [] if hq is None else [IssuerHQ(hq, sites[0], n_sites=2)]
     sim = Simulator(case.network, [*actors, *points, alice, *extra], case.link_runtime, seed=seed)
     if spec.issuance:
         sim.schedule(LocalRequest("issuance", spec.issuer_actor, 0.0, kind="issue", payload=inject(spec.issuance)))
     sim.schedule(LocalRequest("choice", "alice", T_CHOICE_NS, kind="branch_choice", payload={"b": b}))
+    if strong:  # adaptive second wave, after the first outcome is in the customer's causal past
+        t_w2 = T_CHOICE_NS + 6 * worst + 20 * proc_ns + 1_000.0
+        if (1 - b) in spec.commit:  # second Stage-II commit, to the other site
+            sim.schedule(LocalRequest("recommit", points[0].actor_id, t_w2, kind="commitment",
+                                      payload=inject([spec.commit[1 - b]])))
+        t_p2 = t_w2 + 3 * worst + 10 * proc_ns + 1_000.0
+        wave2 = {1 - b: [*spec.present[1 - b], *spec.strong_present.get(1 - b, [])],
+                 b: list(spec.strong_present.get(b, []))}
+        for i, msgs in wave2.items():
+            for j, m in enumerate(msgs):
+                sim.schedule(LocalRequest(f"w2-{i}-{j}", points[i].actor_id, t_p2 + j * (3 * worst + 10 * proc_ns + 1e3),
+                                          kind="local_validation_start", payload=inject([m])))
     res = sim.run()
     trace = res.to_transaction_trace(
         trace_id=f"gh-{label}-{case_id or case.network.network_id}-b{b}-{proc_model}-seed{seed}"
-                 + ("-race" if adversarial else ""),
+                 + (f"-{adversary}" if adversary else ""),
         token_id=spec.token_id, protocol_id=spec.protocol_id,
         irrevocability_rule=LEDGER_RULE if spec.ledger else HQ_RULE,
         double_spend_accepted=res.double_spend_accepted(spec.token_id))
@@ -354,7 +427,9 @@ def run_classical(case: TopologyCase, label: str, b: int, proc_ns: float, *, cas
             commit_rx.setdefault(site_of[e.actor_id], e.time_ns)
     m = _metrics(res, trace, sites[b], commit_rx, spec.token_id)
     m["classical_bytes"] = wire_bytes(res)
-    return MatchedRun(case_id, label, spec.protocol_id, spec.variant, b, proc_model, seed, adversarial, res, trace,
+    if strong:
+        m["strong_attempts"] = spec.strong_attempts or _generic_strong_attempts(sites, b)
+    return MatchedRun(case_id, label, spec.protocol_id, spec.variant, b, proc_model, seed, adversary, res, trace,
                       m, spec)
 
 
@@ -369,18 +444,18 @@ def run_smoney(case: TopologyCase, b: int, proc_ns: float, *, case_id: str = "",
     m = _metrics(res, run.trace, case.site_ids[b], commit_rx, "tok-s-0")
     assert m["sync_cross_site_msgs_after_presentation"] == len(run.local_round_trips)
     m["classical_bytes"] = None
-    return MatchedRun(case_id, S1, S_MONEY_PROTOCOL_ID, "kent2022_table1_event_model_g", b, proc_model, seed, False,
+    return MatchedRun(case_id, S1, S_MONEY_PROTOCOL_ID, "kent2022_table1_event_model_g", b, proc_model, seed, None,
                       res, run.trace, m)
 
 
 def run_matched(case: TopologyCase, label: str, b: int, proc_model: str, seed: int = 0, case_id: str = "",
-                adversarial: bool = False) -> MatchedRun:
+                adversary: str | None = None) -> MatchedRun:
     p = PROC_MODELS[proc_model]
     if label == S1:
-        if adversarial:
+        if adversary is not None:
             raise ValueError("S-money double spending is not simulated (token validity is symbolic in G's model)")
         return run_smoney(case, b, p, case_id=case_id, seed=seed, proc_model=proc_model)
-    return run_classical(case, label, b, p, case_id=case_id, seed=seed, adversarial=adversarial,
+    return run_classical(case, label, b, p, case_id=case_id, seed=seed, adversary=adversary,
                          proc_model=proc_model)
 
 
@@ -393,7 +468,8 @@ METRICS = ("choice_to_local_accept_ns", "local_validation_ns", "pre_presentation
 CSV_COLUMNS = ["case_id", "network_id", "topology_source", "straight_line_m", "runtime_latency_model",
                "input_latency_evidence", "proc_model", "proc_ns", "protocol", "protocol_id", "variant", "b",
                "n_seeds", *METRICS, "commit_at_Lb_before_presentation", "sync_cross_site_msgs_after_presentation",
-               "honest_decision", "race_accepted_sites", "s_money_minus_protocol_choice_to_accept_ns",
+               "honest_decision", "race_accepted_sites", "strong_accepted_presentations", "strong_double_spends",
+               "s_money_minus_protocol_choice_to_accept_ns",
                "comparability_status", "evidence_kind", "notes"]
 
 
@@ -441,10 +517,10 @@ def sweep(seeds_ripe: int = 20, case_ids: tuple[str, ...] | None = None,
                 by_label: dict[str, dict[str, Any]] = {}
                 for label in PROTOCOLS:
                     runs = [run_matched(case, label, b, proc_model, s, case_id) for s in seeds]
-                    race = None if label == S1 else [run_matched(case, label, b, proc_model, s, case_id, True)
-                                                    for s in seeds]
-                    for r in [runs[0], *(race[:1] if race else [])]:
-                        keep[f"{case_id}|{label}|b{b}|{proc_model}|{'race' if r.adversarial else 'honest'}"] = r
+                    adv = {} if label == S1 else {a: [run_matched(case, label, b, proc_model, s, case_id, a)
+                                                      for s in seeds] for a in ADVERSARIES}
+                    for r in [runs[0], *(v[0] for v in adv.values())]:
+                        keep[f"{case_id}|{label}|b{b}|{proc_model}|{r.adversary or 'honest'}"] = r
                     agg = {k: _median([r.metrics[k] for r in runs]) for k in (*METRICS,
                            "commit_at_Lb_before_presentation", "sync_cross_site_msgs_after_presentation")}
                     by_label[label] = agg
@@ -459,7 +535,11 @@ def sweep(seeds_ripe: int = 20, case_ids: tuple[str, ...] | None = None,
                         "protocol_id": runs[0].protocol_id, "variant": runs[0].variant, "b": b,
                         "n_seeds": len(runs), **agg,
                         "honest_decision": runs[0].metrics["honest_decision"],
-                        "race_accepted_sites": None if race is None else max(r.metrics["accepted_sites"] for r in race),
+                        "race_accepted_sites": max(r.metrics["accepted_sites"] for r in adv["replay"]) if adv else None,
+                        "strong_accepted_presentations":
+                            max(r.metrics["accepted_presentations"] for r in adv["strong"]) if adv else None,
+                        "strong_double_spends":
+                            max(r.metrics["accepted_presentations"] - 1 for r in adv["strong"]) if adv else None,
                         "comparability_status": _status(label), "evidence_kind": EvidenceKind.MODELLED_LATENCY.value,
                         "notes": NOTES[label] + ("; median over seeds" if ripe else ""),
                     })
@@ -487,8 +567,8 @@ def write_csv(rows: list[dict[str, Any]], path: Path) -> Path:
 
 FIG6_CASES = ("paper_jinan_2.766km_fibre", "paper_yiyuan_mazhan_60.54km_fibre", "synthetic_100km",
               "ripe_helsinki_tampere")
-FIG6_PANELS = {"S1": (S1, False), "H1_race": ("H1", True), "H3_late_commit": ("H3_late_commit_disclosed", False),
-               "H3_late_commit_ot": ("H3_late_commit_ot_private", False)}
+FIG6_PANELS = {"S1": (S1, None), "H1_race": ("H1", "replay"), "H3_late_commit": ("H3_late_commit_disclosed", None),
+               "H3_late_commit_ot": ("H3_late_commit_ot_private", None)}
 
 
 def _event_row(e: TraceEvent, x_of: Mapping[str, float], t0: float) -> dict[str, Any]:
@@ -515,7 +595,7 @@ def figure6(runs: Mapping[str, MatchedRun], proc_model: str = "jiang_dTproc_1507
         x_of = {s0.site_id: 0.0, s1.site_id: site_distance_m(s0, s1)}
         panels = {}
         for panel, (label, adv) in FIG6_PANELS.items():
-            r = runs[f"{case_id}|{label}|b{b}|{proc_model}|{'race' if adv else 'honest'}"]
+            r = runs[f"{case_id}|{label}|b{b}|{proc_model}|{adv or 'honest'}"]
             t0 = r.result.first("branch_choice").time_ns
             evs = [_event_row(e, x_of, t0) for e in r.trace.events if e.time_ns >= t0 - 1e-6]
             sends = {e["message_id"]: e for e in evs if e["kind"] == "message_send"}
@@ -523,7 +603,7 @@ def figure6(runs: Mapping[str, MatchedRun], proc_model: str = "jiang_dTproc_1507
                       "to_site": e["site_id"], "t_send_ns": sends[e["message_id"]]["t_ns"], "t_recv_ns": e["t_ns"]}
                      for e in evs if e["kind"] == "message_receive" and e["message_id"] in sends]
             panels[panel] = {"protocol": label, "protocol_id": r.protocol_id, "variant": r.variant,
-                             "adversarial_double_spend_attempt": adv, "trace_id": r.trace.trace_id,
+                             "adversarial_double_spend_attempt": adv is not None, "adversary": adv, "trace_id": r.trace.trace_id,
                              "metrics": r.metrics, "events": evs, "message_edges": edges}
         out["cases"][case_id] = {
             "network_id": case.network.network_id, "topology_source": case.network.topology_source.value,
@@ -543,9 +623,15 @@ def to_record(row: dict[str, Any], zero_row: dict[str, Any] | None, git_sha: str
     cross = None if zero_row is None or zero_row["local_validation_ns"] is None else zero_row["local_validation_ns"]
     config = {k: row[k] for k in (*METRICS, "case_id", "proc_model", "proc_ns", "b", "n_seeds", "variant",
                                   "commit_at_Lb_before_presentation", "sync_cross_site_msgs_after_presentation",
-                                  "honest_decision", "race_accepted_sites", "input_latency_evidence",
+                                  "honest_decision", "race_accepted_sites", "strong_accepted_presentations",
+                                  "strong_double_spends", "input_latency_evidence",
                                   "comparability_status", "notes")}
+    if not q:
+        spec = spec_for(row["protocol"], ("L0", "L1"), 0.0, 1, S.RETRY_TIMEOUT_NS, strong=True)
+        config["strong_adversary_attempts"] = list(spec.strong_attempts or _generic_strong_attempts(("L0", "L1"), 1))
     config["semantics"] = {
+        "double_spends_successful": "STRONG adversary (accepted presentations - 1, max over seeds); "
+                                    "race_accepted_sites is the weak replay-at-other-site adversary",
         "redemption_local_seconds": "local validation: later of presentation / Stage-II arrival at L_b -> local result",
         "network_cross_check_seconds": "same path under zero processing = communication waited for after presentation",
         "all *_ns in configuration": "measured from branch_choice at L0 unless named otherwise"}
@@ -555,7 +641,6 @@ def to_record(row: dict[str, Any], zero_row: dict[str, Any] | None, git_sha: str
                                   "Stage I quantum exchange + secret record pre-distributed to B1", "late_choice_any_site",
                                   "not evaluated (timing model only)")
     else:
-        spec = spec_for(row["protocol"], ("L0", "L1"), 0.0, 1, S.RETRY_TIMEOUT_NS)
         trust, pre, flex, priv = spec.trust_model, spec.pre_distribution, spec.spending_flexibility, spec.privacy_game
     return BenchmarkRecord(
         record_id=f"GH-{row['protocol']}-{row['case_id']}-{row['proc_model']}-{canonical_hash(body)[:12]}",
@@ -565,7 +650,7 @@ def to_record(row: dict[str, Any], zero_row: dict[str, Any] | None, git_sha: str
         redemption_local_seconds=None if lv is None else lv / 1e9,
         network_cross_check_seconds=None if cross is None else cross / 1e9,
         classical_bytes=None, issuer_calls=None if q else (1 if row["protocol"] in ("H1", "H2", "H4+H1") else 0),
-        double_spends_successful=None if q else max(0, (row["race_accepted_sites"] or 0) - 1),
+        double_spends_successful=None if q else row["strong_double_spends"],
         method="lane-GH matched topology: lane-G engine hosting S-money (G) and H0-H6 state machines (H) "
                "(qmint.classical.matched_topology)",
         configuration=json.loads(canonical_json(config)), evidence_kind=EvidenceKind.MODELLED_LATENCY,

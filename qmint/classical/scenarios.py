@@ -10,7 +10,9 @@ times are MODELLED_LATENCY lower bounds: light cone + declared processing.
 
 from __future__ import annotations
 
+import hashlib
 import math
+import random
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
 from typing import Any
@@ -81,6 +83,12 @@ def _sites(network: SpacetimeNetwork) -> list[str]:
     return [s.site_id for s in network.sites]
 
 
+def sim_idem_rng(node_id: str) -> random.Random:
+    """Seeded idempotency-key source for ONE simulated terminal (reproducible traces). Real terminals use
+    the CSPRNG default of :class:`~qmint.classical.h1_ledger.MerchantTerminal`."""
+    return random.Random(f"sim-idem|{node_id}")
+
+
 def _isolate(network: SpacetimeNetwork, site: str) -> Partition:
     others = frozenset(_sites(network)) - {site}
     return Partition(0.0, math.inf, frozenset({site}), others)
@@ -114,16 +122,21 @@ TerminalWrap = Callable[[h1_ledger.MerchantTerminal], ProtocolNode]
 def h1_nodes(coord_site: str, tokens: frozenset[str] | None, sites: Iterable[str],
              site_proc_ns: float = SITE_PROC_NS, coord_proc_ns: float = COORD_PROC_NS,
              wrap_terminal: TerminalWrap | None = None, retry_timeout_ns: float = RETRY_TIMEOUT_NS,
+             extra_tills: Mapping[str, tuple[str, str]] | None = None,
              ) -> tuple[h1_ledger.LedgerCoordinator, dict[str, ProtocolNode]]:
-    """Ledger coordinator + one merchant terminal ``t@<site>`` per site (optionally wrapped, e.g. H4+H1)."""
+    """Ledger coordinator + one merchant terminal ``t@<site>`` per site (optionally wrapped, e.g. H4+H1).
+    ``extra_tills`` ``{node_id: (site, merchant_site)}`` adds further tills of merchant ``m@<merchant_site>``
+    (multi-till / restarted-till deployments, keyed by node id in the returned map)."""
     sites = list(sites)
     keys = {f"m@{s}": f"key|{s}".encode() for s in sites}
     coord = h1_ledger.LedgerCoordinator("coord", coord_site, tokens, keys, coord_proc_ns)
+    tills = {s: (f"t@{s}", s, s) for s in sites}
+    tills.update({nid: (nid, site, ms) for nid, (site, ms) in (extra_tills or {}).items()})
     terms: dict[str, ProtocolNode] = {}
-    for s in sites:
-        t = h1_ledger.MerchantTerminal(f"t@{s}", s, f"m@{s}", keys[f"m@{s}"], "coord", site_proc_ns,
-                                       retry_timeout_ns=retry_timeout_ns)
-        terms[s] = wrap_terminal(t) if wrap_terminal else t
+    for key, (nid, site, ms) in tills.items():
+        t = h1_ledger.MerchantTerminal(nid, site, f"m@{ms}", keys[f"m@{ms}"], "coord", site_proc_ns,
+                                       retry_timeout_ns=retry_timeout_ns, idem_rng=sim_idem_rng(nid))
+        terms[key] = wrap_terminal(t) if wrap_terminal else t
     return coord, terms
 
 
@@ -171,9 +184,11 @@ def run_h1(network: SpacetimeNetwork, coord_site: str, partition_site: str | Non
 def h2_cluster(f: int, replica_sites: list[str], leaders: list[str],
                tokens: frozenset[str], merchant_sites: list[str], site_proc_ns: float = SITE_PROC_NS,
                coord_proc_ns: float = COORD_PROC_NS, retry_timeout_ns: float = RETRY_TIMEOUT_NS,
+               extra_tills: Mapping[str, tuple[str, str]] | None = None,
                ) -> tuple[dict[str, Any], Callable[[str], str]]:
     """Sharded quorum: one leader per shard at ``leaders[sh]``; followers on the other replica sites.
-    A site may host several replicas (listed repeatedly in ``replica_sites``)."""
+    A site may host several replicas (listed repeatedly in ``replica_sites``). ``extra_tills`` as in
+    :func:`h1_nodes`."""
     keys = {f"m@{s}": f"key|{s}".encode() for s in merchant_sites}
     nodes: dict[str, Any] = {}
     leader_ids = []
@@ -190,9 +205,11 @@ def h2_cluster(f: int, replica_sites: list[str], leaders: list[str],
     def route(tok: str) -> str:
         return leader_ids[h2_quorum.home_shard(tok, len(leaders))]
 
-    for s in merchant_sites:
-        t = h1_ledger.MerchantTerminal(f"t@{s}", s, f"m@{s}", keys[f"m@{s}"], "", site_proc_ns,
-                                       retry_timeout_ns=retry_timeout_ns, router=route)
+    tills = [(f"t@{s}", s, s) for s in merchant_sites]
+    tills += [(nid, site, ms) for nid, (site, ms) in (extra_tills or {}).items()]
+    for nid, site, ms in tills:
+        t = h1_ledger.MerchantTerminal(nid, site, f"m@{ms}", keys[f"m@{ms}"], "", site_proc_ns,
+                                       retry_timeout_ns=retry_timeout_ns, router=route, idem_rng=sim_idem_rng(nid))
         nodes[t.node_id] = t
     return nodes, route
 
@@ -262,7 +279,9 @@ def h3_setup(sites: list[str], issuer_site: str, mode: h3_escrow.Mode, token_id:
     """Issuer + hold-until-active verifiers ``e@<site>``; issuance messages and the user's Stage-II commit.
     ``preassigned`` escrows at ``sites[chosen]`` (site fixed at issuance). OT mode uses private ``z``."""
     order = {s: f"e@{s}" for s in sites}
-    iss = h3_escrow.EscrowIssuer("issuer", issuer_site, dict(order), seed=0, processing_ns=coord_proc_ns)
+    # Reproducible simulation: an explicit issuer-private key (never handed to any customer-side agent).
+    iss = h3_escrow.EscrowIssuer("issuer", issuer_site, dict(order), processing_ns=coord_proc_ns,
+                                 issuer_key=hashlib.sha256(f"sim-h3-issuer-key|{token_id}".encode()).digest())
     ver = {s: h3_escrow.EscrowSiteVerifier(order[s], s, i, len(sites), site_proc_ns, hold_until_active=True)
            for i, s in enumerate(sites)}
     prov = iss.issue(token_id, mode, assigned_site=sites[chosen] if mode == "preassigned" else None)

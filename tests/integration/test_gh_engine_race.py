@@ -25,7 +25,7 @@ def _present(site, tok="tok"):
 
 def test_h0_double_accept_and_settlement_only_ex_post():
     case = synthetic_two_site(100.0)
-    run = M.run_matched(case, "H0", 1, "jiang_dTproc_1507ns", adversarial=True)
+    run = M.run_matched(case, "H0", 1, "jiang_dTproc_1507ns", adversary="replay")
     assert run.result.accepted_sites(run.spec.token_id) == ["L0", "L1"]
     assert run.trace.double_spend_accepted is True
     settle = run.result.first("bank_settlement_final")
@@ -111,12 +111,12 @@ def test_h1_lossy_link_retries_with_same_key_never_double_credits():
 
 def test_h3_wrong_site_rejected_locally_and_assigned_site_accepts_without_coordination():
     case = synthetic_two_site(1000.0)
-    run = M.run_matched(case, "H3_preassigned", 0, "jiang_dTproc_1507ns", adversarial=True)
+    run = M.run_matched(case, "H3_preassigned", 0, "jiang_dTproc_1507ns", adversary="replay")
     dec = {e.site_id: e.detail["decision"] for e in run.result.of_kind("verification_result_available_local")}
     assert dec == {"L0": "ACCEPT", "L1": "REJECT_UNASSIGNED_SITE"}
     assert run.metrics["sync_cross_site_msgs_after_presentation"] == 0
     for mode in ("H3_late_commit_disclosed", "H3_late_commit_ot_private"):
-        r = M.run_matched(case, mode, 1, "zero_processing", adversarial=True)
+        r = M.run_matched(case, mode, 1, "zero_processing", adversary="replay")
         dec = {e.site_id: e.detail["decision"] for e in r.result.of_kind("verification_result_available_local")}
         assert dec == {"L0": "REJECT_UNASSIGNED_SITE", "L1": "ACCEPT"}
         assert not r.trace.double_spend_accepted

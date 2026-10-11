@@ -74,7 +74,7 @@ H = {
         "availability_assumptions": "coordinator reachable; partitioned site cannot accept (availability 0.5 "
                                     "in modelled scenario)",
         "proof_certainty": "linearizable CAS tested (threads + event race); no formal proof",
-        "security_target": "0 double spends under declared faults absent (tested)",
+        "security_target": "0 double spends under declared faults absent (tested vs the replay and strong adversaries, lane-M fixes M-H1/H2/H3 applied)",
         "local_verification_metric": "MODELLED: local proc + coordinator RTT lower bound",
         "issuance_included": "issued-set at coordinator only"}),
     "X11-H2": ("classical_h2_quorum[sharded_quorum_f1]", "QUALIFIED", {
@@ -89,7 +89,7 @@ H = {
         "finality_semantics": "majority-replicated commit (survives f crashes)",
         "availability_assumptions": "home-shard majority reachable; f+1 crashes => unavailable (tested)",
         "proof_certainty": "quorum-intersection argument + tests; leader election NOT implemented",
-        "security_target": "0 double spends with <= f crash faults (tested)",
+        "security_target": "0 double spends with <= f crash faults (tested vs the replay and strong adversaries, lane-M fixes M-H1/H2/H3 applied)",
         "local_verification_metric": "MODELLED: depends on home-shard placement (co-located vs remote)",
         "issuance_included": "issued-set replicated in home shard"}),
     "X11-H3-preassigned": ("classical_h3_preallocated_escrow[preassigned]", "QUALIFIED", {
@@ -101,12 +101,12 @@ H = {
         "spacelike_separation": "no cross-site coordination needed; other site rejects",
         "finality_semantics": "local escrow accept", "availability_assumptions": "offline at assigned site only",
         "proof_certainty": "tested state machine; trivial argument (only one site holds the escrow)",
-        "security_target": "0 double spends (tested)",
+        "security_target": "0 double spends (tested vs the replay and strong adversaries, lane-M fixes M-H1/H2/H3 applied)",
         "local_verification_metric": "MODELLED: local processing only",
         "issuance_included": "escrow provisioning to assigned site"}),
     "X11-H3-late-disclosed": ("classical_h3_preallocated_escrow[late_commit_disclosed]", "QUALIFIED", {
         "adversary_power": "prevention needs honest issuer relay + authenticated channels",
-        "issuer_trust": "honest issuer relays commit", "agent_trust": "honest site verifiers",
+        "issuer_trust": "honest issuer relays ONE commit per token (one-shot latch)", "agent_trust": "honest site verifiers",
         "trusted_hardware": "none", "pre_shared_key_bits": "authenticated user->issuer and issuer->site channels",
         "preassignment_of_site": "none: late commit, SAME causal requirement as S1's Stage-II bit c",
         "spender_privacy": "none: issuer learns b at commit (S1 hides b)",
@@ -114,7 +114,7 @@ H = {
         "finality_semantics": "local accept after activation",
         "availability_assumptions": "issuer reachable during Stage II (as S1's relay of c)",
         "proof_certainty": "tested state machine",
-        "security_target": "0 double spends (tested)",
+        "security_target": "0 double spends (tested vs the replay and strong adversaries, lane-M fixes M-H1/H2/H3 applied)",
         "local_verification_metric": "MODELLED: local processing; Stage-II commit latency reported separately",
         "issuance_included": "inactive provisioning at every site"}),
     "X11-H3-late-ot": ("classical_h3_preallocated_escrow[late_commit_ot_private]", "QUALIFIED", {
@@ -129,7 +129,9 @@ H = {
         "finality_semantics": "local accept",
         "availability_assumptions": "issuer relay of c during Stage II (as S1)",
         "proof_certainty": "reduction to OT security (not formally proved here); tested state machine",
-        "security_target": "forgery = guessing a 256-bit secret given ideal OT; computational otherwise",
+        "security_target": "forgery = guessing a 256-bit issuer-held CSPRNG-keyed secret given ideal OT; one-shot "
+                           "Stage II; computational otherwise; 0 double spends (tested vs the replay and strong "
+                           "adversaries, lane-M fixes M-H1/H2/H3 applied)",
         "local_verification_metric": "MODELLED: local hash check",
         "issuance_included": "per-site secret hashes provisioned at issuance + OT"}),
     "X11-H4": ("classical_h4_pqc_signed[mldsa_none]", "INCOMPARABLE", {
@@ -151,7 +153,7 @@ H = {
         "spender_privacy": "none: coordinator learns token, merchant, site",
         "spacelike_separation": "validation waits >= coordinator RTT",
         "finality_semantics": "coordinator commit", "availability_assumptions": "coordinator reachable",
-        "proof_certainty": "tested", "security_target": "0 double spends (tested)",
+        "proof_certainty": "tested", "security_target": "0 double spends (tested vs the replay and strong adversaries, lane-M fixes M-H1/H2/H3 applied)",
         "local_verification_metric": "MODELLED: local + coordinator RTT",
         "issuance_included": "keygen + sign; no per-token state at sites"}),
     "X11-H4+H3": ("classical_h4_pqc_signed[mldsa_h3_site_binding]", "QUALIFIED", {
@@ -163,7 +165,7 @@ H = {
         "spacelike_separation": "no coordination; other site rejects",
         "finality_semantics": "local accept", "availability_assumptions": "offline at bound site",
         "proof_certainty": "tested; relies on ML-DSA unforgeability",
-        "security_target": "0 double spends (tested)",
+        "security_target": "0 double spends (tested vs the replay and strong adversaries, lane-M fixes M-H1/H2/H3 applied)",
         "local_verification_metric": "MODELLED local proc; ML-DSA verify measured separately",
         "issuance_included": "keygen + sign; no per-token provisioning needed"}),
     "X11-H5": ("classical_h5_secure_hardware[assumption_holds]", "INCOMPARABLE", {
@@ -177,7 +179,7 @@ H = {
         "finality_semantics": "local accept; ex-post clearing detects clones (OUT_OF_MODEL)",
         "availability_assumptions": "offline; always available",
         "proof_certainty": "trust model only; broken assumption => double spend (tested)",
-        "security_target": "0 double spends IF H5-TR holds",
+        "security_target": "0 double spends IF H5-TR holds (tested vs the replay and strong adversaries)",
         "local_verification_metric": "MODELLED local challenge-response; no real device benchmarked",
         "issuance_included": "token loaded into SE; device provisioning"}),
     "X11-H6": ("classical_h6_anonymous_ecash[cfn88_sec1_k16]", "INCOMPARABLE", {

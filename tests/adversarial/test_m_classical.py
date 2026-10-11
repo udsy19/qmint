@@ -8,8 +8,6 @@ from __future__ import annotations
 
 import hashlib
 
-import pytest
-
 from qmint.classical import h3_escrow as h3
 from qmint.classical.common import Decision, new_msg
 from qmint.classical.h1_ledger import LedgerCoordinator, MerchantTerminal
@@ -54,8 +52,7 @@ def test_h3_ot_same_secret_at_other_site_rejected():
     assert present("B", w.r_z.hex()) != Decision.ACCEPT.value
 
 
-# --------------------------------------------------------------- M-H1: predictable OT secrets
-@pytest.mark.xfail(strict=True, reason="M-H1: H3 OT secrets = sha256('h3-ot|seed|token|i') with seed=0; anyone derives every site's secret")
+# --------------------------------------------------------------- M-H1: predictable OT secrets (FIXED, lane FGH)
 def test_h3_ot_secrets_unpredictable():
     _, relay, present = _h3("late_commit_ot_private")
     relay(new_msg("CommitC", "u", "issuer", "m", token_id="tok", c=0))
@@ -64,8 +61,7 @@ def test_h3_ot_secrets_unpredictable():
     assert not all(accepted), "keyless customer double-spent at both sites"
 
 
-# --------------------------------------------------------------- M-H2: re-commit
-@pytest.mark.xfail(strict=True, reason="M-H2: issuer relays a second Commit; token re-activated at another site after a spend")
+# --------------------------------------------------------------- M-H2: re-commit (FIXED, lane FGH)
 def test_h3_disclosed_second_commit_refused():
     _, relay, present = _h3("late_commit_disclosed")
     relay(new_msg("Commit", "u", "issuer", "m", token_id="tok", site="A"))
@@ -74,7 +70,6 @@ def test_h3_disclosed_second_commit_refused():
     assert present("B") != Decision.ACCEPT.value
 
 
-@pytest.mark.xfail(strict=True, reason="M-H2: issuer relays a second CommitC; the same r_z then opens the other site")
 def test_h3_ot_second_commit_refused():
     iss, relay, present = _h3("late_commit_ot_private")
     w = h3.OTWallet("tok", 1, iss.ot_transfer("tok", 1), 2)
@@ -84,8 +79,7 @@ def test_h3_ot_second_commit_refused():
     assert present("B", w.r_z.hex()) != Decision.ACCEPT.value
 
 
-# --------------------------------------------------------------- M-H3: idempotency-key collision
-@pytest.mark.xfail(strict=True, reason="M-H3: idem key = sha256(merchant|token|local counter); a 2nd till/restart replays ACCEPT")
+# --------------------------------------------------------------- M-H3: idempotency-key collision (FIXED, lane FGH)
 def test_h1_second_terminal_same_merchant_does_not_release_goods_twice():
     coord = LedgerCoordinator("C", "S0", frozenset({"T"}), {"M": KEY})
     decisions = []

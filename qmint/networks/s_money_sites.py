@@ -11,6 +11,8 @@ Kent et al. S-money pattern:
 3. At ``T_begin`` Alice's agent A0 chooses the presentation site b (``branch_choice``),
    sends b to her own agent A1 over her own channel, and gives B0 the commitment
    c = z XOR b (which is independent of b for uniform z -- B learns nothing about b).
+   ``run_s_money`` draws z uniformly by default (lane M finding M-G1; Kent et al. 2022 Table I:
+   z is Alice's private uniform bit); a fixed z is only for explicit tests.
 4. B0 forwards c to B1 (one-way). A_b presents the token x to B_b, A_(1-b) presents a dummy.
 5. B_b validates *locally* from (x, its pre-distributed record, c) after ``proc_ns``:
    ``verification_result_available_local``. No query to the other site is made.
@@ -32,6 +34,7 @@ record from B0 with a synchronous round trip, which
 
 from __future__ import annotations
 
+import random
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from typing import Any
@@ -216,7 +219,7 @@ class SMoneyRun:
 def run_s_money(
     case: TopologyCase,
     b: int,
-    z: int = 0,
+    z: int | None = None,
     t_choice_ns: float = 1_000_000.0,
     proc_ns: float = 1507.0,
     predistribute: bool = True,
@@ -226,8 +229,14 @@ def run_s_money(
     seed: int = 0,
     token_id: str = "tok-s-0",
 ) -> SMoneyRun:
-    if b not in (0, 1) or z not in (0, 1):
+    if b not in (0, 1) or z not in (None, 0, 1):
         raise ValueError("b and z are bits")
+    if z is None:
+        # Alice's private uniform z, seeded for reproducibility. Coupling: draw the uniform commitment
+        # c from the seed and set z = c XOR b. (b, z, c) has exactly the honest joint law (z uniform and
+        # independent of b), and for a fixed seed Bob's whole pre-presentation view is identical for
+        # b = 0 and b = 1, i.e. the privacy property holds pathwise, not only in distribution.
+        z = random.Random(f"s-money-c|{seed}").getrandbits(1) ^ b
     L0, L1 = case.site_ids[:2]
     a = [SUserAgent(f"A{i}", s, i, f"B{i}", f"A{1 - i}", token_id) for i, s in enumerate((L0, L1))]
     a[0].present_delay_ns = nominal_one_way_ns(case, L0, L1)

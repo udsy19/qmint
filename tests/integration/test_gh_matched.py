@@ -63,12 +63,50 @@ def test_matched_latency_structure(cases, case_id):
 
 def test_double_spend_outcomes_on_matched_topology(cases):
     case = cases["synthetic_100km"]
-    acc = {lab: M.run_matched(case, lab, 1, "jiang_dTproc_1507ns", adversarial=True).metrics["accepted_sites"]
+    acc = {lab: M.run_matched(case, lab, 1, "jiang_dTproc_1507ns", adversary="replay").metrics["accepted_sites"]
            for lab in M.PROTOCOLS if lab != M.S1}
     assert acc == {"H0": 2, "H1": 1, "H2": 1, "H3_preassigned": 1, "H3_late_commit_disclosed": 1,
                    "H3_late_commit_ot_private": 1, "H4+H1": 1, "H4+H3": 1, "H5": 1, "H6": 2}
     with pytest.raises(ValueError):
-        M.run_matched(case, M.S1, 1, "zero_processing", adversarial=True)
+        M.run_matched(case, M.S1, 1, "zero_processing", adversary="replay")
+
+
+@pytest.mark.parametrize("case_id", ["synthetic_100km", "ripe_helsinki_tampere"])
+@pytest.mark.parametrize("b", [0, 1])
+def test_strong_adversary_outcomes_on_matched_topology(cases, case_id, b):
+    """M-H4: the strong adversary (race + re-commit + re-present + forged OT secrets + 2nd/restarted till of the
+    same merchant) gets exactly one accept against every preventing design and more against H0 / H6."""
+    case = cases[case_id]
+    acc = {lab: M.run_matched(case, lab, b, "jiang_dTproc_1507ns", adversary="strong").metrics["accepted_presentations"]
+           for lab in M.PROTOCOLS if lab != M.S1}
+    assert acc == {"H0": 2, "H1": 1, "H2": 1, "H3_preassigned": 1, "H3_late_commit_disclosed": 1,
+                   "H3_late_commit_ot_private": 1, "H4+H1": 1, "H4+H3": 1, "H5": 1, "H6": 3}
+
+
+def test_strong_adversary_actually_makes_its_attempts(cases):
+    case = cases["synthetic_100km"]
+    ot = M.run_matched(case, "H3_late_commit_ot_private", 1, "zero_processing", adversary="strong")
+    issuer = next(n for n in ot.spec.nodes if getattr(n, "node_id", "") == "issuer")
+    assert issuer.refused_commits == [("tok-h3-0", "CommitC")]  # the re-commit reached the issuer and was refused
+    decisions = [e.detail["decision"] for e in ot.result.of_kind("verification_result_available_local")]
+    assert decisions.count("ACCEPT") == 1 and len(decisions) == 5  # race + re-present + 2 forged secrets
+    h1 = M.run_matched(case, "H1", 1, "zero_processing", adversary="strong")
+    tills = {e.detail["verifier"] for e in h1.result.of_kind("verification_result_available_local")}
+    assert {"t2@L0", "t3@L1"} <= tills  # second till of m@L1 at L0 and a restarted till at L1 were used
+    assert len(ot.metrics["strong_attempts"]) == 4 and len(h1.metrics["strong_attempts"]) == 4
+
+
+def test_processing_is_one_matched_parameter_for_every_protocol(cases):
+    """M-H5 re-audit: in every processing model S-money and the classical designs use the SAME per-step time, so the
+    S1 - H1 gap is 2 one-way delays + 2 extra processing steps, and S1 = H3-late exactly, for every model."""
+    case = cases["paper_jinan_2.766km_fibre"]
+    one_way = case.link_runtime[case.site_ids[:2]].latency.delay_ns
+    for model, p in M.PROC_MODELS.items():
+        get = {lab: M.run_matched(case, lab, 1, model).metrics["choice_to_local_accept_ns"]
+               for lab in (M.S1, "H1", "H3_late_commit_ot_private")}
+        assert get[M.S1] == pytest.approx(one_way + p), model
+        assert get["H3_late_commit_ot_private"] == pytest.approx(get[M.S1]), model
+        assert get["H1"] - get[M.S1] == pytest.approx(2 * one_way + 2 * p), model
 
 
 def test_every_trace_is_causal(cases):
@@ -77,14 +115,14 @@ def test_every_trace_is_causal(cases):
     for case_id, case in cases.items():
         for lab in M.PROTOCOLS:
             for b in (0, 1):
-                for adv in ((False,) if lab == M.S1 else (False, True)):
+                for adv in ((None,) if lab == M.S1 else (None, *M.ADVERSARIES)):
                     run = M.run_matched(case, lab, b, "jiang_dTproc_1507ns", seed=3, case_id=case_id,
-                                        adversarial=adv)
+                                        adversary=adv)
                     assert retrocausal_violations(run.trace) == []
                     assert propagation_violations(run.trace, case.network) == []
                     assert_causal(run.trace, case.network)
                     n += 1
-    assert n == 6 * (1 * 2 + 10 * 2 * 2)
+    assert n == 6 * (1 * 2 + 10 * 2 * 3)
 
 
 def test_seeded_runs_are_deterministic(cases):
@@ -104,7 +142,7 @@ def test_reports_written_and_valid(tmp_path):
     p = M.write_csv(rows, tmp_path / "m.csv")
     with open(p, newline="") as fh:
         got = list(csv.DictReader(fh))
-    assert len(got) == len(M.PROTOCOLS) * 2 * 2
+    assert len(got) == len(M.PROTOCOLS) * len(M.PROC_MODELS) * 2
     assert {r["evidence_kind"] for r in got} == {"MODELLED_LATENCY"}
     zero = {(r["case_id"], r["protocol"]): r for r in rows if r["proc_model"] == "zero_processing" and r["b"] == 1}
     for r in rows:
