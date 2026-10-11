@@ -20,9 +20,9 @@ case "$LANE" in
   X) PAT='^(qmint/networks/|qmint/classical/|tests/unit/networks/|tests/unit/classical/|tests/integration/test_gh_|reports/classical_baseline_notes/|handoffs/GH-)' ;;
   Q) PAT='^(qmint/protocols/|qmint/attacks/|qmint/quantum/|qmint/proofs/|qmint/photonics/entrypoints\.py|qmint/core/interfaces\.py|qmint/core/lanes\.py|tests/unit/(protocols|attacks|quantum|proofs|ionq)/|tests/integration/test_q_|tests/contracts/test_interfaces\.py|handoffs/Q-)' ;;
   KB) PAT='^(web/app/\(marketing\)/|web/components/marketing/|web/public/brand/|handoffs/K-web-B)' ;;
-  KC) PAT='^(web/app/\(platform\)/(layout\.tsx|app/|research/|docs/)|web/components/(shell|research|docs)/|handoffs/K-web-C)' ;;
-  KD) PAT='^(web/app/\(platform\)/lab/|web/components/lab/|handoffs/K-web-D)' ;;
-  KE) PAT='^(web/app/\(platform\)/(benchmarks|certificates)/|web/components/(charts|certificates)/|handoffs/K-web-E)' ;;
+  KC) PAT='^(web/app/\(platform\)/(layout\.tsx|app/|research/|docs/)|web/components/(shell|research|docs)/|qmint/api/routes/(research|protocols|evidence|meta)\.py|tests/unit/api/test_c_|web/lib/api/(openapi\.json|schema\.d\.ts|evidence-labels\.json)|handoffs/K-web-C)' ;;
+  KD) PAT='^(web/app/\(platform\)/lab/|web/components/lab/|qmint/api/routes/lab\.py|tests/unit/api/test_d_|web/lib/api/(openapi\.json|schema\.d\.ts|evidence-labels\.json)|handoffs/K-web-D)' ;;
+  KE) PAT='^(web/app/\(platform\)/(benchmarks|certificates)/|web/components/(charts|certificates)/|qmint/api/routes/(benchmarks|certificates)\.py|tests/unit/api/test_e_|web/lib/api/(openapi\.json|schema\.d\.ts|evidence-labels\.json)|handoffs/K-web-E)' ;;
   KF) PAT='^(web/e2e/|docs/design/VISUAL_QA\.md|docs/design/screenshots/|web/components/route-stub\.tsx|handoffs/K-web-F)' ;;
   M) PAT='^(audits/|tests/adversarial/|handoffs/M-)' ;;
   N) PAT='^(qmint/evaluation/|reports/(paper|figures_data|N_)|figures/|docs/paper/|tests/unit/evaluation/|handoffs/N-)' ;;
