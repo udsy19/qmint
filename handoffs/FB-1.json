@@ -1,0 +1,58 @@
+{
+  "lane": "FB",
+  "task": "1",
+  "input_contract_sha": "ace5cbccad29f6c11ebbbb705a66a9e7da6d2ac1",
+  "branch": "feat/FB-fixes",
+  "starting_commit_sha": "02aeab190025e51992cca0736f86dc731c1abee2",
+  "final_commit_sha": "5e4f16a9721c361a891b2de69d881eb82d0b30b4 (code + tests); this handoff commit follows it",
+  "findings_fixed": ["M-B1", "M-B2", "M-B3", "M-B4"],
+  "xfail_markers_removed": [
+    "tests/adversarial/test_m_protocol_boundary.py::test_handle_refuses_deepcopy (M-B1)",
+    "tests/adversarial/test_m_protocol_boundary.py::test_handle_refuses_pickle (M-B1)",
+    "tests/adversarial/test_m_protocol_boundary.py::test_wallet_handle_graph_holds_no_state_matrices (M-B2)",
+    "tests/adversarial/test_m_protocol_boundary.py::test_kent_alice_facing_object_holds_no_bob_secret (M-B2)",
+    "tests/adversarial/test_m_protocol_boundary.py::test_redeem_binds_serial_to_token (M-B3)"
+  ],
+  "changed_paths": [
+    "qmint/protocols/common.py",
+    "qmint/protocols/register.py",
+    "qmint/protocols/wiesner.py",
+    "qmint/protocols/kent_smoney_2022.py",
+    "tests/unit/protocols/test_protocols_wiesner.py",
+    "tests/unit/protocols/test_protocols_kent_smoney.py",
+    "tests/adversarial/test_m_protocol_boundary.py",
+    "handoffs/FB-1.json",
+    "handoffs/FB-1.md"
+  ],
+  "commands_run": [
+    "$PY -m pytest tests -q -m 'not network and not slow' -o addopts=''  # baseline 983 passed, 26 xfailed",
+    "$PY -m pytest tests -q -m 'not network and not slow' -o addopts=''  # after: 996 passed, 21 xfailed, 2 deselected",
+    "$PY -m pytest tests/adversarial tests/unit/protocols tests/contracts -q -o addopts=''  # 196 passed, 21 xfailed",
+    "$PY -m ruff check qmint/protocols tests/unit/protocols tests/adversarial  # All checks passed"
+  ],
+  "test_exit_codes": {"full_suite_not_network_not_slow": 0, "protocols_adversarial_contracts": 0, "ruff_check": 0},
+  "evidence_files": [],
+  "assumptions_verified": [
+    "lane C split/measure/n_qubits API unchanged (tests/contracts/test_interfaces.py, tests/integration/test_q_* pass)",
+    "qmint/api/routes/lab.py unchanged and its tests pass (it uses mint/split/acceptance_probability/redeem with the minted serial)",
+    "M-B2 documentation tests (test_kent_introspection_attack_wins_s1_with_certainty, test_handle_introspection_recovers_secret_exactly) still pass: private-member introspection remains possible in Python and is OUT_OF_MODEL"
+  ],
+  "performance_numbers_with_sources": [],
+  "blockers": [],
+  "known_limitations": [
+    "All four fixes are API-boundary enforcement in a single-process Python simulator, not physics. Code that imports qmint.protocols.register/_CAPABILITIES or kent_smoney_2022._BOB_SIDE, walks gc, or calls the private accessors (_register, _qubits, _bob, _bank) still reaches amplitudes/secrets; such code is OUT_OF_MODEL.",
+    "Private accessors _register/_qubits (RegisterHandle) and _bob (KentSMoneySession) are kept as properties because lane M's passing documentation tests use them and this lane may only remove xfail markers there.",
+    "M-B4: S1 applicability is IN_MODEL only when a SpacetimeNetwork is passed and the two presentation events are certainly spacelike (is_spacelike, clock bounds included); without a network a double presentation is labelled OUT_OF_MODEL. Bob's per-site outcomes/events are still readable by in-process Alice code; with spacelike presentations that cannot inform the other presentation in the modelled physics. Routing S1 through lane G's engine (auditor's remedy) is not done here.",
+    "RegisterHandle(register, qubits, record) constructor is still a simulator-internal entry point: code holding a FactorizedRegister can wrap the same live qubits twice (aliasing, not cloning). Reaching a register requires out-of-model introspection."
+  ],
+  "interfaces_changed": [
+    "RegisterHandle: refuses copy/deepcopy/pickle with qmint.protocols.common.CapabilityBoundaryError; attributes are now {record, consumed, _cap_key}.",
+    "SecretHolder now subclasses NonCopyable (same SecretBoundaryError behaviour; also refuses __reduce__/__getstate__).",
+    "RedemptionResult.reason gains 'serial_mismatch'.",
+    "KentSMoneySession(..., network: SpacetimeNetwork | None = None, enforce_spacelike: bool = False); new s1_presentation_status() -> 'INCOMPLETE'|'IN_MODEL'|'OUT_OF_MODEL'; new SpacelikeViolation(ProtocolOrderError). _secret/_rng attributes removed (Bob side via _bank()).",
+    "Proposal (not applied): C1 v2 TokenHandle clause 'handles are non-copyable and non-picklable' (as M-M1 proposes).",
+    "Proposal for lane M (not applied): re-point the two M-B2 documentation tests at the vault, then FB can drop the _register/_qubits/_bob convenience properties.",
+    "Proposal for API lane (optional, no breakage): lab route could display reason 'serial_mismatch' if it ever adds a wrong-serial demo."
+  ],
+  "whether_paid_jobs_run": false
+}
