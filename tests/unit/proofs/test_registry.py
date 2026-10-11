@@ -48,7 +48,8 @@ def test_bound_for_is_game_specific():
 def test_status_vocabulary_and_honest_grades():
     reg = default_registry()
     assert reg.claim("P-D1").status == ProofStatus.NUMERICALLY_SUPPORTED
-    for cid in ("P-W2", "P-S3", "P-C1", "P-OPT"):
+    assert reg.claim("P-W2").status == ProofStatus.CERTIFIED_NUMERIC and reg.claim("P-W2").bounds == []
+    for cid in ("P-S3", "P-C1", "P-OPT"):
         assert reg.claim(cid).status == ProofStatus.UNSUPPORTED
         assert reg.claim(cid).bounds == []
 
@@ -68,8 +69,8 @@ def test_registry_rejects_missing_or_duplicate_claims():
 def test_unsupported_claim_cannot_carry_bounds():
     raw = yaml.safe_load(OBLIGATIONS_PATH.read_text(encoding="utf-8"))
     bad = copy.deepcopy(raw)
-    w2 = next(c for c in bad["claims"] if c["claim_id"] == "P-W2")
-    w2["bounds"] = [{"bound_id": "P-W2/unf", "axis": "epsilon_unf", "anchor": "x", "formula": "(3/4)^n", "domain": "x"}]
+    w2 = next(c for c in bad["claims"] if c["claim_id"] == "P-C1")
+    w2["bounds"] = [{"bound_id": "P-C1/unf", "axis": "epsilon_unf", "anchor": "x", "formula": "(3/4)^n", "domain": "x"}]
     with pytest.raises(ValueError):
         Registry.model_validate(bad)
 

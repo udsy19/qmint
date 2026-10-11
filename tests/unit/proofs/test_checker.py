@@ -56,8 +56,13 @@ def test_checker_is_a_separate_code_path():
         a.name for n in ast.walk(tree) if isinstance(n, ast.Import) for a in n.names
     }
     for forbidden in ("qmint.proofs.ideal_bounds", "qmint.proofs.finite_size", "qmint.proofs.assumption_check",
-                      "qmint.proofs.results", "math"):
+                      "qmint.proofs.results", "math", "qmint.attacks"):
         assert forbidden not in mods
+    sdp_tree = ast.parse(Path(checker_mod.sdp_exact.__file__).read_text(encoding="utf-8"))
+    sdp_mods = {n.module for n in ast.walk(sdp_tree) if isinstance(n, ast.ImportFrom)} | {
+        a.name for n in ast.walk(sdp_tree) if isinstance(n, ast.Import) for a in n.names}
+    for forbidden in ("qmint.attacks", "qmint.attacks.certify", "qmint.proofs.ideal_bounds", "qmint.proofs.finite_size"):
+        assert forbidden not in sdp_mods
 
 
 def test_certifies_correct_w1(decl):
@@ -245,43 +250,85 @@ def test_mutated_monotonicity_direction_is_caught(kent_fig5_params, monkeypatch)
 
 
 # ------------------------------ CERTIFIED_NUMERIC SDP ------------------------------
+# Numbers below are lane C's published evidence (handoffs/C-C1-evidence.json, "certified" blocks).
+
+C_W1 = {
+    1: {"solver": "SCS", "n": 1, "dual_objective": 0.7500000000000002, "delta_shift": 1.8189894035458565e-12,
+        "certified_bound": 0.750000000003638, "certified_bound_exact": "206158430209/274877906944"},
+    2: {"solver": "SCS", "n": 2, "dual_objective": 0.5624999999999998, "delta_shift": 1.8189894035458565e-12,
+        "certified_bound": 0.562500000007276, "certified_bound_exact": "77309411329/137438953472"},
+}
+C_W1_CLARABEL_N1 = {"solver": "CLARABEL", "n": 1, "dual_objective": 0.7499999996197124,
+                    "delta_shift": 3.992681740783155e-10, "certified_bound": 0.7500000004183676,
+                    "certified_bound_exact": "206158430323/274877906944"}
+# lane C did not export delta for W1_CV; (certified - dual)/8 = 1.837e-11 is used
+C_W1CV = {"solver": "SCS+Fraction LDL", "n": 1, "dual_objective": 0.9267766953948254, "delta_shift": 1.8e-11,
+          "certified_bound": 0.9267766955417756}
 
 
-def _sdp_cert(sdp, bound=0.7500001):
+def _sdp_cert(sdp, game="W1", bound=None, target=0.76):
+    cb = sdp.get("certified_bound", 0.75)
     return SecurityCertificate(
-        protocol_id="wiesner_noisy", game_id="W2", security_model_id="w2_threshold_n1",
-        parameters={"sdp_certificate": sdp}, upper_bounds=UpperBounds(epsilon_unf=bound),
-        targets=Targets(epsilon_unf=0.76), assumptions_met=True, proof_reference="audits/SDP_DERIVATION.md",
+        protocol_id="wiesner_ideal" if game in ("W1", "W1_CV") else "wiesner_noisy", game_id=game,
+        security_model_id="w1_choi_sdp", parameters={"sdp_certificate": sdp},
+        upper_bounds=UpperBounds(epsilon_unf=bound if bound is not None else cb), targets=Targets(epsilon_unf=target),
+        assumptions_met=True, proof_reference="audits/SDP_DERIVATION.md",
         evidence_kind=EvidenceKind.CERTIFIED_NUMERIC, reason="x", evidence_hashes=H)
 
 
-GOOD_SDP = {
-    "solver": "clarabel", "game_definition_sha256": "c" * 64, "primal_objective": 0.7499999,
-    "dual_objective": 0.75, "dual_min_eigenvalue": -2e-9, "eigenvalue_error_bound": 1e-10,
-    "dual_variable_dim": 2, "certified_bound": 0.7500001,
-}
+@pytest.mark.parametrize("sdp", [C_W1[1], C_W1[2], C_W1_CLARABEL_N1])
+def test_lane_c_w1_certificates_reverified(sdp):
+    out = CHK.check(_sdp_cert(sdp))
+    assert out.proof_check_status == CertificateStatus.CERTIFIED, out.reason
 
 
-def test_sdp_certificate_with_residual_accounting_accepted():
-    assert CHK.check(_sdp_cert(GOOD_SDP)).proof_check_status == CertificateStatus.CERTIFIED
+def test_lane_c_w1cv_certificate_reverified():
+    out = CHK.check(_sdp_cert(C_W1CV, game="W1_CV", target=0.93))
+    assert out.proof_check_status == CertificateStatus.CERTIFIED, out.reason
 
 
-@pytest.mark.parametrize("drop", ["dual_min_eigenvalue", "eigenvalue_error_bound", "dual_variable_dim", "certified_bound"])
+def test_sdp_claim_below_true_optimum_rejected():
+    """A 'certified' bound below the true optimum (3/4) cannot be confirmed."""
+    bad = dict(C_W1[1], dual_objective=0.7, delta_shift=0.0, certified_bound=0.74, certified_bound_exact=None)
+    out = CHK.check(_sdp_cert(bad))
+    assert out.proof_check_status == CertificateStatus.UNCERTIFIED and "independently verified" in out.reason
+
+
+def test_explicit_rational_dual_checked():
+    good = dict(C_W1[1], dual_matrix_rational=[["3/8", "0"], ["0", "3/8"]], certified_bound=0.75,
+                delta_shift=0.0, dual_objective=0.75, certified_bound_exact="3/4")
+    assert CHK.check(_sdp_cert(good)).proof_check_status == CertificateStatus.CERTIFIED
+    infeasible = dict(good, dual_matrix_rational=[["3/8", "0"], ["0", "37/100"]])
+    out = CHK.check(_sdp_cert(infeasible))
+    assert out.proof_check_status == CertificateStatus.UNCERTIFIED and "fails exact check" in out.reason
+
+
+@pytest.mark.parametrize("drop", ["n", "delta_shift", "certified_bound", "dual_objective"])
 def test_sdp_without_residual_fields_rejected(drop):
-    sdp = {k: v for k, v in GOOD_SDP.items() if k != drop}
-    assert CHK.check(_sdp_cert(sdp)).proof_check_status == CertificateStatus.UNCERTIFIED
+    sdp = {k: v for k, v in C_W1[1].items() if k != drop}
+    assert CHK.check(_sdp_cert(sdp, bound=0.76)).proof_check_status == CertificateStatus.UNCERTIFIED
 
 
-def test_sdp_padding_too_small_rejected():
-    sdp = dict(GOOD_SDP, dual_min_eigenvalue=-1e-4)  # needs 0.75 + 2e-4 padding
+def test_sdp_padding_not_accounted_rejected():
+    sdp = dict(C_W1_CLARABEL_N1, certified_bound=0.7500000000000001, certified_bound_exact=None)
     out = CHK.check(_sdp_cert(sdp))
     assert out.proof_check_status == CertificateStatus.UNCERTIFIED and "padding" in out.reason
 
 
 def test_sdp_reported_bound_below_certified_rejected():
-    assert CHK.check(_sdp_cert(GOOD_SDP, bound=0.75)).proof_check_status == CertificateStatus.UNCERTIFIED
+    assert CHK.check(_sdp_cert(C_W1[1], bound=0.75)).proof_check_status == CertificateStatus.UNCERTIFIED
+
+
+def test_sdp_for_w2_refused_without_independent_path():
+    out = CHK.check(_sdp_cert(dict(C_W1[1]), game="W2"))
+    assert out.proof_check_status == CertificateStatus.UNCERTIFIED and "no independent" in out.reason
+
+
+def test_sdp_n3_refused():
+    out = CHK.check(_sdp_cert(dict(C_W1[2], n=3), target=0.5))
+    assert out.proof_check_status == CertificateStatus.UNCERTIFIED
 
 
 def test_sdp_numerical_only_rejected():
-    c = SecurityCertificate.model_validate(dict(_sdp_cert(GOOD_SDP).model_dump(), evidence_kind=EvidenceKind.NUMERICAL_SDP))
+    c = SecurityCertificate.model_validate(dict(_sdp_cert(C_W1[1]).model_dump(), evidence_kind=EvidenceKind.NUMERICAL_SDP))
     assert CHK.check(c).proof_check_status == CertificateStatus.UNCERTIFIED

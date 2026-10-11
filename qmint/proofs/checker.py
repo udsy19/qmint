@@ -16,7 +16,12 @@ A certificate is returned ``CERTIFIED`` only if
     value by at most ``OUTWARD_SLACK_DEX`` (conservative rounding), anything larger is a mismatch
     (e.g. a reversed epsilon such as 1 - eps);
   * every target axis has a re-derived bound <= target;
-  * no bound (e.g. privacy) is reported for an axis without a theorem.
+  * no bound (e.g. privacy) is reported for an axis without a theorem;
+  * for CERTIFIED_NUMERIC SDP certificates (W1 n<=2, W1_CV n=1 only): the residual-accounting
+    fields are consistent AND the bound is re-verified in exact rational arithmetic by
+    ``qmint.proofs.sdp_exact`` (own G construction, own PSD test; either the supplied rational dual
+    matrix is checked, or the claimed bound must be >= an independently verified exact dual bound).
+    SDP certificates for any other game (e.g. W2) are refused: no independent re-verification exists.
 Otherwise it returns ``UNCERTIFIED`` with every reason listed. D1 (Schiansky 2023) is never
 certified: its published bound rests on a fitted SDP boundary and an informal de Finetti step.
 """
@@ -26,9 +31,11 @@ from __future__ import annotations
 import itertools
 from collections.abc import Mapping
 from decimal import Decimal, localcontext
+from fractions import Fraction
 from typing import Any
 
 from qmint.core.contracts import CertificateStatus, EvidenceKind, GameId, SecurityCertificate
+from qmint.proofs import sdp_exact
 from qmint.proofs.registry import Registry, default_registry
 
 PREC = 60
@@ -223,16 +230,11 @@ def _derive(game: str, axis: str, p: Mapping[str, Any]) -> Decimal:
 # Checker
 # --------------------------------------------------------------------------- #
 
-_SDP_FIELDS = (
-    "solver",
-    "game_definition_sha256",
-    "primal_objective",
-    "dual_objective",
-    "dual_min_eigenvalue",
-    "eigenvalue_error_bound",
-    "dual_variable_dim",
-    "certified_bound",
-)
+# Fields of a CERTIFIED_NUMERIC SDP certificate (names follow lane C's evidence records:
+# handoffs/C-C1-evidence.json "certified" blocks). The checker never trusts them alone: the bound is
+# re-verified in exact arithmetic by qmint.proofs.sdp_exact with an independently built G.
+_SDP_FIELDS = ("solver", "n", "dual_objective", "delta_shift", "certified_bound")
+_SDP_GAMES = {"W1": "wiesner_ideal", "W1_CV": "wiesner_ideal"}
 
 
 class IndependentProofChecker:
@@ -322,42 +324,63 @@ class IndependentProofChecker:
         return r
 
     def _check_sdp(self, cert: SecurityCertificate) -> list[str]:
+        game = cert.game_id.value
+        if game not in _SDP_GAMES:
+            return [f"CERTIFIED_NUMERIC for game {game}: no independent exact re-verification available; refused"]
         sdp = cert.parameters.get("sdp_certificate")
         if not isinstance(sdp, Mapping):
-            return ["CERTIFIED_NUMERIC requires parameters.sdp_certificate with residual accounting"]
+            return ["CERTIFIED_NUMERIC requires parameters.sdp_certificate"]
         missing = [k for k in _SDP_FIELDS if sdp.get(k) is None]
         if missing:
             return ["SDP certificate lacks residual-accounting fields: " + ", ".join(missing)]
-        r = []
-        with localcontext() as ctx:
-            ctx.prec = PREC
-            try:
-                dual, lam_min, err = _D(sdp["dual_objective"]), _D(sdp["dual_min_eigenvalue"]), _D(sdp["eigenvalue_error_bound"])
-                dim, cb, primal = _D(sdp["dual_variable_dim"]), _D(sdp["certified_bound"]), _D(sdp["primal_objective"])
-            except Exception as e:  # noqa: BLE001 - any malformed number is a refusal
-                return [f"SDP certificate has malformed numbers: {e}"]
-            if err < 0 or dim < 1:
-                r.append("eigenvalue_error_bound must be >= 0 and dual_variable_dim >= 1")
-            # Y (x) I - G >= (lam_min - err) I  =>  (Y + r I) feasible with r = max(0, err - lam_min);
-            # Tr(Y + r I) = dual + r * dim is a rigorous upper bound on the primal optimum.
-            pad = max(Decimal(0), err - lam_min)
-            needed = dual + pad * dim
-            if cb < needed:
-                r.append(f"certified_bound {cb} < dual objective + residual padding {needed}")
-            if primal > cb:
-                r.append("primal objective exceeds certified bound (inconsistent SDP certificate)")
-            for axis in AXES:
-                target = getattr(cert.targets, axis)
-                lin = getattr(cert.upper_bounds, axis)
-                if target is None and lin is None:
-                    continue
-                if axis != sdp.get("axis", "epsilon_unf"):
-                    r.append(f"{axis}: SDP certificate does not bound this axis")
-                    continue
-                if lin is None or _D(lin) < cb:
-                    r.append(f"{axis}: reported bound must be >= certified_bound {cb}")
-                if target is not None and cb > _D(target):
-                    r.append(f"{axis}: certified_bound {cb} exceeds target {target}")
+        n = sdp["n"]
+        if isinstance(n, bool) or not isinstance(n, int) or n < 1 or (game == "W1_CV" and n != 1):
+            return [f"SDP certificate n={n!r} unsupported for exact re-verification of {game}"]
+        r: list[str] = []
+        try:
+            dual, delta, cb = Fraction(str(sdp["dual_objective"])), Fraction(str(sdp["delta_shift"])), Fraction(str(sdp["certified_bound"]))
+            exact = Fraction(str(sdp["certified_bound_exact"])) if sdp.get("certified_bound_exact") is not None else None
+        except (ValueError, ZeroDivisionError) as e:
+            return [f"SDP certificate has malformed numbers: {e}"]
+        dim = 2**n if game == "W1" else 8  # trace dimension of the dual variable(s)
+        # residual accounting: bound = Tr(Y_rounded) + delta * dim; dyadic rounding moves the trace by <= dim 2^-40
+        if delta < 0:
+            r.append("delta_shift must be >= 0")
+        if cb < dual + delta * dim - dim * Fraction(1, 2**40):
+            r.append(f"certified_bound {float(cb)} < dual objective + delta*dim (residual padding not accounted)")
+        if exact is not None and cb < exact:
+            r.append("certified_bound (float) is below its own exact rational value")
+        # independent exact re-verification (separate code path, own G, own PSD test)
+        try:
+            if sdp.get("dual_matrix_rational") is not None:
+                if game != "W1":
+                    return r + ["explicit dual matrix re-verification implemented for W1 only"]
+                tr = sdp_exact.verify_w1_dual(sdp_exact.parse_rational_matrix(sdp["dual_matrix_rational"]), n)
+                if tr is None:
+                    r.append("supplied rational dual Y fails exact check Y(x)1 - G >= 0")
+                elif tr > cb:
+                    r.append(f"Tr(Y) = {float(tr)} exceeds certified_bound")
+            else:
+                indep = sdp_exact.w1_independent_upper_bound(n) if game == "W1" else sdp_exact.w1cv_independent_upper_bound()
+                if cb < indep:
+                    r.append(
+                        f"certified_bound {float(cb)} is below QMint's independently verified bound {float(indep)}; "
+                        "claim cannot be confirmed without the rational dual matrix"
+                    )
+        except ValueError as e:
+            return r + [f"exact re-verification refused: {e}"]
+        for axis in AXES:
+            target = getattr(cert.targets, axis)
+            lin = getattr(cert.upper_bounds, axis)
+            if target is None and lin is None:
+                continue
+            if axis != "epsilon_unf":
+                r.append(f"{axis}: SDP certificate bounds epsilon_unf only")
+                continue
+            if lin is None or Fraction(str(lin)) < cb:
+                r.append(f"{axis}: reported bound must be >= certified_bound {float(cb)}")
+            if target is not None and cb > Fraction(str(target)):
+                r.append(f"{axis}: certified_bound {float(cb)} exceeds target {target}")
         if not cert.proof_reference:
             r.append("proof_reference required (SDP derivation document)")
         return r

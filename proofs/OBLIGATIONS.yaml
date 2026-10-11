@@ -108,20 +108,28 @@ claims:
     protocol: wiesner_noisy
     game: W2
     source: MVW2012
-    source_and_theorem: "NONE. No published closed-form bound is assumed for threshold/noisy Wiesner. MVW2012 SDP method is the intended tool (lane C, n=1 primal/dual)."
-    assumptions: ["To be fixed by lane C's game definition (threshold, loss reporting, channel)."]
+    source_and_theorem: "Plan obligation: demonstrate the SDP construction and primal/dual consistency at n=1 (support, not an original proof). MVW2012 Sec. 2.3-3.2 SDP (Choi primal max <G,J>, J>=0, Tr_out J=1; dual min Tr Y, Y(x)1>=G). NO published closed-form bound for the noisy/threshold W2 game itself."
+    assumptions:
+      - "SDP support is for the finite-dimensional ideal game W1 (n=1,2) and W1_CV (n=1) as constructed by lane C (audits/SDP_DERIVATION.md, input-first big-endian Choi ordering)."
+      - "W2 (per-copy threshold, noise, loss) is not covered by any certificate yet."
     required_declarations: []
-    finite_n_or_asymptotic: "n/a"
-    parameters: {}
-    quantifier_over_adversaries: "n/a"
-    mathematical_bound: "none"
-    numerical_method: "SDP (lane C); only a CERTIFIED_NUMERIC dual with residual accounting may ever be certified"
-    verification_script: "pending lane C (qmint/attacks)"
-    independent_crosscheck: "qmint/proofs/checker.py accepts CERTIFIED_NUMERIC SDP certificates only with residual-accounting fields"
+    finite_n_or_asymptotic: "exact finite n (n=1,2 for W1; n=1 for W1_CV)"
+    parameters: {n: "qubits per note (W1: 1 or 2; W1_CV: 1)"}
+    quantifier_over_adversaries: "every CPTP 1->2 map (W1) / every challenge-dependent POVM (W1_CV), via weak duality of an exactly verified dual"
+    mathematical_bound: "W1: 3/4 <= OPT_1 <= 0.750000000003638, 9/16 <= OPT_2 <= 0.562500000007276; W1_CV: OPT_1 <= 0.9267766955417756 (lane C). W2: none."
+    numerical_method: "lane C: CVXPY (SCS/Clarabel) dual -> dyadic rounding -> delta*1 shift -> exact Fraction LDL^T positive-definiteness"
+    verification_script: "lane C: qmint/attacks/certify.py, coherent_sdp.py; evidence handoffs/C-C1-evidence.json (main @ c9f0ec0)"
+    independent_crosscheck: "lane D: qmint/proofs/sdp_exact.py via checker.py (separate code path, imports nothing from qmint.attacks): own exact G_n from rational BB84 projectors, own exact PSD test (pivoting Gaussian elimination valid for singular matrices), own duals. Verified EXACTLY: Y=(3/8)^n 1 satisfies Y(x)1 - G_n >= 0 for n=1,2 (=> OPT_n <= 3/4, 9/16); W1_CV n=1 own dyadic dual gives OPT <= 127375219105/137438953472 = 0.92677669530531. Every lane C certified upper bound (SCS and Clarabel, n=1,2; W1_CV n=1) is >= these, so each claim is CONFIRMED; residual accounting (bound >= dual + delta*dim) consistent for all W1 records (tests/unit/proofs/test_checker.py)."
     caveats:
-      - "Applying (3/4)^n to W2 is refused (tested)."
-      - "MVW2012 Sec. 3.5 threshold result (binomial tail in the single-repetition optimum) counts JOINT both-copies successes per repetition; it is not a per-copy threshold verifier and does not cover W2 (agrees with lane A seed T-MVW12-SEC35). Not implemented: would need a new game id (lane A proposal W1_THRESH_JOINT)."
-    status: UNSUPPORTED
+      - "Applying (3/4)^n to W2 is refused (tested); CERTIFIED_NUMERIC certificates for game W2 are refused by the checker (no independent G construction for W2 exists)."
+      - "Lane C did not export its rational dual matrices Y, so lane D confirmed the CLAIMED BOUND VALUES (claim >= independently verified bound), not C's specific matrices. The checker can verify an explicit rational Y (parameters.sdp_certificate.dual_matrix_rational) when supplied; proposal: C exports Y as fraction strings."
+      - "Lane C's W1_CV record has no delta_shift field; residual accounting for it was checked with delta = (certified - dual)/8."
+      - "Exact verification is limited to Choi dimension <= 64 (W1 n <= 2)."
+      - "MVW2012 Sec. 3.5 threshold result (binomial tail in the single-repetition optimum) counts JOINT both-copies successes per repetition; it is not a per-copy threshold verifier and does not cover W2 (agrees with lane A seed T-MVW12-SEC35 and lane C negative control). Not implemented: would need a new game id (lane A proposal W1_THRESH_JOINT)."
+    status: CERTIFIED_NUMERIC  # for the SDP-support obligation (W1/W1_CV SDP values); W2 itself has NO bound
+    reproduced_examples:
+      - "W1 n=1 exact dual bound 3/4 (MVW dual Y=(3/8)1), n=2 exact 9/16; confirms lane C 0.750000000003638 / 0.562500000007276 (SCS) and 0.7500000004183676 / 0.5625000002919478 (Clarabel)"
+      - "W1_CV n=1 independent exact dual bound 0.92677669530531 (theorem 0.92677669529664); confirms lane C 0.9267766955417756"
     bounds: []
 
   - claim_id: P-S1

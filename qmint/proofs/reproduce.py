@@ -16,6 +16,7 @@ from typing import Any
 from qmint.core.contracts import GameId, Targets
 from qmint.core.serialization import canonical_json, file_sha256
 from qmint.proofs import finite_size as fs
+from qmint.proofs import sdp_exact
 from qmint.proofs.checker import IndependentProofChecker
 from qmint.proofs.engine import ProofEngine
 from qmint.proofs.ideal_bounds import log10_bound, min_length_for_target
@@ -134,6 +135,16 @@ def reproduce() -> dict[str, Any]:
                      round(ed, 4) == 0.0382, "PUBLISHED_AGGREGATE"))
     rows.append(_row("D1 Eq. (23) admissible at delta_h=0.031, delta_d=0.01", "Schiansky 2023 SI Eq. (23)", True,
                      not fs.schiansky_domain(d1), not fs.schiansky_domain(d1), "PUBLISHED_AGGREGATE"))
+    # Lane C CERTIFIED_NUMERIC SDP claims (handoffs/C-C1-evidence.json) vs lane D exact re-verification
+    for n, c_bound in ((1, 0.750000000003638), (2, 0.562500000007276)):
+        ub = sdp_exact.w1_independent_upper_bound(n)
+        rows.append(_row(f"W1 n={n} SDP: lane C certified upper bound vs exact dual (3/8)^n 1",
+                         "MVW2012 Sec. 3.2/3.4; audits/SDP_DERIVATION.md (lane C)", c_bound, str(ub),
+                         c_bound >= ub, "CERTIFIED_NUMERIC"))
+    ub_cv = sdp_exact.w1cv_independent_upper_bound()
+    rows.append(_row("W1_CV n=1 SDP: lane C certified upper bound vs lane D exact dual",
+                     "MVW2012 Thm 2 / Sec. 4.1; lane C evidence", 0.9267766955417756, float(ub_cv),
+                     0.9267766955417756 >= ub_cv, "CERTIFIED_NUMERIC"))
     return {"rows": rows, "all_agree": all(r["agrees"] for r in rows)}
 
 
