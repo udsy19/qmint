@@ -39,7 +39,7 @@ CORRECTIONS = "research/CORRECTIONS.md"
 NOVELTY = "research/NOVELTY_HYPOTHESES.md"
 DATASOURCES = "research/DATASOURCE_REGISTER.yaml"
 MANIFEST_DIR = "datasets/manifests"
-PLAN = "QMINT_MASTER_RESEARCH_PLAN.md"
+PLAN = "docs/planning/QMINT_MASTER_RESEARCH_PLAN.md"
 SOURCE_FILES = (MATRIX, THEOREMS, OBLIGATIONS, CORRECTIONS, NOVELTY, DATASOURCES)
 
 EntryKind = Literal["paper", "theorem", "obligation", "correction", "novelty", "dataset"]

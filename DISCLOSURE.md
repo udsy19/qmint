@@ -3,9 +3,9 @@
 This effort is supported by Qollab & IonQ.
 
 **Starting material.** The project began from a research specification package written before
-implementation: `QMINT_MASTER_RESEARCH_PLAN.md`, `CLAUDE_CODE_ORCHESTRATOR_PROMPT.md`,
-`AGENT_WORK_PACKAGES.md`, `project/TRACKER_TEMPLATE.yaml`, and a 70-line stdlib reference of three published
-ideal bounds (later superseded by `qmint/proofs/ideal_bounds.py` and deleted). `references/genqai-implementation-plan.md`
+implementation: `docs/planning/QMINT_MASTER_RESEARCH_PLAN.md`, `docs/planning/CLAUDE_CODE_ORCHESTRATOR_PROMPT.md`,
+`docs/planning/AGENT_WORK_PACKAGES.md`, `project/TRACKER_TEMPLATE.yaml`, and a 70-line stdlib reference of three published
+ideal bounds (later superseded by `qmint/proofs/ideal_bounds.py` and deleted). `docs/planning/references/genqai-implementation-plan.md`
 is an organisational-format inspiration from a separate project. No templates or forks of other repositories
 were used; no third-party source code was copied (see `licenses/REFERENCE_AUDIT.md`, `datasets/DATA_LICENSES.md`).
 

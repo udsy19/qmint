@@ -32,7 +32,11 @@ export function Hero({ initial }: { initial: InstrumentSnapshot | null }) {
           <dl className="grid gap-3 border-l border-border pl-5 text-sm lg:col-span-4 lg:mb-1">
             <div className="grid gap-0.5">
               <dt className="label-mono text-subtle">Below</dt>
-              <dd className="text-muted">A live call to the research API. Pick an attack on a Wiesner note and read what each verifier sees.</dd>
+              <dd className="text-muted">
+                {process.env.NEXT_PUBLIC_QMINT_STATIC === "1"
+                  ? "Results precomputed by the research API (static snapshot). Pick an attack on a Wiesner note and read what each verifier sees."
+                  : "A live call to the research API. Pick an attack on a Wiesner note and read what each verifier sees."}
+              </dd>
             </div>
             <div className="grid gap-0.5">
               <dt className="label-mono text-subtle">Not</dt>

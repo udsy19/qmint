@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use QMint, please cite it as below. Please also cite the original works it reproduces."
+title: "QMint: proof-carrying quantum money benchmarks"
+abstract: >-
+  Open-source research platform that reproduces published quantum-money and quantum-token security results,
+  attacks them with optimal adversaries, checks them against real photon data, and compares them with strong
+  classical payment baselines on identical networks, with an evidence label on every number.
+authors:
+  - given-names: Udaya
+    family-names: Tejas
+type: software
+license: MIT
+version: 0.1.0
+date-released: 2026-10-11
+repository-code: "https://github.com/udsy19/qmint"
+url: "https://udsy19.github.io/qmint/"
+keywords: [quantum money, quantum tokens, Wiesner, S-money, quantum cryptography, Qiskit, benchmarking, reproducibility]
+references:
+  - type: article
+    title: "Optimal counterfeiting attacks and generalizations for Wiesner's quantum money"
+    authors: [{family-names: Molina}, {family-names: Vidick}, {family-names: Watrous}]
+    year: 2012
+    url: "https://arxiv.org/abs/1202.4010"
+  - type: article
+    title: "Practical quantum tokens without quantum memories and experimental tests"
+    authors: [{family-names: Kent}, {family-names: Lowndes}, {family-names: Pitalúa-García}, {family-names: Rarity}]
+    year: 2022
+    doi: "10.1038/s41534-022-00524-4"
+  - type: article
+    title: "Demonstration of quantum-digital payments"
+    authors: [{family-names: Schiansky}, {name: "et al."}]
+    year: 2023
+    doi: "10.1038/s41467-023-39519-w"
+  - type: data
+    title: "Data for: Demonstration of quantum-digital payments"
+    authors: [{family-names: Schiansky}, {name: "et al."}]
+    year: 2023
+    doi: "10.5281/zenodo.7979319"
